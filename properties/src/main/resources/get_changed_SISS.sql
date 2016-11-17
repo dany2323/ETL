@@ -1,0 +1,1 @@
+select distinct CODICE, 'SISS' as ID_REPOSITORY  from total where ID_REPOSITORY = 'SISS' group by CODICE having count(distinct (TYPE)) >1

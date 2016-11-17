@@ -1,0 +1,430 @@
+package lispa.schedulers.dao.target.elettra;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.QDmalmProjectProdottiArchitetture;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
+import lispa.schedulers.utils.DateUtils;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.sql.dml.SQLUpdateClause;
+
+public class ElettraProdottiArchitettureDAO {
+	private static Logger logger = Logger
+			.getLogger(ElettraProdottiArchitettureDAO.class);
+	private static SQLTemplates dialect = new HSQLDBTemplates();
+	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
+	private static QDmalmProjectProdottiArchitetture dmalmProjectProdotto = QDmalmProjectProdottiArchitetture.qDmalmProjectProdottiArchitetture;
+
+	public static List<DmalmElProdottiArchitetture> getAllProdotti(
+			Timestamp dataEsecuzione) throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		DmalmElProdottiArchitetture bean = null;
+		List<DmalmElProdottiArchitetture> prodotti = new ArrayList<DmalmElProdottiArchitetture>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = QueryManager
+					.getInstance()
+					.getQuery(
+							DmAlmConfigReaderProperties.SQL_ELETTRAPRODOTTIARCHITETTURE);
+
+			ps = connection.prepareStatement(sql);
+			ps.setTimestamp(1, dataEsecuzione);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				bean = new DmalmElProdottiArchitetture();
+
+				bean.setProdottoPk(rs.getInt("DMALM_STG_PROD_ARCH_PK"));
+				bean.setIdProdottoEdma(rs.getString("ID_PRODOTTO_EDMA"));
+				bean.setIdProdotto(rs.getString("ID_PRODOTTO"));
+				bean.setTipoOggetto(rs.getString("TIPO_OGGETTO"));
+				bean.setSigla(rs.getString("SIGLA"));
+				bean.setNome(rs.getString("NOME"));
+				bean.setDescrizioneProdotto(rs.getString("DS_PRODOTTO"));
+				bean.setAreaProdotto(rs.getString("AREA_PRODOTTO"));
+				bean.setResponsabileProdotto(rs
+						.getString("RESPONSABILE_PRODOTTO"));
+				bean.setAnnullato(rs.getString("ANNULLATO"));
+				bean.setDataAnnullamento(DateUtils.stringToDate(
+						rs.getString("DT_ANNULLAMENTO"), "yyyyMMdd"));
+				bean.setAmbitoManutenzione(rs.getString("AMBITO_MANUTENZIONE"));
+				bean.setAreaTematica(rs.getString("AREA_TEMATICA"));
+				bean.setBaseDatiEtl(rs.getString("BASE_DATI_ETL"));
+				bean.setBaseDatiLettura(rs.getString("BASE_DATI_LETTURA"));
+				bean.setBaseDatiScrittura(rs.getString("BASE_DATI_SCRITTURA"));
+				bean.setCategoria(rs.getString("CATEGORIA"));
+				bean.setFornituraRisorseEsterne(rs
+						.getString("FORNITURA_RISORSE_ESTERNE"));
+				bean.setCodiceAreaProdotto(rs.getString("CD_AREA_PRODOTTO"));
+				bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
+				bean.setUnitaOrganizzativaFk(rs.getInt("UNITAORGANIZZATIVA_FK"));
+				bean.setPersonaleFk(rs.getInt("PERSONALE_FK"));
+
+				prodotti.add(bean);
+			}
+
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return prodotti;
+	}
+
+	public static List<Tuple> getProdotto(DmalmElProdottiArchitetture bean)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> prodotti = new ArrayList<Tuple>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			prodotti = query
+					.from(qDmalmElProdottiArchitetture)
+					.where(qDmalmElProdottiArchitetture.sigla.eq(bean
+							.getSigla()))
+					.where(qDmalmElProdottiArchitetture.dataFineValidita.in(new SQLSubQuery()
+							.from(qDmalmElProdottiArchitetture)
+							.where(qDmalmElProdottiArchitetture.sigla.eq(bean
+									.getSigla()))
+							.list(qDmalmElProdottiArchitetture.dataFineValidita
+									.max())))
+					.list(qDmalmElProdottiArchitetture.all());
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return prodotti;
+	}
+
+	public static void insertProdotto(DmalmElProdottiArchitetture bean)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLInsertClause(connection, dialect,
+					qDmalmElProdottiArchitetture)
+					.columns(
+							qDmalmElProdottiArchitetture.prodottoPk,
+							qDmalmElProdottiArchitetture.idProdottoEdma,
+							qDmalmElProdottiArchitetture.idProdotto,
+							qDmalmElProdottiArchitetture.tipoOggetto,
+							qDmalmElProdottiArchitetture.sigla,
+							qDmalmElProdottiArchitetture.nome,
+							qDmalmElProdottiArchitetture.descrizioneProdotto,
+							qDmalmElProdottiArchitetture.areaProdotto,
+							qDmalmElProdottiArchitetture.responsabileProdotto,
+							qDmalmElProdottiArchitetture.annullato,
+							qDmalmElProdottiArchitetture.dataAnnullamento,
+							qDmalmElProdottiArchitetture.ambitoManutenzione,
+							qDmalmElProdottiArchitetture.areaTematica,
+							qDmalmElProdottiArchitetture.baseDatiEtl,
+							qDmalmElProdottiArchitetture.baseDatiLettura,
+							qDmalmElProdottiArchitetture.baseDatiScrittura,
+							qDmalmElProdottiArchitetture.categoria,
+							qDmalmElProdottiArchitetture.fornituraRisorseEsterne,
+							qDmalmElProdottiArchitetture.codiceAreaProdotto,
+							qDmalmElProdottiArchitetture.dataCaricamento,
+							qDmalmElProdottiArchitetture.unitaOrganizzativaFk,
+							qDmalmElProdottiArchitetture.personaleFk,
+							qDmalmElProdottiArchitetture.dataInizioValidita,
+							qDmalmElProdottiArchitetture.dataFineValidita)
+					.values(bean.getProdottoPk(), bean.getIdProdottoEdma(),
+							bean.getIdProdotto(), bean.getTipoOggetto(),
+							bean.getSigla(), bean.getNome(),
+							bean.getDescrizioneProdotto(),
+							bean.getAreaProdotto(),
+							bean.getResponsabileProdotto(),
+							bean.getAnnullato(), bean.getDataAnnullamento(),
+							bean.getAmbitoManutenzione(),
+							bean.getAreaTematica(), bean.getBaseDatiEtl(),
+							bean.getBaseDatiLettura(),
+							bean.getBaseDatiScrittura(), bean.getCategoria(),
+							bean.getFornituraRisorseEsterne(),
+							bean.getCodiceAreaProdotto(),
+							bean.getDataCaricamento(),
+							bean.getUnitaOrganizzativaFk(),
+							bean.getPersonaleFk(),
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999()).execute();
+
+			connection.commit();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+
+	public static void updateDataFineValidita(Timestamp dataFineValidita,
+			Integer prodottoPk) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect,
+					qDmalmElProdottiArchitetture)
+					.where(qDmalmElProdottiArchitetture.prodottoPk
+							.eq(prodottoPk))
+					.set(qDmalmElProdottiArchitetture.dataFineValidita,
+							DateUtils.addSecondsToTimestamp(dataFineValidita,
+									-1)).execute();
+
+			connection.commit();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+
+	public static void insertProdottoUpdate(Timestamp dataEsecuzione,
+			DmalmElProdottiArchitetture bean) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLInsertClause(connection, dialect,
+					qDmalmElProdottiArchitetture)
+					.columns(
+							qDmalmElProdottiArchitetture.prodottoPk,
+							qDmalmElProdottiArchitetture.idProdottoEdma,
+							qDmalmElProdottiArchitetture.idProdotto,
+							qDmalmElProdottiArchitetture.tipoOggetto,
+							qDmalmElProdottiArchitetture.sigla,
+							qDmalmElProdottiArchitetture.nome,
+							qDmalmElProdottiArchitetture.descrizioneProdotto,
+							qDmalmElProdottiArchitetture.areaProdotto,
+							qDmalmElProdottiArchitetture.responsabileProdotto,
+							qDmalmElProdottiArchitetture.annullato,
+							qDmalmElProdottiArchitetture.dataAnnullamento,
+							qDmalmElProdottiArchitetture.ambitoManutenzione,
+							qDmalmElProdottiArchitetture.areaTematica,
+							qDmalmElProdottiArchitetture.baseDatiEtl,
+							qDmalmElProdottiArchitetture.baseDatiLettura,
+							qDmalmElProdottiArchitetture.baseDatiScrittura,
+							qDmalmElProdottiArchitetture.categoria,
+							qDmalmElProdottiArchitetture.fornituraRisorseEsterne,
+							qDmalmElProdottiArchitetture.codiceAreaProdotto,
+							qDmalmElProdottiArchitetture.dataCaricamento,
+							qDmalmElProdottiArchitetture.unitaOrganizzativaFk,
+							qDmalmElProdottiArchitetture.personaleFk,
+							qDmalmElProdottiArchitetture.dataInizioValidita,
+							qDmalmElProdottiArchitetture.dataFineValidita)
+					.values(bean.getProdottoPk(), bean.getIdProdottoEdma(),
+							bean.getIdProdotto(), bean.getTipoOggetto(),
+							bean.getSigla(), bean.getNome(),
+							bean.getDescrizioneProdotto(),
+							bean.getAreaProdotto(),
+							bean.getResponsabileProdotto(),
+							bean.getAnnullato(), bean.getDataAnnullamento(),
+							bean.getAmbitoManutenzione(),
+							bean.getAreaTematica(), bean.getBaseDatiEtl(),
+							bean.getBaseDatiLettura(),
+							bean.getBaseDatiScrittura(), bean.getCategoria(),
+							bean.getFornituraRisorseEsterne(),
+							bean.getCodiceAreaProdotto(),
+							bean.getDataCaricamento(),
+							bean.getUnitaOrganizzativaFk(),
+							bean.getPersonaleFk(), dataEsecuzione,
+							DateUtils.setDtFineValidita9999()).execute();
+
+			connection.commit();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+
+	public static void updateProdotto(Integer prodottoPk,
+			DmalmElProdottiArchitetture prodotto) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect,
+					qDmalmElProdottiArchitetture)
+					.where(qDmalmElProdottiArchitetture.prodottoPk
+							.eq(prodottoPk))
+					.set(qDmalmElProdottiArchitetture.idProdotto,
+							prodotto.getIdProdotto())
+					.set(qDmalmElProdottiArchitetture.tipoOggetto,
+							prodotto.getTipoOggetto())
+					.set(qDmalmElProdottiArchitetture.descrizioneProdotto,
+							prodotto.getDescrizioneProdotto())
+					.set(qDmalmElProdottiArchitetture.ambitoManutenzione,
+							prodotto.getAmbitoManutenzione())
+					.set(qDmalmElProdottiArchitetture.areaTematica,
+							prodotto.getAreaTematica())
+					.set(qDmalmElProdottiArchitetture.baseDatiEtl,
+							prodotto.getBaseDatiEtl())
+					.set(qDmalmElProdottiArchitetture.baseDatiLettura,
+							prodotto.getBaseDatiLettura())
+					.set(qDmalmElProdottiArchitetture.baseDatiScrittura,
+							prodotto.getBaseDatiScrittura())
+					.set(qDmalmElProdottiArchitetture.categoria,
+							prodotto.getCategoria())
+					.set(qDmalmElProdottiArchitetture.fornituraRisorseEsterne,
+							prodotto.getFornituraRisorseEsterne())
+					.set(qDmalmElProdottiArchitetture.dataAnnullamento,
+							DateUtils.dateToTimestamp(prodotto
+									.getDataAnnullamento())).execute();
+
+			connection.commit();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+
+	public static List<Tuple> getProductByAcronym(String asm)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> prodotti = new ArrayList<Tuple>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			prodotti = query
+					.from(qDmalmElProdottiArchitetture)
+					.where(qDmalmElProdottiArchitetture.sigla.eq(asm))
+					.where(qDmalmElProdottiArchitetture.dataFineValidita
+							.eq(DateUtils.setDtFineValidita9999()))
+					.list(qDmalmElProdottiArchitetture.all());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return prodotti;
+	}
+
+	public static List<Tuple> getAllProductToLinkWithProject()
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> prodotti = new ArrayList<Tuple>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			// tutti i Prodotti Aperti non associati ad un Project (escluso il
+			// tappo prodottoPk = 0)
+			prodotti = query
+					.from(qDmalmElProdottiArchitetture)
+					.leftJoin(dmalmProjectProdotto)
+					.on(dmalmProjectProdotto.dmalmProdottoPk
+							.eq(qDmalmElProdottiArchitetture.prodottoPk))
+					.where(qDmalmElProdottiArchitetture.prodottoPk
+							.ne(new Integer(0)))
+					.where(qDmalmElProdottiArchitetture.dataFineValidita
+							.eq(DateUtils.setDtFineValidita9999()))
+					.where(dmalmProjectProdotto.dmalmProdottoPk.isNull())
+					.list(qDmalmElProdottiArchitetture.all());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return prodotti;
+	}
+}

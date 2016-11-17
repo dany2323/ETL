@@ -1,0 +1,46 @@
+package lispa.schedulers.runnable.staging.sire.current;
+
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.apache.log4j.Logger;
+
+import lispa.schedulers.dao.sgr.sire.current.SireCurrentProjectDAO;
+import lispa.schedulers.exception.DAOException;
+
+public class SireCurrentProjectRunnable implements Runnable {
+	
+	private Logger logger;
+	
+	public SireCurrentProjectRunnable(Logger logger) {
+		
+		this.logger = logger;
+		
+	}
+
+	@Override
+	public void run() {
+		try {
+			logger.debug("START fillSireCurrentProject "+ new Date());
+			SireCurrentProjectDAO.fillSireCurrentProject();
+			logger.debug("STOP  fillSireCurrentProject "+ new Date());
+		}
+		catch (DAOException e) 
+		{
+			logger.error(e.getMessage(), e);
+			
+		}
+		catch(SQLException e)
+		{
+			logger.error(e.getMessage(), e);
+			
+		}
+		catch(Exception e)
+		{
+			logger.error(e.getMessage(), e);
+			
+		}
+		
+	}
+
+}

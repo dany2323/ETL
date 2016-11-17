@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+ <parent>
+		<groupId>it.lispa.staff</groupId>
+		<artifactId>dm_alm</artifactId>
+		<version>4.4.00</version>
+  </parent>
+  
+  <artifactId>db</artifactId>
+  <name>db</name>
+  <packaging>zip</packaging>
+  
+   	<properties>	
+	   <skipTests>true</skipTests>
+	   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+	<build>
+        <sourceDirectory>src/main/resources</sourceDirectory>
+		<plugins>
+			<plugin> 
+				<groupId>it.lispa.siss.maven-plugins</groupId>
+				<artifactId>custom-package-plugin</artifactId>
+				<version>1.7.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<sourceDirectory>src/main/resources</sourceDirectory>
+				</configuration>
+			</plugin>
+						 
+		</plugins>
+	</build>
+</project>

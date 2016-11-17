@@ -1,0 +1,343 @@
+SPOOL 149_TOTAL.log
+SET DEFINE OFF;
+SET ECHO ON;
+SET TIMING ON;
+SET TIME ON;SET SQLBLANKLINES ON;
+CREATE OR REPLACE FORCE VIEW TOTAL
+(
+   STG_PK,
+   DMALM_PK,
+   TYPE,
+   ID_REPOSITORY,
+   CODICE,
+   DT_STORICIZZAZIONE,
+   URI,
+   RANK_STATO,
+   TITOLO,
+   PROJECT_FK,
+   STATO_FK,
+   TEMPO_FK
+)
+AS
+   (SELECT stg_pk,
+           DMALM_ANOMALIA_PRODOTTO_PK AS DMALM_PK,
+           'anomalia' AS TYPE,
+           ID_REPOSITORY,
+           CD_ANOMALIA AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_ANOMALIA_PRODOTTO AS URI,
+           RANK_STATO_ANOMALIA AS RANK_STATO,
+           ' ' AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_anomalia_prodotto
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_DOCUMENTO_PK AS DMALM_PK,
+           'documento' AS TYPE,
+           ID_REPOSITORY,
+           CD_DOCUMENTO AS codice,
+           DT_STORICIZZAZIONE,
+           URI_DOCUMENTO AS URI,
+           RANK_STATO_DOCUMENTO AS RANK_STATO,
+           TITOLO_DOCUMENTO AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_documento
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_MANUTENZIONE_PK AS DMALM_PK,
+           'sman' AS TYPE,
+           ID_REPOSITORY,
+           cd_manutenzione AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_MANUTENZIONE AS URI,
+           RANK_STATO_MANUTENZIONE AS RANK_STATO,
+           TITOLO_MANUTENZIONE AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_manutenzione
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_DIFETTO_PRODOTTO_PK AS DMALM_PK,
+           'defect' AS TYPE,
+           ID_REPOSITORY,
+           cd_difetto AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_DIFETTO_PRODOTTO AS URI,
+           RANK_STATO_DIFETTO AS RANK_STATO,
+           ' ' AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_difetto_prodotto
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_ANOMALIA_ASS_PK AS DMALM_PK,
+           'anomalia_assistenza' AS TYPE,
+           ID_REPOSITORY,
+           cd_anomalia_ass AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_ANOMALIA_ASSISTENZA AS URI,
+           RANK_STATO_ANOMALIA_ASS AS RANK_STATO,
+           TITOLO_ANOMALIA_ASS AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_anomalia_assistenza
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_BUILD_PK AS DMALM_PK,
+           'build' AS TYPE,
+           ID_REPOSITORY,
+           cd_build AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_BUILD AS URI,
+           RANK_STATO_BUILD AS RANK_STATO,
+           TITOLO_BUILD AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_build
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_FASE_PK AS DMALM_PK,
+           'fase' AS TYPE,
+           ID_REPOSITORY,
+           cd_fase AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_FASE AS URI,
+           RANK_STATO_FASE AS RANK_STATO,
+           TITOLO_FASE AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_fase
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_PEI_PK AS DMALM_PK,
+           'pei' AS TYPE,
+           ID_REPOSITORY,
+           cd_pei AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_PEI AS URI,
+           RANK_STATO_PEI AS RANK_STATO,
+           TITOLO_PEI AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_pei
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_PROGETTO_DEMAND_PK AS DMALM_PK,
+           'rqd' AS TYPE,
+           ID_REPOSITORY,
+           cd_progetto_demand AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_PROGETTO_DEMAND AS URI,
+           RANK_STATO_PROGETTO_DEMAND AS RANK_STATO,
+           TITOLO_PROGETTO_DEMAND AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_progetto_demand
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_PROGETTO_ESE_PK AS DMALM_PK,
+           'progettoese' AS TYPE,
+           ID_REPOSITORY,
+           cd_progetto_ese AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_PROGETTO_ESE AS URI,
+           RANK_STATO_PROGETTO_ESE AS RANK_STATO,
+           TITOLO_PROGETTO_ESE AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_progetto_ese
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_PROG_SVIL_D_PK AS DMALM_PK,
+           'drqs' AS TYPE,
+           ID_REPOSITORY,
+           CD_PROG_SVIL_D AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_PROGETTO_SVILUPPO_DEM AS URI,
+           RANK_STATO_PROG_SVIL_D AS RANK_STATO,
+           TITOLO_PROG_SVIL_D AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_progetto_sviluppo_dem
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_PROG_SVIL_S_PK AS DMALM_PK,
+           'srqs' AS TYPE,
+           ID_REPOSITORY,
+           CD_PROG_SVIL_S AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_PROGETTO_SVILUPPO_SVIL AS URI,
+           RANK_STATO_PROG_SVIL_S AS RANK_STATO,
+           TITOLO_PROG_SVIL_S AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_progetto_sviluppo_svil
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_PROGRAMMA_PK AS DMALM_PK,
+           'programma' AS TYPE,
+           ID_REPOSITORY,
+           CD_PROGRAMMA AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_PROGRAMMA AS URI,
+           RANK_STATO_PROGRAMMA AS RANK_STATO,
+           TITOLO_PROGRAMMA AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_programma
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_RELEASEDIPROG_PK AS DMALM_PK,
+           'release' AS TYPE,
+           ID_REPOSITORY,
+           CD_RELEASEDIPROG AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_RELEASE_DI_PROGETTO AS URI,
+           RANK_STATO_RELEASEDIPROG AS RANK_STATO,
+           TITOLO_RELEASEDIPROG AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_release_di_progetto
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_RELEASE_IT_PK AS DMALM_PK,
+           'release_it' AS TYPE,
+           ID_REPOSITORY,
+           cd_release_it AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_RELEASE_IT AS URI,
+           RANK_STATO_RELEASE_IT AS RANK_STATO,
+           TITOLO_RELEASE_IT AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_release_it
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_REL_SERVIZI_PK AS DMALM_PK,
+           'release_ser' AS TYPE,
+           ID_REPOSITORY,
+           CD_REL_SERVIZI AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_RELEASE_SERVIZI AS URI,
+           RANK_STATO_REL_SERVIZI AS RANK_STATO,
+           TITOLO_REL_SERVIZI AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_release_servizi
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_RICHIESTA_GEST_PK AS DMALM_PK,
+           'richiesta_gestione' AS TYPE,
+           ID_REPOSITORY,
+           CD_RICHIESTA_GEST AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_RICHIESTA_GESTIONE AS URI,
+           RANK_STATO_RICHIESTA_GEST AS RANK_STATO,
+           TITOLO_RICHIESTA_GEST AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_richiesta_gestione
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_RICH_MANUTENZIONE_PK AS DMALM_PK,
+           'dman' AS TYPE,
+           ID_REPOSITORY,
+           CD_RICHIESTA_MANUTENZIONE AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_RICHIESTA_MANUTENZIONE AS URI,
+           RANK_STATO_RICH_MANUTENZIONE AS RANK_STATO,
+           TITOLO_RICHIESTA_MANUTENZIONE AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_richiesta_manutenzione
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_SOTTOPROGRAMMA_PK AS DMALM_PK,
+           'sottoprogramma' AS TYPE,
+           ID_REPOSITORY,
+           CD_SOTTOPROGRAMMA AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_SOTTOPROGRAMMA AS URI,
+           RANK_STATO_SOTTOPROGRAMMA AS RANK_STATO,
+           TITOLO_SOTTOPROGRAMMA AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_sottoprogramma
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_TASK_PK AS DMALM_PK,
+           'task' AS TYPE,
+           ID_REPOSITORY,
+           cd_task AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_TASK AS URI,
+           RANK_STATO_TASK AS RANK_STATO,
+           TITOLO_TASK AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_task
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_TASK_IT_PK AS DMALM_PK,
+           'taskit' AS TYPE,
+           ID_REPOSITORY,
+           cd_task_it AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_TASK_IT AS URI,
+           RANK_STATO_TASK_IT AS RANK_STATO,
+           TITOLO_TASK_IT AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_task_it
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_TESTCASE_PK AS DMALM_PK,
+           'testcase' AS TYPE,
+           ID_REPOSITORY,
+           cd_testcase AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_TESTCASE AS URI,
+           RANK_STATO_TESTCASE AS RANK_STATO,
+           TITOLO_TESTCASE AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_testcase
+    UNION ALL
+    SELECT stg_pk,
+           DMALM_CLASSIFICATORE_PK AS DMALM_PK,
+           'classificatore_demand' AS TYPE,
+           ID_REPOSITORY,
+           cd_classificatore AS CODICE,
+           DT_STORICIZZAZIONE,
+           URI_CLASSIFICATORE AS URI,
+           RANK_STATO_CLASSIFICATORE AS RANK_STATO,
+           TITOLO_CLASSIFICATORE AS TITOLO,
+           DMALM_PROJECT_FK_02 AS PROJECT_FK,
+           DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
+           DMALM_TEMPO_FK_04 AS TEMPO_FK
+      FROM dmalm_classificatore_demand);
+SPOOL OFF;

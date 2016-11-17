@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>it.lispa.staff</groupId>
+		<artifactId>dm_alm</artifactId>
+		<version>4.4.00</version>
+	</parent>
+	
+	<artifactId>release</artifactId>
+	<packaging>pom</packaging>
+	<name>release</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>it.lispa.siss.maven-plugins</groupId>
+				<artifactId>custom-package-plugin</artifactId>
+				<version>1.7.0</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>it.lispa.staff</groupId> 
+			<artifactId>etl</artifactId>
+			<version>4.4.00</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>it.lispa.staff</groupId> 
+			<artifactId>db</artifactId>
+			<version>4.4.00</version>
+			<type>zip</type>
+		</dependency>
+	</dependencies>
+
+</project>

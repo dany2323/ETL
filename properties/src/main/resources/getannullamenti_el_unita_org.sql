@@ -1,0 +1,4 @@
+select CD_AREA from DMALM_STG_EL_UNITA_ORGANIZZ where DT_CARICAMENTO = ? 
+minus 
+select CD_AREA from DMALM_STG_EL_UNITA_ORGANIZZ where DT_CARICAMENTO = ? 
+ 
