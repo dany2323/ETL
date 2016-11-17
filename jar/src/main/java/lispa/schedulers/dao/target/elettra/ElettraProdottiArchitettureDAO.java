@@ -85,7 +85,14 @@ public class ElettraProdottiArchitettureDAO {
 				bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
 				bean.setUnitaOrganizzativaFk(rs.getInt("UNITAORGANIZZATIVA_FK"));
 				bean.setPersonaleFk(rs.getInt("PERSONALE_FK"));
-
+				//modificato per DM_ALM-224
+				//TODO: riempire con nomi dei nuovi campi - modificare anche il file sql elettraprodottiarchitetture.sql
+				bean.setAmbitoTecnologico(rs.getString(""));
+				bean.setAmbitoManutenzioneDenom(rs.getString(""));
+				bean.setAmbitoManutenzioneCodice(rs.getString(""));
+				bean.setStato(rs.getString(""));
+				
+				
 				prodotti.add(bean);
 			}
 
@@ -181,7 +188,11 @@ public class ElettraProdottiArchitettureDAO {
 							qDmalmElProdottiArchitetture.unitaOrganizzativaFk,
 							qDmalmElProdottiArchitetture.personaleFk,
 							qDmalmElProdottiArchitetture.dataInizioValidita,
-							qDmalmElProdottiArchitetture.dataFineValidita)
+							qDmalmElProdottiArchitetture.dataFineValidita,
+							qDmalmElProdottiArchitetture.ambitoTecnologico,
+							qDmalmElProdottiArchitetture.ambitoManutenzioneDenom,
+							qDmalmElProdottiArchitetture.ambitoManutenzioneCodice,
+							qDmalmElProdottiArchitetture.stato)
 					.values(bean.getProdottoPk(), bean.getIdProdottoEdma(),
 							bean.getIdProdotto(), bean.getTipoOggetto(),
 							bean.getSigla(), bean.getNome(),
@@ -199,7 +210,11 @@ public class ElettraProdottiArchitettureDAO {
 							bean.getUnitaOrganizzativaFk(),
 							bean.getPersonaleFk(),
 							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.setDtFineValidita9999(),
+							bean.getAmbitoTecnologico(),
+							bean.getAmbitoManutenzioneDenom(),
+							bean.getAmbitoManutenzioneCodice(),
+							bean.getStato()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -279,7 +294,12 @@ public class ElettraProdottiArchitettureDAO {
 							qDmalmElProdottiArchitetture.unitaOrganizzativaFk,
 							qDmalmElProdottiArchitetture.personaleFk,
 							qDmalmElProdottiArchitetture.dataInizioValidita,
-							qDmalmElProdottiArchitetture.dataFineValidita)
+							qDmalmElProdottiArchitetture.dataFineValidita,
+							//modificato per DM_ALM-224
+							qDmalmElProdottiArchitetture.ambitoTecnologico,
+							qDmalmElProdottiArchitetture.ambitoManutenzioneDenom,
+							qDmalmElProdottiArchitetture.ambitoManutenzioneCodice,
+							qDmalmElProdottiArchitetture.stato)
 					.values(bean.getProdottoPk(), bean.getIdProdottoEdma(),
 							bean.getIdProdotto(), bean.getTipoOggetto(),
 							bean.getSigla(), bean.getNome(),
@@ -296,7 +316,12 @@ public class ElettraProdottiArchitettureDAO {
 							bean.getDataCaricamento(),
 							bean.getUnitaOrganizzativaFk(),
 							bean.getPersonaleFk(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.setDtFineValidita9999(),
+							//modificato pr DM_ALM-224
+							bean.getAmbitoTecnologico(),
+							bean.getAmbitoManutenzioneDenom(),
+							bean.getAmbitoManutenzioneCodice(),
+							bean.getStato()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -345,8 +370,12 @@ public class ElettraProdottiArchitettureDAO {
 					.set(qDmalmElProdottiArchitetture.fornituraRisorseEsterne,
 							prodotto.getFornituraRisorseEsterne())
 					.set(qDmalmElProdottiArchitetture.dataAnnullamento,
-							DateUtils.dateToTimestamp(prodotto
-									.getDataAnnullamento())).execute();
+							DateUtils.dateToTimestamp(prodotto.getDataAnnullamento()))
+					.set(qDmalmElProdottiArchitetture.ambitoTecnologico, prodotto.getAmbitoTecnologico())
+					.set(qDmalmElProdottiArchitetture.ambitoManutenzioneDenom, prodotto.getAmbitoManutenzioneDenom())
+					.set(qDmalmElProdottiArchitetture.ambitoManutenzioneCodice, prodotto.getAmbitoManutenzioneCodice())
+					.set(qDmalmElProdottiArchitetture.stato, prodotto.getStato())
+					.execute();
 
 			connection.commit();
 		} catch (Exception e) {

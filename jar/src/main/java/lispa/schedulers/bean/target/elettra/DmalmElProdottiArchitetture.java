@@ -28,7 +28,37 @@ public class DmalmElProdottiArchitetture {
     private Date dataInizioValidita;
     private Date dataFineValidita;
     private Integer unitaOrgFlatFk;
+    //modificato per DM_ALM-224
+    private String ambitoTecnologico;
+    private String ambitoManutenzioneDenom;
+    private String ambitoManutenzioneCodice;
+    private String stato;
     
+	public String getAmbitoTecnologico() {
+		return ambitoTecnologico;
+	}
+	public void setAmbitoTecnologico(String ambitoTecnologico) {
+		this.ambitoTecnologico = ambitoTecnologico;
+	}
+	public String getAmbitoManutenzioneDenom() {
+		return ambitoManutenzioneDenom;
+	}
+	public void setAmbitoManutenzioneDenom(String ambitoManutenzioneDenom) {
+		this.ambitoManutenzioneDenom = ambitoManutenzioneDenom;
+	}
+	public String getAmbitoManutenzioneCodice() {
+		return ambitoManutenzioneCodice;
+	}
+	public void setAmbitoManutenzioneCodice(String ambitoManutenzioneCodice) {
+		this.ambitoManutenzioneCodice = ambitoManutenzioneCodice;
+	}
+
+	public String getStato() {
+		return stato;
+	}
+	public void setStato(String stato) {
+		this.stato = stato;
+	}
 	public Integer getUnitaOrgFlatFk() {
 		return unitaOrgFlatFk;
 	}

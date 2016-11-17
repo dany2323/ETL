@@ -103,7 +103,13 @@ public class StgElProdottiDAO {
 								qStgElProdotti.categoria,
 								qStgElProdotti.fornituraRisorseEsterne,
 								qStgElProdotti.codiceAreaProdotto,
-								qStgElProdotti.dataCaricamento)
+								qStgElProdotti.dataCaricamento,
+								//modificato per DM_ALM-224
+								qStgElProdotti.ambitoTecnologico,
+								qStgElProdotti.ambitoManutenzioneDenom,
+								qStgElProdotti.ambitoManutenzioneCodice,
+								qStgElProdotti.stato
+								)
 						.values(StringTemplate
 								.create("STG_PROD_ARCHITETTURE_SEQ.nextval"),
 								row.get(qElettraProdottiArchitetture.idEdmaProdArchApplOreste),
@@ -124,8 +130,12 @@ public class StgElProdottiDAO {
 								row.get(qElettraProdottiArchitetture.classifCategoriaProdotto),
 								row.get(qElettraProdottiArchitetture.classifFornituraDaGara),
 								row.get(qElettraProdottiArchitetture.codiceAreaProdArchAppl),
-								DataEsecuzione.getInstance()
-										.getDataEsecuzione()).execute();
+								DataEsecuzione.getInstance().getDataEsecuzione(),
+								//modificato per DM_ALM-224
+								row.get(qElettraProdottiArchitetture.ambitoTecnologico),
+								row.get(qElettraProdottiArchitetture.ambitoManutenzioneDenom),
+								row.get(qElettraProdottiArchitetture.ambitoManutenzioneCodice),
+								row.get(qElettraProdottiArchitetture.stato)	).execute();
 			}
 
 			connection.commit();

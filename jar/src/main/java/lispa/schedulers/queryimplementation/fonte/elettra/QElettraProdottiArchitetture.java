@@ -32,6 +32,11 @@ public class QElettraProdottiArchitetture extends com.mysema.query.sql.Relationa
 	public final StringPath classifCategoriaProdotto = createString("Classif Categoria Prodotto");
 	public final StringPath classifFornituraDaGara = createString("Classif Fornitura da gara");
 	public final StringPath codiceAreaProdArchAppl = createString("Codice Area Prod ArchAppl");
+	//aggiunti per DM_ALM-224
+	public final StringPath ambitoTecnologico = createString("AMBITO TECNOLOGICO");
+	public final StringPath ambitoManutenzioneDenom = createString("AMBITO MANUTENZIONE DENOM");
+	public final StringPath ambitoManutenzioneCodice = createString("AMBITO MANUTENZIONE CODICE");
+	public final StringPath stato = createString("STATO");
 	
 	public QElettraProdottiArchitetture(String variable) {
 		super(ElettraProdottiArchitetture.class, forVariable(variable),
