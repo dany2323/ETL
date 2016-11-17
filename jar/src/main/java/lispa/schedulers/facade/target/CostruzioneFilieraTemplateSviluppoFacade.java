@@ -60,15 +60,15 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 
 			List<DmalmLinkedWorkitems> insertedWorkitemsList = new LinkedList<DmalmLinkedWorkitems>();
 
-			// ad ogni esecuzione la filiera del template Demand è svuotata e
+			// ad ogni esecuzione la filiera del template Sviluppo è svuotata e
 			// ricaricata
 			// nuovamente
 			FilieraTemplateSviluppoDAO.deleteTemplateSviluppo();
 			FilieraTemplateDocumentiDAO.delete(DmAlmConstants.SVILUPPO);
 
-			// creazione filiera template Demand
+			// creazione filiera template Sviluppo
 			List<DmalmLinkedWorkitems> startWorkitemsList = LinkedWorkitemsDAO
-					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera);
+					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "srqs", "release");
 			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
 					+ startWorkitemsList.size());
 
@@ -76,6 +76,42 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
 						insertedWorkitemsList);
 			}
+			
+			
+			// creazione secondo livello filiera template Sviluppo
+			startWorkitemsList = LinkedWorkitemsDAO
+					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "sman", "release");
+			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
+					+ startWorkitemsList.size());
+
+			if (startWorkitemsList.size() > 0) {
+				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
+						insertedWorkitemsList);
+			}
+			
+			// creazione altro secondo livello filiera template Sviluppo
+			startWorkitemsList = LinkedWorkitemsDAO
+					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "release", "anomalia");
+			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
+					+ startWorkitemsList.size());
+
+			if (startWorkitemsList.size() > 0) {
+				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
+						insertedWorkitemsList);
+			}
+			
+			// creazione altro secondo livello filiera template Sviluppo
+			startWorkitemsList = LinkedWorkitemsDAO
+					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "release", "defect");
+			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
+					+ startWorkitemsList.size());
+
+			if (startWorkitemsList.size() > 0) {
+				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
+						insertedWorkitemsList);
+			}
+			
+			
 
 			logger.info("STOP CostruzioneFilieraTemplateSviluppoFacade.execute()");
 		} catch (DAOException de) {
