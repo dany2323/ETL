@@ -12,6 +12,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.queryimplementation.fonte.elettra.QElettraProdottiArchitetture;
 import lispa.schedulers.queryimplementation.staging.elettra.QStgElProdotti;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -76,12 +77,10 @@ public class StgElProdottiDAO {
 			SQLTemplates dialect = new HSQLDBTemplates();
 
 			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
-			
-			logger.info("Lettura tabella DM_ALM_EL_PRODOTTI_ARCHITETT");
+
 			List<Tuple> prodotti = query.from(qElettraProdottiArchitetture)
 					.list(qElettraProdottiArchitetture.all());
-			logger.info("Fine lettura tabella DM_ALM_EL_PRODOTTI_ARCHITETT");
-			
+
 			for (Tuple row : prodotti) {
 				righeInserite += new SQLInsertClause(connection, dialect,
 						qStgElProdotti)
@@ -113,10 +112,10 @@ public class StgElProdottiDAO {
 								row.get(qElettraProdottiArchitetture.nomeProdArchApplOreste),
 								row.get(qElettraProdottiArchitetture.descrProdArchApplOreste),
 								row.get(qElettraProdottiArchitetture.areaProdArchApplOreste),
-								row.get(qElettraProdottiArchitetture.respProdArchApplOreste),
+								StringUtils.getMaskedValue(row.get(qElettraProdottiArchitetture.respProdArchApplOreste)),
 								row.get(qElettraProdottiArchitetture.prodArchApplOresteAnnullato),
 								row.get(qElettraProdottiArchitetture.dfvAnnullamento),
-								row.get(qElettraProdottiArchitetture.classifAmbitoDiManutenzione),
+								StringUtils.getMaskedValue(row.get(qElettraProdottiArchitetture.classifAmbitoDiManutenzione)),
 								row.get(qElettraProdottiArchitetture.classifAreaTematica),
 								row.get(qElettraProdottiArchitetture.classifBaseDatiETL),
 								row.get(qElettraProdottiArchitetture.classifBaseDatiLettura),

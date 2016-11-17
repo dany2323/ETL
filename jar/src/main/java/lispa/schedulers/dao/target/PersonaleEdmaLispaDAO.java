@@ -229,7 +229,8 @@ public class PersonaleEdmaLispaDAO {
 							qPersonale.nome, qPersonale.note,
 							qPersonale.dtFineValidita,
 							qPersonale.dtInizioValidita)
-					.values(personale.getCdEnte(),
+					.values(
+							personale.getCdEnte(),
 							personale.getCdPersonale(),
 							personale.getCdResponsabile(),
 							personale.getCdSuperiore(),

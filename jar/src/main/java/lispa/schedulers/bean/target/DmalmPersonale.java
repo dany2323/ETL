@@ -38,7 +38,7 @@ public class DmalmPersonale {
 
     private java.sql.Timestamp dtInizioValiditaEdma;
 
-    private Integer idEdma;
+    private Integer idEdma;  //ma id_edma e' un varchar
 
     private Integer idGrado;
 

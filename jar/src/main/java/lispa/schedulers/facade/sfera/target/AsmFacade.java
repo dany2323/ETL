@@ -223,16 +223,16 @@ public class AsmFacade {
 			
 			//DMALM-216 associazione project Unità Organizzativa Flat
 			//ricarica il valore della Fk ad ogni esecuzione
+			
+			QueryManager qm = QueryManager.getInstance();
 
-				QueryManager qm = QueryManager.getInstance();
-
-				logger.info("INIZIO Update ASM UnitaOrganizzativaFlatFk");
-				
-				qm.executeMultipleStatementsFromFile(
-						DmAlmConstants.M_UPDATE_ASM_UOFLATFK,
-						DmAlmConstants.M_SEPARATOR);
-				
-				logger.info("FINE Update ASM UnitaOrganizzativaFlatFk");
+			logger.info("INIZIO Update ASM UnitaOrganizzativaFlatFk");
+			
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_ASM_UOFLATFK,
+					DmAlmConstants.M_SEPARATOR);
+			
+			logger.info("FINE Update ASM UnitaOrganizzativaFlatFk");
 
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

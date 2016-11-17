@@ -22,6 +22,7 @@ import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdotto;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -305,11 +306,11 @@ public class DmAlmAsmDAO {
 							asm.fip13ComplessitaAlg, asm.fip15LivelloCura)
 					.values(StringTemplate.create("DM_ALM_ASM_SEQ.nextval"),
 							applicazioni.getDmalmStgMisuraPk(),
-							applicazioni.getNoteAsm(),
-							applicazioni.getpAppAccAuthLastUpdate(),
+							StringUtils.getMaskedValue(applicazioni.getNoteAsm()),
+							StringUtils.getMaskedValue(applicazioni.getpAppAccAuthLastUpdate()),
 							applicazioni.getpAppCdAltreAsmCommonServ(),
-							applicazioni.getpAppCdAmbitoManAttuale(),
-							applicazioni.getpAppCodAmbitoManFuturo(),
+							StringUtils.getMaskedValue(applicazioni.getpAppCdAmbitoManAttuale()),
+							StringUtils.getMaskedValue(applicazioni.getpAppCodAmbitoManFuturo()),
 							applicazioni.getpAppCodAsmConfinanti(),
 							applicazioni.getpAppCodDirezioneDemand(),
 							applicazioni.getpAppCodFlussiIoAsm(),
@@ -324,7 +325,7 @@ public class DmAlmAsmDAO {
 							applicazioni.getpAppFlagMisurareSvimevFp(),
 							applicazioni.getpAppFlagServizioComune(),
 							applicazioni.getpAppIndicValidazioneAsm(),
-							applicazioni.getpAppNomeAuthLastUpdate(),
+							StringUtils.getMaskedValue(applicazioni.getpAppNomeAuthLastUpdate()),
 							applicazioni.getAppCls(),
 							applicazioni.getApplicazione(),
 							applicazioni.getDataDismissione(),
@@ -334,7 +335,7 @@ public class DmAlmAsmDAO {
 							applicazioni.getIdAsm(),
 							applicazioni.getIncludiInDbPatrimonio(),
 							applicazioni.getNumeroUtenti(),
-							applicazioni.getPermissions(),
+							StringUtils.getMaskedValue(applicazioni.getPermissions()),
 							applicazioni.getProprietaLegale(),
 							applicazioni.getUtilizzata(),
 							applicazioni.getVafPredefinito(),
@@ -554,11 +555,11 @@ public class DmAlmAsmDAO {
 							asm.fip13ComplessitaAlg, asm.fip15LivelloCura)
 					.values(StringTemplate.create("DM_ALM_ASM_SEQ.nextval"),
 							applicazioni.getDmalmStgMisuraPk(),
-							applicazioni.getNoteAsm(),
-							applicazioni.getpAppAccAuthLastUpdate(),
+							StringUtils.getMaskedValue(applicazioni.getNoteAsm()),
+							StringUtils.getMaskedValue(applicazioni.getpAppAccAuthLastUpdate()),
 							applicazioni.getpAppCdAltreAsmCommonServ(),
-							applicazioni.getpAppCdAmbitoManAttuale(),
-							applicazioni.getpAppCodAmbitoManFuturo(),
+							StringUtils.getMaskedValue(applicazioni.getpAppCdAmbitoManAttuale()),
+							StringUtils.getMaskedValue(applicazioni.getpAppCodAmbitoManFuturo()),
 							applicazioni.getpAppCodAsmConfinanti(),
 							applicazioni.getpAppCodDirezioneDemand(),
 							applicazioni.getpAppCodFlussiIoAsm(),
@@ -573,7 +574,7 @@ public class DmAlmAsmDAO {
 							applicazioni.getpAppFlagMisurareSvimevFp(),
 							applicazioni.getpAppFlagServizioComune(),
 							applicazioni.getpAppIndicValidazioneAsm(),
-							applicazioni.getpAppNomeAuthLastUpdate(),
+							StringUtils.getMaskedValue(applicazioni.getpAppNomeAuthLastUpdate()),
 							applicazioni.getAppCls(),
 							applicazioni.getApplicazione(),
 							applicazioni.getDataDismissione(),
@@ -583,7 +584,7 @@ public class DmAlmAsmDAO {
 							applicazioni.getIdAsm(),
 							applicazioni.getIncludiInDbPatrimonio(),
 							applicazioni.getNumeroUtenti(),
-							applicazioni.getPermissions(),
+							StringUtils.getMaskedValue(applicazioni.getPermissions()),
 							applicazioni.getProprietaLegale(),
 							applicazioni.getUtilizzata(),
 							applicazioni.getVafPredefinito(), dataEsecuzione,

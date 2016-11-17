@@ -42,7 +42,7 @@ public class StgPersonale {
 
     private String indirizzoEmail;
 
-    private String interno;
+    private Integer interno;
 
     private String matricola;
 
@@ -188,11 +188,11 @@ public class StgPersonale {
         this.indirizzoEmail = indirizzoEmail;
     }
 
-    public String getInterno() {
+    public Integer getInterno() {
         return interno;
     }
 
-    public void setInterno(String interno) {
+    public void setInterno(Integer interno) {
         this.interno = interno;
     }
 

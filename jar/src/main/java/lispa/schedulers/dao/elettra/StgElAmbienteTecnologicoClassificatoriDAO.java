@@ -78,13 +78,11 @@ public class StgElAmbienteTecnologicoClassificatoriDAO {
 			SQLTemplates dialect = new HSQLDBTemplates();
 
 			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
-			
-			logger.info("Lettura tabella DM_ALM_EL_AMBTECN_CLASSIFIC");
+
 			List<Tuple> moduli = query.from(
 					qElettraAmbienteTecnologicoClassificatori).list(
 					qElettraAmbienteTecnologicoClassificatori.all());
-			logger.info("Fine lettura tabella DM_ALM_EL_AMBTECN_CLASSIFIC");
-			
+
 			for (Tuple row : moduli) {
 				righeInserite += new SQLInsertClause(connection, dialect,
 						qStgElAmbienteTecnologicoClassificatori)

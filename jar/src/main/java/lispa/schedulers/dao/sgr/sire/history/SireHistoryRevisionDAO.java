@@ -15,6 +15,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -171,7 +172,7 @@ public class SireHistoryRevisionDAO {
 						)
 						.values(								
 								row.get(fonteRevisions.cPk),
-								row.get(fonteRevisions.cAuthor),
+								StringUtils.getMaskedValue(row.get(fonteRevisions.cAuthor)),
 								row.get(fonteRevisions.cCreated),
 								row.get(fonteRevisions.cDeleted),
 								row.get(fonteRevisions.cInternalcommit),

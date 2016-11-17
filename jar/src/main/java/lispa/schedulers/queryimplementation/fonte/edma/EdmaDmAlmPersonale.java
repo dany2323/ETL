@@ -54,7 +54,7 @@ public class EdmaDmAlmPersonale extends com.mysema.query.sql.RelationalPathBase<
 
     public final StringPath indirizzoEmail = createString("INDIRIZZO_EMAIL");
 
-    public final StringPath interno = createString("INTERNO");
+    public final NumberPath<Integer> interno = createNumber("INTERNO", Integer.class);
 
     public final StringPath matricola = createString("MATRICOLA");
 

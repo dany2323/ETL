@@ -27,14 +27,7 @@ public class DmalmElProdottiArchitetture {
     private Integer personaleFk;
     private Date dataInizioValidita;
     private Date dataFineValidita;
-    private Integer unitaOrgFlatFk;
     
-	public Integer getUnitaOrgFlatFk() {
-		return unitaOrgFlatFk;
-	}
-	public void setUnitaOrgFlatFk(Integer unitaOrgFlatFk) {
-		this.unitaOrgFlatFk = unitaOrgFlatFk;
-	}
 	public Integer getProdottoPk() {
 		return prodottoPk;
 	}

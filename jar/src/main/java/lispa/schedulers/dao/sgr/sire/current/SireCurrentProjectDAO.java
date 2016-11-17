@@ -12,6 +12,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireCurrentProject;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -112,7 +113,7 @@ public class SireCurrentProjectDAO
 								el[0] , 
 								el[1] , 
 								el[2] , 
-								el[3] , 
+								StringUtils.getMaskedValue((String)el[3]) , 
 								el[4] , 
 								el[5] , 
 								el[6] , 
@@ -121,7 +122,7 @@ public class SireCurrentProjectDAO
 								el[9] , 
 								el[10] ,
 								el[11] ,
-								el[12] ,
+								StringUtils.getMaskedValue((String)el[12]) ,
 								el[13] ,
 								el[14] ,
 								el[15] ,
