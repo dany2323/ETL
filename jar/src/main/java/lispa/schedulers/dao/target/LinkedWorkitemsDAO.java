@@ -1316,7 +1316,7 @@ public class LinkedWorkitemsDAO {
 	}
 	
 	public static List<DmalmLinkedWorkitems> getNextWorkitemsTemplateSviluppo(
-			DmalmLinkedWorkitems linkedWorkitem) throws DAOException,
+			DmalmLinkedWorkitems linkedWorkitem, Integer fkWiFiglio) throws DAOException,
 			SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -1333,7 +1333,7 @@ public class LinkedWorkitemsDAO {
 
 			resultList = query
 					.from(link)
-					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
+					.where(link.fkWiPadre.eq(fkWiFiglio))
 					.where(link.tipoWiPadre.in("release", "testcase", "task", "anomalia")
 					.and(link.tipoWiFiglio.in("testcase", "task", "anomalia", "defect")))
 					.where(link.ruolo.isNotNull())
