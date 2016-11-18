@@ -3,6 +3,7 @@ package lispa.schedulers.facade.target;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
@@ -189,6 +190,13 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
+			
+			String queryMaxFieliera = "select max(ID_FILIERA) as MAX_ID from DMALM_TEMPLATE_SVILUPPO";
+			ps = connection.prepareStatement(queryMaxFieliera);
+			rs = ps.executeQuery();
+			rs.first();
+			Integer idFiliera = rs.getInt("MAX_ID");
+			
 
 			ps = connection.prepareStatement(srqsQuery);
 			rs = ps.executeQuery();
@@ -294,7 +302,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 						filiera.codiceProject,
 						filiera.ruolo,
 						filiera.dataCaricamento)
-				.values(0, 
+				.values(++idFiliera, 
 						1, 
 						1,
 						srqs.getDmalmProgSvilSPk(),
@@ -308,57 +316,174 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				.execute();
 			}
 			
-			
-			/*SQLQuery query = new SQLQuery(connection, dialect);
-			
-			QDmalmFilieraTemplateSviluppo filieraSviluppo = QDmalmFilieraTemplateSviluppo.dmalmFilieraTemplateSviluppo;
-			
-			QDmalmProgettoSviluppoSvil progettoSviluppoSvil = QDmalmProgettoSviluppoSvil.dmalmProgettoSviluppoSvil;
-			QDmalmReleaseDiProgetto releaseDiProgetto = QDmalmReleaseDiProgetto.dmalmReleaseDiProgetto;
-			QDmalmManutenzione manutenzione = QDmalmManutenzione.dmalmManutenzione;
-			QDmalmAnomaliaProdotto anomaliaProdotto = QDmalmAnomaliaProdotto.dmalmAnomaliaProdotto;
-			QDmalmDifettoProdotto difettoProdotto = QDmalmDifettoProdotto.dmalmDifettoProdotto;
-			QDmalmTask task = QDmalmTask.dmalmTask;
-			QDmalmTestcase testCase = QDmalmTestcase.dmalmTestcase;
-
-			resultListSrqs = query
-					.from(progettoSviluppoSvil)
-					.join(filieraSviluppo)
-						.on(progettoSviluppoSvil.uri.eq(filieraSviluppo.uriWi)
-						.and(progettoSviluppoSvil.idRepository.eq(filieraSviluppo.idRepository)))
-					
-					.where(progettoSviluppoSvil.rankStatoProgSvilS.eq(new Double("1")))
-					.where(progettoSviluppoSvil.dtCreazioneProgSvilS.goe(dataInizioFiliera))
-					.list(Projections.bean(DmalmProgettoSviluppoSvil.class, progettoSviluppoSvil.all()));
-			resultListRelease = query
-					.from(releaseDiProgetto)
-					.where(releaseDiProgetto.rankStatoReleasediprog.eq(new Double("1")))
-					.where(releaseDiProgetto.dtCreazioneReleasediprog.goe(dataInizioFiliera))
-					.list(Projections.bean(DmalmReleaseDiProgetto.class, releaseDiProgetto.all()));
-			resultListManutenzione = query	
-					.from(manutenzione)
-					.where(manutenzione.rankStatoManutenzione.eq(new Double("1")))
-					.where(manutenzione.dtCreazioneManutenzione.goe(dataInizioFiliera))
-					.list(Projections.bean(DmalmManutenzione.class, manutenzione.all()));
-			resultListAnomalia = query
-					.from(anomaliaProdotto)
-					.where(anomaliaProdotto.rankStatoAnomalia.eq(new Double("1")))
-					.where(anomaliaProdotto.dtCreazioneAnomalia.goe(dataInizioFiliera))
-					.list(Projections.bean(DmalmAnomaliaProdotto.class, anomaliaProdotto.all()));
-			resultListTask = query
-					.from(task)
-					.where(task.rankStatoTask.eq(new Double("1")))
-					.where(task.dtCreazioneTask.goe(dataInizioFiliera))
-					.list(Projections.bean(DmalmTask.class, task.all()));
-			resultListTestCase = query
-					.from(testCase)
-					.where(testCase.rankStatoTestcase.eq(new Double("1")))
-					.where(testCase.dtCreazioneTestcase.goe(dataInizioFiliera))
-					.list(Projections.bean(DmalmTestcase.class, testCase.all()));
-			*/
-
-			
+			for(DmalmReleaseDiProgetto release: resultListRelease){
+				new SQLInsertClause(connection, dialect, filiera)
+				.columns(filiera.idFiliera,
+						filiera.livello,
+						filiera.sottoLivello,
+						filiera.fkWi, 
+						filiera.codiceWi,
+						filiera.tipoWi,
+						filiera.idRepository,
+						filiera.uriWi,
+						filiera.codiceProject,
+						filiera.ruolo,
+						filiera.dataCaricamento)
+				.values(++idFiliera, 
+						1, 
+						1,
+						release.getDmalmReleasediprogPk(),
+						release.getCdReleasediprog(),
+						"release",
+						release.getIdRepository(),
+						release.getUri(),
+						getDmalmCodiceProgetto(release.getDmalmProjectFk02()),
+						"",
+						DataEsecuzione.getInstance().getDataEsecuzione())
+				.execute();
+			}
 			connection.commit();
+			
+			for(DmalmManutenzione sman: resultListManutenzione){
+				new SQLInsertClause(connection, dialect, filiera)
+				.columns(filiera.idFiliera,
+						filiera.livello,
+						filiera.sottoLivello,
+						filiera.fkWi, 
+						filiera.codiceWi,
+						filiera.tipoWi,
+						filiera.idRepository,
+						filiera.uriWi,
+						filiera.codiceProject,
+						filiera.ruolo,
+						filiera.dataCaricamento)
+				.values(0, 
+						1, 
+						1,
+						sman.getDmalmManutenzionePk(),
+						sman.getCdManutenzione(),
+						"sman",
+						sman.getIdRepository(),
+						sman.getUri(),
+						getDmalmCodiceProgetto(sman.getDmalmProjectFk02()),
+						"",
+						DataEsecuzione.getInstance().getDataEsecuzione())
+				.execute();
+			}
+			connection.commit();
+			
+			for(DmalmAnomaliaProdotto anomalia: resultListAnomalia){
+				new SQLInsertClause(connection, dialect, filiera)
+				.columns(filiera.idFiliera,
+						filiera.livello,
+						filiera.sottoLivello,
+						filiera.fkWi, 
+						filiera.codiceWi,
+						filiera.tipoWi,
+						filiera.idRepository,
+						filiera.uriWi,
+						filiera.codiceProject,
+						filiera.ruolo,
+						filiera.dataCaricamento)
+				.values(++idFiliera, 
+						1, 
+						1,
+						anomalia.getDmalmAnomaliaProdottoPk(),
+						anomalia.getCdAnomalia(),
+						"anomalia",
+						anomalia.getIdRepository(),
+						anomalia.getUri(),
+						getDmalmCodiceProgetto(anomalia.getDmalmProjectFk02()),
+						"",
+						DataEsecuzione.getInstance().getDataEsecuzione())
+				.execute();
+			}
+			connection.commit();
+			
+			for(DmalmTask task: resultListTask){
+				new SQLInsertClause(connection, dialect, filiera)
+				.columns(filiera.idFiliera,
+						filiera.livello,
+						filiera.sottoLivello,
+						filiera.fkWi, 
+						filiera.codiceWi,
+						filiera.tipoWi,
+						filiera.idRepository,
+						filiera.uriWi,
+						filiera.codiceProject,
+						filiera.ruolo,
+						filiera.dataCaricamento)
+				.values(++idFiliera, 
+						1, 
+						1,
+						task.getDmalmTaskPk(),
+						task.getCdTask(),
+						"task",
+						task.getIdRepository(),
+						task.getUri(),
+						getDmalmCodiceProgetto(task.getDmalmProjectFk02()),
+						"",
+						DataEsecuzione.getInstance().getDataEsecuzione())
+				.execute();
+			}
+			connection.commit();
+
+			for(DmalmTestcase testcase: resultListTestCase){
+				new SQLInsertClause(connection, dialect, filiera)
+				.columns(filiera.idFiliera,
+						filiera.livello,
+						filiera.sottoLivello,
+						filiera.fkWi, 
+						filiera.codiceWi,
+						filiera.tipoWi,
+						filiera.idRepository,
+						filiera.uriWi,
+						filiera.codiceProject,
+						filiera.ruolo,
+						filiera.dataCaricamento)
+				.values(++idFiliera, 
+						1, 
+						1,
+						testcase.getDmalmTestcasePk(),
+						testcase.getCdTestcase(),
+						"testcase",
+						testcase.getIdRepository(),
+						testcase.getUri(),
+						getDmalmCodiceProgetto(testcase.getDmalmProjectFk02()),
+						"",
+						DataEsecuzione.getInstance().getDataEsecuzione())
+				.execute();
+			}
+			connection.commit();
+			
+			for(DmalmDifettoProdotto defect: resultListDefect){
+				new SQLInsertClause(connection, dialect, filiera)
+				.columns(filiera.idFiliera,
+						filiera.livello,
+						filiera.sottoLivello,
+						filiera.fkWi, 
+						filiera.codiceWi,
+						filiera.tipoWi,
+						filiera.idRepository,
+						filiera.uriWi,
+						filiera.codiceProject,
+						filiera.ruolo,
+						filiera.dataCaricamento)
+				.values(++idFiliera, 
+						1, 
+						1,
+						defect.getDmalmDifettoProdottoPk(),
+						defect.getCdDifetto(),
+						"defect",
+						defect.getIdRepository(),
+						defect.getUri(),
+						getDmalmCodiceProgetto(defect.getDmalmProjectFk02()),
+						"",
+						DataEsecuzione.getInstance().getDataEsecuzione())
+				.execute();
+			}
+			connection.commit();
+						
 		} catch (Exception e) {
 
 			throw new DAOException(e);
@@ -369,9 +494,20 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 		
 	}
 
-	private static String getDmalmCodiceProgetto(Integer dmalmProjectFk02) {
-		// TODO Auto-generated method stub
-		return null;
+	private static String getDmalmCodiceProgetto(Integer dmalmProjectFk02) throws DAOException, SQLException {
+		String queryMaxFieliera = "select ID_PROJECT from DMALM_PROJECT where DMALM_PROJECT_PK="+dmalmProjectFk02;
+		ConnectionManager cm = ConnectionManager.getInstance();
+		Connection connection = cm.getConnectionOracle();
+		PreparedStatement ps = connection.prepareStatement(queryMaxFieliera);
+		ResultSet rs = ps.executeQuery();
+		
+		if(!rs.next()){
+			logger.error("Non è stato trovato nessun ProjectId corrispondente all'ID: "+dmalmProjectFk02);
+			return "";
+		} else {
+			rs.first();
+			return rs.getString("ID_PROJECT");		
+		}
 	}
 
 	private static Integer gestisciLista(Integer idFiliera,
