@@ -39,9 +39,6 @@ public class QDmalmElProdottiArchitetture extends com.mysema.query.sql.Relationa
 	public final NumberPath<Integer> personaleFk = createNumber("DMALM_PERSONALE_FK_02", Integer.class);
 	public final DateTimePath<java.sql.Timestamp> dataInizioValidita = createDateTime("DT_INIZIO_VALIDITA", java.sql.Timestamp.class);
 	public final DateTimePath<java.sql.Timestamp> dataFineValidita = createDateTime("DT_FINE_VALIDITA", java.sql.Timestamp.class);
-	public final NumberPath<Integer> unitaOrgFlatFk = createNumber("DMALM_UNITAORG_FLAT_FK_04", Integer.class);
-
-	
 	
 	public final com.mysema.query.sql.PrimaryKey<DmalmElProdottiArchitetture> dmalmProdottoPk = createPrimaryKey(prodottoPk);	
 	

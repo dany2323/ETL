@@ -143,7 +143,6 @@ public class DmAlmFillStaging {
 				}
 
 				// Gestione Elettra
-				logger.info("Inizio lettura nuova fonte Elettra");
 				StagingElettraFacade.executeStaging(dataEsecuzioneDeleted);
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
@@ -151,7 +150,6 @@ public class DmAlmFillStaging {
 					RecoverManager.getInstance().startRecoverStaging();
 					return;
 				}
-				logger.info("Fine lettura nuova fonte Elettra");
 
 				// SGR_CM parte dolo dopo il completamento di EDMA e ORESTE
 				siss.start();

@@ -13,6 +13,8 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.queryimplementation.fonte.elettra.QElettraUnitaOrganizzative;
 import lispa.schedulers.queryimplementation.staging.elettra.QStgElUnitaOrganizzative;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.NumberUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -79,13 +81,11 @@ public class StgElUnitaOrganizzativeDAO {
 			SQLTemplates dialect = new HSQLDBTemplates();
 
 			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
-			
-			logger.info("Lettura tabella DMALM_STG_EL_UNITA_ORGANIZZ");
+
 			List<Tuple> unitaOrganizzative = query.from(
 					qElettraUnitaOrganizzative).list(
 					qElettraUnitaOrganizzative.all());
-			logger.info("Fine lettura tabella DMALM_STG_EL_UNITA_ORGANIZZ");
-			
+
 			for (Tuple row : unitaOrganizzative) {
 				righeInserite += new SQLInsertClause(connection, dialect,
 						qStgElUnitaOrganizzative)
@@ -118,15 +118,15 @@ public class StgElUnitaOrganizzativeDAO {
 								row.get(qElettraUnitaOrganizzative.descrizioneUnitaOrganizzativa),
 								row.get(qElettraUnitaOrganizzative.dataAttivazione),
 								row.get(qElettraUnitaOrganizzative.dataDisattivazione),
-								row.get(qElettraUnitaOrganizzative.note),
-								row.get(qElettraUnitaOrganizzative.flagInterno),
-								row.get(qElettraUnitaOrganizzative.codiceResponsabile),
-								row.get(qElettraUnitaOrganizzative.indirizzoEmail),
-								row.get(qElettraUnitaOrganizzative.tipologiaUfficio),
-								row.get(qElettraUnitaOrganizzative.gradoUfficio),
-								row.get(qElettraUnitaOrganizzative.idSede),
+								StringUtils.getMaskedValue(row.get(qElettraUnitaOrganizzative.note)),
+								NumberUtils.getMaskedValue(row.get(qElettraUnitaOrganizzative.flagInterno)),
+								StringUtils.getMaskedValue(row.get(qElettraUnitaOrganizzative.codiceResponsabile)),
+								StringUtils.getMaskedValue(row.get(qElettraUnitaOrganizzative.indirizzoEmail)),
+								NumberUtils.getMaskedValue(row.get(qElettraUnitaOrganizzative.tipologiaUfficio)),
+								NumberUtils.getMaskedValue(row.get(qElettraUnitaOrganizzative.gradoUfficio)),
+								NumberUtils.getMaskedValue(row.get(qElettraUnitaOrganizzative.idSede)),
 								row.get(qElettraUnitaOrganizzative.codiceUOSuperiore),
-								row.get(qElettraUnitaOrganizzative.codiceEnte),
+								StringUtils.getMaskedValue(row.get(qElettraUnitaOrganizzative.codiceEnte)),
 								row.get(qElettraUnitaOrganizzative.codiceVisibilita),
 								DataEsecuzione.getInstance()
 										.getDataEsecuzione()).execute();

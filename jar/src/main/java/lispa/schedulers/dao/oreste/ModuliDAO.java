@@ -23,6 +23,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.oreste.OresteDmAlmModuli;
 import lispa.schedulers.queryimplementation.staging.oreste.QStgModuli;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 public class ModuliDAO
 {
@@ -79,19 +80,18 @@ public class ModuliDAO
 								row.get(qViewModuli.idModulo),
 								row.get(qViewModuli.tipoOggetto),
 								row.get(qViewModuli.siglaProdottoModulo) != null ? row.get(qViewModuli.siglaProdottoModulo).trim() : null,
-										row.get(qViewModuli.siglaSottosistemaModulo) != null ? row.get(qViewModuli.siglaSottosistemaModulo).trim() : null,
-												row.get(qViewModuli.siglaModulo) != null ? row.get(qViewModuli.siglaModulo).trim() : null,
-														row.get(qViewModuli.nomeModulo),
-														row.get(qViewModuli.descrizioneModulo),
-														row.get(qViewModuli.moduloAnnullato),
-														row.get(qViewModuli.dfvModuloAnnullato),
-														row.get(qViewModuli.edmaRespModulo),
-														row.get(qViewModuli.clasfSottosistemaModulo),
-														row.get(qViewModuli.clasfTecnologiaModulo),
-														row.get(qViewModuli.clasfTipologiaModulo),
-														DataEsecuzione.getInstance().getDataEsecuzione(),
-														StringTemplate.create("STG_MODULI_SEQ.nextval")
-
+								row.get(qViewModuli.siglaSottosistemaModulo) != null ? row.get(qViewModuli.siglaSottosistemaModulo).trim() : null,
+								row.get(qViewModuli.siglaModulo) != null ? row.get(qViewModuli.siglaModulo).trim() : null,
+								row.get(qViewModuli.nomeModulo),
+								row.get(qViewModuli.descrizioneModulo),
+								row.get(qViewModuli.moduloAnnullato),
+								row.get(qViewModuli.dfvModuloAnnullato),
+								StringUtils.getMaskedValue(row.get(qViewModuli.edmaRespModulo)),
+								row.get(qViewModuli.clasfSottosistemaModulo),
+								row.get(qViewModuli.clasfTecnologiaModulo),
+								row.get(qViewModuli.clasfTipologiaModulo),
+								DataEsecuzione.getInstance().getDataEsecuzione(),
+								StringTemplate.create("STG_MODULI_SEQ.nextval")
 								)
 								.execute();
 			}

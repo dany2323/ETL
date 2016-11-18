@@ -15,7 +15,7 @@ CREATE TABLE DMALM_STG_MPS_RESPON_CONTRATTO
   FIRMATO                   CHAR(1 BYTE),
   DATA_FIRMA                DATE,
   IDENTE                    NUMBER(10),
-  ENTE                      VARCHAR2(2 BYTE)
+  ENTE                      VARCHAR2(32 BYTE)
 )
  PCTFREE 10 
  PCTUSED 40 

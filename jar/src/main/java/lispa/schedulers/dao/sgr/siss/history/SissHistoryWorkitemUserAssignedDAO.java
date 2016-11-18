@@ -11,6 +11,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryRelWorkUserAss;
+import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 
 import org.apache.log4j.Logger;
@@ -88,9 +89,9 @@ public class SissHistoryWorkitemUserAssignedDAO
 						)
 						.values(								
 								row.get(fonteWorkitemAssignees.fkUser),
-								row.get(fonteWorkitemAssignees.fkUriWorkitem),
+								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUriWorkitem)),
 								row.get(fonteWorkitemAssignees.fkWorkitem),
-								row.get(fonteWorkitemAssignees.fkUriUser),
+								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUriUser)),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_WORKUSERASS_SEQ.nextval")
 								)

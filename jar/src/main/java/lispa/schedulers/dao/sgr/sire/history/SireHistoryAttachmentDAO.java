@@ -11,6 +11,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryAttachment;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -98,9 +99,9 @@ public class SireHistoryAttachmentDAO {
 								row.get(fonteAttachment.cUri),
 								row.get(fonteAttachment.cUrl),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
-								row.get(fonteAttachment.fkAuthor),
+								StringUtils.getMaskedValue(row.get(fonteAttachment.fkAuthor)),
 								row.get(fonteAttachment.fkProject),
-								row.get(fonteAttachment.fkUriAuthor),
+								StringUtils.getMaskedValue(row.get(fonteAttachment.fkUriAuthor)),
 								row.get(fonteAttachment.fkUriProject),
 								row.get(fonteAttachment.fkUriWorkitem),
 								row.get(fonteAttachment.fkWorkitem),

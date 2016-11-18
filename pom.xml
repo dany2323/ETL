@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.lispa.staff</groupId>
 	<artifactId>dm_alm</artifactId>
-	<version>4.4.00</version>
+	<version>4.5.00</version>
 	<packaging>pom</packaging>
 	<name>dm_alm</name>
 

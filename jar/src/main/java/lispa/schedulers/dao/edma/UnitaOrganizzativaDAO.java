@@ -14,6 +14,8 @@ import lispa.schedulers.queryimplementation.fonte.edma.EdmaDmAlmUnitaOrganizzati
 import lispa.schedulers.queryimplementation.staging.edma.QStgUnitaOrganizzative;
 import lispa.schedulers.queryimplementation.target.QDmalmStrutturaOrganizzativa;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.NumberUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -101,15 +103,15 @@ public class UnitaOrganizzativaDAO {
 										.get(qViewUnitaOrganizzative.dataDisattivazione)
 										.substring(0, 19)
 										: null,
-								row.get(qViewUnitaOrganizzative.note),
-								row.get(qViewUnitaOrganizzative.interno),
-								row.get(qViewUnitaOrganizzative.codResponsabile),
-								row.get(qViewUnitaOrganizzative.indirizzoEmail),
-								row.get(qViewUnitaOrganizzative.idTipologiaUfficio),
-								row.get(qViewUnitaOrganizzative.idGradoUfficio),
-								row.get(qViewUnitaOrganizzative.idSede),
+								StringUtils.getMaskedValue(row.get(qViewUnitaOrganizzative.note)),
+								NumberUtils.getMaskedValue(row.get(qViewUnitaOrganizzative.interno)),
+								StringUtils.getMaskedValue(row.get(qViewUnitaOrganizzative.codResponsabile)),
+								StringUtils.getMaskedValue(row.get(qViewUnitaOrganizzative.indirizzoEmail)),
+								NumberUtils.getMaskedValue(row.get(qViewUnitaOrganizzative.idTipologiaUfficio)),
+								NumberUtils.getMaskedValue(row.get(qViewUnitaOrganizzative.idGradoUfficio)),
+								StringUtils.getMaskedValue(row.get(qViewUnitaOrganizzative.idSede)),
 								row.get(qViewUnitaOrganizzative.codSuperiore),
-								row.get(qViewUnitaOrganizzative.codEnte),
+								StringUtils.getMaskedValue(row.get(qViewUnitaOrganizzative.codEnte)),
 								row.get(qViewUnitaOrganizzative.codVisibilita),
 								null,
 								DataEsecuzione.getInstance()

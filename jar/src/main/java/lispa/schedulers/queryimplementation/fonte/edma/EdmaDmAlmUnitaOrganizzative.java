@@ -44,15 +44,15 @@ public class EdmaDmAlmUnitaOrganizzative extends com.mysema.query.sql.Relational
 
     public final StringPath id = createString("ID");
 
-    public final StringPath idGradoUfficio = createString("ID_GRADO_UFFICIO");
+    public final NumberPath<Integer> idGradoUfficio = createNumber("ID_GRADO_UFFICIO", Integer.class);
 
     public final StringPath idSede = createString("ID_SEDE");
 
-    public final StringPath idTipologiaUfficio = createString("ID_TIPOLOGIA_UFFICIO");
+    public final NumberPath<Integer> idTipologiaUfficio = createNumber("ID_TIPOLOGIA_UFFICIO", Integer.class);
 
     public final StringPath indirizzoEmail = createString("INDIRIZZO_EMAIL");
 
-    public final StringPath interno = createString("INTERNO");
+    public final NumberPath<Integer> interno = createNumber("INTERNO", Integer.class);
 
     public final StringPath note = createString("NOTE");
 

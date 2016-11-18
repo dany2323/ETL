@@ -131,7 +131,7 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 			if (uoFK07 == null) {
 				uoFK07 = new Integer(0);
 				codice07 = "Non presente";
-				descrizione01 = "Non presente";
+				descrizione07 = "Non presente";
 			}
 			if (uoFK08 == null) {
 				uoFK08 = new Integer(0);

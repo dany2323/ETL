@@ -23,6 +23,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.oreste.OresteDmAlmSottosistemi;
 import lispa.schedulers.queryimplementation.staging.oreste.QStgSottosistemi;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 public class SottosistemiDAO
 {
@@ -83,7 +84,7 @@ public class SottosistemiDAO
 												row.get(viewSottosistemi.descrizioneSottosistema),
 												row.get(viewSottosistemi.sottosistemaAnnullato),
 												row.get(viewSottosistemi.dfvSottosistemaAnnullato),
-												row.get(viewSottosistemi.edmaRespoSottosistema),
+												StringUtils.getMaskedValue(row.get(viewSottosistemi.edmaRespoSottosistema)),
 												row.get(viewSottosistemi.clasfBaseDatiEtl),
 												row.get(viewSottosistemi.clasfBaseDatiLettura),
 												row.get(viewSottosistemi.clasfBaseDatiScrittura),

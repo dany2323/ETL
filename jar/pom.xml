@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>it.lispa.staff</groupId>
 		<artifactId>dm_alm</artifactId>
-		<version>4.4.00</version>
+		<version>4.5.00</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -141,7 +141,7 @@
 						</goals>
 						<configuration>
 							<resourceBundles>
-								<resourceBundle>it.lispa.staff:properties:4.4.00</resourceBundle>
+								<resourceBundle>it.lispa.staff:properties:${project.parent.version}</resourceBundle>
 							</resourceBundles>
 						</configuration>
 					</execution>

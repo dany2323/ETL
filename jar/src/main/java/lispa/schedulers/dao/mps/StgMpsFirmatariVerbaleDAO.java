@@ -16,6 +16,8 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.mps.QDmalmStgMpsFirmatariVerbale;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MpsUtils;
+import lispa.schedulers.utils.NumberUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -127,22 +129,15 @@ public class StgMpsFirmatariVerbaleDAO {
 										stgMpsFirmatariVerbale.dataFirma,
 										stgMpsFirmatariVerbale.idEnte,
 										stgMpsFirmatariVerbale.ente)
-								.values(row
-										.get(mapping
-												.get("BO_FIRMATARI_VERBALE.IDVERBALEVAIDAZIONE")),
-										row.get(mapping
-												.get("BO_FIRMATARI_VERBALE.IDUTENTE")),
-										row.get(mapping
-												.get("Firmatario Verbale")),
-										row.get(mapping
-												.get("Tipologia responsabile")),
+								.values(row.get(mapping.get("BO_FIRMATARI_VERBALE.IDVERBALEVAIDAZIONE")),
+										NumberUtils.getMaskedValue(row.get(mapping.get("BO_FIRMATARI_VERBALE.IDUTENTE"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Firmatario Verbale"))),
+										row.get(mapping.get("Tipologia responsabile")),
 										row.get(mapping.get("Ordine Firma")),
 										row.get(mapping.get("Firmato")),
-										DateUtils.stringToTimestamp(row
-												.get(mapping.get("Data Firma"))),
-										row.get(mapping
-												.get("BO_FIRMATARI_VERBALE.IDENTE")),
-										row.get(mapping.get("Ente"))).execute();
+										DateUtils.stringToTimestamp(row.get(mapping.get("Data Firma"))),
+										NumberUtils.getMaskedValue(row.get(mapping.get("BO_FIRMATARI_VERBALE.IDENTE"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Ente")))).execute();
 					}
 
 					connection.commit();
