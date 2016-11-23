@@ -95,9 +95,10 @@ public class DmAlmFillStaging {
 				 * popolamento dell’area di staging per queste due fonti
 				 * consiste sempre nella copia della situazione corrente.
 				 */
+				/*
 				oreste = new Thread(new OresteRunnable(logger,
 						dataEsecuzioneDeleted));
-
+				*/
 				/**
 				 * Per quanto riguarda invece le fonti SGR_CM, le fonti sono sia
 				 * di tipo tabellare che di tipo XML. La logica di popolamento
@@ -132,8 +133,8 @@ public class DmAlmFillStaging {
 					return;
 				}
 
-				oreste.start();
-				oreste.join();
+				//oreste.start();
+				//oreste.join();
 
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
