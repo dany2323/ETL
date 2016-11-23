@@ -192,7 +192,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			connection.setAutoCommit(false);
 			
 			String queryMaxFieliera = "select max(ID_FILIERA) as MAX_ID from DMALM_TEMPLATE_SVILUPPO";
-			ps = connection.prepareStatement(queryMaxFieliera);
+			ps = connection.prepareStatement(queryMaxFieliera,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			rs = ps.executeQuery();
 			rs.first();
 			Integer idFiliera = rs.getInt("MAX_ID");
@@ -498,7 +498,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 		String queryMaxFieliera = "select ID_PROJECT from DMALM_PROJECT where DMALM_PROJECT_PK="+dmalmProjectFk02;
 		ConnectionManager cm = ConnectionManager.getInstance();
 		Connection connection = cm.getConnectionOracle();
-		PreparedStatement ps = connection.prepareStatement(queryMaxFieliera);
+		PreparedStatement ps = connection.prepareStatement(queryMaxFieliera,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		ResultSet rs = ps.executeQuery();
 		
 		if(!rs.next()){
