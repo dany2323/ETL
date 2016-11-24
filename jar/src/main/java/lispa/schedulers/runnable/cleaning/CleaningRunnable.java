@@ -18,34 +18,33 @@ public class CleaningRunnable implements Runnable {
 
 	public void launcher(Logger logger, Timestamp date) {
 
-		Thread t1 = new Thread(new CheckClassificatoriRunnable(logger, date));
-		Thread t2 = new Thread(new CheckAmbienteTecnologicoRunnable(logger,
-				date));
-		Thread t3 = new Thread(new CheckFunzionalitaRunnable(logger, date));
-		Thread t4 = new Thread(new CheckModuliRunnable(logger, date));
-		Thread t5 = new Thread(new CheckProdottiRunnable(logger, date));
-		Thread t6 = new Thread(new CheckSottosistemiRunnable(logger, date));
+		//Thread t1 = new Thread(new CheckClassificatoriRunnable(logger, date)); ORESTE
+		//Thread t2 = new Thread(new CheckAmbienteTecnologicoRunnable(logger,date)); ORESTE
+		//Thread t3 = new Thread(new CheckFunzionalitaRunnable(logger, date)); ORESTE
+		//Thread t4 = new Thread(new CheckModuliRunnable(logger, date)); ORESTE
+		//Thread t5 = new Thread(new CheckProdottiRunnable(logger, date)); ORESTE
+		//Thread t6 = new Thread(new CheckSottosistemiRunnable(logger, date)); ORESTE
 		Thread t7 = new Thread(new CheckSIREProjectRunnable(logger, date));
 		Thread t8 = new Thread(new CheckSISSProjectRunnable(logger, date));
 
 		try {
-			t1.start();
-			t1.join();
+			//t1.start();
+			//t1.join();
 
-			t2.start();
-			t2.join();
+			//t2.start();
+			//t2.join();
 
-			t3.start();
-			t3.join();
+			//t3.start();
+			//t3.join();
 
-			t4.start();
-			t4.join();
+			//t4.start();
+			//t4.join();
 
-			t5.start();
-			t5.join();
+			//t5.start();
+			//t5.join();
 
-			t6.start();
-			t6.join();
+			//t6.start();
+			//t6.join();
 
 			t7.start();
 			t7.join();

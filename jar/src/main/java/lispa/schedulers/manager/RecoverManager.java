@@ -197,7 +197,7 @@ public class RecoverManager {
 
 			// cancella tutto il contenuto delle tabelle target
 			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.DELETE_TARGET_TABLES, separator);
+					DmAlmConstants.DELETE_TARGET_TABLES, separator); //TODO 
 
 			// inserisce il contenuto delle tabelle di backup nelle tabelle
 			// target
@@ -378,6 +378,7 @@ public class RecoverManager {
 			UnitaOrganizzativaDAO.recoverUO();
 
 			// ORESTE
+			/*
 			logger.debug("START recover Oreste");
 			AmbienteTecnologicoDAO.recoverAmbienteTecnologico();
 			ProdottiArchitettureDAO.recoverProdottiArchitetture();
@@ -385,7 +386,7 @@ public class RecoverManager {
 			ModuliDAO.recoverModuli();
 			FunzionalitaDAO.recoverFunzionalita();
 			ClassificatoriDAO.recoverClassificatori();
-
+			*/
 			// ELETTRA
 			logger.debug("START recover Elettra");
 			StgElUnitaOrganizzativeDAO.recoverElUnitaOrganizzativa();

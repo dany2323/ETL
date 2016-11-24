@@ -26,7 +26,7 @@ public class DmAlmCheckLinkSferaSgrCmElettra {
 			// ELETTRA/SGRCM
 			if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
 				// Prodotto Oreste
-				CheckLinkProjectSgrCmProdottoFacade.execute(dataEsecuzione);
+				CheckLinkProjectSgrCmProdottoFacade.execute(dataEsecuzione); //TODO non ho commentato ancora nulla
 				// ProdottiArchitetture Elettra
 				CheckLinkProjectSgrCmProdottiArchFacade.execute(dataEsecuzione);
 			}
