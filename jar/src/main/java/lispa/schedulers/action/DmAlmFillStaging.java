@@ -82,9 +82,12 @@ public class DmAlmFillStaging {
 				 * staging senza la necessità di applicare alcuna logica
 				 * applicativa.
 				 */
+				// Commento per DM_ALM-228
+				/*
 				edma = new Thread(new EdmaRunnable(logger,
 						dataEsecuzioneDeleted));
-
+				*/
+				
 				// ORESTE
 				/**
 				 * La stessa cosa avviene per le tabelle fonte in ORESTE, ovvero
@@ -95,6 +98,7 @@ public class DmAlmFillStaging {
 				 * popolamento dell’area di staging per queste due fonti
 				 * consiste sempre nella copia della situazione corrente.
 				 */
+				// Commento per DM_ALM-228
 				/*
 				oreste = new Thread(new OresteRunnable(logger,
 						dataEsecuzioneDeleted));
@@ -123,8 +127,8 @@ public class DmAlmFillStaging {
 				siss = new Thread(new SGRCMSissRunnable(logger,
 						dataEsecuzioneDeleted));
 
-				edma.start();
-				edma.join();
+				//edma.start();
+				//edma.join();
 
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
