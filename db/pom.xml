@@ -3,7 +3,7 @@
  <parent>
 		<groupId>it.lispa.staff</groupId>
 		<artifactId>dm_alm</artifactId>
-		<version>4.5.00</version>
+		<version>4.6.00</version>
   </parent>
   
   <artifactId>db</artifactId>

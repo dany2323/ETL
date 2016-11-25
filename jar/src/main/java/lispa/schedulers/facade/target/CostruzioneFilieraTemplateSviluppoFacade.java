@@ -153,27 +153,27 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 		ResultSet rs = null;
 
 		
-		String srqsQuery = "select * from DMALM_PROGETTO_SVILUPPO_SVIL"
+		String srqsQuery = "select * from DMALM_PROGETTO_SVILUPPO_SVIL "
 				+ "where ID_REPOSITORY || URI_PROGETTO_SVILUPPO_SVIL not in "
-				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO);";
-		String relQuery = "select * from DMALM_RELEASE_DI_PROGETTO"
+				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
+		String relQuery = "select * from DMALM_RELEASE_DI_PROGETTO "
 				+ "where ID_REPOSITORY || URI_RELEASE_DI_PROGETTO not in "
-				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO);";
-		String smanQuery = "select * from DMALM_MANUTENZIONE"
+				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
+		String smanQuery = "select * from DMALM_MANUTENZIONE "
 				+ "where ID_REPOSITORY || URI_MANUTENZIONE not in "
-				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO);";
-		String anomaliaQuery = "select * from DMALM_ANOMALIA_PRODOTTO"
+				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
+		String anomaliaQuery = "select * from DMALM_ANOMALIA_PRODOTTO "
 				+ "where ID_REPOSITORY || URI_ANOMALIA_PRODOTTO not in "
-				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO);";
-		String taskQuery = "select * from DMALM_TASK"
+				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
+		String taskQuery = "select * from DMALM_TASK "
 				+ "where ID_REPOSITORY || URI_TASK not in "
-				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO);";
-		String testQuery = "select * from DMALM_TESTCASE"
+				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
+		String testQuery = "select * from DMALM_TESTCASE "
 				+ "where ID_REPOSITORY || URI_TESTCASE not in "
-				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO);";
-		String defectQuery = "select * from DMALM_DIFETTO_PRODOTTO"
+				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
+		String defectQuery = "select * from DMALM_DIFETTO_PRODOTTO "
 				+ "where ID_REPOSITORY || URI_DIFETTO_PRODOTTO not in "
-				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO);";
+				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
 
 		
 		List<DmalmProgettoSviluppoSvil> resultListSrqs = new LinkedList<DmalmProgettoSviluppoSvil>();
@@ -197,7 +197,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			rs.first();
 			Integer idFiliera = rs.getInt("MAX_ID");
 			
-
+			logger.debug("Eseguto la seguente query: "+srqsQuery);
 			ps = connection.prepareStatement(srqsQuery);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -210,6 +210,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				resultListSrqs.add(sqrs);
 			}
 			
+			logger.debug("Eseguto la seguente query: "+relQuery);
 			ps = connection.prepareStatement(relQuery);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -222,6 +223,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				resultListRelease.add(release);
 			}
 			
+			logger.debug("Eseguto la seguente query: "+smanQuery);
 			ps = connection.prepareStatement(smanQuery);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -234,6 +236,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				resultListManutenzione.add(man);
 			}
 			
+			logger.debug("Eseguto la seguente query: "+anomaliaQuery);
 			ps = connection.prepareStatement(anomaliaQuery);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -246,6 +249,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				resultListAnomalia.add(anomalia);
 			}
 			
+			logger.debug("Eseguto la seguente query: "+taskQuery);
 			ps = connection.prepareStatement(taskQuery);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -258,6 +262,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				resultListTask.add(task);
 			}
 			
+			logger.debug("Eseguto la seguente query: "+testQuery);
 			ps = connection.prepareStatement(testQuery);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -270,6 +275,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				resultListTestCase.add(test);
 			}
 			
+			logger.debug("Eseguto la seguente query: "+defectQuery);
 			ps = connection.prepareStatement(defectQuery);
 			rs = ps.executeQuery();
 			while (rs.next()) {
