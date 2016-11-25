@@ -82,9 +82,12 @@ public class DmAlmFillStaging {
 				 * staging senza la necessità di applicare alcuna logica
 				 * applicativa.
 				 */
+				// Commento per DM_ALM-228
+				/*
 				edma = new Thread(new EdmaRunnable(logger,
 						dataEsecuzioneDeleted));
-
+				*/
+				
 				// ORESTE
 				/**
 				 * La stessa cosa avviene per le tabelle fonte in ORESTE, ovvero
@@ -95,9 +98,11 @@ public class DmAlmFillStaging {
 				 * popolamento dell’area di staging per queste due fonti
 				 * consiste sempre nella copia della situazione corrente.
 				 */
+				// Commento per DM_ALM-228
+				/*
 				oreste = new Thread(new OresteRunnable(logger,
 						dataEsecuzioneDeleted));
-
+				*/
 				/**
 				 * Per quanto riguarda invece le fonti SGR_CM, le fonti sono sia
 				 * di tipo tabellare che di tipo XML. La logica di popolamento
@@ -122,8 +127,8 @@ public class DmAlmFillStaging {
 				siss = new Thread(new SGRCMSissRunnable(logger,
 						dataEsecuzioneDeleted));
 
-				edma.start();
-				edma.join();
+				//edma.start();
+				//edma.join();
 
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
@@ -132,8 +137,8 @@ public class DmAlmFillStaging {
 					return;
 				}
 
-				oreste.start();
-				oreste.join();
+				//oreste.start();
+				//oreste.join();
 
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
@@ -143,7 +148,6 @@ public class DmAlmFillStaging {
 				}
 
 				// Gestione Elettra
-				logger.info("Inizio lettura nuova fonte Elettra");
 				StagingElettraFacade.executeStaging(dataEsecuzioneDeleted);
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
@@ -151,7 +155,6 @@ public class DmAlmFillStaging {
 					RecoverManager.getInstance().startRecoverStaging();
 					return;
 				}
-				logger.info("Fine lettura nuova fonte Elettra");
 
 				// SGR_CM parte dolo dopo il completamento di EDMA e ORESTE
 				siss.start();

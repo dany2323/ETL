@@ -1274,7 +1274,7 @@ public class LinkedWorkitemsDAO {
 	}
 	
 	public static List<DmalmLinkedWorkitems> getStartWorkitemsTemplateSviluppo(
-			Timestamp dataInizioFiliera) throws DAOException, SQLException {
+			Timestamp dataInizioFiliera, String tipoWIPadre, String tipoWIFiglio) throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -1293,8 +1293,8 @@ public class LinkedWorkitemsDAO {
 					.join(progettoSviluppoSvil)
 					.on(progettoSviluppoSvil.cdProgSvilS.eq(link.codiceWiPadre)
 						.and(progettoSviluppoSvil.idRepository.eq(link.idRepositoryPadre)))
-					.where(link.tipoWiPadre.eq("srqs"))
-					.where(link.tipoWiFiglio.eq("sman"))
+					.where(link.tipoWiPadre.eq(tipoWIPadre))
+					.where(link.tipoWiFiglio.eq(tipoWIFiglio))
 					.where(link.ruolo.isNotNull())
 					.where(progettoSviluppoSvil.rankStatoProgSvilS.eq(new Double("1")))
 					.where(progettoSviluppoSvil.dtCreazioneProgSvilS.goe(dataInizioFiliera))
@@ -1316,7 +1316,7 @@ public class LinkedWorkitemsDAO {
 	}
 	
 	public static List<DmalmLinkedWorkitems> getNextWorkitemsTemplateSviluppo(
-			DmalmLinkedWorkitems linkedWorkitem) throws DAOException,
+			DmalmLinkedWorkitems linkedWorkitem, Integer fkWiFiglio) throws DAOException,
 			SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -1333,9 +1333,9 @@ public class LinkedWorkitemsDAO {
 
 			resultList = query
 					.from(link)
-					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
-					.where(link.tipoWiPadre.in("sman", "release", "testcase", "task", "anomalia")
-					.and(link.tipoWiFiglio.in("release", "testcase", "task", "anomalia", "defect")))
+					.where(link.fkWiPadre.eq(fkWiFiglio))
+					.where(link.tipoWiPadre.in("release", "testcase", "task", "anomalia")
+					.and(link.tipoWiFiglio.in("testcase", "task", "anomalia", "defect")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
 					.list(Projections.bean(DmalmLinkedWorkitems.class,

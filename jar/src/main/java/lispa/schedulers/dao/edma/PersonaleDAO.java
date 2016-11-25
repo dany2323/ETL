@@ -23,6 +23,8 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.queryimplementation.fonte.edma.EdmaDmAlmPersonale;
 import lispa.schedulers.queryimplementation.staging.edma.QStgPersonale;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.NumberUtils;
+import lispa.schedulers.utils.StringUtils;
 
 public class PersonaleDAO
 {
@@ -79,24 +81,24 @@ public class PersonaleDAO
 						)
 						.values(
 								row.get(qViewPersonale.id), 
-								row.get(qViewPersonale.codice),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.codice)),
 								DateUtils.dateToString(row.get(qViewPersonale.dataInizioValidita), DmAlmConstants.DATE_FORMAT_DB),
 								DateUtils.dateToString(row.get(qViewPersonale.dataFineValidita), DmAlmConstants.DATE_FORMAT_DB),
 								DateUtils.dateToString(row.get(qViewPersonale.dataAttivazione), DmAlmConstants.DATE_FORMAT_DB),
 								DateUtils.dateToString(row.get(qViewPersonale.dataDisattivazione), DmAlmConstants.DATE_FORMAT_DB),
-								row.get(qViewPersonale.note),
-								row.get(qViewPersonale.interno),
-								row.get(qViewPersonale.codResponsabile),
-								row.get(qViewPersonale.indirizzoEmail),
-								row.get(qViewPersonale.nome),
-								row.get(qViewPersonale.cognome),
-								row.get(qViewPersonale.matricola),
-								row.get(qViewPersonale.codiceFiscale),
-								row.get(qViewPersonale.identficatore),
-								row.get(qViewPersonale.idGradoUfficio),
-								row.get(qViewPersonale.idSede),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.note)),
+								NumberUtils.getMaskedValue(row.get(qViewPersonale.interno)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.codResponsabile)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.indirizzoEmail)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.nome)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.cognome)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.matricola)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.codiceFiscale)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.identficatore)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.idGradoUfficio)),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.idSede)),
 								row.get(qViewPersonale.codSuperiore),
-								row.get(qViewPersonale.codEnte),
+								StringUtils.getMaskedValue(row.get(qViewPersonale.codEnte)),
 								row.get(qViewPersonale.codVisibilita),
 								null,
 								DataEsecuzione.getInstance().getDataEsecuzione(),

@@ -134,16 +134,16 @@ public class ElettraProdottiArchitettureFacade {
 			//DMALM-216 associazione project Unità Organizzativa Flat
 			//ricarica il valore della Fk ad ogni esecuzione
 			
-				QueryManager qm = QueryManager.getInstance();
+			QueryManager qm = QueryManager.getInstance();
 
-				logger.info("INIZIO Update Prodotti Architetture UnitaOrganizzativaFlatFk");
-				
-				qm.executeMultipleStatementsFromFile(
-						DmAlmConstants.M_UPDATE_EL_PROD_ARCH_UOFLATFK,
-						DmAlmConstants.M_SEPARATOR);
-				
-				logger.info("FINE Update Prodotti Architetture UnitaOrganizzativaFlatFk");
+			logger.info("INIZIO Update Prodotti Architetture UnitaOrganizzativaFlatFk");
 			
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_EL_PROD_ARCH_UOFLATFK,
+					DmAlmConstants.M_SEPARATOR);
+			
+			logger.info("FINE Update Prodotti Architetture UnitaOrganizzativaFlatFk");
+		
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(prodottiArchitettureTmp));

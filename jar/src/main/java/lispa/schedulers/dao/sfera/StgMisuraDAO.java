@@ -273,9 +273,9 @@ public class StgMisuraDAO {
 									row.get(mapping.get("Adj-Min")),
 									row.get(mapping.get("Adj-Ufp")),
 									row.get(mapping.get("Ambito")),
-									row.get(mapping.get("APP_Note")),
-									row.get(mapping
-											.get("APP-ATT:ACCOUNT_AUTORE_ULTIMO_AGGIORN")),
+									StringUtils.getMaskedValue(row.get(mapping.get("APP_Note"))),
+									StringUtils.getMaskedValue(row.get(mapping
+											.get("APP-ATT:ACCOUNT_AUTORE_ULTIMO_AGGIORN"))),
 									row.get(mapping
 											.get("APP-ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI")),
 									row.get(mapping
@@ -284,10 +284,10 @@ public class StgMisuraDAO {
 											.get("APP-ATT:COD_DIREZIONE_DEMAND")),
 									row.get(mapping
 											.get("APP-ATT:COD_FLUSSI_IO_ASM")),
-									row.get(mapping
-											.get("APP-ATT:CODICE_AMBITO_MANUTENZIONE_2012_ASM")),
-									row.get(mapping
-											.get("APP-ATT:CODICE_AMBITO_MANUTENZIONE_2014_2015_ASM")),
+									StringUtils.getMaskedValue(row.get(mapping
+											.get("APP-ATT:CODICE_AMBITO_MANUTENZIONE_2012_ASM"))),
+									StringUtils.getMaskedValue(row.get(mapping
+											.get("APP-ATT:CODICE_AMBITO_MANUTENZIONE_2014_2015_ASM"))),
 									row.get(mapping
 											.get("APP-ATT:DATA_FINE_VALIDITA_ASM")),
 									row.get(mapping
@@ -310,8 +310,8 @@ public class StgMisuraDAO {
 											.get("APP-ATT:FLAG_ASM_SERVIZIO_COMUNE")),
 									row.get(mapping
 											.get("APP-ATT:INDICATORE_ALM_PER_VALIDAZIONE_ASM")),
-									row.get(mapping
-											.get("APP-ATT:NOME_AUTORE_ULTIMO_AGGIORN")),
+									StringUtils.getMaskedValue(row.get(mapping
+											.get("APP-ATT:NOME_AUTORE_ULTIMO_AGGIORN"))),
 									row.get(mapping.get("APP-CLS:")),
 									row.get(mapping.get("Applicazione")),
 									row.get(mapping.get("Approccio")),
@@ -399,7 +399,7 @@ public class StgMisuraDAO {
 									row.get(mapping.get("LDG_NUM")),
 									row.get(mapping.get("LDG_UFP")),
 									row.get(mapping.get("Link documentale")),
-									row.get(mapping.get("MEA_Note")),
+									StringUtils.getMaskedValue(row.get(mapping.get("MEA_Note"))),
 									row.get(mapping.get("Metodo")),
 									row.get(mapping.get("MF_NUM")),
 									row.get(mapping.get("MF_UFP")),
@@ -410,7 +410,7 @@ public class StgMisuraDAO {
 									row.get(mapping.get("MP_NUM")),
 									row.get(mapping.get("MP_UFP")),
 									row.get(mapping.get("Numero utenti")),
-									row.get(mapping.get("Permissions")),
+									StringUtils.getMaskedValue(row.get(mapping.get("Permissions"))),
 									row.get(mapping.get("PF_NUM")),
 									row.get(mapping.get("PF_UFP")),
 									row.get(mapping.get("POST.VER.ADD/CFP")),
@@ -421,15 +421,15 @@ public class StgMisuraDAO {
 									row.get(mapping.get("PRE.VER.CHG")),
 									row.get(mapping.get("PRE.VER.DEL")),
 									row.get(mapping.get("PRE.VER.FP")),
-									row.get(mapping.get("PRJ_Note")),
+									StringUtils.getMaskedValue(row.get(mapping.get("PRJ_Note"))),
 									row.get(mapping
 											.get("PRJ-ATT:A_DISPOSIZIONE_01")),
 									row.get(mapping
 											.get("PRJ-ATT:A_DISPOSIZIONE-02")),
 									row.get(mapping
 											.get("PRJ-ATT:AUDIT_INDICE_VERIFICABILITA")),
-									row.get(mapping
-											.get("PRJ-ATT:AUDIT_MONITORE")),
+									StringUtils.getMaskedValue(row.get(mapping
+											.get("PRJ-ATT:AUDIT_MONITORE"))),
 									row.get(mapping.get("PRJ-ATT:COD_ RDI")),
 									row.get(mapping
 											.get("PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO")),
@@ -459,10 +459,10 @@ public class StgMisuraDAO {
 											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_FP_GIS")),
 									row.get(mapping
 											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_FP_MWARE")),
-									row.get(mapping
-											.get("PRJ-ATT:FORNITORE_MPP")),
-									row.get(mapping
-											.get("PRJ-ATT:FORNITORE_SVILUPPO_MEV ")),
+									StringUtils.getMaskedValue(row.get(mapping
+											.get("PRJ-ATT:FORNITORE_MPP"))),
+									StringUtils.getMaskedValue(row.get(mapping
+											.get("PRJ-ATT:FORNITORE_SVILUPPO_MEV "))),
 									row.get(mapping
 											.get("PRJ-ATT:IMPORTO_A_CONSUNTIVO")),
 									row.get(mapping
@@ -480,7 +480,7 @@ public class StgMisuraDAO {
 									row.get(mapping.get("PRJ-CLS:")),
 									row.get(mapping.get("Progetto")),
 									row.get(mapping.get("Proprietà legale")),
-									row.get(mapping.get("Responsabile")),
+									StringUtils.getMaskedValue(row.get(mapping.get("Responsabile"))),
 									row.get(mapping.get("Scopo")),
 									row.get(mapping.get("Staff medio")),
 									row.get(mapping.get("Stato misura (*)")),
@@ -495,7 +495,7 @@ public class StgMisuraDAO {
 									row.get(mapping.get("UGO_UFP")),
 									row.get(mapping.get("UGP_NUM")),
 									row.get(mapping.get("UGP_UFP")),
-									row.get(mapping.get("Utente misuratore")),
+									StringUtils.getMaskedValue(row.get(mapping.get("Utente misuratore"))),
 									row.get(mapping.get("Utilizzata")),
 									row.get(mapping.get("VAF predefinito")),
 									row.get(mapping.get("VER.DELTA")),

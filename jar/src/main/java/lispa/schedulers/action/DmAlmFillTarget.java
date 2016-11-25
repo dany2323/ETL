@@ -505,42 +505,42 @@ public class DmAlmFillTarget {
 				}
 
 				// ORESTE
-
+				/*
 				logger.info("START ClassificatoriFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_CLASSIFICATORI)) {
-					ClassificatoriFacade.execute(dataEsecuzione);
+					ClassificatoriFacade.execute(dataEsecuzione); //Modifica all'interno di un target db Oreste
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START ProdottoFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_PRODOTTO)) {
-					ProdottoFacade.execute(dataEsecuzione);
+					ProdottoFacade.execute(dataEsecuzione); //Modifica all'interno di un target db Oreste
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START SottosistemaFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_SOTTOSISTEMA)) {
 					SottosistemaFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START ModuloFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_MODULO)) {
 					ModuloFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START FunzionalitaFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_FUNZIONALITA)) {
 					FunzionalitaFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START AmbienteTecnologicoFacade.execute "
 						+ new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_AMBIENTETECNOLOGICO)) {
@@ -548,7 +548,7 @@ public class DmAlmFillTarget {
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				*/
 				// logger.info("START RelClassificatoriOresteFacade.execute "
 				// + new Date());
 				// if

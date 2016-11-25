@@ -44,11 +44,11 @@ public class DmalmStrutturaOrganizzativa {
 
     private Integer idEdma;
 
-    private Integer idGradoUfficio;
-
+    private Integer idGradoUfficio;  //
+    
     private Integer idSede;
 
-    private Integer idTipologiaUfficio;
+    private Integer idTipologiaUfficio; //
 
     private String note;
     
@@ -221,8 +221,8 @@ public class DmalmStrutturaOrganizzativa {
         return idGradoUfficio;
     }
 
-    public void setIdGradoUfficio(Integer idGradoUfficio) {
-        this.idGradoUfficio = idGradoUfficio;
+    public void setIdGradoUfficio(Integer i) {
+        this.idGradoUfficio = i;
     }
 
     public Integer getIdSede() {

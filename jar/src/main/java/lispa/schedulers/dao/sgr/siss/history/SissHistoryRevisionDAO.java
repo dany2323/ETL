@@ -15,6 +15,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -169,7 +170,7 @@ public class SissHistoryRevisionDAO {
 							stgRevisions.dataCaricamento
 							).values(								
 							row.get(fonteRevisions.cPk),
-							row.get(fonteRevisions.cAuthor),
+							StringUtils.getMaskedValue(row.get(fonteRevisions.cAuthor)),
 							row.get(fonteRevisions.cCreated),
 							row.get(fonteRevisions.cDeleted),
 							row.get(fonteRevisions.cInternalcommit),

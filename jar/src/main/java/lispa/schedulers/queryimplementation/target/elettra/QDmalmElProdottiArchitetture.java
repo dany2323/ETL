@@ -40,6 +40,7 @@ public class QDmalmElProdottiArchitetture extends com.mysema.query.sql.Relationa
 	public final DateTimePath<java.sql.Timestamp> dataInizioValidita = createDateTime("DT_INIZIO_VALIDITA", java.sql.Timestamp.class);
 	public final DateTimePath<java.sql.Timestamp> dataFineValidita = createDateTime("DT_FINE_VALIDITA", java.sql.Timestamp.class);
 	public final NumberPath<Integer> unitaOrgFlatFk = createNumber("DMALM_UNITAORG_FLAT_FK_04", Integer.class);
+
 	
 	//Aggiunto per DM_ALM-224
 	//TODO creare campi su tabella target e riempire i nomi

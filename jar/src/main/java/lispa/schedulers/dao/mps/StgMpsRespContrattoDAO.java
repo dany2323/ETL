@@ -16,6 +16,8 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.mps.QDmalmStgMpsRespContratto;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MpsUtils;
+import lispa.schedulers.utils.NumberUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -128,23 +130,16 @@ public class StgMpsRespContrattoDAO {
 										stgMpsRespContratto.dataFirma,
 										stgMpsRespContratto.idEnte,
 										stgMpsRespContratto.ente)
-								.values(row
-										.get(mapping
-												.get("BO_RESPONSABILI_CONTRATTO.IDCONTRATTO")),
-										row.get(mapping
-												.get("BO_RESPONSABILI_CONTRATTO.IDUTENTE")),
-										row.get(mapping.get("Responsabile")),
-										row.get(mapping
-												.get("Tipologia di responsabile")),
+								.values(row.get(mapping.get("BO_RESPONSABILI_CONTRATTO.IDCONTRATTO")),
+										NumberUtils.getMaskedValue(row.get(mapping.get("BO_RESPONSABILI_CONTRATTO.IDUTENTE"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Responsabile"))),
+										row.get(mapping.get("Tipologia di responsabile")),
 										row.get(mapping.get("Firmatario")),
 										row.get(mapping.get("Ordine di firma")),
 										row.get(mapping.get("Firmato")),
-										DateUtils.stringToTimestamp(row
-												.get(mapping
-														.get("Data di firma"))),
-										row.get(mapping
-												.get("BO_RESPONSABILI_CONTRATTO.IDENTE")),
-										row.get(mapping.get("Ente"))).execute();
+										DateUtils.stringToTimestamp(row.get(mapping.get("Data di firma"))),
+										NumberUtils.getMaskedValue(row.get(mapping.get("BO_RESPONSABILI_CONTRATTO.IDENTE"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Ente")))).execute();
 					}
 
 					connection.commit();
