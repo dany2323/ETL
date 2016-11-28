@@ -364,7 +364,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 						filiera.codiceProject,
 						filiera.ruolo,
 						filiera.dataCaricamento)
-				.values(0, 
+				.values(++idFiliera, 
 						1, 
 						1,
 						sman.getDmalmManutenzionePk(),
