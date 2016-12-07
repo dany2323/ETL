@@ -86,11 +86,10 @@ public class ElettraProdottiArchitettureDAO {
 				bean.setUnitaOrganizzativaFk(rs.getInt("UNITAORGANIZZATIVA_FK"));
 				bean.setPersonaleFk(rs.getInt("PERSONALE_FK"));
 				//modificato per DM_ALM-224
-				//TODO: riempire con nomi dei nuovi campi - modificare anche il file sql elettraprodottiarchitetture.sql
-				bean.setAmbitoTecnologico(rs.getString(""));
-				bean.setAmbitoManutenzioneDenom(rs.getString(""));
-				bean.setAmbitoManutenzioneCodice(rs.getString(""));
-				bean.setStato(rs.getString(""));
+				bean.setAmbitoTecnologico(rs.getString("AMBITO_TECNOLOGICO"));
+				bean.setAmbitoManutenzioneDenom(rs.getString("AMBITO_MANUTENZIONE_DENOM"));
+				bean.setAmbitoManutenzioneCodice(rs.getString("AMBITO_MANUTENZIONE_CODICE"));
+				bean.setStato(rs.getString("STATO_PRODOTTO"));
 				
 				
 				prodotti.add(bean);

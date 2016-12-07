@@ -103,6 +103,31 @@ public class ElettraProdottiArchitettureFacade {
 											prodotto.getAnnullato())) {
 								modificato = true;
 							}
+							//Modifica per DM_ALM-224
+							if (BeanUtils
+									.areDifferent(
+											row.get(qDmalmElProdottiArchitetture.ambitoTecnologico),
+											prodotto.getAmbitoTecnologico())) {
+								modificato = true;
+							}
+							if (BeanUtils
+									.areDifferent(
+											row.get(qDmalmElProdottiArchitetture.ambitoManutenzioneDenom),
+											prodotto.getAmbitoManutenzioneDenom())) {
+								modificato = true;
+							}
+							if (BeanUtils
+									.areDifferent(
+											row.get(qDmalmElProdottiArchitetture.ambitoManutenzioneCodice),
+											prodotto.getAmbitoManutenzioneCodice())) {
+								modificato = true;
+							}
+							if (BeanUtils
+									.areDifferent(
+											row.get(qDmalmElProdottiArchitetture.stato),
+											prodotto.getStato())) {
+								modificato = true;
+							}
 
 							if (modificato) {
 								righeModificate++;
