@@ -321,7 +321,8 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 						DataEsecuzione.getInstance().getDataEsecuzione())
 				.execute();
 			}
-			
+			connection.commit();
+
 			for(DmalmReleaseDiProgetto release: resultListRelease){
 				new SQLInsertClause(connection, dialect, filiera)
 				.columns(filiera.idFiliera,
@@ -363,7 +364,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 						filiera.codiceProject,
 						filiera.ruolo,
 						filiera.dataCaricamento)
-				.values(0, 
+				.values(++idFiliera, 
 						1, 
 						1,
 						sman.getDmalmManutenzionePk(),
@@ -506,14 +507,20 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 		Connection connection = cm.getConnectionOracle();
 		PreparedStatement ps = connection.prepareStatement(queryMaxFieliera,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		ResultSet rs = ps.executeQuery();
+		String codiceProgetto = "";
 		
 		if(!rs.next()){
 			logger.error("Non è stato trovato nessun ProjectId corrispondente all'ID: "+dmalmProjectFk02);
-			return "";
 		} else {
 			rs.first();
-			return rs.getString("ID_PROJECT");		
+			codiceProgetto = rs.getString("ID_PROJECT");		
 		}
+		
+		rs.close();
+		ps.close();
+		cm.closeConnection(connection);
+		
+		return codiceProgetto;
 	}
 
 	private static Integer gestisciLista(Integer idFiliera,
