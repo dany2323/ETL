@@ -37,7 +37,6 @@ public class QStgElProdotti extends com.mysema.query.sql.RelationalPathBase<StgE
 	public final DateTimePath<java.sql.Timestamp> dataCaricamento = createDateTime("DT_CARICAMENTO", java.sql.Timestamp.class);
 	
 	//modificato per DM_ALM-224
-	//TODO: creare campi su tabella staging e riempire con i nomi
 	public final StringPath ambitoTecnologico = createString("AMBITO_TECNOLOGICO");
 	public final StringPath ambitoManutenzioneDenom = createString("AMBITO_MANUTENZIONE_DENOM");
 	public final StringPath ambitoManutenzioneCodice = createString("AMBITO_MANUTENZIONE_CODICE");
