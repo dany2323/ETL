@@ -183,6 +183,7 @@ public final class DmAlmConstants {
 	public static final String M_UPDATE_PROJECT_UOFLATFK = "m_update_project_uoflatfk.sql";
 	public static final String M_UPDATE_EL_PROD_ARCH_UOFLATFK = "m_update_el_prod_arch_uoflatfk.sql";
 	public static final String M_UPDATE_ASM_UOFLATFK = "m_update_asm_uoflatfk.sql";
+	public static final String M_UPDATE_PERSONALE_UOFLATFK = "m_update_personale_uoflatfk.sql";
 	public static final String M_SEPARATOR = ";";
 	
 	

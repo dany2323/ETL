@@ -85,7 +85,7 @@ public class ProdottoDAO {
 				// bean.setDmalm_unitaorganizzativa_fk01(StrutturaOrganizzativaEdmaLispaDAO.getIdStrutturaOrganizzativaProdottoByCodice(rs.getString("AREA"))+"");
 				// bean.setDmalm_personale_fk02(PersonaleEdmaLispaDAO.getPersonaleEdmaLispaByCodice(rs.getString("RESPONSABILE_AREA"))+"");
 				bean.setDmalm_unitaorganizzativa_fk01(rs.getInt("AREA"));
-				bean.setDmalm_personale_fk02(rs.getString("RESPONSABILE_AREA"));
+				bean.setDmalm_personale_fk02(rs.getInt("RESPONSABILE_AREA"));
 
 				prodotti.add(bean);
 			}

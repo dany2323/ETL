@@ -9,15 +9,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import lispa.schedulers.bean.target.DmalmPersonale;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.target.QDmalmPersonale;
-import lispa.schedulers.utils.DateUtils;
-
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
@@ -27,6 +18,16 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+
+import lispa.schedulers.bean.target.DmalmPersonale;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.QDmalmPersonale;
+import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
+import lispa.schedulers.utils.DateUtils;
 
 public class PersonaleEdmaLispaDAO {
 
@@ -228,7 +229,9 @@ public class PersonaleEdmaLispaDAO {
 							qPersonale.interno, qPersonale.matricola,
 							qPersonale.nome, qPersonale.note,
 							qPersonale.dtFineValidita,
-							qPersonale.dtInizioValidita)
+							qPersonale.dtInizioValidita,
+							qPersonale.unitaOrganizzativaFk,
+							qPersonale.unitaOrganizzativaFlatFk)
 					.values(
 							personale.getCdEnte(),
 							personale.getCdPersonale(),
@@ -252,7 +255,9 @@ public class PersonaleEdmaLispaDAO {
 							personale.getInterno(), personale.getMatricola(),
 							personale.getNome(), personale.getNote(),
 							personale.getDtFineValiditaEdma(),
-							DateUtils.setDtInizioValidita1900()).execute();
+							DateUtils.setDtInizioValidita1900(),
+							0,
+							0).execute();
 
 			// connection.commit();
 
@@ -295,7 +300,9 @@ public class PersonaleEdmaLispaDAO {
 							qPersonale.interno, qPersonale.matricola,
 							qPersonale.nome, qPersonale.note,
 							qPersonale.dtFineValidita,
-							qPersonale.dtInizioValidita)
+							qPersonale.dtInizioValidita,
+							qPersonale.unitaOrganizzativaFk,
+							qPersonale.unitaOrganizzativaFlatFk)
 					.values(personale.getCdEnte(), personale.getCdPersonale(),
 							personale.getCdResponsabile(),
 							personale.getCdSuperiore(),
@@ -314,7 +321,9 @@ public class PersonaleEdmaLispaDAO {
 							personale.getIndirizzoEmail(),
 							personale.getInterno(), personale.getMatricola(),
 							personale.getNome(), personale.getNote(),
-							DateUtils.setDtFineValidita9999(), dataEsecuzione)
+							DateUtils.setDtFineValidita9999(), dataEsecuzione,
+							personale.getUnitaOrganizzativaFk(),
+							personale.getUnitaOrganizzativaFlatFk())
 					.execute();
 
 			connection.commit();
@@ -410,4 +419,81 @@ public class PersonaleEdmaLispaDAO {
 
 		return strutture.size() > 0 ? strutture.get(0) : 0;
 	}
+
+	public static List<Tuple> getAllPersonaleUnitaOrganizzativa(Timestamp dataEsecuzione) throws DAOException {
+		List<Tuple> newPersonaleList = new ArrayList<Tuple>();	
+	
+		ConnectionManager cm = null;
+		Connection connection = null;
+		
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+	
+			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+			SQLQuery query = new SQLQuery(connection, dialect);
+	
+			QDmalmPersonale qPersonale = QDmalmPersonale.dmalmPersonale;
+			QDmalmProdotto qProdotto = QDmalmProdotto.dmalmProdotto;
+			
+			// tutte le persone nuove o quelle per le quali la FK Unita
+			// Organizzativa è variata
+			
+			newPersonaleList = query
+					.from(qPersonale)
+					.join(qProdotto)
+					.on(qProdotto.dmalmPersonaleFk02.eq(qPersonale.dmalmPersonalePk))
+					.where(qPersonale.dmalmPersonalePk.ne(0))
+					.where(qPersonale.dtFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.where(qProdotto.dtFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.where(qPersonale.unitaOrganizzativaFk.ne(qProdotto.dmalmUnitaOrganizzativaFk01))
+					.distinct()
+					.list(qPersonale.cdPersonale, qProdotto.dmalmUnitaOrganizzativaFk01);
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+		
+		return newPersonaleList;
+	}
+
+	public static void updateFkUnitaOrganizzativa(DmalmPersonale personale) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			QDmalmPersonale qPersonale = QDmalmPersonale.dmalmPersonale;
+			connection.setAutoCommit(false);
+			
+			HSQLDBTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+			new SQLUpdateClause(connection, dialect, qPersonale)
+					.where(qPersonale.cdPersonale.eq(personale.getCdPersonale()))
+					.where(qPersonale.dtFineValidita.eq(DateUtils
+							.setDtFineValidita9999()))
+					.set(qPersonale.unitaOrganizzativaFk,
+							personale.getUnitaOrganizzativaFk())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+
 }
