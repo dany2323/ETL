@@ -28,7 +28,7 @@ public final class DmalmRegex {
 		public static final String REGEXNOMEMISURAST = "\\bST[1-3]-[0-9][0-9][0-9](#(.*)+)?$";
 		public static final String REGEXNOMEPROGETTOBAS = "\\b[a-zA-Z][0-9][0-9](#(.*)+)?$";
 		public static final String REGEXNOMEMISURABAS = "\\bBAS-[0-9][0-9][1-9](#(.*)+)?$";
-		public static final String REGEXCODRDI = "\\b(19|20)[0-9][0-9]33[0-9][0-9][0-9][0-9]$";
+		public static final String REGEXCODRDI = "\\b(19|20)[0-9][0-9][0-9][0-9][0-9][0-9]$";
 		
 		public static final String REGEXAPPROCCIO = "\\b(?i)standard\\b";
 		public static final String REGEXUTENTEMISURATORE = "\\b(?i)admin\\b";
