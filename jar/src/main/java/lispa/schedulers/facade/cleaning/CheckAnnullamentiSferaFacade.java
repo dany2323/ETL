@@ -87,12 +87,7 @@ public class CheckAnnullamentiSferaFacade {
 			 * 
 			 */
 			List<DmalmMisura> asmRemovedListStoricamente = getAsmAnnullateStoricamente(asmRemovedList);
-			List<DmalmMisura> asmRemovedListFisicamente = new ArrayList<DmalmMisura>();
-			for(DmalmMisura m : asmRemovedList) {
-				if (!containsMisura(m, asmRemovedListStoricamente)) {
-					asmRemovedListFisicamente.add(m);
-				}
-			}
+			List<DmalmMisura> asmRemovedListFisicamente = getAsmAnnullateFisicamente(asmRemovedList, asmRemovedListStoricamente);
 			
 			for(DmalmMisura m : asmRemovedListStoricamente) {
 				removeStoricamente(m);
@@ -519,6 +514,17 @@ public class CheckAnnullamentiSferaFacade {
 
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
+	}
+
+	private static List<DmalmMisura> getAsmAnnullateFisicamente(List<DmalmMisura> asmRemovedList,
+			List<DmalmMisura> asmRemovedListStoricamente) {
+		List<DmalmMisura> asmRemovedListFisicamente = new ArrayList<DmalmMisura>();
+		for(DmalmMisura m : asmRemovedList) {
+			if (!containsMisura(m, asmRemovedListStoricamente)) {
+				asmRemovedListFisicamente.add(m);
+			}
+		}
+		return asmRemovedListFisicamente;
 	}
 
 	private static void removeStoricamente(DmalmMisura m) throws DAOException {
