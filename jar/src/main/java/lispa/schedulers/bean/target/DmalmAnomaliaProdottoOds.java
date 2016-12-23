@@ -85,6 +85,17 @@ public class DmalmAnomaliaProdottoOds {
 	private String contestazione;
 
 	private String noteContestazione;
+	
+	//DM_ALM-223
+	private java.sql.Timestamp dtDisponibilita;
+
+	public java.sql.Timestamp getDtDisponibilita() {
+		return dtDisponibilita;
+	}
+
+	public void setDtDisponibilita(java.sql.Timestamp dtDisponibilita) {
+		this.dtDisponibilita = dtDisponibilita;
+	}
 
 	public String getUri() {
 		return uri;

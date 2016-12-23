@@ -106,6 +106,9 @@ public class QDmalmAnomaliaProdotto extends com.mysema.query.sql.RelationalPathB
     
     public final StringPath noteContestazione = createString("NOTE_CONTESTAZIONE");
     
+    //DM_ALM-223
+    public final DateTimePath<java.sql.Timestamp> dataDisponibilita = createDateTime("DATA_DISPONIBILITA", java.sql.Timestamp.class);
+    
     public QDmalmAnomaliaProdotto(String variable) {
         super(DmalmAnomaliaProdotto.class, forVariable(variable), "DMALM", "DMALM_ANOMALIA_PRODOTTO");
     }

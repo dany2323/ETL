@@ -93,6 +93,10 @@ public class QDmalmDifettoProdottoOds extends com.mysema.query.sql.RelationalPat
     
     public final NumberPath<Short> flagUltimaSituazione = createNumber("FL_ULTIMA_SITUAZIONE", Short.class);
     
+	//DM_ALM-223
+	public final DateTimePath<java.sql.Timestamp> dtDisponibilita = createDateTime(
+			"DATA_DISPONIBILITA", java.sql.Timestamp.class);
+	
     public QDmalmDifettoProdottoOds(String variable) {
         super(DmalmDifettoProdottoOds.class, forVariable(variable), "DMALM", "DMALM_DIFETTO_PRODOTTO_ODS");
     }

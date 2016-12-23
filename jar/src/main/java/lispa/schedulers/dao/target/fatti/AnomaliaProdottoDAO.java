@@ -117,6 +117,7 @@ public class AnomaliaProdottoDAO {
 				bean.setStgPk(rs.getString("STG_PK"));
 				bean.setContestazione(rs.getString("CONTESTAZIONE"));
 				bean.setNoteContestazione(rs.getString("NOTE_CONTESTAZIONE"));
+				bean.setDtDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 
 				anomalie.add(bean);
 			}
@@ -232,6 +233,7 @@ public class AnomaliaProdottoDAO {
 					.set(anomaliaProdotto.noteContestazione,
 							anomalia.getNoteContestazione())
 					.set(anomaliaProdotto.annullato, anomalia.getAnnullato())
+					.set(anomaliaProdotto.dataDisponibilita, anomalia.getDtDisponibilita())
 					.execute();
 
 			// DM_ALM-142
@@ -302,7 +304,8 @@ public class AnomaliaProdottoDAO {
 							anomaliaProdotto.flagUltimaSituazione,
 							anomaliaProdotto.dtAnnullamento,
 							anomaliaProdotto.contestazione,
-							anomaliaProdotto.noteContestazione)
+							anomaliaProdotto.noteContestazione,
+							anomaliaProdotto.dataDisponibilita)
 					.values(bean.getCdAnomalia(),
 							bean.getDmalmAnomaliaProdottoPk(),
 							bean.getDmalmProjectFk02(),
@@ -334,7 +337,8 @@ public class AnomaliaProdottoDAO {
 							bean.getStgPk(), bean.getDmalmUserFk06(),
 							bean.getUri(), new Short("1"),
 							bean.getDtAnnullamento(), bean.getContestazione(),
-							bean.getNoteContestazione()).execute();
+							bean.getNoteContestazione(),
+							bean.getDtDisponibilita()).execute();
 
 			connection.commit();
 
@@ -402,7 +406,8 @@ public class AnomaliaProdottoDAO {
 							anomaliaProdotto.contestazione,
 							anomaliaProdotto.noteContestazione,
 							anomaliaProdotto.changed,
-							anomaliaProdotto.annullato)
+							anomaliaProdotto.annullato,
+							anomaliaProdotto.dataDisponibilita)
 					.values(bean.getCdAnomalia(),
 							pkValue == true ? bean.getDmalmAnomaliaProdottoPk()
 									: StringTemplate
@@ -445,7 +450,8 @@ public class AnomaliaProdottoDAO {
 									.getFlagUltimaSituazione(),
 							bean.getDtAnnullamento(), bean.getContestazione(),
 							bean.getNoteContestazione(), bean.getChanged(),
-							bean.getAnnullato()).execute();
+							bean.getAnnullato(),
+							bean.getDtDisponibilita()).execute();
 
 			connection.commit();
 
@@ -710,6 +716,7 @@ public class AnomaliaProdottoDAO {
 			ret.setTicketSiebelAnomaliaAss(t
 					.get(anomaliaProdotto.ticketSiebelAnomaliaAss));
 			ret.setUri(t.get(anomaliaProdotto.uri));
+			ret.setDtDisponibilita(t.get(anomaliaProdotto.dataDisponibilita));
 
 			return ret;
 		} else {

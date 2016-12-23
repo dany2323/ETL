@@ -6,5 +6,6 @@ public enum CF_anomalia {
 	ticketid,
 	cod_intervento,
 	contestazione,
-	note_contestazione
+	note_contestazione,
+	data_disp
 }

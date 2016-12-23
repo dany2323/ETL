@@ -76,7 +76,8 @@ public class DifettoProdottoOdsDAO {
 								difettoODS.stgPk, difettoODS.causaDifetto,
 								difettoODS.naturaDifetto,
 								difettoODS.dmalmUserFk06, difettoODS.uri,
-								difettoODS.effortCostoSviluppo)
+								difettoODS.effortCostoSviluppo,
+								difettoODS.dtDisponibilita)
 						.values(difetto.getCdDifetto(),
 								difetto.getDmalmDifettoProdottoPk(),
 								difetto.getDmalmProjectFk02(),
@@ -106,7 +107,8 @@ public class DifettoProdottoOdsDAO {
 								difetto.getCausaDifetto(),
 								difetto.getNaturaDifetto(),
 								difetto.getDmalmUserFk06(), difetto.getUri(),
-								difetto.getEffortCostoSviluppo()).execute();
+								difetto.getEffortCostoSviluppo(),
+								difetto.getDtDisponibilita()).execute();
 			}
 
 			connection.commit();
@@ -197,6 +199,7 @@ public class DifettoProdottoOdsDAO {
 				bean.setUri(row.get(difettoODS.uri));
 				bean.setEffortCostoSviluppo(row
 						.get(difettoODS.effortCostoSviluppo));
+				bean.setDtDisponibilita(row.get(difettoODS.dtDisponibilita));
 
 				res.add(bean);
 			}
