@@ -1009,21 +1009,22 @@ public class CheckSferaMisureFacade implements Runnable {
 				}
 			}
 
+			// Commentato per DM_ALM-229
 			// includeInBenchmarkingDb
-			if (row.get(stgMisura.includeInBenchmarkingDb) == null
-					|| (!row.get(stgMisura.includeInBenchmarkingDb)
-							.equalsIgnoreCase("Vero") && !row.get(
-							stgMisura.includeInBenchmarkingDb)
-							.equalsIgnoreCase("Falso"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						"Includi nel database di benchmarking - Valore non permesso : "
-								+ row.get(stgMisura.includeInBenchmarkingDb),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						dataEsecuzione);
-			}
+//			if (row.get(stgMisura.includeInBenchmarkingDb) == null
+//					|| (!row.get(stgMisura.includeInBenchmarkingDb)
+//							.equalsIgnoreCase("Vero") && !row.get(
+//							stgMisura.includeInBenchmarkingDb)
+//							.equalsIgnoreCase("Falso"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						"Includi nel database di benchmarking - Valore non permesso : "
+//								+ row.get(stgMisura.includeInBenchmarkingDb),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						dataEsecuzione);
+//			}
 
 			// pPrjFlApplicLgFpDwh
 			if (row.get(stgMisura.pPrjFlApplicLgFpDwh) == null
