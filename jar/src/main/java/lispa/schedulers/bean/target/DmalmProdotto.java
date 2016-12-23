@@ -42,7 +42,7 @@ public class DmalmProdotto {
 
     private String nome;
 
-    private String dmalm_personale_fk02;
+    private Integer dmalm_personale_fk02;
 
     private String sigla;
 
@@ -89,11 +89,11 @@ public class DmalmProdotto {
 		this.dmalm_unitaorganizzativa_fk01 = dmalm_unitaorganizzativa_fk01;
 	}
 
-	public String getDmalm_personale_fk02() {
+	public Integer getDmalm_personale_fk02() {
 		return dmalm_personale_fk02;
 	}
 
-	public void setDmalm_personale_fk02(String dmalm_personale_fk02) {
+	public void setDmalm_personale_fk02(Integer dmalm_personale_fk02) {
 		this.dmalm_personale_fk02 = dmalm_personale_fk02;
 	}
 

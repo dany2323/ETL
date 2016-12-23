@@ -9,6 +9,12 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -29,20 +35,15 @@ import lispa.schedulers.facade.sfera.CheckLinkAsmSferaUnitaOrganizzativaFacade;
 import lispa.schedulers.facade.sfera.target.AsmFacade;
 import lispa.schedulers.facade.sfera.target.MisuraFacade;
 import lispa.schedulers.facade.sfera.target.ProgettoSferaFacade;
-import lispa.schedulers.facade.target.AmbienteTecnologicoFacade;
 import lispa.schedulers.facade.target.AreaTematicaSgrCmFacade;
 import lispa.schedulers.facade.target.AttachmentFacade;
-import lispa.schedulers.facade.target.ClassificatoriFacade;
-import lispa.schedulers.facade.target.FunzionalitaFacade;
+import lispa.schedulers.facade.target.CheckLinkPersonaleUnitaOrganizzativaFacade;
 import lispa.schedulers.facade.target.HyperlinkFacade;
 import lispa.schedulers.facade.target.LinkedWorkitemsFacade;
-import lispa.schedulers.facade.target.ModuloFacade;
 import lispa.schedulers.facade.target.PersonaleEdmaFacade;
-import lispa.schedulers.facade.target.ProdottoFacade;
 import lispa.schedulers.facade.target.ProjectRolesSgrFacade;
 import lispa.schedulers.facade.target.ProjectSgrCmFacade;
 import lispa.schedulers.facade.target.SchedeServizioFacade;
-import lispa.schedulers.facade.target.SottosistemaFacade;
 import lispa.schedulers.facade.target.StatoWorkitemSgrCmFacade;
 import lispa.schedulers.facade.target.StrutturaOrganizzativaEdmaFacade;
 import lispa.schedulers.facade.target.UserRolesSgrFacade;
@@ -80,12 +81,6 @@ import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.manager.RecoverManager;
 import lispa.schedulers.queryimplementation.staging.QDmalmEsitiCaricamenti;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
 
 /**
  * I dati vengono infine memorizzati nelle tabelle del sistema di sintesi, per
@@ -602,6 +597,23 @@ public class DmAlmFillTarget {
 
 					return;
 				}
+				
+				//DM_ALM-237 - Creo legami tra Personale (EDMA) e Unità Organizzative/Flat (Elettra)
+
+				CheckLinkPersonaleUnitaOrganizzativaFacade.execute(dataEsecuzione);
+
+				if (ErrorManager.getInstance().hasError()) {
+					RecoverManager.getInstance().startRecoverTarget();
+					RecoverManager.getInstance().startRecoverStaging();
+
+					// MPS
+					if (ExecutionManager.getInstance().isExecutionMps())
+						RecoverManager.getInstance().startRecoverStgMps();
+
+					return;
+				}
+
+				// Fine DM_ALM-237
 
 				logger.info("DELETE ELAPSED LOG FROM DMALM_LOG_DEBUG");
 				PreparedStatement ps = ConnectionManager

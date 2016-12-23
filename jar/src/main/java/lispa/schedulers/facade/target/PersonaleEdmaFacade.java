@@ -16,6 +16,7 @@ import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.PersonaleEdmaLispaDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmPersonale;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.LogUtils;
@@ -122,6 +123,18 @@ public class PersonaleEdmaFacade {
 				}
 
 			}
+			//DMALM-237 associazione project Unità Organizzativa Flat
+			//ricarica il valore della Fk ad ogni esecuzione
+			
+			QueryManager qm = QueryManager.getInstance();
+
+			logger.info("INIZIO Update Personale UnitaOrganizzativaFlatFk");
+			
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_PERSONALE_UOFLATFK,
+					DmAlmConstants.M_SEPARATOR);
+			
+			logger.info("FINE Update Personale UnitaOrganizzativaFlatFk");
 
 		}
 		catch (DAOException e) 

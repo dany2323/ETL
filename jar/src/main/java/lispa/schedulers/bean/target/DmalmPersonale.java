@@ -58,9 +58,28 @@ public class DmalmPersonale {
     
     private java.sql.Timestamp dtCaricamento;
     
-    
+    //Aggiunte DM_ALM-237
+    private Integer unitaOrganizzativaFk;
 
-    public java.sql.Timestamp getDtFineValiditaEdma() {
+    private Integer unitaOrganizzativaFlatFk;
+	
+    public Integer getUnitaOrganizzativaFk() {
+		return unitaOrganizzativaFk;
+	}
+
+	public void setUnitaOrganizzativaFk(Integer unitaOrganizzativaFk) {
+		this.unitaOrganizzativaFk = unitaOrganizzativaFk;
+	}
+
+	public Integer getUnitaOrganizzativaFlatFk() {
+		return unitaOrganizzativaFlatFk;
+	}
+
+	public void setUnitaOrganizzativaFlatFk(Integer unitaOrganizzativaFlatFk) {
+		this.unitaOrganizzativaFlatFk = unitaOrganizzativaFlatFk;
+	}
+
+	public java.sql.Timestamp getDtFineValiditaEdma() {
 		return dtFineValiditaEdma;
 	}
 
