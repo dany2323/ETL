@@ -95,6 +95,8 @@ public class QDmalmAnomaliaProdottoDummy extends com.mysema.query.sql.Relational
     
     public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
     
+    public final DateTimePath<java.sql.Timestamp> dtDisponibilita = createDateTime("DATA_DISPONIBILITA", java.sql.Timestamp.class);
+    
     public QDmalmAnomaliaProdottoDummy(String variable) {
         super(DmalmAnomaliaProdottoDummy.class, forVariable(variable), "DMALM", "DMALM_ANOMALIA_PRODOTTO_DUMMY");
     }
