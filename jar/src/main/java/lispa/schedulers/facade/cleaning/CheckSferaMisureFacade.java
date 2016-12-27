@@ -283,8 +283,10 @@ public class CheckSferaMisureFacade implements Runnable {
 					&& row.get(stgMisura.applicazione)
 							.startsWith(
 									DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH)
-					&& !row.get(stgMisura.permissions).equals(
-							"Admin (RESPAPP);Admin (READWRITE);")) {
+					&& (!row.get(stgMisura.permissions).equals(
+							"Admin (RESPAPP);Admin (READWRITE);"))
+						||!row.get(stgMisura.permissions).equals(
+								"Admin (READWRITE);Admin (RESPAPP);") ) {
 				errore++;
 				ErroriCaricamentoDAO.insert(
 						DmAlmConstants.FONTE_MISURA,
@@ -363,22 +365,23 @@ public class CheckSferaMisureFacade implements Runnable {
 						dataEsecuzione);
 			}
 
-			if (row.get(stgMisura.applicazione) != null
-					&& !row.get(stgMisura.applicazione).isEmpty()
-					&& row.get(stgMisura.applicazione)
-							.startsWith(
-									DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH)
-					&& (row.get(stgMisura.pAppDataFineValiditaAsm) == null || row
-							.get(stgMisura.pAppDataFineValiditaAsm).isEmpty())) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_ASM,
-						MisuraUtils.MisuraToString(row),
-						"APP-ATT:DATA_FINE_VALIDITA_ASM e' obbligatorio",
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						dataEsecuzione);
-
-			}
+			//Commentato per DM_ALM-229
+//			if (row.get(stgMisura.applicazione) != null
+//					&& !row.get(stgMisura.applicazione).isEmpty()
+//					&& row.get(stgMisura.applicazione)
+//							.startsWith(
+//									DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH)
+//					&& (row.get(stgMisura.pAppDataFineValiditaAsm) == null || row
+//							.get(stgMisura.pAppDataFineValiditaAsm).isEmpty())) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_ASM,
+//						MisuraUtils.MisuraToString(row),
+//						"APP-ATT:DATA_FINE_VALIDITA_ASM e' obbligatorio",
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						dataEsecuzione);
+//
+//			}
 
 			if (row.get(stgMisura.pAppDenomUtentiFinaliAsm) == null
 					|| row.get(stgMisura.pAppDenomUtentiFinaliAsm).isEmpty()) {
@@ -816,23 +819,45 @@ public class CheckSferaMisureFacade implements Runnable {
 									dataEsecuzione);
 				}
 			}
-
-			if (row.get(stgMisura.nomeProgetto) != null
-					&& row.get(stgMisura.nomeProgetto).startsWith("PATR-")
-					&& row.get(stgMisura.tipoProgetto) != null
-					&& row.get(stgMisura.tipoProgetto).equals("Baseline")) {
-				if (row.get(stgMisura.pPrjFornitoreMpp) == null
-						|| row.get(stgMisura.pPrjFornitoreMpp).isEmpty()) {
-					errore++;
-					ErroriCaricamentoDAO
-							.insert(DmAlmConstants.FONTE_MISURA,
-									DmAlmConstants.TARGET_PROGETTO_SFERA,
-									MisuraUtils.MisuraToString(row),
-									"PRJ-ATT:FORNITORE_MPP e' obbligatorio per progetti di tipo 'Baseline' che hanno codice progetto che inizia per 'PATR-'",
-									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									dataEsecuzione);
-				}
+			
+			//Aggiunto per DM_ALM-229
+			if (row.get(stgMisura.pPrjFornitoreMpp) != null
+					&& (!row.get(stgMisura.pPrjFornitoreMpp).isEmpty())
+					&& (!row.get(stgMisura.pPrjFornitoreMpp).equals("Lombardia Informatica SpA"))
+					&& (row.get(stgMisura.nomeMisura) != null)
+					&& (StringUtils.matchRegex(row.get(stgMisura.nomeMisura),
+							DmalmRegex.REGEXNOMEMISURA))
+					&& (row.get(stgMisura.nomeMisura).length() >= 7 && Integer
+							.parseInt(row.get(stgMisura.nomeMisura).substring(
+									4, 7)) == 2)
+					&& (row.get(stgMisura.statoMisura).equals("Completata"))) {
+				errore++;
+				ErroriCaricamentoDAO
+						.insert(DmAlmConstants.FONTE_MISURA,
+								DmAlmConstants.TARGET_PROGETTO_SFERA,
+								MisuraUtils.MisuraToString(row),
+								"WARNING-Non possono esserci 2 Misure MPP di tipo diverso in uno stesso progetto PATR-",
+								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+								dataEsecuzione);
 			}
+
+			//Commentato per DM_ALM-229
+//			if (row.get(stgMisura.nomeProgetto) != null
+//					&& row.get(stgMisura.nomeProgetto).startsWith("PATR-")
+//					&& row.get(stgMisura.tipoProgetto) != null
+//					&& row.get(stgMisura.tipoProgetto).equals("Baseline")) {
+//				if (row.get(stgMisura.pPrjFornitoreMpp) == null
+//						|| row.get(stgMisura.pPrjFornitoreMpp).isEmpty()) {
+//					errore++;
+//					ErroriCaricamentoDAO
+//							.insert(DmAlmConstants.FONTE_MISURA,
+//									DmAlmConstants.TARGET_PROGETTO_SFERA,
+//									MisuraUtils.MisuraToString(row),
+//									"PRJ-ATT:FORNITORE_MPP e' obbligatorio per progetti di tipo 'Baseline' che hanno codice progetto che inizia per 'PATR-'",
+//									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//									dataEsecuzione);
+//				}
+//			}
 
 			// pPrjFornitoreSviluppoMev
 			if (row.get(stgMisura.tipoProgetto) != null
@@ -850,23 +875,24 @@ public class CheckSferaMisureFacade implements Runnable {
 									dataEsecuzione);
 				}
 			}
-			if (row.get(stgMisura.tipoProgetto) != null
-					&& (row.get(stgMisura.tipoProgetto).equals(
-							"Manutenzione Evolutiva") || row.get(
-							stgMisura.tipoProgetto).equals("Sviluppo"))) {
-				if (row.get(stgMisura.pPrjFornitoreSviluppoMev) == null
-						|| row.get(stgMisura.pPrjFornitoreSviluppoMev)
-								.isEmpty()) {
-					errore++;
-					ErroriCaricamentoDAO
-							.insert(DmAlmConstants.FONTE_MISURA,
-									DmAlmConstants.TARGET_PROGETTO_SFERA,
-									MisuraUtils.MisuraToString(row),
-									"PRJ-ATT:FORNITORE_SVILUPPO_MEV e' obbligatorio per progetti di tipo 'Sviluppo' e 'Manutenzione Evolutiva'",
-									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									dataEsecuzione);
-				}
-			}
+			//Commentato per DM_ALM-229
+//			if (row.get(stgMisura.tipoProgetto) != null
+//					&& (row.get(stgMisura.tipoProgetto).equals(
+//							"Manutenzione Evolutiva") || row.get(
+//							stgMisura.tipoProgetto).equals("Sviluppo"))) {
+//				if (row.get(stgMisura.pPrjFornitoreSviluppoMev) == null
+//						|| row.get(stgMisura.pPrjFornitoreSviluppoMev)
+//								.isEmpty()) {
+//					errore++;
+//					ErroriCaricamentoDAO
+//							.insert(DmAlmConstants.FONTE_MISURA,
+//									DmAlmConstants.TARGET_PROGETTO_SFERA,
+//									MisuraUtils.MisuraToString(row),
+//									"PRJ-ATT:FORNITORE_SVILUPPO_MEV e' obbligatorio per progetti di tipo 'Sviluppo' e 'Manutenzione Evolutiva'",
+//									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//									dataEsecuzione);
+//				}
+//			}
 
 			// pPrjMpPercentCicloDiVita
 			if (row.get(stgMisura.tipoProgetto) != null
@@ -983,21 +1009,22 @@ public class CheckSferaMisureFacade implements Runnable {
 				}
 			}
 
+			// Commentato per DM_ALM-229
 			// includeInBenchmarkingDb
-			if (row.get(stgMisura.includeInBenchmarkingDb) == null
-					|| (!row.get(stgMisura.includeInBenchmarkingDb)
-							.equalsIgnoreCase("Vero") && !row.get(
-							stgMisura.includeInBenchmarkingDb)
-							.equalsIgnoreCase("Falso"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						"Includi nel database di benchmarking - Valore non permesso : "
-								+ row.get(stgMisura.includeInBenchmarkingDb),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						dataEsecuzione);
-			}
+//			if (row.get(stgMisura.includeInBenchmarkingDb) == null
+//					|| (!row.get(stgMisura.includeInBenchmarkingDb)
+//							.equalsIgnoreCase("Vero") && !row.get(
+//							stgMisura.includeInBenchmarkingDb)
+//							.equalsIgnoreCase("Falso"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						"Includi nel database di benchmarking - Valore non permesso : "
+//								+ row.get(stgMisura.includeInBenchmarkingDb),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						dataEsecuzione);
+//			}
 
 			// pPrjFlApplicLgFpDwh
 			if (row.get(stgMisura.pPrjFlApplicLgFpDwh) == null

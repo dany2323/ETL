@@ -106,7 +106,7 @@ public class DmAlmProgettoSferaDAO {
 						.getString("P_PRJ_A_DISPOSIZIONE_02"));
 
 				if (rs.getString("P_PRJ_AMB_TECN_PORTALI") == null) {
-					bean.setpPrjAmbTecnPortali(null);
+					bean.setpPrjAmbTecnPortali(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_AMB_TECN_PORTALI")
 							.equalsIgnoreCase("SI")) {
@@ -127,7 +127,7 @@ public class DmAlmProgettoSferaDAO {
 						.getDouble("P_PRJ_FCC_FATT_CORREZ_TOTAL"));
 
 				if (rs.getString("P_PRJ_FL_AMB_TEC_TRANS_BAT_REP") == null) {
-					bean.setpPrjFlAmbTecTransBatRep(null);
+					bean.setpPrjFlAmbTecTransBatRep(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_AMB_TEC_TRANS_BAT_REP")
 							.equalsIgnoreCase("SI")) {
@@ -140,7 +140,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_AMB_TEC_TRANS_BAT_REP"));
 
 				if (rs.getString("P_PRJ_FL_AMB_TECN_PIAT_ENTERPR") == null) {
-					bean.setpPrjFlAmbTecnPiatEnterpr(null);
+					bean.setpPrjFlAmbTecnPiatEnterpr(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_AMB_TECN_PIAT_ENTERPR")
 							.equalsIgnoreCase("SI")) {
@@ -153,7 +153,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_AMB_TECN_PIAT_ENTERPR"));
 
 				if (rs.getString("P_PRJ_FL_AMBITO_TECN_FUTURO01") == null) {
-					bean.setpPrjFlAmbitoTecnFuturo01(null);
+					bean.setpPrjFlAmbitoTecnFuturo01(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_AMBITO_TECN_FUTURO01")
 							.equalsIgnoreCase("SI")) {
@@ -166,7 +166,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_AMBITO_TECN_FUTURO01"));
 
 				if (rs.getString("P_PRJ_FL_AMBITO_TECN_FUTURO02") == null) {
-					bean.setpPrjFlAmbitoTecnFuturo02(null);
+					bean.setpPrjFlAmbitoTecnFuturo02(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_AMBITO_TECN_FUTURO02")
 							.equalsIgnoreCase("SI")) {
@@ -179,7 +179,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_AMBITO_TECN_FUTURO02"));
 
 				if (rs.getString("P_PRJ_FL_APPL_LG_FP_EDMA") == null) {
-					bean.setpPrjFlApplLgFpEdma(null);
+					bean.setpPrjFlApplLgFpEdma(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_APPL_LG_FP_EDMA")
 							.equalsIgnoreCase("SI")) {
@@ -192,7 +192,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_APPL_LG_FP_EDMA"));
 
 				if (rs.getString("P_PRJ_FL_APPL_LG_FP_WEB") == null) {
-					bean.setpPrjFlApplLgFpWeb(null);
+					bean.setpPrjFlApplLgFpWeb(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_APPL_LG_FP_WEB")
 							.equalsIgnoreCase("SI")) {
@@ -205,7 +205,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_APPL_LG_FP_WEB"));
 
 				if (rs.getString("P_PRJ_FL_APPLIC_LG_FP_DWH") == null) {
-					bean.setpPrjFlApplicLgFpDwh(null);
+					bean.setpPrjFlApplicLgFpDwh(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_APPLIC_LG_FP_DWH")
 							.equalsIgnoreCase("SI")) {
@@ -218,7 +218,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_APPLIC_LG_FP_DWH"));
 
 				if (rs.getString("P_PRJ_FL_APPLIC_LG_FP_FUTURO01") == null) {
-					bean.setpPrjFlApplicLgFpFuturo01(null);
+					bean.setpPrjFlApplicLgFpFuturo01(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_APPLIC_LG_FP_FUTURO01")
 							.equalsIgnoreCase("SI")) {
@@ -231,7 +231,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_APPLIC_LG_FP_FUTURO01"));
 
 				if (rs.getString("P_PRJ_FL_APPLIC_LG_FP_FUTURO02") == null) {
-					bean.setpPrjFlApplicLgFpFuturo02(null);
+					bean.setpPrjFlApplicLgFpFuturo02(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_APPLIC_LG_FP_FUTURO02")
 							.equalsIgnoreCase("SI")) {
@@ -244,7 +244,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_APPLIC_LG_FP_FUTURO02"));
 
 				if (rs.getString("P_PRJ_FL_AMB_TECN_GIS") == null) {
-					bean.setpPrjFlagAmbTecnGis(null);
+					bean.setpPrjFlagAmbTecnGis(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_AMB_TECN_GIS").equalsIgnoreCase(
 							"SI")) {
@@ -256,7 +256,7 @@ public class DmAlmProgettoSferaDAO {
 				// bean.setpPrjFlagAmbTecnGis(rs.getShort("P_PRJ_FL_AMB_TECN_GIS"));
 
 				if (rs.getString("P_PRJ_FL_APPL_LG_FP_GIS") == null) {
-					bean.setpPrjFlagApplLgFpGis(null);
+					bean.setpPrjFlagApplLgFpGis(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_APPL_LG_FP_GIS")
 							.equalsIgnoreCase("SI")) {
@@ -269,7 +269,7 @@ public class DmAlmProgettoSferaDAO {
 				// .getShort("P_PRJ_FL_APPL_LG_FP_GIS"));
 
 				if (rs.getString("P_PRJ_FL_APPL_LG_FP_MWARE") == null) {
-					bean.setpPrjFlagApplLgFpMware(null);
+					bean.setpPrjFlagApplLgFpMware(new Short((short) 0));
 				} else {
 					if (rs.getString("P_PRJ_FL_APPL_LG_FP_MWARE")
 							.equalsIgnoreCase("SI")) {
