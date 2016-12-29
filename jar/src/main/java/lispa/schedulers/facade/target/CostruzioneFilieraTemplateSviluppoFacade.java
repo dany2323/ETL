@@ -152,7 +152,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		
+		/*
 		String srqsQuery = "select * from DMALM_PROGETTO_SVILUPPO_SVIL "
 				+ "where ID_REPOSITORY || URI_PROGETTO_SVILUPPO_SVIL not in "
 				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
@@ -174,7 +174,44 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 		String defectQuery = "select * from DMALM_DIFETTO_PRODOTTO "
 				+ "where ID_REPOSITORY || URI_DIFETTO_PRODOTTO not in "
 				+ "(SELECT ID_REPOSITORY || URI_WI from DMALM_TEMPLATE_SVILUPPO)";
-
+*/
+		
+		String srqsQuery = "select * from DMALM_PROGETTO_SVILUPPO_SVIL d "
+			+ "where not exists "
+			+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+			+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+			+ "and d.URI_PROGETTO_SVILUPPO_SVIL = t.URI_WI)";
+		String relQuery = "select * from DMALM_RELEASE_DI_PROGETTO d "
+				+ "where not exists "
+				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+				+ "and d.URI_RELEASE_DI_PROGETTO = t.URI_WI)";
+		String smanQuery = "select * from DMALM_MANUTENZIONE d "
+				+ "where not exists "
+				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+				+ "and d.URI_MANUTENZIONE = t.URI_WI)";
+		String anomaliaQuery = "select * from DMALM_ANOMALIA_PRODOTTO d "
+				+ "where not exists "
+				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+				+ "and d.URI_ANOMALIA_PRODOTTO = t.URI_WI)";
+		String taskQuery = "select * from DMALM_TASK d "
+				+ "where not exists "
+				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+				+ "and d.URI_TASK = t.URI_WI)";
+		String testQuery = "select * from DMALM_TESTCASE d "
+				+ "where not exists "
+				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+				+ "and d.URI_TESTCASE = t.URI_WI)";
+		String defectQuery = "select * from DMALM_DIFETTO_PRODOTTO d "
+				+ "where not exists "
+				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+				+ "and d.URI_DIFETTO_PRODOTTO = t.URI_WI)";
+		
 		
 		List<DmalmProgettoSviluppoSvil> resultListSrqs = new LinkedList<DmalmProgettoSviluppoSvil>();
 		List<DmalmReleaseDiProgetto> resultListRelease = new LinkedList<DmalmReleaseDiProgetto>();
