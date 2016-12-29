@@ -8,12 +8,13 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 
-import lispa.schedulers.bean.target.DmalmPersonale;
-import lispa.schedulers.dao.target.PersonaleEdmaLispaDAO;
+import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
+import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.target.QDmalmPersonale;
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.PersonaleUtils;
 
 public class CheckLinkPersonaleUnitaOrganizzativaFacade {
@@ -26,48 +27,48 @@ public class CheckLinkPersonaleUnitaOrganizzativaFacade {
 			if (ErrorManager.getInstance().hasError())
 				return;
 			
-			QDmalmPersonale qPersonale = QDmalmPersonale.dmalmPersonale;		
-			QDmalmProdotto qProdotto = QDmalmProdotto.dmalmProdotto;
+			QDmalmElPersonale qPersonale = QDmalmElPersonale.qDmalmElPersonale;		
+			QDmalmElProdottiArchitetture qProdotto = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 
 			List<Tuple> personaleList = new ArrayList<Tuple>();
 			logger.debug("START CheckLinkPersonaleUnitaOrganizzativaFacade");
 			
-			// tutto il Personale per il quale la FK Unità
+			// tutto il Personale Elettra per il quale la FK Unità
 			// Organizzativa è variata
-			personaleList = PersonaleEdmaLispaDAO.getAllPersonaleUnitaOrganizzativa(dataEsecuzione);
+			personaleList = ElettraPersonaleDAO.getAllPersonaleUnitaOrganizzativa(dataEsecuzione);
 
 			logger.debug("personaleList.size: " + personaleList.size());
 			for (Tuple persRow : personaleList) {
 				if (persRow != null) {
-					logger.debug("CdPersonale: " + persRow.get(qPersonale.cdPersonale)
+					logger.debug("CdPersonale: " + persRow.get(qPersonale.codicePersonale)
 					+ " - dmalmUnitaOrganizzativaFk01: "
-					+ persRow.get(qProdotto.dmalmUnitaOrganizzativaFk01));
+					+ persRow.get(qProdotto.unitaOrganizzativaFk));
 					
-					DmalmPersonale personale = new DmalmPersonale();
-					personale.setCdPersonale(persRow.get(qPersonale.cdPersonale));
+					DmalmElPersonale personale = new DmalmElPersonale();
+					personale.setCodicePersonale(persRow.get(qPersonale.codicePersonale));
 									
-					List<Tuple> personaleTarget = PersonaleEdmaLispaDAO.getPersonaleEdmaLispa(personale);
+					List<Tuple> personaleTarget = ElettraPersonaleDAO.getPersonale(personale);
 					for (Tuple rowTarget : personaleTarget) {
 						if (rowTarget != null) {
-							personale = PersonaleUtils.tuplaToPersonale(rowTarget);
-							personale.setDtCaricamento(dataEsecuzione);
-							personale.setUnitaOrganizzativaFk(persRow.get(qProdotto.dmalmUnitaOrganizzativaFk01));
-							Timestamp dt = rowTarget.get(qPersonale.dtCaricamento);
+							personale = PersonaleUtils.tuplaToElPersonale(rowTarget);
+							personale.setDataCaricamento(dataEsecuzione);
+							personale.setUnitaOrganizzativaFk(persRow.get(qProdotto.unitaOrganizzativaFk));
+							Timestamp dt = rowTarget.get(qPersonale.dataCaricamento);
 							if (dt.equals(dataEsecuzione)) {
 								// update del valore della FK in quanto la riga
 								// è nuova o storicizzata in questa esecuzione
 								logger.debug("Eseguita update semplice della Fk di unita organizzativa");
-								PersonaleEdmaLispaDAO.updateFkUnitaOrganizzativa(personale);
+								ElettraPersonaleDAO.updateFkUnitaOrganizzativa(personale);
 							} else {
 								logger.debug("Eseguita storicizzazione");
 								// Storicizzo la vecchia FK ed inserisco il
 								// nuovo valore
-								PersonaleEdmaLispaDAO.updateDataFineValidita(
+								ElettraPersonaleDAO.updateDataFineValidita(
 										dataEsecuzione, personale);
 
 								// inserisco un nuovo record
-								PersonaleEdmaLispaDAO
-										.insertPersonaleEdmaLispaUpdate(dataEsecuzione, personale);
+								ElettraPersonaleDAO
+										.insertPersonaleUpdate(dataEsecuzione, personale);
 							}		
 						}
 					}

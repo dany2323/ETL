@@ -12,6 +12,7 @@ import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.LogUtils;
@@ -134,6 +135,21 @@ public class ElettraPersonaleFacade {
 					}
 				}
 			}
+			
+			//DMALM-237 associazione project Unità Organizzativa Flat
+			//ricarica il valore della Fk ad ogni esecuzione
+			
+			QueryManager qm = QueryManager.getInstance();
+
+			logger.info("INIZIO Update Personale Elettra UnitaOrganizzativaFlatFk");
+			
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_PERSONALE_UOFLATFK,
+					DmAlmConstants.M_SEPARATOR);
+			
+			logger.info("FINE Update Personale Elettra UnitaOrganizzativaFlatFk");
+			
+			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(personaleTmp));

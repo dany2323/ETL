@@ -43,6 +43,10 @@ public class QDmalmElPersonale extends com.mysema.query.sql.RelationalPathBase<D
 	public final StringPath annullato = createString("ANNULLATO");
 	public final DateTimePath<java.sql.Timestamp> dataAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
 
+	   //Aggiunte per DM_ALM-237
+    public final NumberPath<Integer> unitaOrganizzativaFk = createNumber("DMALM_UNITAORGANIZZATIVA_FK_01", Integer.class);
+    public final NumberPath<Integer> unitaOrganizzativaFlatFk = createNumber("DMALM_UNITAORGANIZZ_FLAT_FK_02", Integer.class);
+
     
     public QDmalmElPersonale(String variable) {
         super(DmalmElPersonale.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_EL_PERSONALE");
