@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>it.lispa</groupId>
 		<artifactId>cm</artifactId>
-		<version>01.03.01</version>
+		<version>1.4.0</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
