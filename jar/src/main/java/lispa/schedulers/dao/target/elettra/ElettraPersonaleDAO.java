@@ -18,6 +18,7 @@ import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmPersonale;
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
 
 import org.apache.log4j.Logger;
@@ -393,8 +394,7 @@ public class ElettraPersonaleDAO {
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			SQLQuery query = new SQLQuery(connection, dialect);
 	
-
-			QDmalmProdotto qProdotto = QDmalmProdotto.dmalmProdotto;
+			QDmalmElProdottiArchitetture qProdotto = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 			
 			// tutte le persone nuove o quelle per le quali la FK Unita
 			// Organizzativa è variata
@@ -402,13 +402,13 @@ public class ElettraPersonaleDAO {
 			newPersonaleList = query
 					.from(qDmalmElPersonale)
 					.join(qProdotto)
-					.on(qProdotto.dmalmPersonaleFk02.eq(qDmalmElPersonale.personalePk))
+					.on(qProdotto.personaleFk.eq(qDmalmElPersonale.personalePk))
 					.where(qDmalmElPersonale.personalePk.ne(0))
 					.where(qDmalmElPersonale.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
-					.where(qProdotto.dtFineValidita.eq(DateUtils.setDtFineValidita9999()))
-					.where(qDmalmElPersonale.unitaOrganizzativaFk.ne(qProdotto.dmalmUnitaOrganizzativaFk01))
+					.where(qProdotto.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.where(qDmalmElPersonale.unitaOrganizzativaFk.ne(qProdotto.unitaOrganizzativaFk))
 					.distinct()
-					.list(qDmalmElPersonale.codicePersonale, qProdotto.dmalmUnitaOrganizzativaFk01);
+					.list(qDmalmElPersonale.codicePersonale, qProdotto.unitaOrganizzativaFk);
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
