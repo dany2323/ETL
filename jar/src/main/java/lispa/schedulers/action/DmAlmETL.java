@@ -145,7 +145,7 @@ public class DmAlmETL {
 				esito += DmAlmConstants.ETLMPSKO;
 
 			esitoBody = DmAlmConstants.ETLOK;
-			esitoBody += "\nEDMA/ORESTE/SGR_CM: " + (ExecutionManager.getInstance().isExecutionElettraSgrcm()?"Eseguito":"NON eseguito");
+			esitoBody += "\nEDMA/SGR_CM: " + (ExecutionManager.getInstance().isExecutionElettraSgrcm()?"Eseguito":"NON eseguito");
 			esitoBody += "\nSFERA: " + (ExecutionManager.getInstance().isExecutionSfera()?"Eseguito":"NON eseguito");
 			esitoBody += "\nMPS: " + (ExecutionManager.getInstance().isExecutionMps()?"Eseguito":"NON eseguito");
 			if (RecoverManager.getInstance().isRecoveredStagingMps())
