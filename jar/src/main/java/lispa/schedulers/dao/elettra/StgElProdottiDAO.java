@@ -161,6 +161,9 @@ public class StgElProdottiDAO {
 	}
 
 	private static String getCodiceFromResponsabile(String responsabile) {
+		if (responsabile == null) {
+			return null;
+		}
 		String match = "";
 		String pattern = "\\{[a-zA-Z0-9_.*!?-]+\\}";
 	    Pattern p = Pattern.compile(pattern);
