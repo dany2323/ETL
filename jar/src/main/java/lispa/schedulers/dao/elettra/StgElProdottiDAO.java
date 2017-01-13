@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
@@ -107,7 +109,9 @@ public class StgElProdottiDAO {
 								qStgElProdotti.ambitoTecnologico,
 								qStgElProdotti.ambitoManutenzioneDenom,
 								qStgElProdotti.ambitoManutenzioneCodice,
-								qStgElProdotti.stato
+								qStgElProdotti.stato,
+								//modificato per DM_ALM-237
+								qStgElProdotti.cdResponsabileProdotto
 								)
 						.values(StringTemplate
 								.create("STG_PROD_ARCHITETTURE_SEQ.nextval"),
@@ -134,7 +138,10 @@ public class StgElProdottiDAO {
 								row.get(qElettraProdottiArchitetture.ambitoTecnologico),
 								row.get(qElettraProdottiArchitetture.ambitoManutenzioneDenom),
 								row.get(qElettraProdottiArchitetture.ambitoManutenzioneCodice),
-								row.get(qElettraProdottiArchitetture.stato)	).execute();
+								row.get(qElettraProdottiArchitetture.stato),
+								//modificato per DM_ALM-237
+								StringUtils.getMaskedValue(getCodiceFromResponsabile(row.get(qElettraProdottiArchitetture.respProdArchApplOreste))))
+						.execute();
 			}
 
 			connection.commit();
@@ -151,6 +158,19 @@ public class StgElProdottiDAO {
 			if (cm != null)
 				cm.closeConnection(connectionFonteElettra);
 		}
+	}
+
+	private static String getCodiceFromResponsabile(String responsabile) {
+		String match = "";
+		String pattern = "\\{[a-zA-Z0-9_.*!?-]+\\}";
+	    Pattern p = Pattern.compile(pattern);
+	    Matcher m = p.matcher(responsabile);
+	    if (m.find( )) {
+	    	match = m.group(0);
+	    	match = match.replace("{", "");
+	    	match = match.replace("}", "");
+	    }
+		return match;
 	}
 
 	public static List<Tuple> getSiglaProdottiNull(Timestamp dataEsecuzione)

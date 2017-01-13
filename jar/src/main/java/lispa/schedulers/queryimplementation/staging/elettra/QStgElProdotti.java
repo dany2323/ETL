@@ -42,6 +42,10 @@ public class QStgElProdotti extends com.mysema.query.sql.RelationalPathBase<StgE
 	public final StringPath ambitoManutenzioneCodice = createString("AMBITO_MANUTENZIONE_CODICE");
 	public final StringPath stato = createString("STATO_PRODOTTO");
 	
+	//modificato per DM_ALM-237
+	public final StringPath cdResponsabileProdotto = createString("CD_RESPONSABILE_PRODOTTO");
+
+	
 	public QStgElProdotti(String variable) {
         super(StgElProdotti.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_EL_PRODOTTI_ARCH");
     }
