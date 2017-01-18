@@ -9,18 +9,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import lispa.schedulers.bean.target.DmalmPersonale;
-import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.target.QDmalmPersonale;
-import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
-import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
-import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
-import lispa.schedulers.utils.DateUtils;
-
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
@@ -30,6 +18,15 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+
+import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
+import lispa.schedulers.utils.ConfigUtils;
+import lispa.schedulers.utils.DateUtils;
 
 public class ElettraPersonaleDAO {
 	private static Logger logger = Logger.getLogger(ElettraPersonaleDAO.class);
@@ -381,34 +378,42 @@ public class ElettraPersonaleDAO {
 		return strutture;
 	}
 	
-	public static List<Tuple> getAllPersonaleUnitaOrganizzativa(Timestamp dataEsecuzione) throws DAOException {
-		List<Tuple> newPersonaleList = new ArrayList<Tuple>();	
-	
+	public static ResultSet getAllPersonaleUnitaOrganizzativa() throws DAOException {	
 		ConnectionManager cm = null;
 		Connection connection = null;
+		
+		ResultSet rs = null;
 		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 	
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-	
-			QDmalmElProdottiArchitetture qProdotto = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
-			
 			// tutte le persone nuove o quelle per le quali la FK Unita
 			// Organizzativa è variata
 			
-			newPersonaleList = query
-					.from(qDmalmElPersonale)
-					.join(qProdotto)
-					.on(qProdotto.personaleFk.eq(qDmalmElPersonale.personalePk))
-					.where(qDmalmElPersonale.personalePk.ne(0))
-					.where(qDmalmElPersonale.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
-					.where(qProdotto.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
-					.where(qDmalmElPersonale.unitaOrganizzativaFk.ne(qProdotto.unitaOrganizzativaFk))
-					.distinct()
-					.list(qDmalmElPersonale.codicePersonale, qProdotto.unitaOrganizzativaFk);
+			String sql = "";
+			if(ConfigUtils.isSviluppo()){
+				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK"
+					+"from DMALM_EL_PERSONALE p, DMALM_EL_UNITA_ORGANIZZATIVE uo "
+					+"WHERE p.CD_SUPERIORE = rawtohex(DBMS_CRYPTO.Hash (UTL_I18N.STRING_TO_RAW (uo.CD_AREA, 'AL32UTF8'),2)) "
+					+"AND p.DT_FINE_VALIDITA = '31-DEC-9999' "
+					+"AND uo.DT_FINE_VALIDITA = '31-DEC-9999' "
+					+"AND p.DMALM_PERSONALE_PK <> 0 "
+					+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK; ";
+			} else {
+				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK"
+						+"from DMALM_EL_PERSONALE p, DMALM_EL_UNITA_ORGANIZZATIVE uo "
+						+"WHERE p.CD_SUPERIORE = uo.CD_AREA "
+						+"AND p.DT_FINE_VALIDITA = '31-DEC-9999' "
+						+"AND uo.DT_FINE_VALIDITA = '31-DEC-9999' "
+						+"AND p.DMALM_PERSONALE_PK <> 0 "
+						+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK; ";
+			}
+			
+			PreparedStatement ps = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ps.setFetchSize(200);
+
+			rs = ps.executeQuery();		
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -419,7 +424,7 @@ public class ElettraPersonaleDAO {
 				cm.closeConnection(connection);
 		}
 		
-		return newPersonaleList;
+		return rs;
 	}
 	
 	public static void updateFkUnitaOrganizzativa(DmalmElPersonale personale) throws DAOException {
