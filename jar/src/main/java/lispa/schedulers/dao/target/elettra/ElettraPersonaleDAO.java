@@ -393,7 +393,7 @@ public class ElettraPersonaleDAO {
 			
 			String sql = "";
 			if(ConfigUtils.isSviluppo()){
-				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK"
+				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK "
 					+"from DMALM_EL_PERSONALE p, DMALM_EL_UNITA_ORGANIZZATIVE uo "
 					+"WHERE p.CD_SUPERIORE = rawtohex(DBMS_CRYPTO.Hash (UTL_I18N.STRING_TO_RAW (uo.CD_AREA, 'AL32UTF8'),2)) "
 					+"AND p.DT_FINE_VALIDITA = '31-DEC-9999' "
@@ -401,7 +401,7 @@ public class ElettraPersonaleDAO {
 					+"AND p.DMALM_PERSONALE_PK <> 0 "
 					+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK; ";
 			} else {
-				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK"
+				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK "
 						+"from DMALM_EL_PERSONALE p, DMALM_EL_UNITA_ORGANIZZATIVE uo "
 						+"WHERE p.CD_SUPERIORE = uo.CD_AREA "
 						+"AND p.DT_FINE_VALIDITA = '31-DEC-9999' "
