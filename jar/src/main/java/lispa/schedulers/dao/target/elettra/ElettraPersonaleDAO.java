@@ -396,18 +396,18 @@ public class ElettraPersonaleDAO {
 				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK "
 					+"from DMALM_EL_PERSONALE p, DMALM_EL_UNITA_ORGANIZZATIVE uo "
 					+"WHERE p.CD_SUPERIORE = rawtohex(DBMS_CRYPTO.Hash (UTL_I18N.STRING_TO_RAW (uo.CD_AREA, 'AL32UTF8'),2)) "
-					+"AND p.DT_FINE_VALIDITA = '31-DEC-9999' "
-					+"AND uo.DT_FINE_VALIDITA = '31-DEC-9999' "
+					+"AND p.DT_FINE_VALIDITA = TO_DATE('31/12/9999 00:00:00', 'dd/mm/yyyy hh24:mi:ss') "
+					+"AND uo.DT_FINE_VALIDITA = TO_DATE('31/12/9999 00:00:00', 'dd/mm/yyyy hh24:mi:ss') "
 					+"AND p.DMALM_PERSONALE_PK <> 0 "
-					+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK; ";
+					+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK ";
 			} else {
 				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK "
 						+"from DMALM_EL_PERSONALE p, DMALM_EL_UNITA_ORGANIZZATIVE uo "
 						+"WHERE p.CD_SUPERIORE = uo.CD_AREA "
-						+"AND p.DT_FINE_VALIDITA = '31-DEC-9999' "
-						+"AND uo.DT_FINE_VALIDITA = '31-DEC-9999' "
+						+"AND p.DT_FINE_VALIDITA = TO_DATE('31/12/9999 00:00:00', 'dd/mm/yyyy hh24:mi:ss') "
+						+"AND uo.DT_FINE_VALIDITA = TO_DATE('31/12/9999 00:00:00', 'dd/mm/yyyy hh24:mi:ss') "
 						+"AND p.DMALM_PERSONALE_PK <> 0 "
-						+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK; ";
+						+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK ";
 			}
 			
 			PreparedStatement ps = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
