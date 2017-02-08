@@ -32,15 +32,15 @@ public class StgUnitaOrganizzative {
 
     private String id;
 
-    private String idGradoUfficio;
+    private Integer idGradoUfficio;
 
     private String idSede;
 
-    private String idTipologiaUfficio;
+    private Integer idTipologiaUfficio;
 
     private String indirizzoEmail;
 
-    private String interno;
+    private Integer interno;
 
     private String note;
 
@@ -142,11 +142,11 @@ public class StgUnitaOrganizzative {
         this.id = id;
     }
 
-    public String getIdGradoUfficio() {
+    public Integer getIdGradoUfficio() {
         return idGradoUfficio;
     }
 
-    public void setIdGradoUfficio(String idGradoUfficio) {
+    public void setIdGradoUfficio(Integer idGradoUfficio) {
         this.idGradoUfficio = idGradoUfficio;
     }
 
@@ -158,11 +158,11 @@ public class StgUnitaOrganizzative {
         this.idSede = idSede;
     }
 
-    public String getIdTipologiaUfficio() {
+    public Integer getIdTipologiaUfficio() {
         return idTipologiaUfficio;
     }
 
-    public void setIdTipologiaUfficio(String idTipologiaUfficio) {
+    public void setIdTipologiaUfficio(Integer idTipologiaUfficio) {
         this.idTipologiaUfficio = idTipologiaUfficio;
     }
 
@@ -174,11 +174,11 @@ public class StgUnitaOrganizzative {
         this.indirizzoEmail = indirizzoEmail;
     }
 
-    public String getInterno() {
+    public Integer getInterno() {
         return interno;
     }
 
-    public void setInterno(String interno) {
+    public void setInterno(Integer interno) {
         this.interno = interno;
     }
 

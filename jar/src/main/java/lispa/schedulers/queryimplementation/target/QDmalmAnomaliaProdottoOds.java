@@ -124,6 +124,10 @@ public class QDmalmAnomaliaProdottoOds extends
 	public final StringPath contestazione = createString("CONTESTAZIONE");
 
 	public final StringPath noteContestazione = createString("NOTE_CONTESTAZIONE");
+	
+	//DM_ALM-223
+	public final DateTimePath<java.sql.Timestamp> dtDisponibilita = createDateTime(
+			"DATA_DISPONIBILITA", java.sql.Timestamp.class);
 
 	public QDmalmAnomaliaProdottoOds(String variable) {
 		super(DmalmAnomaliaProdottoOds.class, forVariable(variable), "DMALM",

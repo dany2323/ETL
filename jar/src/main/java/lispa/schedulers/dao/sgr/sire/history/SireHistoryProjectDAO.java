@@ -13,6 +13,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryProject;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProject;
 import lispa.schedulers.svn.ProjectTemplateINI;
+import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Template_Type;
 
 import org.apache.log4j.Logger;
@@ -108,7 +109,7 @@ public class SireHistoryProjectDAO {
 						.values(row.get(fonteProjects.cTrackerprefix),
 								row.get(fonteProjects.cIsLocal),
 								row.get(fonteProjects.cPk),
-								row.get(fonteProjects.fkUriLead),
+								StringUtils.getMaskedValue(row.get(fonteProjects.fkUriLead)),
 								row.get(fonteProjects.cDeleted),
 								row.get(fonteProjects.cFinish),
 								row.get(fonteProjects.cUri),
@@ -117,7 +118,7 @@ public class SireHistoryProjectDAO {
 								row.get(fonteProjects.cActive),
 								row.get(fonteProjects.cLocation),
 								row.get(fonteProjects.fkProjectgroup),
-								row.get(fonteProjects.fkLead),
+								StringUtils.getMaskedValue(row.get(fonteProjects.fkLead)),
 								row.get(fonteProjects.cLockworkrecordsdate),
 								row.get(fonteProjects.cName),
 								row.get(fonteProjects.cId),

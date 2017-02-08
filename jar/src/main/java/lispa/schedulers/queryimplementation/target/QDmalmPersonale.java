@@ -72,6 +72,11 @@ public class QDmalmPersonale extends com.mysema.query.sql.RelationalPathBase<Dma
 
     public final StringPath note = createString("NOTE");
 
+    //Aggiunte per DM_ALM-237
+    public final NumberPath<Integer> unitaOrganizzativaFk = createNumber("DMALM_UNITAORGANIZZATIVA_FK_01", Integer.class);
+    
+    public final NumberPath<Integer> unitaOrganizzativaFlatFk = createNumber("DMALM_UNITAORGANIZZ_FLAT_FK_02", Integer.class);
+
     public QDmalmPersonale(String variable) {
         super(DmalmPersonale.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PERSONALE");
     }

@@ -9,6 +9,12 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -34,6 +40,7 @@ import lispa.schedulers.facade.target.AreaTematicaSgrCmFacade;
 import lispa.schedulers.facade.target.AttachmentFacade;
 import lispa.schedulers.facade.target.ClassificatoriFacade;
 import lispa.schedulers.facade.target.FunzionalitaFacade;
+import lispa.schedulers.facade.target.CheckLinkPersonaleUnitaOrganizzativaFacade;
 import lispa.schedulers.facade.target.HyperlinkFacade;
 import lispa.schedulers.facade.target.LinkedWorkitemsFacade;
 import lispa.schedulers.facade.target.ModuloFacade;
@@ -505,42 +512,42 @@ public class DmAlmFillTarget {
 				}
 
 				// ORESTE
-
+				/*
 				logger.info("START ClassificatoriFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_CLASSIFICATORI)) {
-					ClassificatoriFacade.execute(dataEsecuzione);
+					ClassificatoriFacade.execute(dataEsecuzione); //Modifica all'interno di un target db Oreste
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START ProdottoFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_PRODOTTO)) {
-					ProdottoFacade.execute(dataEsecuzione);
+					ProdottoFacade.execute(dataEsecuzione); //Modifica all'interno di un target db Oreste
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START SottosistemaFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_SOTTOSISTEMA)) {
 					SottosistemaFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START ModuloFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_MODULO)) {
 					ModuloFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START FunzionalitaFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_FUNZIONALITA)) {
 					FunzionalitaFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				
 				logger.info("START AmbienteTecnologicoFacade.execute "
 						+ new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_AMBIENTETECNOLOGICO)) {
@@ -548,7 +555,7 @@ public class DmAlmFillTarget {
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
-
+				*/
 				// logger.info("START RelClassificatoriOresteFacade.execute "
 				// + new Date());
 				// if
@@ -602,6 +609,23 @@ public class DmAlmFillTarget {
 
 					return;
 				}
+				
+				//DM_ALM-237 - Creo legami tra Personale (EDMA) e Unità Organizzative/Flat (Elettra)
+
+				CheckLinkPersonaleUnitaOrganizzativaFacade.execute(dataEsecuzione);
+
+				if (ErrorManager.getInstance().hasError()) {
+					RecoverManager.getInstance().startRecoverTarget();
+					RecoverManager.getInstance().startRecoverStaging();
+
+					// MPS
+					if (ExecutionManager.getInstance().isExecutionMps())
+						RecoverManager.getInstance().startRecoverStgMps();
+
+					return;
+				}
+
+				// Fine DM_ALM-237
 
 				logger.info("DELETE ELAPSED LOG FROM DMALM_LOG_DEBUG");
 				PreparedStatement ps = ConnectionManager

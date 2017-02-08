@@ -119,6 +119,7 @@ public class DifettoDAO {
 				bean.setCausaDifetto(rs.getString("CAUSA"));
 				bean.setNaturaDifetto(rs.getString("NATURA"));
 				bean.setEffortCostoSviluppo(rs.getInt("EFFORT_COSTO_SVILUPPO"));
+				bean.setDtDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 
 				difetti.add(bean);
 			}
@@ -272,7 +273,8 @@ public class DifettoDAO {
 							difetto.getEffortCostoSviluppo())
 					.set(difettoProdotto.dtAnnullamento,
 							difetto.getDtAnnullamento())
-					.set(difettoProdotto.annullato, difetto.getAnnullato())	
+					.set(difettoProdotto.annullato, difetto.getAnnullato())
+					.set(difettoProdotto.dataDisponibilita, difetto.getDtDisponibilita())
 					.execute();
 
 			connection.commit();
@@ -328,7 +330,8 @@ public class DifettoDAO {
 							difetto.dmalmUserFk06, difetto.uri,
 							difetto.effortCostoSviluppo,
 							difetto.flagUltimaSituazione,
-							difetto.dtAnnullamento)
+							difetto.dtAnnullamento,
+							difetto.dataDisponibilita)
 					.values(bean.getCdDifetto(),
 							bean.getDmalmDifettoProdottoPk(),
 							bean.getDmalmProjectFk02(),
@@ -356,7 +359,8 @@ public class DifettoDAO {
 							bean.getDtModificaRecordDifetto(), bean.getStgPk(),
 							bean.getDmalmUserFk06(), bean.getUri(),
 							bean.getEffortCostoSviluppo(), new Short("1"),
-							bean.getDtAnnullamento()).execute();
+							bean.getDtAnnullamento(),
+							bean.getDtDisponibilita()).execute();
 
 			connection.commit();
 
@@ -413,7 +417,8 @@ public class DifettoDAO {
 							difetto.effortCostoSviluppo,
 							difetto.flagUltimaSituazione,
 							difetto.dtAnnullamento, difetto.changed,
-							difetto.annullato)
+							difetto.annullato,
+							difetto.dataDisponibilita)
 					.values(bean.getCdDifetto(),
 							pkValue == true ? bean.getDmalmDifettoProdottoPk()
 									: StringTemplate
@@ -448,7 +453,8 @@ public class DifettoDAO {
 							bean.getStgPk(), bean.getDmalmUserFk06(),
 							bean.getUri(), bean.getEffortCostoSviluppo(),
 							pkValue == true ? new Short("1")  : bean.getFlagUltimaSituazione(), bean.getDtAnnullamento(),
-							bean.getChanged(), bean.getAnnullato()).execute();
+							bean.getChanged(), bean.getAnnullato(),
+							bean.getDtDisponibilita()).execute();
 
 			connection.commit();
 
@@ -604,6 +610,7 @@ public class DifettoDAO {
 			d.setTempoTotRisoluzioneDifetto(t
 					.get(difetto.tempoTotRisoluzioneDifetto));
 			d.setUri(t.get(difetto.uri));
+			d.setDtDisponibilita(t.get(difetto.dataDisponibilita));
 
 			return d;
 

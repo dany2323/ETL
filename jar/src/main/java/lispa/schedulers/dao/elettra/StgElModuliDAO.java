@@ -2,6 +2,7 @@ package lispa.schedulers.dao.elettra;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -16,6 +17,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.queryimplementation.fonte.elettra.QElettraModuli;
 import lispa.schedulers.queryimplementation.staging.elettra.QStgElModuli;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -83,12 +85,9 @@ public class StgElModuliDAO {
 			SQLTemplates dialect = new HSQLDBTemplates(true); // use quote
 
 			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
-			
-			logger.info("Lettura tabella DM_ALM_EL_MODULI");
+
 			List<Tuple> moduli = query.from(qElettraModuli).list(
 					qElettraModuli.all());
-			logger.info("Fine lettura tabella DM_ALM_EL_MODULI");
-			
 			List<ElettraModuli> emList = getModuliFromCSV();
 			for (Tuple row : moduli) {
 				righeInserite += new SQLInsertClause(connection, dialect,
@@ -121,7 +120,7 @@ public class StgElModuliDAO {
 								row.get(qElettraModuli.descrizioneModuloOreste),
 								row.get(qElettraModuli.moduloOresteAnnullato),
 								row.get(qElettraModuli.dfvModuloOresteAnnullato),
-								row.get(qElettraModuli.responsabileOreste),
+								StringUtils.getMaskedValue(row.get(qElettraModuli.responsabileOreste)),
 								row.get(qElettraModuli.sottosistema),
 								row.get(qElettraModuli.tecnologia),
 								row.get(qElettraModuli.tipoModulo),
@@ -554,7 +553,7 @@ public class StgElModuliDAO {
 		return moduli;
 	}
 
-	public static List<ElettraModuli> getModuliFromCSV() {
+	public static List<ElettraModuli> getModuliFromCSV() throws NoSuchAlgorithmException, DAOException {
 		List<ElettraModuli> result = new ArrayList<ElettraModuli>();
 		String[] nextLine;
 		String[] rowToDB = null;
@@ -613,7 +612,7 @@ public class StgElModuliDAO {
 					em.setDescrizioneModuloOreste(rowToDB[8]);
 					em.setModuloOresteAnnullato(rowToDB[9]);
 					em.setDfvModuloOresteAnnullato(rowToDB[10]);
-					em.setResponsabileOreste(rowToDB[11]);
+					em.setResponsabileOreste(StringUtils.getMaskedValue(rowToDB[11]));
 					em.setSottosistema(rowToDB[12]);
 					em.setTecnologia(rowToDB[13]);
 					em.setTipoModulo(rowToDB[14]);

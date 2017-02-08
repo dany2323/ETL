@@ -45,15 +45,18 @@ public class DmAlmETL {
 
 		logger.info("Esecuzione SFERA: "
 				+ ExecutionManager.getInstance().isExecutionSfera());
-
+		/*
 		logger.info("Esecuzione EDMA/ORESTE/SGR_CM: "
 				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
-
+		*/
+		logger.info("Esecuzione EDMA/SGR_CM: "
+				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
+		
 		logger.info("Esecuzione MPS: "
 				+ ExecutionManager.getInstance().isExecutionMps());
 
 		logger.info("START DmAlmFillStaging.doWork()");
-		DmAlmFillStaging.doWork();
+		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
 		logger.info("STOP DmAlmFillStaging.doWork()");
 
 		if (!RecoverManager.getInstance().isRecovered()) {
@@ -64,7 +67,7 @@ public class DmAlmETL {
 			}
 
 			logger.info("START DmAlmCleaning.doWork()");
-			DmAlmCleaning.doWork();
+			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
 			logger.info("STOP DmAlmCleaning.doWork()");
 
 			try {
@@ -142,7 +145,7 @@ public class DmAlmETL {
 				esito += DmAlmConstants.ETLMPSKO;
 
 			esitoBody = DmAlmConstants.ETLOK;
-			esitoBody += "\nEDMA/ORESTE/SGR_CM: " + (ExecutionManager.getInstance().isExecutionElettraSgrcm()?"Eseguito":"NON eseguito");
+			esitoBody += "\nEDMA/SGR_CM: " + (ExecutionManager.getInstance().isExecutionElettraSgrcm()?"Eseguito":"NON eseguito");
 			esitoBody += "\nSFERA: " + (ExecutionManager.getInstance().isExecutionSfera()?"Eseguito":"NON eseguito");
 			esitoBody += "\nMPS: " + (ExecutionManager.getInstance().isExecutionMps()?"Eseguito":"NON eseguito");
 			if (RecoverManager.getInstance().isRecoveredStagingMps())

@@ -1,11 +1,17 @@
 package lispa.schedulers.utils;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import lispa.schedulers.exception.DAOException;
+
 public class StringUtils {
+	
 	public static String truncate(String value, int length) {
 		if (value != null && value.length() > length)
 			value = value.substring(0, length);
@@ -164,6 +170,33 @@ public class StringUtils {
 		}
 
 		return target_index;
+	}
+	
+	
+	
+	private static String hash(String plaintext) throws NoSuchAlgorithmException{
+		if (plaintext == null) {
+			return null;
+		}
+		MessageDigest m = MessageDigest.getInstance("MD5");
+		m.reset();
+		m.update(plaintext.getBytes());
+		byte[] digest = m.digest();
+		BigInteger bigInt = new BigInteger(1,digest);
+		String hashtext = bigInt.toString(16);
+		// Now we need to zero pad it if you actually want the full 32 chars.
+		while(hashtext.length() < 32 ){
+		  hashtext = "0"+hashtext;
+		}		
+		return hashtext.toUpperCase();
+	}
+	
+	public static String getMaskedValue(String input) throws DAOException, NoSuchAlgorithmException{
+		if(ConfigUtils.isSviluppo()){
+			return hash(input);
+		} else {
+			return input;
+		}
 	}
 
 }

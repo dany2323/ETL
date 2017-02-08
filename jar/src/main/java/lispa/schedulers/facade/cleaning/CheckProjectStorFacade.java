@@ -254,7 +254,6 @@ public class CheckProjectStorFacade {
 											.list(difetto.dmalmDifettoProdottoPk);
 									if (pk.size() > 0) {
 										for (Integer i : pk) {
-											logger.debug("Eseguo update");
 											DmalmDifettoProdotto d = DifettoDAO
 													.getDifetto(i);
 											if (d != null) {
@@ -262,7 +261,6 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaDifetto(
 																d, p);
 												if (!exist) {
-													logger.debug("Non esiste quindi insert update");
 													if (d.getRankStatoDifetto() == 1) {
 														DifettoDAO
 																.updateRankFlagUltimaSituazione(

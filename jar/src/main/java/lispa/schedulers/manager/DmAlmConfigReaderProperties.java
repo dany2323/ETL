@@ -6,7 +6,7 @@ public class DmAlmConfigReaderProperties
 	public static final String PROPERTIES_READER_FILE_NAME = "datamart.properties";
 	
 	//wi-191
-	public static final String VERSIONE_ETL = "4.3.01";
+	public static final String VERSIONE_ETL = "4.7.00";
 	
 	//QUERY FATTI
 	public static final String SQL_ANOMALIA					    = "anomalia.sql";

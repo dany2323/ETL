@@ -54,7 +54,7 @@ public class QStgUnitaOrganizzative extends com.mysema.query.sql.RelationalPathB
 
     public final StringPath indirizzoEmail = createString("INDIRIZZO_EMAIL");
 
-    public final StringPath interno = createString("INTERNO");
+    public final NumberPath<Integer> interno = createNumber("INTERNO", Integer.class);
 
     public final StringPath note = createString("NOTE");
 

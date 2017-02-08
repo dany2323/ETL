@@ -16,6 +16,8 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.mps.QDmalmStgMpsAttivita;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MpsUtils;
+import lispa.schedulers.utils.NumberUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -160,12 +162,10 @@ public class StgMpsAttivitaDAO {
 												.get("BO_ATTIVITA.TIPO_ATTIVITA")),
 										row.get(mapping
 												.get("BO_ATTIVITA.STATO")),
-										row.get(mapping
-												.get("BO_ATTIVITA.INSERITO_DA")),
+										NumberUtils.getMaskedValue(row.get(mapping.get("BO_ATTIVITA.INSERITO_DA"))),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("BO_ATTIVITA.INSERITO_IL"))),
-										row.get(mapping
-												.get("BO_ATTIVITA.MODIFICATO_DA")),
+										NumberUtils.getMaskedValue(row.get(mapping.get("BO_ATTIVITA.MODIFICATO_DA"))),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("BO_ATTIVITA.MODIFICATO_IL"))),
 										row.get(mapping

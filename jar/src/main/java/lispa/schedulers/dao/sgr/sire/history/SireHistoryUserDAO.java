@@ -10,6 +10,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryUser;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -82,14 +83,14 @@ public class SireHistoryUserDAO
 								row.get(fonteUsers.cAvatarfilename),
 								row.get(fonteUsers.cDeleted),
 								row.get(fonteUsers.cDisablednotifications),
-								row.get(fonteUsers.cEmail),
-								row.get(fonteUsers.cId),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cEmail)),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cId)),
 								row.get(fonteUsers.cInitials),
 								row.get(fonteUsers.cIsLocal),
-								row.get(fonteUsers.cName),
-								row.get(fonteUsers.cPk),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cName)),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cPk)),
 								row.get(fonteUsers.cRev),
-								row.get(fonteUsers.cUri),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cUri)),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_USER_SEQ.nextval")
 								)

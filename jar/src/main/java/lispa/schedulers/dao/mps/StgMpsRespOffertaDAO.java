@@ -16,6 +16,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.mps.QDmalmStgMpsRespOfferta;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MpsUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -145,31 +146,27 @@ public class StgMpsRespOffertaDAO {
 								.values(row
 										.get(mapping
 												.get("BO_RESPONSABILI_OFFERTA.IDCONTRATTO")),
-										row.get(mapping.get("Account Manager")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Account Manager"))),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("Data di firma dell'A.M."))),
 										row.get(mapping
 												.get("BO_RESPONSABILI_OFFERTA.AM_FIRMATO")),
-										row.get(mapping
-												.get("Senior Account Manager")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Senior Account Manager"))),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("Data di firma del S.A.M"))),
 										row.get(mapping
 												.get("BO_RESPONSABILI_OFFERTA.SAM_FIRMATO")),
-										row.get(mapping
-												.get("Vice Direttore Generale")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Vice Direttore Generale"))),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("Data di firma del V.D.G."))),
 										row.get(mapping
 												.get("BO_RESPONSABILI_OFFERTA.VDG_FIRMATO")),
-										row.get(mapping
-												.get("Direttore Generale")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Direttore Generale"))),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("Data di firma del D.G."))),
 										row.get(mapping
 												.get("BO_RESPONSABILI_OFFERTA.DG_FIRMATO")),
-										row.get(mapping
-												.get("Consigliere Delegato")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Consigliere Delegato"))),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("Data di firma del C.D."))),
 										row.get(mapping
@@ -179,17 +176,15 @@ public class StgMpsRespOffertaDAO {
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("Data Firma Copertina"))),
 										row.get(mapping.get("Stato Razionale")),
-										row.get(mapping.get("Controller")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Controller"))),
 										DateUtils.stringToTimestamp(row
 												.get(mapping
 														.get("Data Verifica"))),
 										row.get(mapping
 												.get("Prossimo Firmatario Razionale")),
-										row.get(mapping
-												.get("Razionale Digitale")),
-										row.get(mapping.get("Nota Razionale")),
-										row.get(mapping
-												.get("Motivazione Rigetto od Approvazione")))
+										StringUtils.getMaskedValue(row.get(mapping.get("Razionale Digitale"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Nota Razionale"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Motivazione Rigetto od Approvazione"))))
 								.execute();
 					}
 

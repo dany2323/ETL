@@ -86,6 +86,16 @@ public class DmalmAnomaliaProdottoDummy {
 	private String contestazione;
 
 	private String noteContestazione;
+	
+	private java.sql.Timestamp dtDisponibilita;
+
+	public java.sql.Timestamp getDtDisponibilita() {
+		return dtDisponibilita;
+	}
+
+	public void setDtDisponibilita(java.sql.Timestamp dtDisponibilita) {
+		this.dtDisponibilita = dtDisponibilita;
+	}
 
 	public String getChanged() {
 		return changed;

@@ -22,6 +22,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryProject;
 import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRoles;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
@@ -745,10 +746,10 @@ public class SIREUserRolesXML {
 												qDmAlmUserRoles.dataCaricamento,
 												qDmAlmUserRoles.dataModifica,
 												qDmAlmUserRoles.revision)
-												.values(StringTemplate
-														.create("DM_ALM_USER_ROLES_SEQ.nextval"),
+												.values(
+														StringTemplate.create("DM_ALM_USER_ROLES_SEQ.nextval"),
 														projectname,
-														eElement.getAttribute("name"),
+														StringUtils.getMaskedValue(eElement.getAttribute("name")),
 														el.getAttribute("name"),
 														myrepo,
 														dataEsecuzione,

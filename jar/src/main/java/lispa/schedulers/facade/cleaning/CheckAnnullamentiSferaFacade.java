@@ -1,6 +1,8 @@
 package lispa.schedulers.facade.cleaning;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
@@ -11,16 +13,23 @@ import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.DmAlmMisuraDAO;
 import lispa.schedulers.dao.sfera.DmAlmProgettoSferaDAO;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmMisura;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmProgettoSfera;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MisuraUtils;
 
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 
 public class CheckAnnullamentiSferaFacade {
 	private static Logger logger = Logger
@@ -47,17 +56,44 @@ public class CheckAnnullamentiSferaFacade {
 			 * validità e con il campo ANNULLATO impostato a
 			 * "ANNULLATO FISICAMENTE"
 			 */
+			
+			/*
+			 * GESTIONE ANNULLATO STORICAMENTE
+			 * CERCO LE ASM ELIMINATE RISPETTO ALLA PRECEDENTE ESECUZIONE
+			 * PER OGNI ASM TROVATA VERIFICO SE HA SOTTO DEI PROGETTI ATTIVI
+			 * SE SI CONTINUO COME ORA
+			 * SE NO (NON  NE HA O HA SOLO RECORD STORICI) CANCELLO FISICAMENTE I RECORD -ASM, PROGETTI, MISURE
+			 * DM_ALM-229
+			 */
 
 			List<DmalmMisura> asmRemovedList = StgMisuraDAO.getRemoveFromFile(
 					"ASM", dataEsecuzione);
-
+			/*
+			 * asmRemovedList contiene tutte le ASM presenti nel target ma non
+			 * nell'usltima lettura dallo staging
+			 * 
+			 */
+			
 			List<DmalmMisura> projectRemovedList = StgMisuraDAO
 					.getRemoveFromFile("PRJ", dataEsecuzione);
 
 			List<DmalmMisura> measuresRemovedList = StgMisuraDAO
 					.getRemoveFromFile("MIS", dataEsecuzione);
 
-			for (DmalmMisura asmRemoved : asmRemovedList) {
+			/*
+			 * devo splittare asmRemovedList in due liste:
+			 * una con le ASM eliminate storicamente
+			 * una con le ASM eliminate fisicamente 
+			 * 
+			 */
+			List<DmalmMisura> asmRemovedListStoricamente = getAsmAnnullateStoricamente(asmRemovedList);
+			List<DmalmMisura> asmRemovedListFisicamente = getAsmAnnullateFisicamente(asmRemovedList, asmRemovedListStoricamente);
+			
+			for(DmalmMisura m : asmRemovedListStoricamente) {
+				removeStoricamente(m);
+			}
+			
+			for (DmalmMisura asmRemoved : asmRemovedListFisicamente) {
 				logger.debug("Riga da annullare - ASM: "
 						+ asmRemoved.getIdAsm());
 
@@ -478,5 +514,136 @@ public class CheckAnnullamentiSferaFacade {
 
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
+	}
+
+	private static List<DmalmMisura> getAsmAnnullateFisicamente(List<DmalmMisura> asmRemovedList,
+			List<DmalmMisura> asmRemovedListStoricamente) {
+		List<DmalmMisura> asmRemovedListFisicamente = new ArrayList<DmalmMisura>();
+		for(DmalmMisura m : asmRemovedList) {
+			if (!containsMisura(m, asmRemovedListStoricamente)) {
+				asmRemovedListFisicamente.add(m);
+			}
+		}
+		return asmRemovedListFisicamente;
+	}
+
+	private static void removeStoricamente(DmalmMisura m) throws DAOException {
+		/*Recupero PK dell'ASM
+		 * prendo tutti i progetti sfera di quella ASM
+		 * per ogni progetto prendo la misura
+		 * cancello la misura
+		 * cancello i progetti
+		 * cancello l'asm
+		 * 
+		 */
+		ConnectionManager cm = null;
+		Connection connection = null;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			connection.setAutoCommit(false);
+
+			Integer idAsmPk = getDmalmAsmPkFromIdAsm(m.getIdAsm(), dialect, cm, connection);
+			
+			SQLQuery query = new SQLQuery(connection, dialect);
+			QDmalmProgettoSfera progettoSfera = QDmalmProgettoSfera.dmalmProgettoSfera;
+			List<Tuple> progettiSfera = query.from(QDmalmProgettoSfera.dmalmProgettoSfera)
+			 	.where(progettoSfera.dmalmAsmFk.eq(idAsmPk))
+			 	.list(progettoSfera.all());
+			 
+			 for (Tuple prj : progettiSfera) {
+				 Integer misuraPk = prj.get(progettoSfera.dmalmStgMisuraPk);
+				 QDmalmMisura misura = QDmalmMisura.dmalmMisura;
+				 SQLDeleteClause deleteMisura = new SQLDeleteClause(connection, dialect, misura);
+				 deleteMisura.where(misura.dmalmMisuraPk.eq(misuraPk));
+				 deleteMisura.execute();
+				 
+				 SQLDeleteClause deleteProject = new SQLDeleteClause(connection, dialect, progettoSfera);
+				 deleteProject.where(progettoSfera.dmalmProgettoSferaPk.eq(prj.get(progettoSfera.dmalmProgettoSferaPk)));
+				 deleteProject.execute();
+			 }
+			 QDmalmAsm asm = QDmalmAsm.dmalmAsm;
+			 SQLDeleteClause deleteAsm = new SQLDeleteClause(connection, dialect, asm);
+			 deleteAsm.where(asm.dmalmAsmPk.eq(idAsmPk));
+			 deleteAsm.execute();
+			 
+			 connection.commit();
+			
+		} catch (Exception e) {
+			 ErrorManager.getInstance().exceptionOccurred(true, e);
+		 }
+		 finally {
+			 if (cm != null) {
+				 cm.closeConnection(connection);
+			 }
+		 }
+	}
+
+	private static boolean containsMisura(DmalmMisura m, List<DmalmMisura> asmRemovedListStoricamente) {
+		for(DmalmMisura check : asmRemovedListStoricamente) {
+			if (check.getIdAsm() == m.getIdAsm()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/*
+	 * per ogni asm:
+	 * 
+	 * select from DMALM_ASM where id_asm = ? adn data_fine_validita = 9999
+	 * 
+	 * ottengo DMALM_ASM_PK
+	 * 
+	 * per ogni DMALM_ASM_PK 
+	 * select * from DMALM_PROGETTO_SFERA where DMALM_ASM_FK = DMALM_ASM_PK and fine_validita = 9999
+	 * 
+	 * se trovo 0 record, allora l'ASM è da annullare storicamente
+	 * 
+	 */
+	private static List<DmalmMisura> getAsmAnnullateStoricamente(List<DmalmMisura> asmRemovedList) throws DAOException {
+		 List<DmalmMisura> annullatiStoricamente = new ArrayList<DmalmMisura>();
+		 ConnectionManager cm = null;
+		 Connection connection = null;
+		 SQLTemplates dialect = new HSQLDBTemplates();
+		 for(DmalmMisura candidate : asmRemovedList) {
+			 try {
+				 cm = ConnectionManager.getInstance();
+				 connection = cm.getConnectionOracle();
+				 
+				 Integer idAsmPk = getDmalmAsmPkFromIdAsm(candidate.getIdAsm(), dialect, cm, connection);
+
+				 SQLQuery query2 = new SQLQuery(connection, dialect);
+				 QDmalmProgettoSfera progettoSfera = QDmalmProgettoSfera.dmalmProgettoSfera;
+				 int numberOfProjects = query2.from(QDmalmProgettoSfera.dmalmProgettoSfera)
+				 	.where(progettoSfera.dmalmAsmFk.eq(idAsmPk))
+				 	.where(progettoSfera.dataFineValidita.eq(DateUtils.setDtFineValidita9999())).list(progettoSfera.dmalmProgettoSferaPk).size();
+				 
+				 if (numberOfProjects == 0) {
+					 annullatiStoricamente.add(candidate);
+				 }
+				 
+			 }
+			 catch (Exception e) {
+				 ErrorManager.getInstance().exceptionOccurred(true, e);
+			 }
+			 finally {
+				 if (cm != null) {
+					 cm.closeConnection(connection);
+				 }
+			 }
+		 }
+		 
+		return annullatiStoricamente;
+	}
+	
+	private static Integer getDmalmAsmPkFromIdAsm(Short idAsm, SQLTemplates dialect, ConnectionManager cm, Connection connection) throws Exception {
+		 SQLQuery query = new SQLQuery(connection, dialect);
+		 QDmalmAsm asm = QDmalmAsm.dmalmAsm;
+		 Integer idAsmPk = query.from(QDmalmAsm.dmalmAsm)
+		 	.where(asm.idAsm.eq(idAsm))
+		 	.where(asm.dataFineValidita.eq(DateUtils.setDtFineValidita9999())).list(asm.dmalmAsmPk).get(0);
+		 return idAsmPk;
 	}
 }

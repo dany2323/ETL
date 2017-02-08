@@ -30,6 +30,21 @@ public class DmalmElPersonale {
     private Date dataFineValidita;
 	private String annullato;
 	private Date dataAnnullamento;
+	 //Aggiunte DM_ALM-237
+    private Integer unitaOrganizzativaFk;
+    public Integer getUnitaOrganizzativaFk() {
+		return unitaOrganizzativaFk;
+	}
+	public void setUnitaOrganizzativaFk(Integer unitaOrganizzativaFk) {
+		this.unitaOrganizzativaFk = unitaOrganizzativaFk;
+	}
+	public Integer getUnitaOrganizzativaFlatFk() {
+		return unitaOrganizzativaFlatFk;
+	}
+	public void setUnitaOrganizzativaFlatFk(Integer unitaOrganizzativaFlatFk) {
+		this.unitaOrganizzativaFlatFk = unitaOrganizzativaFlatFk;
+	}
+	private Integer unitaOrganizzativaFlatFk;
 	
 	public Integer getPersonalePk() {
 		return personalePk;

@@ -79,12 +79,10 @@ public class StgElAmbienteTecnologicoDAO {
 			SQLTemplates dialect = new HSQLDBTemplates();
 
 			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
-			
-			logger.info("Lettuta tabella DM_ALM_EL_AMB_TECNOLOGICO");
+
 			List<Tuple> moduli = query.from(qElettraAmbienteTecnologico).list(
 					qElettraAmbienteTecnologico.all());
-			logger.info("Fine lettura tabella DM_ALM_EL_AMB_TECNOLOGICO");
-			
+
 			for (Tuple row : moduli) {
 				righeInserite += new SQLInsertClause(connection, dialect,
 						qStgElAmbientetecnologico)

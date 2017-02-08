@@ -17,6 +17,7 @@ import lispa.schedulers.queryimplementation.staging.mps.QDmalmStgMpsContratti;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MpsUtils;
 import lispa.schedulers.utils.NumberUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -170,7 +171,7 @@ public class StgMpsContrattiDAO {
 								.values(row
 										.get(mapping.get("ID del Contratto")),
 										row.get(mapping.get("Codice Contratto")),
-										row.get(mapping.get("Titolo Contratto")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Titolo Contratto"))),
 										row.get(mapping.get("Anno Contratto")),
 										DateUtils.stringToTimestamp(row
 												.get(mapping.get("Data Inizio"))),
@@ -183,12 +184,13 @@ public class StgMpsContrattiDAO {
 										row.get(mapping.get("Variato")),
 										row.get(mapping
 												.get("Numero Variazioni")),
-										row.get(mapping.get("Codice Direzione")),
-										row.get(mapping.get("Direzione")),
-										row.get(mapping.get("Codice U.O.")),
-										row.get(mapping.get("U.O.")),
-										row.get(mapping.get("Codice Struttura")),
-										row.get(mapping.get("Struttura")),
+										
+										StringUtils.getMaskedValue(row.get(mapping.get("Codice Direzione"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Direzione"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Codice U.O."))),
+										StringUtils.getMaskedValue(row.get(mapping.get("U.O."))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Codice Struttura"))),
+										StringUtils.getMaskedValue(row.get(mapping.get("Struttura"))),
 										NumberUtils.fromStringToDouble(row.get(mapping
 												.get("Totale Contratto (assoluto)"))),
 										NumberUtils.fromStringToDouble(row.get(mapping
@@ -203,8 +205,7 @@ public class StgMpsContrattiDAO {
 												.get("Totale Fatturato (assoluto)"))),
 										NumberUtils.fromStringToDouble(row.get(mapping
 												.get("Totale Fatturabile (assoluto)"))),
-										row.get(mapping
-												.get("Prossimo Firmatario")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Prossimo Firmatario"))),
 										DateUtils.stringToTimestamp(row
 												.get(mapping.get("In Corso il"))),
 										row.get(mapping.get("Numero Rilasci")),
@@ -223,9 +224,8 @@ public class StgMpsContrattiDAO {
 												.get("Motivo Variazione")),
 										row.get(mapping.get("REPOSITORY")),
 										row.get(mapping.get("Priorita")),
-										row.get(mapping
-												.get("BO_CONTRATTI.ID_SM")),
-										row.get(mapping.get("Service Manager")))
+										row.get(mapping.get("BO_CONTRATTI.ID_SM")),
+										StringUtils.getMaskedValue(row.get(mapping.get("Service Manager"))) )
 								.execute();
 					}
 

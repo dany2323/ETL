@@ -56,7 +56,7 @@ public class QDmalmProdotto extends com.mysema.query.sql.RelationalPathBase<Dmal
 
     public final StringPath nome = createString("NOME");
 
-    public final StringPath dmalmPersonaleFk02 = createString("DMALM_PERSONALE_FK_02");
+    public final NumberPath<Integer> dmalmPersonaleFk02 = createNumber("DMALM_PERSONALE_FK_02", Integer.class);
 
     public final StringPath sigla = createString("SIGLA");
 

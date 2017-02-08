@@ -16,6 +16,7 @@ import lispa.schedulers.queryimplementation.staging.oreste.QStgProdottiArchitett
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -92,10 +93,10 @@ public class ProdottiArchitettureDAO {
 								row.get(viewProdottiArchitetture.nomeProdotto),
 								row.get(viewProdottiArchitetture.descrizioneProdotto),
 								row.get(viewProdottiArchitetture.edmaAreaProdotto),
-								row.get(viewProdottiArchitetture.edmaRespProdotto),
+								StringUtils.getMaskedValue(row.get(viewProdottiArchitetture.edmaRespProdotto)),
 								row.get(viewProdottiArchitetture.prodottoAnnullato),
 								row.get(viewProdottiArchitetture.dfvProdottoAnnullato),
-								row.get(viewProdottiArchitetture.clasfAmbitoManutenzione),
+								StringUtils.getMaskedValue(row.get(viewProdottiArchitetture.clasfAmbitoManutenzione)),
 								row.get(viewProdottiArchitetture.clasfAreaTematica),
 								row.get(viewProdottiArchitetture.clasfBaseDatiEtl),
 								row.get(viewProdottiArchitetture.clasfBaseDatiLettura),

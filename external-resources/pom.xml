@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>it.lispa.staff</groupId>
 		<artifactId>dm_alm</artifactId>
-		<version>4.3.00</version>
+		<version>4.7.00</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>

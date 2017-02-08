@@ -78,11 +78,9 @@ public class StgElClassificatoriDAO {
 			SQLTemplates dialect = new HSQLDBTemplates();
 
 			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
-			
-			logger.info("Lettura tabella DM_ALM_EL_CLASSIFICATORI");
+
 			List<Tuple> classificatori = query.from(qElettraClassificatori)
 					.list(qElettraClassificatori.all());
-			logger.info("Fine lettura tabella DM_ALM_EL_CLASSIFICATORI");
 
 			for (Tuple row : classificatori) {
 				righeInserite += new SQLInsertClause(connection, dialect,

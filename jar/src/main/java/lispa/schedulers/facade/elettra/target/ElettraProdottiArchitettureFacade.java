@@ -103,6 +103,31 @@ public class ElettraProdottiArchitettureFacade {
 											prodotto.getAnnullato())) {
 								modificato = true;
 							}
+							//Modifica per DM_ALM-224
+							if (BeanUtils
+									.areDifferent(
+											row.get(qDmalmElProdottiArchitetture.ambitoTecnologico),
+											prodotto.getAmbitoTecnologico())) {
+								modificato = true;
+							}
+							if (BeanUtils
+									.areDifferent(
+											row.get(qDmalmElProdottiArchitetture.ambitoManutenzioneDenom),
+											prodotto.getAmbitoManutenzioneDenom())) {
+								modificato = true;
+							}
+							if (BeanUtils
+									.areDifferent(
+											row.get(qDmalmElProdottiArchitetture.ambitoManutenzioneCodice),
+											prodotto.getAmbitoManutenzioneCodice())) {
+								modificato = true;
+							}
+							if (BeanUtils
+									.areDifferent(
+											row.get(qDmalmElProdottiArchitetture.stato),
+											prodotto.getStato())) {
+								modificato = true;
+							}
 
 							if (modificato) {
 								righeModificate++;
@@ -134,16 +159,16 @@ public class ElettraProdottiArchitettureFacade {
 			//DMALM-216 associazione project Unità Organizzativa Flat
 			//ricarica il valore della Fk ad ogni esecuzione
 			
-				QueryManager qm = QueryManager.getInstance();
+			QueryManager qm = QueryManager.getInstance();
 
-				logger.info("INIZIO Update Prodotti Architetture UnitaOrganizzativaFlatFk");
-				
-				qm.executeMultipleStatementsFromFile(
-						DmAlmConstants.M_UPDATE_EL_PROD_ARCH_UOFLATFK,
-						DmAlmConstants.M_SEPARATOR);
-				
-				logger.info("FINE Update Prodotti Architetture UnitaOrganizzativaFlatFk");
+			logger.info("INIZIO Update Prodotti Architetture UnitaOrganizzativaFlatFk");
 			
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_EL_PROD_ARCH_UOFLATFK,
+					DmAlmConstants.M_SEPARATOR);
+			
+			logger.info("FINE Update Prodotti Architetture UnitaOrganizzativaFlatFk");
+		
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(prodottiArchitettureTmp));
