@@ -153,7 +153,7 @@ public class StgMpsAttivitaDAO {
 												.get("BO_ATTIVITA.DATA_INIZIO"))),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("BO_ATTIVITA.DATA_FINE"))),
-										row.get(mapping.get("Avanzamento")),
+										row.get(mapping.get("Avanzamento")).replace(",", "."),
 										DateUtils.stringToTimestamp(row.get(mapping
 												.get("Data Ultimo Avanzamento"))),
 										row.get(mapping
