@@ -361,7 +361,7 @@ public class SIREUserRolesXML {
 										.values(StringTemplate
 												.create("DM_ALM_USER_ROLES_SEQ.nextval"),
 												DmAlmConstants.GLOBAL,
-												eElement.getAttribute("name"),
+												StringUtils.getMaskedValue(eElement.getAttribute("name")),
 												el.getAttribute("name"),
 												myrepo, dataEsecuzione,
 												dataEsecuzione).addBatch();
