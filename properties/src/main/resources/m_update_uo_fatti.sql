@@ -4,7 +4,7 @@
 	select DMALM_UNITAORGANIZZATIVA_FK_03 from dmalm_project p where p.DMALM_PROJECT_PK = wi.DMALM_PROJECT_FK_02); 
 	update dmalm_build wi set DMALM_STRUTTURA_ORG_FK_01 = (
 	select DMALM_UNITAORGANIZZATIVA_FK_03 from dmalm_project p where p.DMALM_PROJECT_PK = wi.DMALM_PROJECT_FK_02); 
-	update DMALM_CLASSIFICATORE_DEMAND wi set DMALM_STRUTTURA_ORG_FK_01 = (
+	update DMALM_CLASSIFICATORE wi set DMALM_STRUTTURA_ORG_FK_01 = (
 	select DMALM_UNITAORGANIZZATIVA_FK_03 from dmalm_project p where p.DMALM_PROJECT_PK = wi.DMALM_PROJECT_FK_02); 
 	update dmalm_difetto_prodotto wi set DMALM_STRUTTURA_ORG_FK_01 = (
 	select DMALM_UNITAORGANIZZATIVA_FK_03 from dmalm_project p where p.DMALM_PROJECT_PK = wi.DMALM_PROJECT_FK_02); 

@@ -7,7 +7,7 @@ update DMALM_ANOMALIA_PRODOTTO d set DMALM_TEMPO_FK_04 = (
  update DMALM_BUILD d set DMALM_TEMPO_FK_04 = (
  select nvl(DMALM_TEMPO_PK, 0) from dmalm_tempo where DT_OSSERVAZIONE = trunc(d.DT_STORICIZZAZIONE)
 );
- update DMALM_CLASSIFICATORE_DEMAND d set DMALM_TEMPO_FK_04 = (
+ update DMALM_CLASSIFICATORE d set DMALM_TEMPO_FK_04 = (
  select nvl(DMALM_TEMPO_PK, 0) from dmalm_tempo where DT_OSSERVAZIONE = trunc(d.DT_STORICIZZAZIONE)
 ); 
  update DMALM_DIFETTO_PRODOTTO d set DMALM_TEMPO_FK_04 = (

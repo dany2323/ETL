@@ -339,5 +339,5 @@ AS
            DMALM_PROJECT_FK_02 AS PROJECT_FK,
            DMALM_STATO_WORKITEM_FK_03 AS STATO_FK,
            DMALM_TEMPO_FK_04 AS TEMPO_FK
-      FROM dmalm_classificatore_demand);
+      FROM dmalm_classificatore);
 SPOOL OFF;

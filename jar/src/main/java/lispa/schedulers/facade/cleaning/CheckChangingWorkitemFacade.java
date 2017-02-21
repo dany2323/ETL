@@ -15,7 +15,7 @@ import lispa.schedulers.queryimplementation.target.QTotal;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaAssistenza;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatoreDemand;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
@@ -372,10 +372,10 @@ public class CheckChangingWorkitemFacade {
 							new SQLUpdateClause(
 									connection,
 									dialect,
-									QDmalmClassificatoreDemand.dmalmClassificatoreDemand)
-									.where(QDmalmClassificatoreDemand.dmalmClassificatoreDemand.dmalmClassificatorePk
+									QDmalmClassificatore.dmalmClassificatore)
+									.where(QDmalmClassificatore.dmalmClassificatore.dmalmClassificatorePk
 											.eq(tt.get(qTotal.dmalmPk)))
-									.set(QDmalmClassificatoreDemand.dmalmClassificatoreDemand.changed,
+									.set(QDmalmClassificatore.dmalmClassificatore.changed,
 											type).execute();
 						}
 						break;

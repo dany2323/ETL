@@ -7,7 +7,7 @@ import javax.annotation.Generated;
  */
 @Generated("com.mysema.query.codegen.BeanSerializer")
 
-public class DmalmClassificatoreDemand {
+public class DmalmClassificatore {
 
 	private String annullato;
 	
@@ -68,6 +68,56 @@ public class DmalmClassificatoreDemand {
 	private String titoloClassificatore;
 	
 	private String uriClassficatore;
+	
+	private String rmResponsabileProgetto;
+	
+	private boolean progettoInDeroga;
+	
+	private String assigneeProgettoItInDeroga;
+	
+	private String locationSorgenti;
+	
+	private String type;
+
+	public String getRmResponsabileProgetto() {
+		return rmResponsabileProgetto;
+	}
+
+	public void setRmResponsabileProgetto(String rmResponsabileProgetto) {
+		this.rmResponsabileProgetto = rmResponsabileProgetto;
+	}
+
+	public boolean isProgettoInDeroga() {
+		return progettoInDeroga;
+	}
+
+	public void setProgettoInDeroga(boolean progettoInDeroga) {
+		this.progettoInDeroga = progettoInDeroga;
+	}
+
+	public String getAssigneeProgettoItInDeroga() {
+		return assigneeProgettoItInDeroga;
+	}
+
+	public void setAssigneeProgettoItInDeroga(String assigneeProgettoItInDeroga) {
+		this.assigneeProgettoItInDeroga = assigneeProgettoItInDeroga;
+	}
+
+	public String getLocationSorgenti() {
+		return locationSorgenti;
+	}
+
+	public void setLocationSorgenti(String locationSorgenti) {
+		this.locationSorgenti = locationSorgenti;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getAnnullato() {
 		return annullato;

@@ -12,7 +12,7 @@ import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmBuild;
-import lispa.schedulers.bean.target.fatti.DmalmClassificatoreDemand;
+import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
 import lispa.schedulers.bean.target.fatti.DmalmFase;
@@ -38,7 +38,7 @@ import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaAssistenzaDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaProdottoDAO;
 import lispa.schedulers.dao.target.fatti.BuildDAO;
-import lispa.schedulers.dao.target.fatti.ClassificatoreDemandDAO;
+import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
 import lispa.schedulers.dao.target.fatti.DifettoDAO;
 import lispa.schedulers.dao.target.fatti.DocumentoDAO;
 import lispa.schedulers.dao.target.fatti.FaseDAO;
@@ -70,7 +70,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaAssistenza;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatoreDemand;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
@@ -127,7 +127,7 @@ public class CheckAnnullamentiSGRCMFacade {
 	private static QDmalmRichiestaGestione richiestaGestione = QDmalmRichiestaGestione.dmalmRichiestaGestione;
 	private static QDmalmAnomaliaAssistenza anomaliaAssistenza = QDmalmAnomaliaAssistenza.dmalmAnomaliaAssistenza;
 	private static QDmalmReleaseServizi releaseServizi = QDmalmReleaseServizi.dmalmReleaseServizi;
-	private static QDmalmClassificatoreDemand classificatoreDem = QDmalmClassificatoreDemand.dmalmClassificatoreDemand;
+	private static QDmalmClassificatore classificatore = QDmalmClassificatore.dmalmClassificatore;
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
 	private static List<String> unmarkedProjectsSire, unmarkedProjectsSiss,
@@ -1213,14 +1213,14 @@ public class CheckAnnullamentiSGRCMFacade {
 
 								case "classificatore_demand":
 									pk = query
-											.from(classificatoreDem)
-											.where(classificatoreDem.dmalmProjectFk02.eq(history
+											.from(classificatore)
+											.where(classificatore.dmalmProjectFk02.eq(history
 													.getDmalmProjectPk()))
-											.list(classificatoreDem.dmalmClassificatorePk);
+											.list(classificatore.dmalmClassificatorePk);
 									if (pk.size() > 0) {
 										for (Integer i : pk) {
-											DmalmClassificatoreDemand c = ClassificatoreDemandDAO
-													.getClassDem(i);
+											DmalmClassificatore c = ClassificatoreDAO
+													.getClassificatore(i);
 											if (c != null) {
 												if (c.getDtStoricizzazione()
 														.equals(dataEsecuzione)) {
@@ -1229,10 +1229,10 @@ public class CheckAnnullamentiSGRCMFacade {
 													c.setDtAnnullamento(null);
 													c.setDmalmProjectFk02(p
 															.getDmalmProjectPk());
-													ClassificatoreDemandDAO
-															.updateClassdem(c);
+													ClassificatoreDAO
+															.updateClass(c);
 												} else {
-													ClassificatoreDemandDAO
+													ClassificatoreDAO
 															.updateRank(c,
 																	new Double(
 																			0));
@@ -1241,8 +1241,8 @@ public class CheckAnnullamentiSGRCMFacade {
 													c.setDtAnnullamento(null);
 													c.setDmalmProjectFk02(p
 															.getDmalmProjectPk());
-													ClassificatoreDemandDAO
-															.insertClassDemUpdate(
+													ClassificatoreDAO
+															.insertClassUpdate(
 																	dataEsecuzione,
 																	c, false);
 												}
@@ -2197,14 +2197,14 @@ public class CheckAnnullamentiSGRCMFacade {
 
 									case "classificatore_demand":
 										pk = query
-												.from(classificatoreDem)
-												.where(classificatoreDem.dmalmProjectFk02.eq(history
+												.from(classificatore)
+												.where(classificatore.dmalmProjectFk02.eq(history
 														.getDmalmProjectPk()))
-												.list(classificatoreDem.dmalmClassificatorePk);
+												.list(classificatore.dmalmClassificatorePk);
 										if (pk.size() > 0) {
 											for (Integer i : pk) {
-												DmalmClassificatoreDemand c = ClassificatoreDemandDAO
-														.getClassDem(i);
+												DmalmClassificatore c = ClassificatoreDAO
+														.getClassificatore(i);
 												if (c != null) {
 													if (c.getDtStoricizzazione()
 															.equals(dataEsecuzione)) {
@@ -2213,10 +2213,10 @@ public class CheckAnnullamentiSGRCMFacade {
 														c.setDtAnnullamento(dataEsecuzione);
 														c.setDmalmProjectFk02(p
 																.getDmalmProjectPk());
-														ClassificatoreDemandDAO
-																.updateClassdem(c);
+														ClassificatoreDAO
+																.updateClass(c);
 													} else {
-														ClassificatoreDemandDAO
+														ClassificatoreDAO
 																.updateRank(
 																		c,
 																		new Double(
@@ -2226,8 +2226,8 @@ public class CheckAnnullamentiSGRCMFacade {
 														c.setDtAnnullamento(dataEsecuzione);
 														c.setDmalmProjectFk02(p
 																.getDmalmProjectPk());
-														ClassificatoreDemandDAO
-																.insertClassDemUpdate(
+														ClassificatoreDAO
+																.insertClassUpdate(
 																		dataEsecuzione,
 																		c,
 																		false);
@@ -2323,8 +2323,8 @@ public class CheckAnnullamentiSGRCMFacade {
 					dialect, documento);
 			SQLUpdateClause update_anomalia_ass = new SQLUpdateClause(conn,
 					dialect, anomaliaAssistenza);
-			SQLUpdateClause update_classificatoreDem = new SQLUpdateClause(
-					conn, dialect, classificatoreDem);
+			SQLUpdateClause update_classificatore = new SQLUpdateClause(
+					conn, dialect, classificatore);
 
 			while (rs.next()) {
 				String targetTipologiaWi = "DMALM_WI_GENERICO";
@@ -2663,21 +2663,21 @@ public class CheckAnnullamentiSGRCMFacade {
 					targetTipologiaWi = DmAlmConstants.TARGET_RELEASE_DI_PROG;
 					break;
 
-				case "classificatore_demand":
-					update_classificatoreDem
-							.where(classificatoreDem.cd_classificatore.eq(rs
+				case "classificatore":
+					update_classificatore
+							.where(classificatore.cd_classificatore.eq(rs
 									.getString("CODICE")))
-							.where(classificatoreDem.idRepository.eq(rs
+							.where(classificatore.idRepository.eq(rs
 									.getString("ID_REPOSITORY")))
-							.set(classificatoreDem.annullato,
+							.set(classificatore.annullato,
 									DmAlmConstants.FISICAMENTE)
-							.set(classificatoreDem.dtAnnullamento,
+							.set(classificatore.dtAnnullamento,
 									DataEsecuzione.getInstance()
 											.getDataEsecuzione()).execute();
-					update_classificatoreDem = new SQLUpdateClause(conn,
-							dialect, classificatoreDem);
+					update_classificatore = new SQLUpdateClause(conn,
+							dialect, classificatore);
 
-					targetTipologiaWi = DmAlmConstants.TARGET_CLASSIFICATORE_DEMAND;
+					targetTipologiaWi = DmAlmConstants.TARGET_CLASSIFICATORE;
 					break;
 				default:
 					logger.info("Tipologia Workitem non gestita - "

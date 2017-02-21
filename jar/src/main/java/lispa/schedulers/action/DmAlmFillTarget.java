@@ -58,7 +58,7 @@ import lispa.schedulers.facade.target.WorkitemUserAssigneeFacade;
 import lispa.schedulers.facade.target.fatti.AnomaliaAssistenzaFacade;
 import lispa.schedulers.facade.target.fatti.AnomaliaProdottoFacade;
 import lispa.schedulers.facade.target.fatti.BuildFacade;
-import lispa.schedulers.facade.target.fatti.ClassificatoreDemandFacade;
+import lispa.schedulers.facade.target.fatti.ClassificatoreFacade;
 import lispa.schedulers.facade.target.fatti.DifettoProdottoFacade;
 import lispa.schedulers.facade.target.fatti.DocumentoFacade;
 import lispa.schedulers.facade.target.fatti.FaseFacade;
@@ -345,8 +345,9 @@ public class DmAlmFillTarget {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
 				
-				if (!alreadyExecuted(DmAlmConstants.TARGET_CLASSIFICATORE_DEMAND)) {
-					ClassificatoreDemandFacade.execute(dataEsecuzione);
+				logger.info("START ClassificatoreFacade.execute ");
+				if (!alreadyExecuted(DmAlmConstants.TARGET_CLASSIFICATORE)) {
+					ClassificatoreFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}

@@ -36,7 +36,7 @@ delete from DMALM_DOCUMENTO;
 delete from DMALM_FASE;
 delete from DMALM_MANUTENZIONE;
 delete from DMALM_PEI;
-delete from DMALM_CLASSIFICATORE_DEMAND;
+delete from DMALM_CLASSIFICATORE;
 delete from DMALM_PROGETTO_DEMAND;
 delete from DMALM_PROGETTO_ESE;
 delete from DMALM_PROGETTO_SVILUPPO_DEM;

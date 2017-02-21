@@ -4,7 +4,7 @@ import static com.mysema.query.types.PathMetadataFactory.forVariable;
 
 import javax.annotation.Generated;
 
-import lispa.schedulers.bean.target.fatti.DmalmClassificatoreDemand;
+import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.Path;
@@ -15,13 +15,13 @@ import com.mysema.query.types.path.*;
  * QDmalmClassificatoreDemand is a Querydsl query type for DmalmPei
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
-public class QDmalmClassificatoreDemand extends
-		com.mysema.query.sql.RelationalPathBase<DmalmClassificatoreDemand> {
+public class QDmalmClassificatore extends
+		com.mysema.query.sql.RelationalPathBase<DmalmClassificatore> {
 
 	private static final long serialVersionUID = -809853284449229037L;
 
-	public static final QDmalmClassificatoreDemand dmalmClassificatoreDemand = new QDmalmClassificatoreDemand(
-			"DMALM_CLASSIFICATORE_DEMAND");
+	public static final QDmalmClassificatore dmalmClassificatore = new QDmalmClassificatore(
+			"DMALM_CLASSIFICATORE");
 
 	public final StringPath annullato = createString("ANNULLATO");
 
@@ -100,21 +100,32 @@ public class QDmalmClassificatoreDemand extends
 
 	public final StringPath uriClassficatore = createString("URI_CLASSIFICATORE");
 
-	public final com.mysema.query.sql.PrimaryKey<DmalmClassificatoreDemand> sysC0022479 = createPrimaryKey(dmalmClassificatorePk);
+	public final com.mysema.query.sql.PrimaryKey<DmalmClassificatore> sysC0022479 = createPrimaryKey(dmalmClassificatorePk);
 
-	public QDmalmClassificatoreDemand(String variable) {
-		super(DmalmClassificatoreDemand.class, forVariable(variable), "DMALM",
-				"DMALM_CLASSIFICATORE_DEMAND");
+	//DM_ALM-239
+	public final StringPath rmResponsabiliProgetto = createString("RM_RESPONSABILI_PROGETTO");
+	
+	public final BooleanPath progettoInDeroga = createBoolean("PROGETTO_IN_DEROGA");
+	
+	public final StringPath assigneeProgettoItInDeroga = createString("ASSIGNEE_PROGETTO_IT_IN_DEROGA");
+	
+	public final StringPath locationSorgenti = createString("LOCATION_SORGENTI");
+
+	public final StringPath type = createString("TYPE");
+
+	public QDmalmClassificatore(String variable) {
+		super(DmalmClassificatore.class, forVariable(variable), "DMALM",
+				"DMALM_CLASSIFICATORE");
 	}
 
-	public QDmalmClassificatoreDemand(Path<? extends DmalmClassificatoreDemand> path) {
+	public QDmalmClassificatore(Path<? extends DmalmClassificatore> path) {
 		super(path.getType(), path.getMetadata(), "DMALM",
-				"DMALM_CLASSIFICATORE_DEMAND");
+				"DMALM_CLASSIFICATORE");
 	}
 
-	public QDmalmClassificatoreDemand(PathMetadata<?> metadata) {
-		super(DmalmClassificatoreDemand.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA,
-				"DMALM_CLASSIFICATORE_DEMAND");
+	public QDmalmClassificatore(PathMetadata<?> metadata) {
+		super(DmalmClassificatore.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA,
+				"DMALM_CLASSIFICATORE");
 	}
 
 }

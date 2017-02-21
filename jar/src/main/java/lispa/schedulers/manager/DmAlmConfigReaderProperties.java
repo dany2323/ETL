@@ -35,6 +35,7 @@ public class DmAlmConfigReaderProperties
 	public static final String SQL_ANOMALIA_ASSISTENZA 			= "anomaliaassistenza.sql";
 	public static final String SQL_WORKITEM_USERASSIGNEES 		= "workitemassignees.sql";
 	public static final String SQL_CLASS_DEMAND					= "classificatoredem.sql";
+	public static final String SQL_CLASS						= "classificatore.sql";
 
 	//QUERY DIMENSIONI
 	public static final String SQL_STRUTTURAORGANIZZATIVA 		= "strutturaorganizzativa.sql";

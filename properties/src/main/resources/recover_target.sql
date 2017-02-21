@@ -28,7 +28,7 @@ insert into DMALM_DOCUMENTO               ( select * from T_DMALM_DOCUMENTO     
 insert into DMALM_FASE                    ( select * from T_DMALM_FASE                     );
 insert into DMALM_MANUTENZIONE            ( select * from T_DMALM_MANUTENZIONE             );
 insert into DMALM_PEI                     ( select * from T_DMALM_PEI                      );
-insert into DMALM_CLASSIFICATORE_DEMAND   ( select * from T_DMALM_CLASSIFICATORE_DEMAND    );
+insert into DMALM_CLASSIFICATORE          ( select * from T_DMALM_CLASSIFICATORE           );
 insert into DMALM_PROGETTO_DEMAND         ( select * from T_DMALM_PROGETTO_DEMAND          );
 insert into DMALM_PROGETTO_ESE            ( select * from T_DMALM_PROGETTO_ESE             );
 insert into DMALM_PROGETTO_SVILUPPO_DEM   ( select * from T_DMALM_PROGETTO_SVILUPPO_DEM    );

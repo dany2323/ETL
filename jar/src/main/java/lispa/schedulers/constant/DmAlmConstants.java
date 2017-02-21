@@ -64,6 +64,9 @@ public final class DmAlmConstants {
 	public static final String WORKITEM_TYPE_TASKIT = "taskit";
 	public static final String WORKITEM_TYPE_RICHIESTAGESTIONE = "richiesta_gestione";
 	public static final String WORKITEM_TYPE_REALEASESERVIZI = "release_ser";
+	public static final String WORKITEM_TYPE_CLASSIFICATORE_DEMAND = "classificatore_demand";
+	public static final String WORKITEM_TYPE_CLASSIFICATORE = "classificatore";
+
 
 	// CF appiattiti sulla tabella Workitem
 	public static final String CF_WORKITEM_CNAME_COSTOSVILUPPO = "costosviluppo";
@@ -269,7 +272,7 @@ public final class DmAlmConstants {
 	public static final String TARGET_ANOMALIA_ASSISTENZA = "DMALM_ANOMALIA_ASSISTENZA";
 	public static final String TARGET_RELEASE_SERVIZI = "DMALM_RELEASE_SERVIZI";
 	public static final String TARGET_PEI = "DMALM_PEI";
-	public static final String TARGET_CLASSIFICATORE_DEMAND = "DMALM_CLASSIFICATORE_DEMAND";
+	public static final String TARGET_CLASSIFICATORE = "DMALM_CLASSIFICATORE";
 
 	public static final String TARGET_AREATEMATICA = "DMALM_AREA_TEMATICA";
 	public static final String TARGET_STATOWORKITEM = "DMALM_STATO_WORKITEM";

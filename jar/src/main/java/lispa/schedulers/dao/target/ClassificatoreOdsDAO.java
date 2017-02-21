@@ -5,11 +5,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import lispa.schedulers.bean.target.fatti.DmalmClassificatoreDemand;
+import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.target.QDmalmClassificatoreDemOds;
+import lispa.schedulers.queryimplementation.target.QDmalmClassificatoreOds;
 
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -18,12 +18,12 @@ import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.Projections;
 
-public class ClassificatoreDemOdsDAO {
+public class ClassificatoreOdsDAO {
 
 
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
-	private static QDmalmClassificatoreDemOds ods = QDmalmClassificatoreDemOds.dmalmClassificatoreDemand;
+	private static QDmalmClassificatoreOds ods = QDmalmClassificatoreOds.dmalmClassificatore;
 
 	public static void delete() throws DAOException, SQLException {
 
@@ -51,7 +51,7 @@ public class ClassificatoreDemOdsDAO {
 
 	}
 
-	public static void insert(List<DmalmClassificatoreDemand> stg,
+	public static void insert(List<DmalmClassificatore> stg,
 			Timestamp dataEsecuzione) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
@@ -63,7 +63,7 @@ public class ClassificatoreDemOdsDAO {
 
 			connection.setAutoCommit(false);
 
-			for (DmalmClassificatoreDemand cDem : stg) {
+			for (DmalmClassificatore classificatore : stg) {
 
 				new SQLInsertClause(connection, dialect, ods)
 
@@ -83,32 +83,42 @@ public class ClassificatoreDemOdsDAO {
 								ods.idAutoreClassificatore, ods.idRepository,
 								ods.rankStatoClassificatore,
 								ods.rankStatoClassifMese, ods.stgPk,
-								ods.titoloClassificatore, ods.uriClassficatore)
-						.values(cDem.getCd_classificatore(),
-								cDem.getCf_ambito(), cDem.getCf_area(),
-								cDem.getCf_riferimenti(),
-								cDem.getCf_scheda_servizio(),
-								cDem.getDmalmClassificatorePk(),
-								cDem.getDmalmProjectFk02(),
-								cDem.getDmalmStatoWorkitemFk03(),
-								cDem.getDmalmStrutturaOrgFk01(),
-								cDem.getDmalmTempoFk04(),
-								cDem.getDmalmUserFk06(),
-								cDem.getDsAutoreClassificatore(),
-								cDem.getDtCambioStatoClassif(),
-								cDem.getDtCaricamentoClassif(),
-								cDem.getDtCreazioneClassif(),
-								cDem.getDtModificaClassif(),
-								cDem.getDtRisoluzioneClassif(),
-								cDem.getDtScadenzaProgSvil(),
-								cDem.getDtModificaClassif(),
-								cDem.getIdAutoreClassificatore(),
-								cDem.getIdRepository(),
+								ods.titoloClassificatore, ods.uriClassficatore,
+								ods.rmResponsabiliProgetto,
+								ods.progettoInDeroga,
+								ods.assigneeProgettoItInDeroga,
+								ods.locationSorgenti,
+								ods.type)
+						.values(classificatore.getCd_classificatore(),
+								classificatore.getCf_ambito(), classificatore.getCf_area(),
+								classificatore.getCf_riferimenti(),
+								classificatore.getCf_scheda_servizio(),
+								classificatore.getDmalmClassificatorePk(),
+								classificatore.getDmalmProjectFk02(),
+								classificatore.getDmalmStatoWorkitemFk03(),
+								classificatore.getDmalmStrutturaOrgFk01(),
+								classificatore.getDmalmTempoFk04(),
+								classificatore.getDmalmUserFk06(),
+								classificatore.getDsAutoreClassificatore(),
+								classificatore.getDtCambioStatoClassif(),
+								classificatore.getDtCaricamentoClassif(),
+								classificatore.getDtCreazioneClassif(),
+								classificatore.getDtModificaClassif(),
+								classificatore.getDtRisoluzioneClassif(),
+								classificatore.getDtScadenzaProgSvil(),
+								classificatore.getDtModificaClassif(),
+								classificatore.getIdAutoreClassificatore(),
+								classificatore.getIdRepository(),
 								new Double(1),
-								cDem.getRankStatoClassifMese(),
-								cDem.getStgPk(),
-								cDem.getTitoloClassificatore(),
-								cDem.getUriClassficatore()).execute();
+								classificatore.getRankStatoClassifMese(),
+								classificatore.getStgPk(),
+								classificatore.getTitoloClassificatore(),
+								classificatore.getUriClassficatore(),
+								classificatore.getRmResponsabileProgetto(),
+								classificatore.isProgettoInDeroga(),
+								classificatore.getAssigneeProgettoItInDeroga(),
+								classificatore.getLocationSorgenti(),
+								classificatore.getType()).execute();
 
 			}
 
@@ -126,13 +136,13 @@ public class ClassificatoreDemOdsDAO {
 
 	}
 
-	public static List<DmalmClassificatoreDemand> getAll() throws DAOException,
+	public static List<DmalmClassificatore> getAll() throws DAOException,
 			SQLException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmClassificatoreDemand> list = null;
+		List<DmalmClassificatore> list = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -146,7 +156,7 @@ public class ClassificatoreDemOdsDAO {
 					.from(ods)
 					.orderBy(ods.cd_classificatore.asc())
 					.orderBy(ods.dtModificaClassif.asc())
-					.list(Projections.bean(DmalmClassificatoreDemand.class,	ods.all()));
+					.list(Projections.bean(DmalmClassificatore.class,	ods.all()));
 
 			connection.commit();
 

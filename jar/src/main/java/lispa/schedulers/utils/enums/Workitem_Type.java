@@ -24,5 +24,6 @@ public enum Workitem_Type {
 	richiesta_gestione,
 	srqs,
 	task,
-	classificatore_demand
+	classificatore_demand, 
+	classificatore
 }

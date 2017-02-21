@@ -495,4 +495,35 @@ public class SireHistoryCfWorkitemDAO {
 
 		return cfWorkitem;
 	}
+	
+	public static List<Integer> getBooleanCustomFieldInString(String workitemCpk,
+			String customField) throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Integer> cfWorkitem = new ArrayList<Integer>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLTemplates dialect = new HSQLDBTemplates();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			cfWorkitem = query.from(stgCFWorkItems)
+					.where(stgCFWorkItems.fkWorkitem.eq(workitemCpk))
+					.where(stgCFWorkItems.cName.eq(customField))
+					.list(stgCFWorkItems.cBooleanValue);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return cfWorkitem;
+	}
 }

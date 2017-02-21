@@ -6,6 +6,7 @@ import javax.annotation.Generated;
 
 import com.mysema.query.types.Path;
 import com.mysema.query.types.PathMetadata;
+import com.mysema.query.types.path.BooleanPath;
 import com.mysema.query.types.path.DateTimePath;
 import com.mysema.query.types.path.NumberPath;
 import com.mysema.query.types.path.StringPath;
@@ -17,13 +18,13 @@ import lispa.schedulers.constant.DmAlmConstants;
  * QDmalmClassificatoreDemand is a Querydsl query type for DmalmPei
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
-public class QDmalmClassificatoreDemOds extends
+public class QDmalmClassificatoreOds extends
 		com.mysema.query.sql.RelationalPathBase<DmalmClassificatoreDemOds> {
 
 	private static final long serialVersionUID = 4289461653051025521L;
 
-	public static final QDmalmClassificatoreDemOds dmalmClassificatoreDemand = new QDmalmClassificatoreDemOds(
-			"DMALM_CLASSIFICATORE_DEM_ODS");
+	public static final QDmalmClassificatoreOds dmalmClassificatore = new QDmalmClassificatoreOds(
+			"DMALM_CLASSIFICATORE_ODS");
 	
 	public final StringPath cd_classificatore = createString("CD_CLASSIFICATORE");
 
@@ -94,19 +95,30 @@ public class QDmalmClassificatoreDemOds extends
 
 	public final com.mysema.query.sql.PrimaryKey<DmalmClassificatoreDemOds> sysC0022479 = createPrimaryKey(dmalmClassificatorePk);
 
-	public QDmalmClassificatoreDemOds(Path<? extends DmalmClassificatoreDemOds> path) {
+	//DM_ALM-239
+	public final StringPath rmResponsabiliProgetto = createString("RM_RESPONSABILI_PROGETTO");
+	
+	public final BooleanPath progettoInDeroga = createBoolean("PROGETTO_IN_DEROGA");
+	
+	public final StringPath assigneeProgettoItInDeroga = createString("ASSIGNEE_PROGETTO_IT_IN_DEROGA");
+	
+	public final StringPath locationSorgenti = createString("LOCATION_SORGENTI");
+
+	public final StringPath type = createString("TYPE");
+
+	public QDmalmClassificatoreOds(Path<? extends DmalmClassificatoreDemOds> path) {
 		super(path.getType(), path.getMetadata(), "DMALM",
-				"DMALM_CLASSIFICATORE_DEM_ODS");
+				"DMALM_CLASSIFICATORE_ODS");
 	}
 	
-	public QDmalmClassificatoreDemOds (String variable) {
+	public QDmalmClassificatoreOds (String variable) {
 		super(DmalmClassificatoreDemOds.class, forVariable(variable), "DMALM",
-				"DMALM_CLASSIFICATORE_DEM_ODS");
+				"DMALM_CLASSIFICATORE_ODS");
 	}
 	
-	public QDmalmClassificatoreDemOds(PathMetadata<?> metadata) {
+	public QDmalmClassificatoreOds(PathMetadata<?> metadata) {
 		super(DmalmClassificatoreDemOds.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA,
-				"DMALM_CLASSIFICATORE_DEM_ODS");
+				"DMALM_CLASSIFICATORE_ODS");
 	}
 	
 }

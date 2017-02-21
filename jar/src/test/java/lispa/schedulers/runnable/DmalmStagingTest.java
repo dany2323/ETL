@@ -10,7 +10,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.bean.target.DmalmUserRolesSgr;
-import lispa.schedulers.bean.target.fatti.DmalmClassificatoreDemand;
+import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
@@ -20,7 +20,7 @@ import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.ProjectUnitaOrganizzativaEccezioniDAO;
 import lispa.schedulers.dao.target.UserRolesSgrDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
-import lispa.schedulers.dao.target.fatti.ClassificatoreDemandDAO;
+import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseDiProgettoDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -151,8 +151,8 @@ public class DmalmStagingTest extends TestCase {
 				DateUtils.stringToTimestamp("2016-05-25 23:45:00",
 						"yyyy-MM-dd HH:mm:00"));
 
-		List<DmalmClassificatoreDemand> stg_class = new ArrayList<DmalmClassificatoreDemand>();
-		stg_class = ClassificatoreDemandDAO.getAllClassDem(DataEsecuzione
+		List<DmalmClassificatore> stg_class = new ArrayList<DmalmClassificatore>();
+		stg_class = ClassificatoreDAO.getAllClassDem(DataEsecuzione
 				.getInstance().getDataEsecuzione());
 		logger.info("stg_class.size: " + stg_class.size());
 

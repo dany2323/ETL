@@ -9,7 +9,7 @@ import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmBuild;
-import lispa.schedulers.bean.target.fatti.DmalmClassificatoreDemand;
+import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
 import lispa.schedulers.bean.target.fatti.DmalmFase;
@@ -33,7 +33,7 @@ import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaAssistenzaDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaProdottoDAO;
 import lispa.schedulers.dao.target.fatti.BuildDAO;
-import lispa.schedulers.dao.target.fatti.ClassificatoreDemandDAO;
+import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
 import lispa.schedulers.dao.target.fatti.DifettoDAO;
 import lispa.schedulers.dao.target.fatti.DocumentoDAO;
 import lispa.schedulers.dao.target.fatti.FaseDAO;
@@ -62,7 +62,7 @@ import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaAssistenza;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatoreDemand;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
@@ -118,7 +118,7 @@ public class CheckProjectStorFacade {
 	private static QDmalmRichiestaGestione richiestaGestione = QDmalmRichiestaGestione.dmalmRichiestaGestione;
 	private static QDmalmAnomaliaAssistenza anomaliaAssistenza = QDmalmAnomaliaAssistenza.dmalmAnomaliaAssistenza;
 	private static QDmalmReleaseServizi releaseServizi = QDmalmReleaseServizi.dmalmReleaseServizi;
-	private static QDmalmClassificatoreDemand classificatoreDem = QDmalmClassificatoreDemand.dmalmClassificatoreDemand;
+	private static QDmalmClassificatore classificatoreDem = QDmalmClassificatore.dmalmClassificatore;
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
 	public static void execute() {
@@ -1203,7 +1203,7 @@ public class CheckProjectStorFacade {
 									break;
 
 								case "classificatore_demand":
-									QDmalmClassificatoreDemand classificatoreDem2 = new QDmalmClassificatoreDemand(
+									QDmalmClassificatore classificatoreDem2 = new QDmalmClassificatore(
 											"classificatoreDem2");
 									pk = query
 											.from(classificatoreDem)
@@ -1222,15 +1222,15 @@ public class CheckProjectStorFacade {
 											.list(classificatoreDem.dmalmClassificatorePk);
 									if (pk.size() > 0) {
 										for (Integer i : pk) {
-											DmalmClassificatoreDemand c = ClassificatoreDemandDAO
-													.getClassDem(i);
+											DmalmClassificatore c = ClassificatoreDAO
+													.getClassificatore(i);
 											if (c != null) {
-												boolean exist = ClassificatoreDemandDAO
+												boolean exist = ClassificatoreDAO
 														.checkEsistenzaClassificatore(
 																c, p);
 												if (!exist) {
 													if (c.getRankStatoClassificatore() == 1) {
-														ClassificatoreDemandDAO
+														ClassificatoreDAO
 																.updateRank(
 																		c,
 																		new Double(
@@ -1240,8 +1240,8 @@ public class CheckProjectStorFacade {
 															.getDtInizioValidita());
 													c.setDmalmProjectFk02(p
 															.getDmalmProjectPk());
-													ClassificatoreDemandDAO
-															.insertClassDemUpdate(
+													ClassificatoreDAO
+															.insertClassUpdate(
 																	dataEsecuzione,
 																	c, false);
 												}

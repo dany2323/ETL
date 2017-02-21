@@ -27,7 +27,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaAssistenza;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatoreDemand;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
@@ -93,7 +93,7 @@ public class LinkedWorkitemsDAO {
 	private static QDmalmReleaseServizi releaseServizi = QDmalmReleaseServizi.dmalmReleaseServizi;
 	private static QDmalmFilieraProduttiva filieraProduttiva = QDmalmFilieraProduttiva.dmalmFilieraProduttiva;
 	private static QDmalmFilieraAnomalie filieraAnomalie = QDmalmFilieraAnomalie.dmalmFilieraAnomalie;
-	private static QDmalmClassificatoreDemand classificatoredem = QDmalmClassificatoreDemand.dmalmClassificatoreDemand;
+	private static QDmalmClassificatore classificatoredem = QDmalmClassificatore.dmalmClassificatore;
 	
 	private static QDmalmProject project = QDmalmProject.dmalmProject; 
 

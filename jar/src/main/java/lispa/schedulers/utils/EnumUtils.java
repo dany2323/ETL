@@ -6,6 +6,7 @@ import java.util.List;
 import lispa.schedulers.utils.enums.CF_anomalia;
 import lispa.schedulers.utils.enums.CF_anomalia_assistenza;
 import lispa.schedulers.utils.enums.CF_build;
+import lispa.schedulers.utils.enums.CF_classificatore;
 import lispa.schedulers.utils.enums.CF_classificatore_demand;
 import lispa.schedulers.utils.enums.CF_defect;
 import lispa.schedulers.utils.enums.CF_dman;
@@ -120,6 +121,9 @@ public class EnumUtils {
 		case "classificatore_demand":	
 			CF_enum = CF_classificatore_demand.values();
 			break;
+		case "classificatore":	
+			CF_enum = CF_classificatore.values();
+			break;
 		default:
 			CF_enum = null;
 		}
@@ -205,6 +209,9 @@ public class EnumUtils {
 			break;
 		case "classificatore_demand":	
 			template=Template_Type.DEMAND2016.toString();
+			break;
+		case "classificatore":	
+			template="Tutti tranne Demand";
 			break;
 
 		default:

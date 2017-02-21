@@ -22,7 +22,7 @@ insert into T_DMALM_MANUTENZIONE            ( select * from DMALM_MANUTENZIONE  
 insert into T_DMALM_MODULO                  ( select * from DMALM_MODULO                 );
 insert into T_DMALM_MODULO_CLASF            ( select * from DMALM_MODULO_CLASF           );
 insert into T_DMALM_PEI                     ( select * from DMALM_PEI                    );
-insert into T_DMALM_CLASSIFICATORE_DEMAND   ( select * from DMALM_CLASSIFICATORE_DEMAND  );
+insert into T_DMALM_CLASSIFICATORE			( select * from DMALM_CLASSIFICATORE         );
 insert into T_DMALM_PERSONALE               ( select * from DMALM_PERSONALE              );
 insert into T_DMALM_PRODOTTO                ( select * from DMALM_PRODOTTO               );
 insert into T_DMALM_PRODOTTO_ARCH_CLASF     ( select * from DMALM_PRODOTTO_ARCH_CLASF    );

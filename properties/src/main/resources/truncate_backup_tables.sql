@@ -34,7 +34,7 @@ truncate table T_DMALM_MANUTENZIONE              ;
 truncate table T_DMALM_MODULO                    ;
 truncate table T_DMALM_MODULO_CLASF              ;
 truncate table T_DMALM_PEI                       ;
-truncate table T_DMALM_CLASSIFICATORE_DEMAND     ;
+truncate table T_DMALM_CLASSIFICATORE            ;
 truncate table T_DMALM_PERSONALE                 ;
 truncate table T_DMALM_PRODOTTO                  ;
 truncate table T_DMALM_PRODOTTO_ARCH_CLASF       ;
