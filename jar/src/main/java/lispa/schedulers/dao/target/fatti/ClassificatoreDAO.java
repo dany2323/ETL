@@ -212,6 +212,9 @@ public class ClassificatoreDAO {
 				bean.setLocationSorgenti(getCustomFieldInString(
 						rsClass.getString("STG_PK"), rsClass.getString("ID_REPOSITORY"),
 						"locSorgenti"));
+				bean.setCodiceServizi(getCustomFieldInString(
+						rsClass.getString("STG_PK"), rsClass.getString("ID_REPOSITORY"),
+						"codiceServizi"));
 
 				bean.setType(DmAlmConstants.WORKITEM_TYPE_CLASSIFICATORE);
 				classificatoriList.add(bean);
@@ -363,7 +366,8 @@ public class ClassificatoreDAO {
 							qClassificatore.progettoInDeroga,
 							qClassificatore.assigneeProgettoItInDeroga,
 							qClassificatore.locationSorgenti,
-							qClassificatore.type)
+							qClassificatore.type,
+							qClassificatore.codiceServizi)
 					.values(classificatore.getCd_classificatore(), classificatore.getCf_ambito(),
 							classificatore.getCf_area(), classificatore.getCf_riferimenti(),
 							classificatore.getCf_scheda_servizio(),
@@ -389,7 +393,8 @@ public class ClassificatoreDAO {
 							classificatore.isProgettoInDeroga(),
 							classificatore.getAssigneeProgettoItInDeroga(),
 							classificatore.getLocationSorgenti(),
-							classificatore.getType()).execute();
+							classificatore.getType(),
+							classificatore.getCodiceServizi()).execute();
 
 			connection.commit();
 
@@ -472,7 +477,8 @@ public class ClassificatoreDAO {
 							qClassificatore.progettoInDeroga,
 							qClassificatore.assigneeProgettoItInDeroga,
 							qClassificatore.locationSorgenti,
-							qClassificatore.type)
+							qClassificatore.type,
+							qClassificatore.codiceServizi)
 					.values(classificatore.getCd_classificatore(),
 							classificatore.getCf_ambito(),
 							classificatore.getCf_area(),
@@ -503,7 +509,8 @@ public class ClassificatoreDAO {
 							classificatore.isProgettoInDeroga(),
 							classificatore.getAssigneeProgettoItInDeroga(),
 							classificatore.getLocationSorgenti(),
-							classificatore.getType()).execute();
+							classificatore.getType(),
+							classificatore.getCodiceServizi()).execute();
 
 			connection.commit();
 
@@ -576,6 +583,7 @@ public class ClassificatoreDAO {
 					.set(qClassificatore.assigneeProgettoItInDeroga, classificatore.getAssigneeProgettoItInDeroga())
 					.set(qClassificatore.locationSorgenti, classificatore.getLocationSorgenti())
 					.set(qClassificatore.type, classificatore.getType())
+					.set(qClassificatore.codiceServizi,  classificatore.getCodiceServizi())
 					.execute();
 
 			connection.commit();
@@ -654,6 +662,7 @@ public class ClassificatoreDAO {
 			c.setAssigneeProgettoItInDeroga(t.get(qClassificatore.assigneeProgettoItInDeroga));
 			c.setLocationSorgenti(t.get(qClassificatore.locationSorgenti));
 			c.setType(t.get(qClassificatore.type));
+			c.setCodiceServizi(t.get(qClassificatore.codiceServizi));
 			return c;
 
 		} else

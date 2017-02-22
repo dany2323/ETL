@@ -5,5 +5,6 @@ public enum CF_classificatore {
 	RMrespProgetto,
 	progettoDeroga,
 	assegneeITderoga,
-	locSorgenti
+	locSorgenti,
+	codiceServizi
 }

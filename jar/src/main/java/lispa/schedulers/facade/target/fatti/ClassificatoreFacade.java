@@ -122,6 +122,10 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(c.codiceServizi), classificatore.getCodiceServizi()))
+							{
+								modificato = true;
+							}
 							
 							if(modificato)
 							{

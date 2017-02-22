@@ -112,6 +112,8 @@ public class QDmalmClassificatore extends
 	public final StringPath locationSorgenti = createString("LOCATION_SORGENTI");
 
 	public final StringPath type = createString("TYPE");
+	
+	public final StringPath codiceServizi = createString("CODICE_SERVIZI");
 
 	public QDmalmClassificatore(String variable) {
 		super(DmalmClassificatore.class, forVariable(variable), "DMALM",

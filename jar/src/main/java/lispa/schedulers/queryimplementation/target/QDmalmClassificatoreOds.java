@@ -105,6 +105,8 @@ public class QDmalmClassificatoreOds extends
 	public final StringPath locationSorgenti = createString("LOCATION_SORGENTI");
 
 	public final StringPath type = createString("TYPE");
+	
+	public final StringPath codiceServizi = createString("CODICE_SERVIZI");
 
 	public QDmalmClassificatoreOds(Path<? extends DmalmClassificatoreDemOds> path) {
 		super(path.getType(), path.getMetadata(), "DMALM",

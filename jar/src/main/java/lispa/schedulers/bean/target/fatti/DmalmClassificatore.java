@@ -78,6 +78,16 @@ public class DmalmClassificatore {
 	private String locationSorgenti;
 	
 	private String type;
+	
+	private String codiceServizi;
+
+	public String getCodiceServizi() {
+		return codiceServizi;
+	}
+
+	public void setCodiceServizi(String codiceServizi) {
+		this.codiceServizi = codiceServizi;
+	}
 
 	public String getRmResponsabileProgetto() {
 		return rmResponsabileProgetto;
