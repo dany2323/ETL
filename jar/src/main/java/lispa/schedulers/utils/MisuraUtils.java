@@ -436,6 +436,26 @@ public class MisuraUtils {
 				.get(dmalmAsm.strutturaOrganizzativaFk));
 		asm.setUnitaOrganizzativaFk(row
 				.get(dmalmAsm.unitaOrganizzativaFk));
+		asm.setFip01InizioEsercizio(row
+				.get(dmalmAsm.fip01InizioEsercizio));
+		asm.setFip02IndiceQualita(row
+				.get(dmalmAsm.fip02IndiceQualita));
+		asm.setFip03ComplessEserc(row
+				.get(dmalmAsm.fip03ComplessEserc));
+		asm.setFip04NrPiattaforma(row
+				.get(dmalmAsm.fip04NrPiattaforma));
+		asm.setFip07LingProgPrincipale(row
+				.get(dmalmAsm.fip07LingProgPrincipale));
+		asm.setFip10GradoAccessibilita(row
+				.get(dmalmAsm.fip10GradoAccessibilita));
+		asm.setFip11GradoQualitaCod(row
+				.get(dmalmAsm.fip11GradoQualitaCod));
+		asm.setFip12UtilizzoFramework(row
+				.get(dmalmAsm.fip12UtilizzoFramework));
+		asm.setFip13ComplessitaAlg(row
+				.get(dmalmAsm.fip13ComplessitaAlg));
+		asm.setFip15LivelloCura(row
+				.get(dmalmAsm.fip15LivelloCura));
 
 		return asm;
 	}
