@@ -7,6 +7,7 @@ import java.util.List;
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.facade.sfera.target.AsmFacade;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
@@ -78,6 +79,9 @@ public class CheckLinkAsmSferaUnitaOrganizzativaFacade {
 			}
 
 			logger.debug("STOP CheckLinkAsmSferaUnitaOrganizzativaFacade");
+			
+			AsmFacade.recalculateUoFkFlat();
+			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);

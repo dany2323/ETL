@@ -11,6 +11,7 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
@@ -224,15 +225,7 @@ public class AsmFacade {
 			//DMALM-216 associazione project Unità Organizzativa Flat
 			//ricarica il valore della Fk ad ogni esecuzione
 			
-			QueryManager qm = QueryManager.getInstance();
-
-			logger.info("INIZIO Update ASM UnitaOrganizzativaFlatFk");
-			
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.M_UPDATE_ASM_UOFLATFK,
-					DmAlmConstants.M_SEPARATOR);
-			
-			logger.info("FINE Update ASM UnitaOrganizzativaFlatFk");
+			recalculateUoFkFlat();
 
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -264,6 +257,18 @@ public class AsmFacade {
 
 			logger.info("STOP AsmFacade.execute");
 		}
+	}
+
+	public static void recalculateUoFkFlat() throws PropertiesReaderException, DAOException, Exception {
+		QueryManager qm = QueryManager.getInstance();
+
+		logger.info("INIZIO Update ASM UnitaOrganizzativaFlatFk");
+		
+		qm.executeMultipleStatementsFromFile(
+				DmAlmConstants.M_UPDATE_ASM_UOFLATFK,
+				DmAlmConstants.M_SEPARATOR);
+		
+		logger.info("FINE Update ASM UnitaOrganizzativaFlatFk");
 	}
 
 	private static void rinascitaFisicaAsm(Timestamp dataEsecuzione,
