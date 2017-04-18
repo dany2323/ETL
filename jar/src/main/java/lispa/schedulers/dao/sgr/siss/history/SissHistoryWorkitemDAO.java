@@ -91,8 +91,8 @@ public class SissHistoryWorkitemDAO {
 							DmAlmConfigReaderProperties.SQL_DELETE_SISS_HISTORY_WORKITEM);
 
 			ps = connection.prepareStatement(sql);
-			ps.setTimestamp(1, DataEsecuzione.getInstance().getDataEsecuzione());
-			ps.setTimestamp(2, dataEsecuzioneDeleted);
+			ps.setTimestamp(1, dataEsecuzioneDeleted);
+			ps.setTimestamp(2, DataEsecuzione.getInstance().getDataEsecuzione());
 
 			ps.executeUpdate();
 			ps.close();

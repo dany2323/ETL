@@ -161,7 +161,7 @@ public class ClassificatoreDAO {
 			psClass.setFetchSize(200);
 
 			psClass.setTimestamp(1, dataEsecuzione);
-			psClass.setTimestamp(1, dataEsecuzione);
+			psClass.setTimestamp(2, dataEsecuzione);
 
 			rsClass = psClass.executeQuery();
 
