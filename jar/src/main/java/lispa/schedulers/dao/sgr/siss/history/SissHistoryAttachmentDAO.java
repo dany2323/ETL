@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -29,36 +30,54 @@ public class SissHistoryAttachmentDAO {
 			.getLogger(SissHistoryAttachmentDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryAttachment fonteAttachment = SissHistoryAttachment.attachment;
-	
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryAttachment stgAttachment = QSissHistoryAttachment.dmalmSissHistoryAttachment;
 
 	public static void fillSissHistoryAttachment(long minRevision, long maxRevision) throws SQLException, DAOException {
 		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
+		Connection pgConnection = null;
 		List<Tuple> attachments = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSISSHistory();
+			pgConnection = cm.getConnectionSISSHistory();
 			attachments = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates() {
 				{
 					setPrintSchema(true);
 				}
 			};
 
-			SQLQuery query = new SQLQuery(connH2, dialect);
+			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			attachments = query.from(fonteAttachment)
 					.where(fonteAttachment.cRev.gt(minRevision))
 					.where(fonteAttachment.cRev.loe(maxRevision))
-					.list(fonteAttachment.all());
+					.list(
+							fonteAttachment.cDeleted,
+							fonteAttachment.cFilename,
+							fonteAttachment.cId,
+							StringTemplate.create("0 as c_is_local"),
+							fonteAttachment.cLength,
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteAttachment.cPk + ") as c_pk"),
+							fonteAttachment.cRev,
+							fonteAttachment.cTitle,
+							fonteAttachment.cUpdated,
+							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteAttachment.cUri + ") as c_uri"),
+							fonteAttachment.cUrl,
+							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " + fonteAttachment.fkAuthor + ") as fk_author"),
+							StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " + fonteAttachment.fkProject + ") as fk_project"),
+							StringTemplate.create("(SELECT e.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " e WHERE e.c_id = " + fonteAttachment.fkUriAuthor + ") as fk_uri_author"),
+							StringTemplate.create("(SELECT f.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " f WHERE f.c_id = " + fonteAttachment.fkUriProject + ") as fk_uri_project"),
+							StringTemplate.create("(SELECT g.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " g WHERE g.c_id = " + fonteAttachment.fkUriWorkitem + ") as fk_uri_workitem"),
+							StringTemplate.create("(SELECT h.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " h WHERE h.c_id = " + fonteAttachment.fkWorkitem + ") as fk_workitem")
+							);
 
 			for (Tuple row : attachments) {
 				new SQLInsertClause(connOracle, dialect, stgAttachment)
@@ -113,12 +132,12 @@ public class SissHistoryAttachmentDAO {
 			connOracle.commit();
 			
 		} catch (Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 			
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
+			if(cm != null) cm.closeConnection(pgConnection);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 	}
