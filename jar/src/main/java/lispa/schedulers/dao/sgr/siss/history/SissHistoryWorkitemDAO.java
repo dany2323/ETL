@@ -120,12 +120,12 @@ public class SissHistoryWorkitemDAO {
 		Connection oracle = null;
 
 		try {
+				cm = ConnectionManager.getInstance();
+				oracle = cm.getConnectionOracle();
+
 			for (Workitem_Type type : Workitem_Type.values()) {
 
 				List<Long> max = new ArrayList<Long>();
-
-				cm = ConnectionManager.getInstance();
-				oracle = cm.getConnectionOracle();
 
 				SQLQuery query = new SQLQuery(oracle, dialect);
 
