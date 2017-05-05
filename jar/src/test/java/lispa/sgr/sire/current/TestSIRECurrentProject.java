@@ -79,17 +79,7 @@ public class TestSIRECurrentProject extends TestCase {
 			List<Tuple> cfworkitems = query.from(fonteProjects).list(
 					new QTuple(StringTemplate.create("SUBSTRING("
 							+ fonteProjects.cTrackerprefix + ",0,4000)"),
-							StringTemplate.create("CASEWHEN ("
-									+ fonteProjects.cIsLocal
-									+ "= 'true', 1,0 )"), StringTemplate
-									.create("SUBSTRING(" + fonteProjects.cPk
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteProjects.fkUriLead
-											+ ",0,4000)"), StringTemplate
-									.create("CASEWHEN ("
-											+ fonteProjects.cDeleted
-											+ "= 'true', 1,0 )"),
+							StringTemplate.create("0"), // isLocal is no longer present in PostgreSQL
 							StringTemplate.create("FORMATDATETIME("
 									+ fonteProjects.cFinish
 									+ ", {ts 'yyyy-MM-dd 00:00:00'})"),

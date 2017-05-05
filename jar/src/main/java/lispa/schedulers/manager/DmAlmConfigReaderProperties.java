@@ -121,8 +121,8 @@ public class DmAlmConfigReaderProperties
 	public static final String ELETTRA_DB_NAME = "dmalm.fonte.elettra.dbname";
 	public static final String ELETTRA_DB_URL= "dmalm.fonte.elettra.url";
 	
-	// DATABASE H2
-	public static final String H2_DRIVER_CLASS_NAME = "h2.driver_class_name";
+	// DATABASE POSTGRES
+	public static final String PG_DRIVER_CLASS_NAME = "pg.driver_class_name";
 	
 	// SISS
 	public static final String SISS_CURRENT_URL= "siss.current.url";

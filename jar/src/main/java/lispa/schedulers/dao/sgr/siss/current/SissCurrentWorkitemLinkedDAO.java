@@ -14,12 +14,14 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.QTuple;
 import com.mysema.query.types.template.StringTemplate;
+
 
 public class SissCurrentWorkitemLinkedDAO {
 
@@ -86,50 +88,38 @@ public class SissCurrentWorkitemLinkedDAO {
 
 		ConnectionManager cm = null;
 		Connection oracleConnection = null;
-		Connection h2Connection = null;
+		Connection pgConnection = null;
 
 		try {
 
 			cm = ConnectionManager.getInstance();
 
-			h2Connection = cm.getConnectionSISSCurrent();
+			pgConnection = cm.getConnectionSISSCurrent();
 
 			oracleConnection = cm.getConnectionOracle();
 			oracleConnection.setAutoCommit(false);
 
 			QSissCurrentWorkitemLinked workItemLinked = QSissCurrentWorkitemLinked.sissCurrentWorkitemLinked;
 			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems fonteWorkitemLinked = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
+			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap; 
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates()
+			{
 				{
 					setPrintSchema(true);
 				}
 			};
-			SQLQuery query = new SQLQuery(h2Connection, dialect);
+			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			List<Tuple> cfworkitems = query.from(fonteWorkitemLinked).list(
 					new QTuple(
-							StringTemplate.create("CASEWHEN ("
-									+ fonteWorkitemLinked.cSuspect
-									+ "= 'true', 1,0 )"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.cRole
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkPWorkitem
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.cRevision
-											+ ",0,4000)"),
-							StringTemplate.create("SUBSTRING("
-									+ fonteWorkitemLinked.fkUriPWorkitem
-									+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkUriWorkitem
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkWorkitem
-											+ ",0,4000)")));
+							StringTemplate.create("CASE WHEN " + fonteWorkitemLinked.cSuspect + "= 'true' THEN 1 ELSE 0 END as c_suspect"), 
+							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRole + ",0,4000) as c_role"),									fonteWorkitemLinked.fkPWorkitem, 
+							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRevision + ",0,4000) as c_revision"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteWorkitemLinked.fkUriPWorkitem + ") as fk_uri_p_workitem"), 
+							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteWorkitemLinked.fkUriWorkitem + ") as fk_uri_workitem"), 
+							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " +  fonteWorkitemLinked.fkWorkitem + ") as fk_workitem")
+							));
 
 			logger.debug("fillSissCurrentWorkitemLinked - cfworkitems.sizw: "
 					+ cfworkitems.size());
@@ -142,14 +132,17 @@ public class SissCurrentWorkitemLinkedDAO {
 				el = ((Tuple) i.next()).toArray();
 
 				new SQLInsertClause(oracleConnection, dialect, workItemLinked)
-						.columns(workItemLinked.cSuspect, workItemLinked.cRole,
+						.columns(
+								workItemLinked.cSuspect, 
+								workItemLinked.cRole,
 								workItemLinked.fkPWorkitem,
 								workItemLinked.cRevision,
 								workItemLinked.fkUriPWorkitem,
 								workItemLinked.fkUriWorkitem,
 								workItemLinked.fkWorkitem,
 								workItemLinked.dataCaricamento,
-								workItemLinked.dmalmCurrentWorkitemLinkedPk)
+								workItemLinked.dmalmCurrentWorkitemLinkedPk
+								)
 						.values(el[0],
 								el[1],
 								el[2],
@@ -180,7 +173,7 @@ public class SissCurrentWorkitemLinkedDAO {
 				cm.closeConnection(oracleConnection);
 			}
 			if (cm != null) {
-				cm.closeConnection(h2Connection);
+				cm.closeConnection(pgConnection);
 			}
 		}
 

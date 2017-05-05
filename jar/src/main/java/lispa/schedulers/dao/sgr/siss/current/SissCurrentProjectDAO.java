@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -94,32 +95,54 @@ public class SissCurrentProjectDAO
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
-		Connection H2Connection = null;
+		Connection pgConnection = null;
 		long n_righe_inserite = 0;
 		
 		try{
 			
 			cm = ConnectionManager.getInstance();
 
-			H2Connection = cm.getConnectionSISSCurrent();
+			pgConnection = cm.getConnectionSISSCurrent();
 			OracleConnection = cm.getConnectionOracle();
 
 			OracleConnection.setAutoCommit(false);
 
 			QSissCurrentProject   stgProject  = QSissCurrentProject.sissCurrentProject;
 			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject.project;
+			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 
-			SQLTemplates dialect = new HSQLDBTemplates(){ {
+			PostgresTemplates dialect = new PostgresTemplates(){ {
 			    setPrintSchema(true);
 			}};
-			SQLQuery query = new SQLQuery(H2Connection, dialect); 
-
+			SQLQuery query = new SQLQuery(pgConnection, dialect); 
+			
 
 			List<Tuple> projects = query.from(fonteProjects)
 //					.where(fonteProjects.cLocation.like("default:/Sviluppo/%"))
 					.where((fonteProjects.cLocation.length().subtract(fonteProjects.cLocation.toString().replaceAll("/", "").length())).goe(4))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
-					.list(new QTuple(
+					.list(
+							new QTuple(
+		                            StringTemplate.create("SUBSTRING("+fonteProjects.cTrackerprefix+",0,4000)") ,
+		                            StringTemplate.create("0") ,
+		                            StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteProjects.cPk + ") as c_pk"),
+		                            StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteProjects.fkUriLead + ") as fk_uri_lead"),
+		                            StringTemplate.create("CASE WHEN "+fonteProjects.cDeleted+"= 'true' THEN 1 ELSE 0 END") ,
+		                            fonteProjects.cFinish,
+		                            StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " + fonteProjects.cUri + ") as c_uri"),
+		                            fonteProjects.cStart,
+		                            StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " + fonteProjects.fkUriProjectgroup + ") as FK_URI_PROJECTGROUP"),
+		                            StringTemplate.create("CASE WHEN "+fonteProjects.cActive+"= 'true' THEN 1 ELSE 0 END") ,
+		                            StringTemplate.create("SUBSTRING("+fonteProjects.cLocation+",0,4000)") ,
+		                            StringTemplate.create("(SELECT e.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " e WHERE e.c_id = " + fonteProjects.fkProjectgroup + ") as fk_projectgroup"),
+		                            StringTemplate.create("(SELECT f.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " f WHERE f.c_id = " + fonteProjects.fkLead + ") as fk_lead"),
+		                            StringTemplate.create("to_char("+fonteProjects.cLockworkrecordsdate+", 'yyyy-MM-dd 00:00:00')"),
+		                            StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
+		                            StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
+		                            )
+							
+							/*
+							new QTuple(
 							StringTemplate.create("SUBSTRING("+fonteProjects.cTrackerprefix+",0,4000)") ,
 							StringTemplate.create("CASEWHEN ("+fonteProjects.cIsLocal+"= 'true', 1,0 )") ,
 							StringTemplate.create("SUBSTRING("+fonteProjects.cPk+",0,4000)") ,
@@ -136,7 +159,7 @@ public class SissCurrentProjectDAO
 							StringTemplate.create("FORMATDATETIME("+fonteProjects.cLockworkrecordsdate+", {ts 'yyyy-MM-dd 00:00:00'})"),
 							StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
-							)
+							)*/
 							);
 
 			Iterator<Tuple> i = projects.iterator();
@@ -206,7 +229,7 @@ public class SissCurrentProjectDAO
 	finally
 	{
 		if(cm != null) cm.closeConnection(OracleConnection);
-		if(cm != null) cm.closeConnection(H2Connection);
+		if(cm != null) cm.closeConnection(pgConnection);
 	}
 
 	return n_righe_inserite;

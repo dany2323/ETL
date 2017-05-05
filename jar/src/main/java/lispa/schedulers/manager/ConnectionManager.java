@@ -8,7 +8,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_DB_UR
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_DRIVER_CLASS_NAME;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_USER;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_PSW;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.H2_DRIVER_CLASS_NAME;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.PG_DRIVER_CLASS_NAME;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.PROPERTIES_READER_FILE_NAME;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_PSW;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_URL;
@@ -242,10 +242,10 @@ public class ConnectionManager {
 					return getConnectionSIRECurrent();
 				}
 			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE CURRENT ***");
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE PG SIRE CURRENT ***");
 				
 				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
+						.getProperty(PG_DRIVER_CLASS_NAME));
 
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SIRE_CURRENT_URL),
@@ -285,10 +285,10 @@ public class ConnectionManager {
 					return getConnectionSIREHistory();
 				}
 			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE HISTORY ***");
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE PG SIRE HISTORY ***");
 				
 				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
+						.getProperty(PG_DRIVER_CLASS_NAME));
 
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SIRE_HISTORY_URL),
@@ -328,10 +328,10 @@ public class ConnectionManager {
 					return getConnectionSISSCurrent();
 				}
 			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SISS CURRENT ***");
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE PG SISS CURRENT ***");
 				
 				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
+						.getProperty(PG_DRIVER_CLASS_NAME));
 
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SISS_CURRENT_URL),
@@ -371,10 +371,10 @@ public class ConnectionManager {
 					return getConnectionSISSHistory();
 				}
 			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SISS HISTORY ***");
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE PG SISS HISTORY ***");
 				
 				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
+						.getProperty(PG_DRIVER_CLASS_NAME));
 
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SISS_HISTORY_URL),

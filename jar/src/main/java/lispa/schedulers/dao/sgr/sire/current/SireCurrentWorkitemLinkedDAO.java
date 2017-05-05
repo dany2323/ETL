@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -29,28 +30,41 @@ public class SireCurrentWorkitemLinkedDAO {
 	public static long fillSireCurrentWorkitemLinked() throws Exception {
 		ConnectionManager cm = null;
 		Connection oracleConnection = null;
-		Connection h2Connection = null;
+		Connection pgConnection = null;
 		long n_righe_inserite = 0;
 
 		try {
 			cm = ConnectionManager.getInstance();
 
-			h2Connection = cm.getConnectionSIRECurrent();
+			pgConnection = cm.getConnectionSIRECurrent();
 			oracleConnection = cm.getConnectionOracle();
 
 			oracleConnection.setAutoCommit(false);
 
 			QSireCurrentWorkitemLinked stgProjectgroup = QSireCurrentWorkitemLinked.sireCurrentWorkitemLinked;
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems fonteWorkitemLinked = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
+			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap; 
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates() 
+			{
 				{
 					setPrintSchema(true);
 				}
 			};
-			SQLQuery query = new SQLQuery(h2Connection, dialect);
+			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			List<Tuple> cfworkitems = query.from(fonteWorkitemLinked).list(
+					
+					new QTuple(
+							StringTemplate.create("CASE WHEN " + fonteWorkitemLinked.cSuspect + "= 'true' THEN 1 ELSE 0 END as c_suspect"), 
+							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRole + ",0,4000) as c_role"),									fonteWorkitemLinked.fkPWorkitem, 
+							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRevision + ",0,4000) as c_revision"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteWorkitemLinked.fkUriPWorkitem + ") as fk_uri_p_workitem"), 
+							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteWorkitemLinked.fkUriWorkitem + ") as fk_uri_workitem"), 
+							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " +  fonteWorkitemLinked.fkWorkitem + ") as fk_workitem")
+							)
+					
+					/*
 					new QTuple(
 							StringTemplate.create("CASEWHEN ("
 									+ fonteWorkitemLinked.cSuspect
@@ -72,7 +86,9 @@ public class SireCurrentWorkitemLinkedDAO {
 											+ ",0,4000)"), StringTemplate
 									.create("SUBSTRING("
 											+ fonteWorkitemLinked.fkWorkitem
-											+ ",0,4000)")));
+											+ ",0,4000)"))*/
+					
+					);
 
 			logger.debug("fillSireCurrentWorkitemLinked - cfworkitems.sizw: " + cfworkitems.size());
 			
@@ -126,7 +142,7 @@ public class SireCurrentWorkitemLinkedDAO {
 				cm.closeConnection(oracleConnection);
 			}
 			if (cm != null) {
-				cm.closeConnection(h2Connection);
+				cm.closeConnection(pgConnection);
 			}
 		}
 
