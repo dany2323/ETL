@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -33,6 +34,8 @@ public class SissHistoryProjectDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject.project;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject.project;
+	
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 
 	private static QSissHistoryProject stgProjects = QSissHistoryProject.sissHistoryProject;
 
@@ -43,7 +46,7 @@ public class SissHistoryProjectDAO {
 
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
+		Connection pgConnection = null;
 		List<Tuple> projects = null;
 
 		try {
@@ -51,18 +54,19 @@ public class SissHistoryProjectDAO {
 			
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSISSHistory();
+			pgConnection = cm.getConnectionSISSHistory();
 			projects = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates() 
+			{
 				{
 					setPrintSchema(true);
 				}
 			};
 
-			SQLQuery query = new SQLQuery(connH2, dialect);
+			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			projects = query
 					.from(fonteProjects, fonteRevisions)
@@ -75,35 +79,56 @@ public class SissHistoryProjectDAO {
 							.from(fonteProjects2)
 							.where(fonteProjects2.cName.like("%{READONLY}%"))
 							.list(fonteProjects2.cId)))
-					.list(fonteProjects.cTrackerprefix, fonteProjects.cIsLocal,
-							fonteProjects.cPk, fonteProjects.fkUriLead,
-							fonteProjects.cDeleted, fonteProjects.cFinish,
-							fonteProjects.cUri, fonteProjects.cStart,
-							fonteProjects.fkUriProjectgroup,
-							fonteProjects.cActive, fonteProjects.cLocation,
-							fonteProjects.fkProjectgroup, fonteProjects.fkLead,
+					.list(
+							fonteProjects.cTrackerprefix, 
+							StringTemplate.create("0 as c_is_local"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteProjects.cPk + ") as c_pk"),
+							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteProjects.fkUriLead + ") as fk_uri_lead"),
+							fonteProjects.cDeleted,
+							fonteProjects.cFinish,
+							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " + fonteProjects.cUri + ") as c_uri"),
+							fonteProjects.cStart,
+							StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " + fonteProjects.fkUriProjectgroup + ") as FK_URI_PROJECTGROUP"),
+							fonteProjects.cActive,
+							fonteProjects.cLocation,
+							StringTemplate.create("(SELECT e.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " e WHERE e.c_id = " + fonteProjects.fkProjectgroup + ") as fk_projectgroup"),
+							StringTemplate.create("(SELECT f.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " f WHERE f.c_id = " + fonteProjects.fkLead + ") as fk_lead"),
 							fonteProjects.cLockworkrecordsdate,
-							fonteProjects.cName, fonteProjects.cId,
-							fonteProjects.cRev, fonteProjects.cDescription,
-							fonteRevisions.cName, fonteRevisions.cCreated);
+							fonteProjects.cName, 
+							fonteProjects.cId,
+							fonteProjects.cRev,
+							fonteProjects.cDescription,
+							fonteRevisions.cName, 
+							fonteRevisions.cCreated
+							);
 			
 			logger.debug("SissHistoryProjectDAO.fillSissHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
 			
 			for (Tuple row : projects) {
 				new SQLInsertClause(connOracle, dialect, stgProjects)
-						.columns(stgProjects.cTrackerprefix,
-								stgProjects.cIsLocal, stgProjects.cPk,
-								stgProjects.fkUriLead, stgProjects.cDeleted,
-								stgProjects.cFinish, stgProjects.cUri,
+						.columns(
+								stgProjects.cTrackerprefix,
+								stgProjects.cIsLocal,
+								stgProjects.cPk,
+								stgProjects.fkUriLead,
+								stgProjects.cDeleted,
+								stgProjects.cFinish,
+								stgProjects.cUri,
 								stgProjects.cStart,
 								stgProjects.fkUriProjectgroup,
-								stgProjects.cActive, stgProjects.cLocation,
-								stgProjects.fkProjectgroup, stgProjects.fkLead,
+								stgProjects.cActive,
+								stgProjects.cLocation,
+								stgProjects.fkProjectgroup, 
+								stgProjects.fkLead,
 								stgProjects.cLockworkrecordsdate,
-								stgProjects.cName, stgProjects.cId,
+								stgProjects.cName, 
+								stgProjects.cId,
 								stgProjects.dataCaricamento,
-								stgProjects.dmalmProjectPk, stgProjects.cRev,
-								stgProjects.cCreated, stgProjects.cDescription)
+								stgProjects.dmalmProjectPk,
+								stgProjects.cRev,
+								stgProjects.cCreated,
+								stgProjects.cDescription
+								)
 						.values(row.get(fonteProjects.cTrackerprefix),
 								row.get(fonteProjects.cIsLocal),
 								row.get(fonteProjects.cPk),
@@ -138,7 +163,7 @@ public class SissHistoryProjectDAO {
 			throw new DAOException(e);
 		} finally {
 			if (cm != null)
-				cm.closeConnection(connH2);
+				cm.closeConnection(pgConnection);
 			if (cm != null)
 				cm.closeConnection(connOracle);
 		}

@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -30,6 +31,7 @@ public class SireHistoryWorkitemLinkedDAO
 	private static Logger logger = Logger.getLogger(SireHistoryWorkitemLinkedDAO.class); 
 	
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 		
 	private static QSireHistoryWorkitemLinked stgLinkedWorkitems = QSireHistoryWorkitemLinked.sireHistoryWorkitemLinked;
 
@@ -37,33 +39,41 @@ public class SireHistoryWorkitemLinkedDAO
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
+		Connection        pgConnection = null;
 		List<Tuple>       linkedWorkitems = null;
 		
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSIREHistory();
+			pgConnection = cm.getConnectionSIREHistory();
 			linkedWorkitems = new ArrayList<Tuple>();
 			
 			connOracle.setAutoCommit(false);
 			
-			SQLTemplates dialect = new HSQLDBTemplates()
+			PostgresTemplates dialect = new PostgresTemplates()
 			{ {
 			    setPrintSchema(true);
 			}};
 			
-				
-			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
-				connH2 = cm.getConnectionSIREHistory();
-			}
+				/*mšebela
+			if(pgConnection.isClosed()) {
+				if(cm != null) cm.closeConnection(pgConnection);
+				pgConnection = cm.getConnectionSIREHistory();
+			}*/
 			
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+			SQLQuery query 		 = new SQLQuery(pgConnection, dialect); 
 			
 			linkedWorkitems =  query.from (fonteLinkedWorkitems)
                 					.list(
-                							fonteLinkedWorkitems.all()
+                							fonteLinkedWorkitems.cRevision,
+                							fonteLinkedWorkitems.cRole,
+
+                							StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " +  fonteLinkedWorkitems.fkPWorkitem + ") as fk_p_workitem"),
+                							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteLinkedWorkitems.fkUriPWorkitem + ") as fk_uri_p_workitem"), 
+                							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteLinkedWorkitems.fkUriWorkitem + ") as fk_uri_workitem"), 
+                							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " +  fonteLinkedWorkitems.fkWorkitem + ") as fk_workitem"),
+
+                							fonteLinkedWorkitems.cSuspect
                 						 );
 			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgLinkedWorkitems);
@@ -118,7 +128,7 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
+			if(cm != null) cm.closeConnection(pgConnection);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 		
