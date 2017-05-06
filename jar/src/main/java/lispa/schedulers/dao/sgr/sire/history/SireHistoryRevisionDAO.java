@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -33,7 +34,7 @@ public class SireHistoryRevisionDAO {
 	private static Logger logger = Logger.getLogger(SireHistoryRevisionDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
-
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static QSireHistoryRevision stgRevisions = QSireHistoryRevision.sireHistoryRevision;
 
 
@@ -125,29 +126,43 @@ public class SireHistoryRevisionDAO {
 
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
+		Connection        pgConnection = null;
 		List<Tuple>       revisions = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSIREHistory();
+			pgConnection = cm.getConnectionSIREHistory();
 			revisions = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates()
-			{ {
-				setPrintSchema(true);
-			}};
+			PostgresTemplates dialect = new PostgresTemplates()
+			{
+				{
+					setPrintSchema(true);
+				}
+			};
 
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+			SQLQuery query 		 = new SQLQuery(pgConnection, dialect); 
 
 			revisions = query.from(fonteRevisions)
 					.where(fonteRevisions.cCreated.gt(minRevision))
 					.where(fonteRevisions.cName.castToNum(Long.class).loe(maxRevision))
 					.list(
-							fonteRevisions.all()
+							//fonteRevisions.all()
+							
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " +  fonteRevisions.cPk + ") as c_pk"),
+							fonteRevisions.cAuthor,
+							fonteRevisions.cCreated,
+							fonteRevisions.cDeleted,
+							fonteRevisions.cInternalcommit,
+							StringTemplate.create("0 as c_is_local"),
+							fonteRevisions.cMessage,
+							fonteRevisions.cName,
+							fonteRevisions.cRepositoryname,
+							fonteRevisions.cRev,
+							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " +  fonteRevisions.cUri + ") as c_uri")
 							);
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 
@@ -156,7 +171,8 @@ public class SireHistoryRevisionDAO {
 				batch_size_counter++;
 
 				insert
-				.columns(stgRevisions.cPk,
+				.columns(
+						stgRevisions.cPk,
 						stgRevisions.cAuthor,
 						stgRevisions.cCreated,
 						stgRevisions.cDeleted,
@@ -208,7 +224,7 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 		finally {
 			if(cm != null) cm.closeConnection(connOracle);
-			if(cm != null) cm.closeConnection(connH2);
+			if(cm != null) cm.closeConnection(pgConnection);
 		}
 
 	}
