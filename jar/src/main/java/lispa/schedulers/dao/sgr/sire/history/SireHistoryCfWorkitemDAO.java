@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -34,7 +35,7 @@ public class SireHistoryCfWorkitemDAO {
 			.getLogger(SireHistoryCfWorkitemDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem fonteCFWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem.cfWorkitem;
-
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static QSireHistoryCfWorkitem stgCFWorkItems = QSireHistoryCfWorkitem.sireHistoryCfWorkitem;
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
@@ -97,7 +98,7 @@ public class SireHistoryCfWorkitemDAO {
 			}
 		}
 	}
-
+	
 	/**
 	 * Importo tutti i CF collegati a Workitem del tipo w_type e con C_NAME
 	 * uguale a CFName
@@ -118,7 +119,7 @@ public class SireHistoryCfWorkitemDAO {
 
 			cfWorkitem = new ArrayList<Tuple>();
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates() {
 				{
 					setPrintSchema(true);
 				}
@@ -140,17 +141,30 @@ public class SireHistoryCfWorkitemDAO {
 					connOracle.setAutoCommit(true);
 
 					SQLQuery query = new SQLQuery(connH2, dialect);
-
+					
 					cfWorkitem = query
 							.from(fonteHistoryWorkItems)
 							.join(fonteCFWorkItems)
-							.on(fonteCFWorkItems.fkWorkitem
-									.eq(fonteHistoryWorkItems.cPk))
+							.on(fonteCFWorkItems.fkWorkitem.eq(fonteHistoryWorkItems.cPk))
 							.where(fonteHistoryWorkItems.cType.eq(w_type.toString()))
 							.where(fonteHistoryWorkItems.cRev.gt(minRevision))
 							.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 							.where(fonteCFWorkItems.cName.eq(c_name))
-							.list(fonteCFWorkItems.all());
+							.list(
+									//fonteCFWorkItems.all()
+									
+									fonteCFWorkItems.cDateonlyValue,
+									fonteCFWorkItems.cFloatValue,
+									fonteCFWorkItems.cStringValue,
+									fonteCFWorkItems.cDateValue,
+									fonteCFWorkItems.cBooleanValue,
+									fonteCFWorkItems.cName,
+									StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_uri_workitem"),
+									StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " +  fonteCFWorkItems.fkWorkitem + ") as fk_workitem"),
+									fonteCFWorkItems.cLongValue,
+									fonteCFWorkItems.cDurationtimeValue,
+									fonteCFWorkItems.cCurrencyValue
+									);
 
 					logger.debug("CF_NAME: " + w_type.toString() + " " + c_name
 							+ "  SIZE: " + cfWorkitem.size());
@@ -163,7 +177,8 @@ public class SireHistoryCfWorkitemDAO {
 
 						count_batch++;
 
-						insert.columns(stgCFWorkItems.cDateonlyValue,
+						insert.columns(
+								stgCFWorkItems.cDateonlyValue,
 								stgCFWorkItems.cFloatValue,
 								stgCFWorkItems.cStringValue,
 								stgCFWorkItems.cDateValue,

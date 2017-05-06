@@ -35,7 +35,7 @@ public class SissHistoryCfWorkitemDAO {
 			.getLogger(SissHistoryCfWorkitemDAO.class);
 
 	private static SissHistoryCfWorkitem fonteCFWorkItems = SissHistoryCfWorkitem.cfWorkitem;
-
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static QSissHistoryCfWorkitem stgCFWorkItems = QSissHistoryCfWorkitem.sissHistoryCfWorkitem;
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
@@ -143,7 +143,21 @@ public class SissHistoryCfWorkitemDAO {
 							.where(fonteHistoryWorkItems.cRev.gt(minRevision))
 							.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 							.where(fonteCFWorkItems.cName.eq(c_name))
-							.list(fonteCFWorkItems.all());
+							.list(
+//fonteCFWorkItems.all()
+									
+									fonteCFWorkItems.cDateonlyValue,
+									fonteCFWorkItems.cFloatValue,
+									fonteCFWorkItems.cStringValue,
+									fonteCFWorkItems.cDateValue,
+									fonteCFWorkItems.cBooleanValue,
+									fonteCFWorkItems.cName,
+									StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_uri_workitem"),
+									StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " +  fonteCFWorkItems.fkWorkitem + ") as fk_workitem"),
+									fonteCFWorkItems.cLongValue,
+									fonteCFWorkItems.cDurationtimeValue,
+									fonteCFWorkItems.cCurrencyValue
+									);
 
 					logger.debug("CF_NAME: " + w_type.toString() + " " + c_name
 							+ "  SIZE: " + cfWorkitem.size());

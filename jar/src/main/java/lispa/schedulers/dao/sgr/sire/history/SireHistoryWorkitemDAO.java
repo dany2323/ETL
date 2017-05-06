@@ -45,6 +45,7 @@ import org.w3c.dom.NodeList;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -108,12 +109,12 @@ public class SireHistoryWorkitemDAO {
 		Connection oracle = null;
 
 		try {
+			cm = ConnectionManager.getInstance();
+			oracle = cm.getConnectionOracle();
+
 			for (Workitem_Type type : Workitem_Type.values()) {
 
 				List<Long> max = new ArrayList<Long>();
-
-				cm = ConnectionManager.getInstance();
-				oracle = cm.getConnectionOracle();
 
 				SQLQuery query = new SQLQuery(oracle, dialect);
 
@@ -266,6 +267,8 @@ public class SireHistoryWorkitemDAO {
 		}
 
 	}
+	
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 
 	public static void fillSireHistoryWorkitem(
 			Map<Workitem_Type, Long> minRevisionByType, long maxRevision,
@@ -273,7 +276,7 @@ public class SireHistoryWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
-		Connection SireHistoryConnection = null;
+		Connection pgConnection = null;
 
 		List<Tuple> historyworkitems = new ArrayList<Tuple>();
 
@@ -281,12 +284,12 @@ public class SireHistoryWorkitemDAO {
 
 			cm = ConnectionManager.getInstance();
 
-			SireHistoryConnection = cm.getConnectionSIREHistory();
+			pgConnection = cm.getConnectionSIREHistory();
 			OracleConnection = cm.getConnectionOracle();
 
 			OracleConnection.setAutoCommit(true);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates() {
 				{
 					setPrintSchema(true);
 				}
@@ -294,20 +297,56 @@ public class SireHistoryWorkitemDAO {
 
 			SQLQuery queryHistory = null;
 
-			if (!ConnectionManager.getInstance().isAlive(SireHistoryConnection)) {
+			if (!ConnectionManager.getInstance().isAlive(pgConnection)) {
 				if (cm != null)
-					cm.closeConnection(SireHistoryConnection);
-				SireHistoryConnection = cm.getConnectionSIREHistory();
+					cm.closeConnection(pgConnection);
+				pgConnection = cm.getConnectionSIREHistory();
 			}
 
-			queryHistory = new SQLQuery(SireHistoryConnection, dialect);
+			queryHistory = new SQLQuery(pgConnection, dialect);
 			historyworkitems = queryHistory
 					.from(fonteHistoryWorkItems)
 					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType
 							.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-					.list(fonteHistoryWorkItems.all());
+					.list(
+
+							//fonteHistoryWorkItems.all()
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " +  fonteHistoryWorkItems.fkModule + ") as fk_module"),
+							StringTemplate.create("0 as c_is_local"),
+							fonteHistoryWorkItems.cPriority,
+							fonteHistoryWorkItems.cAutosuspect,
+							fonteHistoryWorkItems.cResolution, 
+							fonteHistoryWorkItems.cCreated,
+							fonteHistoryWorkItems.cOutlinenumber,
+							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " +  fonteHistoryWorkItems.fkProject + ") as fk_project"),
+							fonteHistoryWorkItems.cDeleted,
+							fonteHistoryWorkItems.cPlannedend,
+							fonteHistoryWorkItems.cUpdated, 
+							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " +  fonteHistoryWorkItems.fkAuthor + ") as fk_author"),
+							StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " +  fonteHistoryWorkItems.cUri + ") as c_uri"),
+							StringTemplate.create("(SELECT e.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " e WHERE e.c_id = " +  fonteHistoryWorkItems.fkUriModule+ ") as fk_uri_module"),
+							fonteHistoryWorkItems.cTimespent,
+							fonteHistoryWorkItems.cStatus,
+							fonteHistoryWorkItems.cSeverity,
+							fonteHistoryWorkItems.cResolvedon,
+							StringTemplate.create("(SELECT f.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " f WHERE f.c_id = " +  fonteHistoryWorkItems.fkUriProject + ") as fk_uri_project"),
+							fonteHistoryWorkItems.cTitle,
+							fonteHistoryWorkItems.cId, 
+							fonteHistoryWorkItems.cRev,
+							fonteHistoryWorkItems.cPlannedstart, 
+							StringTemplate.create("(SELECT g.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " g WHERE g.c_id = " +  fonteHistoryWorkItems.fkUriAuthor + ") as fk_uri_author"),
+							fonteHistoryWorkItems.cDuedate, 
+							fonteHistoryWorkItems.cRemainingestimate,
+							fonteHistoryWorkItems.cType,
+							StringTemplate.create("(SELECT h.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " h WHERE h.c_id = " +  fonteHistoryWorkItems.cPk + ") as c_pk"),
+							fonteHistoryWorkItems.cLocation,
+							StringTemplate.create("(SELECT i.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " i WHERE i.c_id = " +  fonteHistoryWorkItems.fkTimepoint + ") as fk_timepoint"),
+							fonteHistoryWorkItems.cInitialestimate,
+							StringTemplate.create("(SELECT j.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " j WHERE j.c_id = " +  fonteHistoryWorkItems.fkUriTimepoint + ") as fk_uri_timepoint"),
+							fonteHistoryWorkItems.cPreviousstatus
+							);
 
 			logger.debug("TYPE: SIRE " + type.toString() + "  SIZE: "
 					+ historyworkitems.size());
@@ -319,21 +358,37 @@ public class SireHistoryWorkitemDAO {
 
 			for (Tuple hist : historyworkitems) {
 				batch_size_counter++;
-				insert.columns(stgWorkItems.fkModule, stgWorkItems.cIsLocal,
-						stgWorkItems.cPriority, stgWorkItems.cAutosuspect,
-						stgWorkItems.cResolution, stgWorkItems.cCreated,
-						stgWorkItems.cOutlinenumber, stgWorkItems.fkProject,
-						stgWorkItems.cDeleted, stgWorkItems.cPlannedend,
-						stgWorkItems.cUpdated, stgWorkItems.fkAuthor,
-						stgWorkItems.cUri, stgWorkItems.fkUriModule,
-						stgWorkItems.cTimespent, stgWorkItems.cStatus,
-						stgWorkItems.cSeverity, stgWorkItems.cResolvedon,
-						stgWorkItems.fkUriProject, stgWorkItems.cTitle,
-						stgWorkItems.cId, stgWorkItems.cRev,
-						stgWorkItems.cPlannedstart, stgWorkItems.fkUriAuthor,
-						stgWorkItems.cDuedate, stgWorkItems.cRemainingestimate,
-						stgWorkItems.cType, stgWorkItems.cPk,
-						stgWorkItems.cLocation, stgWorkItems.fkTimepoint,
+				insert.columns(
+						stgWorkItems.fkModule, 
+						stgWorkItems.cIsLocal,
+						stgWorkItems.cPriority, 
+						stgWorkItems.cAutosuspect,
+						stgWorkItems.cResolution, 
+						stgWorkItems.cCreated,
+						stgWorkItems.cOutlinenumber,
+						stgWorkItems.fkProject,
+						stgWorkItems.cDeleted,
+						stgWorkItems.cPlannedend,
+						stgWorkItems.cUpdated, 
+						stgWorkItems.fkAuthor,
+						stgWorkItems.cUri, 
+						stgWorkItems.fkUriModule,
+						stgWorkItems.cTimespent,
+						stgWorkItems.cStatus,
+						stgWorkItems.cSeverity,
+						stgWorkItems.cResolvedon,
+						stgWorkItems.fkUriProject,
+						stgWorkItems.cTitle,
+						stgWorkItems.cId, 
+						stgWorkItems.cRev,
+						stgWorkItems.cPlannedstart, 
+						stgWorkItems.fkUriAuthor,
+						stgWorkItems.cDuedate, 
+						stgWorkItems.cRemainingestimate,
+						stgWorkItems.cType,
+						stgWorkItems.cPk,
+						stgWorkItems.cLocation,
+						stgWorkItems.fkTimepoint,
 						stgWorkItems.cInitialestimate,
 						stgWorkItems.fkUriTimepoint,
 						stgWorkItems.cPreviousstatus,
@@ -436,7 +491,7 @@ public class SireHistoryWorkitemDAO {
 				cm.closeConnection(OracleConnection);
 			}
 			if (cm != null) {
-				cm.closeConnection(SireHistoryConnection);
+				cm.closeConnection(pgConnection);
 			}
 		}
 	}
