@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -36,23 +37,25 @@ public class SireHistoryHyperlinkDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
 	
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
+	
 	public static void fillSireHistoryHyperlink(Map<Workitem_Type, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
 		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
+		Connection pgConnection = null;
 		List<Tuple> hyperlinks = null;
 
 		try {
 			
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSIREHistory();
+			pgConnection = cm.getConnectionSIREHistory();
 			hyperlinks = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates() {
 				{
 					setPrintSchema(true);
 				}
@@ -60,12 +63,12 @@ public class SireHistoryHyperlinkDAO {
 			
 			for(Workitem_Type type : Workitem_Type.values()) {
 				
-			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
-				connH2 = cm.getConnectionSIREHistory();
+			if(pgConnection.isClosed()) {
+				if(cm != null) cm.closeConnection(pgConnection);
+				pgConnection = cm.getConnectionSIREHistory();
 			}
 
-			SQLQuery query = new SQLQuery(connH2, dialect);
+			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			hyperlinks = query.from(fonteHyperlink)
 					.join(fonteHistoryWorkItems)
@@ -73,7 +76,14 @@ public class SireHistoryHyperlinkDAO {
 					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-					.list(fonteHyperlink.all());
+					.list(
+							//fonteHyperlink.all()
+							
+							fonteHyperlink.cRole,
+							fonteHyperlink.cUrl,
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteHyperlink.fkUriPWorkitem + ") as fk_p_workitem"),
+							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteHyperlink.fkUriPWorkitem + ") as fk_uri_p_workitem")
+							);
 			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
 			
@@ -127,7 +137,7 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
+			if(cm != null) cm.closeConnection(pgConnection);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 	}
