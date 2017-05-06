@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -29,11 +30,10 @@ public class SissHistoryUserDAO
 
 	private static Logger logger = Logger.getLogger(SissHistoryUserDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser  fonteUsers= 
-			lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser.user;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser  fonteUsers= lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser.user;
 
 	private static QSissHistoryUser   stgUsers  = QSissHistoryUser.sissHistoryUser;
-
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	public static void fillSissHistoryUser(long minRevision, long maxRevision) throws Exception {
 
 		ConnectionManager cm   = null;
@@ -45,11 +45,10 @@ public class SissHistoryUserDAO
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
 			connH2 = cm.getConnectionSISSHistory();
-			users = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates()
+			PostgresTemplates dialect = new PostgresTemplates()
 			{ {
 				setPrintSchema(true);
 			}};
@@ -60,7 +59,18 @@ public class SissHistoryUserDAO
 					.where(fonteUsers.cRev.gt(minRevision))
 					.where(fonteUsers.cRev.loe(maxRevision))
 					.list(
-							fonteUsers.all()
+
+							fonteUsers.cAvatarfilename,
+							fonteUsers.cDeleted,
+							fonteUsers.cDisablednotifications,
+							fonteUsers.cEmail,
+							fonteUsers.cId,
+							fonteUsers.cInitials,
+							StringTemplate.create("0 as c_is_local"),
+							fonteUsers.cName,
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteUsers.cPk + ") as c_pk"),
+							fonteUsers.cRev,
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteUsers.cUri + ") as c_uri")
 							);
 
 			for(Tuple row : users) {
@@ -103,7 +113,7 @@ public class SissHistoryUserDAO
 			connOracle.commit();
 		}
 		catch(Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 			
 			throw new DAOException(e);
 		}

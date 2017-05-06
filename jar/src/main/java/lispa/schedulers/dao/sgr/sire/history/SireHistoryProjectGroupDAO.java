@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -27,34 +28,44 @@ public class SireHistoryProjectGroupDAO
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup.projectgroup;
 	
 	private static QSireHistoryProjectgroup stgProjectGroups = QSireHistoryProjectgroup.sireHistoryProjectgroup;
-	
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static Logger logger = Logger.getLogger(SireHistoryProjectGroupDAO.class);
 
 	public static void fillSireHistoryProjectGroup() throws SQLException, DAOException {
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
+		Connection        pgConnection = null;
 		List<Tuple>       projectgroups = null;
 		
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSIREHistory();
+			pgConnection = cm.getConnectionSIREHistory();
 			projectgroups = new ArrayList<Tuple>();
 			
 			connOracle.setAutoCommit(false);
 			
-			SQLTemplates dialect = new HSQLDBTemplates()
+			PostgresTemplates dialect = new PostgresTemplates()
 			{ {
 			    setPrintSchema(true);
 			}};
 			
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+			SQLQuery query 		 = new SQLQuery(pgConnection, dialect); 
 			
 			projectgroups = query.from(fonteProjectGroups)
 					.list(
-							fonteProjectGroups.all()
+							//fonteProjectGroups.all()
+							
+							fonteProjectGroups.cLocation,
+							StringTemplate.create("0 as c_is_local"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteProjectGroups.cPk + ") as c_pk"),
+							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteProjectGroups.fkUriParent + ") as fk_uri_parent"),
+							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " + fonteProjectGroups.fkParent + ") as fk_parent"),
+							fonteProjectGroups.cName,
+							fonteProjectGroups.cDeleted,
+							fonteProjectGroups.cRev,
+							StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " + fonteProjectGroups.cUri + ") as c_uri")
 							);
 			
 			for(Tuple row : projectgroups) {
@@ -97,7 +108,7 @@ public class SireHistoryProjectGroupDAO
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
+			if(cm != null) cm.closeConnection(pgConnection);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 		

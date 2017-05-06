@@ -20,7 +20,7 @@ public class SireHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
 
     private static final long serialVersionUID = 690289880;
 
-    public static final SireHistoryUser user = new SireHistoryUser("USER");
+    public static final SireHistoryUser user = new SireHistoryUser("T_USER");
 
     public final StringPath cAvatarfilename = createString("C_AVATARFILENAME");
 
@@ -45,15 +45,15 @@ public class SireHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
     public final StringPath cUri = createString("C_URI");
 
     public SireHistoryUser(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryUser.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryUser.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "T_USER");
     }
 
     public SireHistoryUser(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryUser> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "T_USER");
     }
 
     public SireHistoryUser(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryUser.class, metadata, DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryUser.class, metadata, DmAlmConstants.POLARION_SCHEMA, "T_USER");
     }
 
 }

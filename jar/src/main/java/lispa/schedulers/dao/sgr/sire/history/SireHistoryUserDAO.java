@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -32,6 +33,7 @@ public class SireHistoryUserDAO
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
 
 	private static QSireHistoryUser   stgUsers  = QSireHistoryUser.sireHistoryUser;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 
 	public static void fillSireHistoryUser(long minRevision, long maxRevision) throws SQLException, DAOException {
 
@@ -48,7 +50,7 @@ public class SireHistoryUserDAO
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates()
+			PostgresTemplates dialect = new PostgresTemplates()
 			{ {
 				setPrintSchema(true);
 			}};
@@ -59,7 +61,19 @@ public class SireHistoryUserDAO
 					.where(fonteUsers.cRev.gt(minRevision))
 					.where(fonteUsers.cRev.loe(maxRevision))
 					.list(
-							fonteUsers.all()
+							//fonteUsers.all()
+							
+							fonteUsers.cAvatarfilename,
+							fonteUsers.cDeleted,
+							fonteUsers.cDisablednotifications,
+							fonteUsers.cEmail,
+							fonteUsers.cId,
+							fonteUsers.cInitials,
+							StringTemplate.create("0 as c_is_local"),
+							fonteUsers.cName,
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteUsers.cPk + ") as c_pk"),
+							fonteUsers.cRev,
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteUsers.cUri + ") as c_uri")
 							);
 
 			for(Tuple row : users) {
