@@ -123,7 +123,7 @@ public class SissHistoryWorkitemLinkedDAO
 			
 		}
 		catch(Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 			
 			throw new DAOException(e);
 		}

@@ -109,7 +109,7 @@ public class SireHistoryCfWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
+		Connection pgConnection = null;
 		List<Tuple> cfWorkitem = null;
 		String customFieldName = null;
 		boolean scaricaCF = false;
@@ -136,11 +136,11 @@ public class SireHistoryCfWorkitemDAO {
 					customFieldName = c_name;
 					
 					connOracle = cm.getConnectionOracle();
-					connH2 = cm.getConnectionSIREHistory();
+					pgConnection = cm.getConnectionSIREHistory();
 
 					connOracle.setAutoCommit(true);
 
-					SQLQuery query = new SQLQuery(connH2, dialect);
+					SQLQuery query = new SQLQuery(pgConnection, dialect);
 					
 					cfWorkitem = query
 							.from(fonteHistoryWorkItems)
@@ -221,7 +221,7 @@ public class SireHistoryCfWorkitemDAO {
 					}
 
 					if (cm != null) {
-						cm.closeConnection(connH2);
+						cm.closeConnection(pgConnection);
 					}
 					if (cm != null) {
 						cm.closeConnection(connOracle);
@@ -242,7 +242,7 @@ public class SireHistoryCfWorkitemDAO {
 			}
 		} finally {
 			if (cm != null) {
-				cm.closeConnection(connH2);
+				cm.closeConnection(pgConnection);
 			}
 			if (cm != null) {
 				cm.closeConnection(connOracle);

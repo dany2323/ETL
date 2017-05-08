@@ -38,13 +38,13 @@ public class SissHistoryUserDAO
 
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
+		Connection        pgConnection = null;
 		List<Tuple>       users = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSISSHistory();
+			pgConnection = cm.getConnectionSISSHistory();
 
 			connOracle.setAutoCommit(false);
 
@@ -53,7 +53,7 @@ public class SissHistoryUserDAO
 				setPrintSchema(true);
 			}};
 
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+			SQLQuery query 		 = new SQLQuery(pgConnection, dialect); 
 
 			users = query.from(fonteUsers)
 					.where(fonteUsers.cRev.gt(minRevision))
@@ -118,7 +118,7 @@ public class SissHistoryUserDAO
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
+			if(cm != null) cm.closeConnection(pgConnection);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 

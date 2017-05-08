@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -102,7 +103,7 @@ public class SissHistoryCfWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
+		Connection pgConnection = null;
 		List<Tuple> cfWorkitem = null;
 		String customFieldName = null;
 		boolean scaricaCF = false;
@@ -111,7 +112,7 @@ public class SissHistoryCfWorkitemDAO {
 			cm = ConnectionManager.getInstance();
 			cfWorkitem = new ArrayList<Tuple>();
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates() {
 				{
 					setPrintSchema(true);
 				}
@@ -128,11 +129,11 @@ public class SissHistoryCfWorkitemDAO {
 					customFieldName = c_name;
 					
 					connOracle = cm.getConnectionOracle();
-					connH2 = cm.getConnectionSISSHistory();
+					pgConnection = cm.getConnectionSISSHistory();
 
 					connOracle.setAutoCommit(true);
 
-					SQLQuery query = new SQLQuery(connH2, dialect);
+					SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 					cfWorkitem = query
 							.from(fonteHistoryWorkItems)
@@ -213,7 +214,7 @@ public class SissHistoryCfWorkitemDAO {
 					}
 
 					if (cm != null) {
-						cm.closeConnection(connH2);
+						cm.closeConnection(pgConnection);
 					}
 					if (cm != null) {
 						cm.closeConnection(connOracle);
@@ -233,7 +234,7 @@ public class SissHistoryCfWorkitemDAO {
 
 		} finally {
 			if (cm != null) {
-				cm.closeConnection(connH2);
+				cm.closeConnection(pgConnection);
 			}
 			if (cm != null) {
 				cm.closeConnection(connOracle);

@@ -42,23 +42,23 @@ public class SireHistoryRevisionDAO {
 	{
 
 		ConnectionManager cm = null;
-		Connection connH2 = null;
+		Connection pgConnection = null;
 
 
 		List<Long> max = new ArrayList<Long>();
 		try{
 
 			cm 	   = ConnectionManager.getInstance();
-			connH2 = cm.getConnectionSIREHistory();
+			pgConnection = cm.getConnectionSIREHistory();
 
 			Timestamp lastValid = DateUtils.addSecondsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -3600);
 
 			SireHistoryRevision  fonteRevisions  = SireHistoryRevision.revision;
 
-			SQLTemplates dialect 				 = new HSQLDBTemplates(){ {
+			PostgresTemplates dialect 				 = new PostgresTemplates(){ {
 				setPrintSchema(true);
 			}};
-			SQLQuery query 						 = new SQLQuery(connH2, dialect); 
+			SQLQuery query 						 = new SQLQuery(pgConnection, dialect); 
 
 			max = query.from(fonteRevisions).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.castToNum(Long.class).max());
 
@@ -81,7 +81,7 @@ public class SireHistoryRevisionDAO {
 		}
 		finally
 		{
-			if(cm != null) cm.closeConnection(connH2);
+			if(cm != null) cm.closeConnection(pgConnection);
 		}
 		return max.get(0).longValue();
 	}

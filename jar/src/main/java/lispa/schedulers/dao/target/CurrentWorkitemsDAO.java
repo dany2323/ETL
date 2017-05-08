@@ -46,7 +46,11 @@ public class CurrentWorkitemsDAO {
 			List<Tuple> allSireWorkitems = query.distinct()
 					.from(qSireCurrentWorkitem)
 					.where(qSireCurrentWorkitem.cId.isNotNull())
-					.list(qSireCurrentWorkitem.cPk,qSireCurrentWorkitem.cId, qSireCurrentWorkitem.cType);
+					.list(
+							qSireCurrentWorkitem.cPk,
+							qSireCurrentWorkitem.cId, 
+							qSireCurrentWorkitem.cType
+							);
 			
 			
 			int batchcounter = 0;
