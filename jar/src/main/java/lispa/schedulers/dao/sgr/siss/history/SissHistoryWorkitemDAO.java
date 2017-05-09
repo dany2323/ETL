@@ -386,6 +386,9 @@ public class SissHistoryWorkitemDAO {
 			int batch_size_counter = 0;
 
 			for (Tuple hist : historyworkitems) {
+				Object[] vals = hist.toArray();
+				
+				
 				batch_size_counter++;
 				insert.columns(
 						stgWorkItems.fkModule,
@@ -423,7 +426,10 @@ public class SissHistoryWorkitemDAO {
 						stgWorkItems.cPreviousstatus,
 						stgWorkItems.dataCaricamento,
 						stgWorkItems.dmalmWorkitemPk)
-						.values(hist.get(fonteHistoryWorkItems.fkModule),
+						.values(
+								
+								/*
+								hist.get(fonteHistoryWorkItems.fkModule),
 								hist.get(fonteHistoryWorkItems.cIsLocal),
 								hist.get(fonteHistoryWorkItems.cPriority),
 								hist.get(fonteHistoryWorkItems.cAutosuspect),
@@ -455,7 +461,44 @@ public class SissHistoryWorkitemDAO {
 								hist.get(fonteHistoryWorkItems.fkTimepoint),
 								hist.get(fonteHistoryWorkItems.cInitialestimate),
 								hist.get(fonteHistoryWorkItems.fkUriTimepoint),
-								hist.get(fonteHistoryWorkItems.cPreviousstatus),
+								hist.get(fonteHistoryWorkItems.cPreviousstatus),*/
+								
+								
+								vals[0],
+								vals[1],
+								vals[2],
+								vals[3],
+								vals[4],
+								vals[5],
+								vals[6],
+								vals[7],
+								vals[8],
+								vals[9],
+								vals[10],
+								StringUtils.getMaskedValue((String)vals[11]),
+								vals[12],
+								vals[13],
+								vals[14],
+								vals[15],
+								vals[16],
+								vals[17],
+								vals[18],
+								vals[19],
+								vals[20],
+								vals[21],
+								vals[22],
+								StringUtils.getMaskedValue((String)vals[23]),
+								vals[24],
+								vals[25],
+								vals[26],
+								vals[27],
+								vals[28],
+								vals[29],
+								vals[30],
+								vals[31],
+								vals[32],
+								
+								
 								dataEsecuzione,
 								StringTemplate
 										.create("HISTORY_WORKITEM_SEQ.nextval")

@@ -81,6 +81,8 @@ public class SissHistoryWorkitemLinkedDAO
 			int batchcounter = 0;
 			
 			for(Tuple row : linkedWorkitems) {
+				Object[] vals = row.toArray();
+				
 				insert
 				.columns(
 						stgLinkedWorkitems.cRevision,
@@ -94,13 +96,13 @@ public class SissHistoryWorkitemLinkedDAO
 						stgLinkedWorkitems.dmalmWorkLinkedPk
 						)
 						.values(								
-								row.get(fonteLinkedWorkitems.cRevision),
-								row.get(fonteLinkedWorkitems.cRole),
-								row.get(fonteLinkedWorkitems.fkPWorkitem),
-								row.get(fonteLinkedWorkitems.fkUriPWorkitem),
-								row.get(fonteLinkedWorkitems.fkUriWorkitem),
-								row.get(fonteLinkedWorkitems.fkWorkitem),
-								row.get(fonteLinkedWorkitems.cSuspect),
+								vals[0],
+								vals[1],
+								vals[2],
+								vals[3],
+								vals[4],
+								vals[5],
+								vals[6],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_WORK_LINKED_SEQ.nextval")
 								)

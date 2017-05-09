@@ -176,6 +176,8 @@ public class SireHistoryCfWorkitemDAO {
 					for (Tuple row : cfWorkitem) {
 
 						count_batch++;
+						
+						Object[] val = row.toArray();
 
 						insert.columns(
 								stgCFWorkItems.cDateonlyValue,
@@ -190,17 +192,18 @@ public class SireHistoryCfWorkitemDAO {
 								stgCFWorkItems.cCurrencyValue,
 								stgCFWorkItems.dataCaricamento,
 								stgCFWorkItems.dmalmHistoryCfWorkItemPk)
-								.values(row.get(fonteCFWorkItems.cDateonlyValue),
-										row.get(fonteCFWorkItems.cFloatValue),
-										row.get(fonteCFWorkItems.cStringValue),
-										row.get(fonteCFWorkItems.cDateValue),
-										row.get(fonteCFWorkItems.cBooleanValue),
-										row.get(fonteCFWorkItems.cName),
-										row.get(fonteCFWorkItems.fkUriWorkitem),
-										row.get(fonteCFWorkItems.fkWorkitem),
-										row.get(fonteCFWorkItems.cLongValue),
-										row.get(fonteCFWorkItems.cDurationtimeValue),
-										row.get(fonteCFWorkItems.cCurrencyValue),
+								.values(
+										val[0],
+										val[1],
+										val[2],
+										val[3],
+										val[4],
+										val[5],
+										val[6],
+										val[7],
+										val[8],
+										val[9],
+										val[10],
 										DataEsecuzione.getInstance()
 												.getDataEsecuzione(),
 										StringTemplate

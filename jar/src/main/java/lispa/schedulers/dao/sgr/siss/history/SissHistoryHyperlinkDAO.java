@@ -90,6 +90,8 @@ public class SissHistoryHyperlinkDAO {
 				for (Tuple row : hyperlinks) {
 					batchcounter++;
 					
+					Object[] vals = row.toArray();
+					
 					insert
 							.columns(
 									
@@ -104,10 +106,11 @@ public class SissHistoryHyperlinkDAO {
 									
 							.values(
 									
-									row.get(fonteHyperlink.cRole),
-									row.get(fonteHyperlink.cUrl),
-									row.get(fonteHyperlink.fkPWorkitem),
-									row.get(fonteHyperlink.fkUriPWorkitem),
+									vals[0],
+									vals[1],
+									vals[2],
+									vals[3],
+									
 									DataEsecuzione.getInstance().getDataEsecuzione(),
 									StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 											

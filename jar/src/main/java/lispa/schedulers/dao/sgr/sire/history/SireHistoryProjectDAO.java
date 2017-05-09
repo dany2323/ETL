@@ -95,14 +95,16 @@ public class SireHistoryProjectDAO {
 							fonteProjects.cName, 
 							fonteProjects.cId,
 							fonteProjects.cRev, 
-							fonteProjects.cDescription,
-							fonteRevisions.cName, 
-							fonteRevisions.cCreated
+//							fonteRevisions.cName, 
+							fonteRevisions.cCreated,
+							fonteProjects.cDescription
 							);
 
 			logger.debug("SireHistoryProjectDAO.fillSireHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
 
 			for (Tuple row : projects) {
+				Object[] vals = row.toArray();
+				
 				new SQLInsertClause(connOracle, dialect, stgProjects)
 						.columns(
 								stgProjects.cTrackerprefix,
@@ -127,29 +129,31 @@ public class SireHistoryProjectDAO {
 								stgProjects.cCreated,
 								stgProjects.cDescription
 								)
-						.values(row.get(fonteProjects.cTrackerprefix),
-								row.get(fonteProjects.cIsLocal),
-								row.get(fonteProjects.cPk),
-								StringUtils.getMaskedValue(row.get(fonteProjects.fkUriLead)),
-								row.get(fonteProjects.cDeleted),
-								row.get(fonteProjects.cFinish),
-								row.get(fonteProjects.cUri),
-								row.get(fonteProjects.cStart),
-								row.get(fonteProjects.fkUriProjectgroup),
-								row.get(fonteProjects.cActive),
-								row.get(fonteProjects.cLocation),
-								row.get(fonteProjects.fkProjectgroup),
-								StringUtils.getMaskedValue(row.get(fonteProjects.fkLead)),
-								row.get(fonteProjects.cLockworkrecordsdate),
-								row.get(fonteProjects.cName),
-								row.get(fonteProjects.cId),
+						.values(
+								vals[0],
+								vals[1],
+								vals[2],
+								StringUtils.getMaskedValue((String)vals[3]),
+								vals[4],
+								vals[5],
+								vals[6],
+								vals[7],
+								vals[8],
+								vals[9],
+								vals[10],
+								vals[11],
+								StringUtils.getMaskedValue((String)vals[12]),
+								vals[13],
+								vals[14],
+								vals[15],
 								DataEsecuzione.getInstance()
 										.getDataEsecuzione(),
 								StringTemplate
 										.create("HISTORY_PROJECT_SEQ.nextval"),
-								row.get(fonteProjects.cRev),
-								row.get(fonteRevisions.cCreated),
-								row.get(fonteProjects.cDescription)).execute();
+										vals[16],
+										vals[17],
+										vals[18]
+								).execute();
 			}
 
 			connOracle.commit();
@@ -219,6 +223,7 @@ public class SireHistoryProjectDAO {
 
 			projects = new ArrayList<Tuple>();
 
+			//todo
 			projects = query
 					.from(stgProjects)
 					.distinct()

@@ -69,6 +69,8 @@ public class SissHistoryProjectGroupDAO
 							);
 			
 			for(Tuple row : projectgroups) {
+				Object[] val = row.toArray();
+				
 				new SQLInsertClause(connOracle, dialect, stgProjectGroups)
 				.columns(
 						stgProjectGroups.cLocation,
@@ -84,15 +86,15 @@ public class SissHistoryProjectGroupDAO
 						stgProjectGroups.dmalmProjgroupPk
 						)
 						.values(								
-								row.get(fonteProjectGroups.cLocation),
-								row.get(fonteProjectGroups.cIsLocal),
-								row.get(fonteProjectGroups.cPk),
-								row.get(fonteProjectGroups.fkUriParent),
-								row.get(fonteProjectGroups.fkParent),
-								row.get(fonteProjectGroups.cName),
-								row.get(fonteProjectGroups.cDeleted),
-								row.get(fonteProjectGroups.cRev),
-								row.get(fonteProjectGroups.cUri),
+								val[0],
+								val[1],
+								val[2],
+								val[3],
+								val[4],
+								val[5],
+								val[6],
+								val[7],
+								val[8],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
 								)

@@ -74,6 +74,8 @@ public class SissHistoryUserDAO
 							);
 
 			for(Tuple row : users) {
+				Object[] vals = row.toArray();
+				
 				new SQLInsertClause(connOracle, dialect, stgUsers)
 				.columns(
 						stgUsers.cAvatarfilename,
@@ -90,7 +92,8 @@ public class SissHistoryUserDAO
 						stgUsers.dataCaricamento,
 						stgUsers.dmalmUserPk
 						)
-						.values(								
+						.values(	
+								/*
 								row.get(fonteUsers.cAvatarfilename),
 								row.get(fonteUsers.cDeleted),
 								row.get(fonteUsers.cDisablednotifications),
@@ -102,7 +105,20 @@ public class SissHistoryUserDAO
 								// 
 								StringUtils.getMaskedValue(row.get(fonteUsers.cPk)),
 								row.get(fonteUsers.cRev),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cUri)),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cUri)),*/
+								
+								vals[0],
+								vals[1],
+								vals[2],
+								StringUtils.getMaskedValue((String)vals[3]),
+								StringUtils.getMaskedValue((String)vals[4]),
+								vals[5],
+								vals[6],
+								StringUtils.getMaskedValue((String)vals[7]),
+								StringUtils.getMaskedValue((String)vals[8]),
+								vals[9],
+								StringUtils.getMaskedValue((String)vals[10]),
+								
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_USER_SEQ.nextval")
 								)

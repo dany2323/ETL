@@ -169,21 +169,40 @@ public class SissHistoryCfWorkitemDAO {
 
 					for (Tuple row : cfWorkitem) {
 
+						Object[] vals = row.toArray();
+						
 						count_batch++;
 
-						insert.columns(stgCFWorkItems.cDateonlyValue,
+						insert.columns(
+								stgCFWorkItems.cDateonlyValue,
 								stgCFWorkItems.cFloatValue,
 								stgCFWorkItems.cStringValue,
 								stgCFWorkItems.cDateValue,
-								stgCFWorkItems.cBooleanValue, stgCFWorkItems.cName,
+								stgCFWorkItems.cBooleanValue, 
+								stgCFWorkItems.cName,
 								stgCFWorkItems.fkUriWorkitem,
 								stgCFWorkItems.fkWorkitem,
 								stgCFWorkItems.cLongValue,
 								stgCFWorkItems.cDurationtimeValue,
 								stgCFWorkItems.cCurrencyValue,
 								stgCFWorkItems.dataCaricamento,
-								stgCFWorkItems.dmalmCfWorkitemPk)
-								.values(row.get(fonteCFWorkItems.cDateonlyValue),
+								stgCFWorkItems.dmalmCfWorkitemPk
+								)
+								.values(
+										vals[0],
+										vals[1],
+										vals[2],
+										vals[3],
+										vals[4],
+										vals[5],
+										vals[6],
+										vals[7],
+										vals[8],
+										vals[9],
+										vals[10],
+
+										/*
+										row.get(fonteCFWorkItems.cDateonlyValue),
 										row.get(fonteCFWorkItems.cFloatValue),
 										row.get(fonteCFWorkItems.cStringValue),
 										row.get(fonteCFWorkItems.cDateValue),
@@ -194,6 +213,7 @@ public class SissHistoryCfWorkitemDAO {
 										row.get(fonteCFWorkItems.cLongValue),
 										row.get(fonteCFWorkItems.cDurationtimeValue),
 										row.get(fonteCFWorkItems.cCurrencyValue),
+										*/
 										DataEsecuzione.getInstance()
 												.getDataEsecuzione(),
 										StringTemplate

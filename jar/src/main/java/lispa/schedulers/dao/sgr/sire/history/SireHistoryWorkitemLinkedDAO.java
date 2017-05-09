@@ -80,6 +80,9 @@ public class SireHistoryWorkitemLinkedDAO
 			int batchcounter = 0;
 			
 			for(Tuple row : linkedWorkitems) {
+				
+				Object[] vals = row.toArray();
+				
 				insert
 				.columns(
         						stgLinkedWorkitems.cRevision,
@@ -93,7 +96,17 @@ public class SireHistoryWorkitemLinkedDAO
         						stgLinkedWorkitems.sireHistoryWorkLinkedPk
 						)
 						.values
-						(								
+						(		
+								vals[0],
+								vals[1],
+								vals[2],
+								vals[3],
+								vals[4],
+								vals[5],
+								vals[6],
+								
+								
+								/*
 								row.get(fonteLinkedWorkitems.cRevision),
 								row.get(fonteLinkedWorkitems.cRole),
 								row.get(fonteLinkedWorkitems.fkPWorkitem),
@@ -101,6 +114,7 @@ public class SireHistoryWorkitemLinkedDAO
 								row.get(fonteLinkedWorkitems.fkUriWorkitem),
 								row.get(fonteLinkedWorkitems.fkWorkitem),
 								row.get(fonteLinkedWorkitems.cSuspect),
+								*/
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_WORK_LINKED_SEQ.nextval")
 						)

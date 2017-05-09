@@ -93,6 +93,8 @@ public class SireHistoryHyperlinkDAO {
 				
 				batchcounter++;
 				
+				Object[] val = row.toArray();
+				
 				insert
 						.columns(
 								
@@ -106,11 +108,7 @@ public class SireHistoryHyperlinkDAO {
 						)
 								
 						.values(
-								
-								row.get(fonteHyperlink.cRole),
-								row.get(fonteHyperlink.cUrl),
-								row.get(fonteHyperlink.fkPWorkitem),
-								row.get(fonteHyperlink.fkUriPWorkitem),
+								val[0],val[1],val[2],val[3],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 										
