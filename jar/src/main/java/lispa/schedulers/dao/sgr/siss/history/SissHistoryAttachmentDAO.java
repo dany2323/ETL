@@ -65,7 +65,7 @@ public class SissHistoryAttachmentDAO {
 							fonteAttachment.cId,
 							StringTemplate.create("0 as c_is_local"),
 							fonteAttachment.cLength,
-							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteAttachment.cPk + ") as c_pk"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteAttachment.cUri + ") as c_pk"),
 							fonteAttachment.cRev,
 							fonteAttachment.cTitle,
 							fonteAttachment.cUpdated,

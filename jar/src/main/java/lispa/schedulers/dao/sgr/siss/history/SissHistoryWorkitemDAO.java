@@ -369,7 +369,7 @@ public class SissHistoryWorkitemDAO {
 							fonteHistoryWorkItems.cDuedate, 
 							fonteHistoryWorkItems.cRemainingestimate,
 							fonteHistoryWorkItems.cType,
-							StringTemplate.create("(SELECT h.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " h WHERE h.c_id = " +  fonteHistoryWorkItems.cPk + ") as c_pk"),
+							StringTemplate.create("(SELECT h.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " h WHERE h.c_id = " +  fonteHistoryWorkItems.cUri + ") as c_pk"),
 							fonteHistoryWorkItems.cLocation,
 							StringTemplate.create("(SELECT i.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " i WHERE i.c_id = " +  fonteHistoryWorkItems.fkTimepoint + ") as fk_timepoint"),
 							fonteHistoryWorkItems.cInitialestimate,

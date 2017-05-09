@@ -68,7 +68,7 @@ public class SissHistoryUserDAO
 							fonteUsers.cInitials,
 							StringTemplate.create("0 as c_is_local"),
 							fonteUsers.cName,
-							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteUsers.cPk + ") as c_pk"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteUsers.cUri + ") as c_pk"),
 							fonteUsers.cRev,
 							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteUsers.cUri + ") as c_uri")
 							);
