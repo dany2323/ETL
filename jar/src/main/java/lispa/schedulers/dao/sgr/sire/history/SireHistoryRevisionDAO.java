@@ -152,7 +152,7 @@ public class SireHistoryRevisionDAO {
 					.list(
 							//fonteRevisions.all()
 							
-							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " +  fonteRevisions.cUri + ") as c_pk"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteRevisions.cUri + ") || '%' || c_rev as c_pk"),
 							fonteRevisions.cAuthor,
 							fonteRevisions.cCreated,
 							fonteRevisions.cDeleted,
@@ -162,7 +162,7 @@ public class SireHistoryRevisionDAO {
 							fonteRevisions.cName,
 							fonteRevisions.cRepositoryname,
 							fonteRevisions.cRev,
-							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " +  fonteRevisions.cUri + ") as c_uri")
+							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " +  fonteRevisions.cUri + ") as c_uri")
 							);
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 

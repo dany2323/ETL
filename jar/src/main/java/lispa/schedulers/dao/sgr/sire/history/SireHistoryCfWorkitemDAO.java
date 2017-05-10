@@ -159,8 +159,8 @@ public class SireHistoryCfWorkitemDAO {
 									fonteCFWorkItems.cDateValue,
 									fonteCFWorkItems.cBooleanValue,
 									fonteCFWorkItems.cName,
-									StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_uri_workitem"),
-									StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " +  fonteCFWorkItems.fkWorkitem + ") as fk_workitem"),
+									StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_uri_workitem"),
+									StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_workitem"),
 									fonteCFWorkItems.cLongValue,
 									fonteCFWorkItems.cDurationtimeValue,
 									fonteCFWorkItems.cCurrencyValue
@@ -231,6 +231,8 @@ public class SireHistoryCfWorkitemDAO {
 					}
 				}
 			}
+			
+			//connOracle.commit();
 			
 			ErrorManager.getInstance().resetCFDeadlock();
 		} catch (Exception e) {

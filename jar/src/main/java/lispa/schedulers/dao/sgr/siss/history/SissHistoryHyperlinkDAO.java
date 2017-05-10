@@ -79,8 +79,8 @@ public class SissHistoryHyperlinkDAO {
 								
 								fonteHyperlink.cRole,
 								fonteHyperlink.cUrl,
-								StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteHyperlink.fkUriPWorkitem + ") as fk_p_workitem"),
-								StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteHyperlink.fkUriPWorkitem + ") as fk_uri_p_workitem")
+								StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteHyperlink.fkUriPWorkitem + ") as fk_p_workitem"),
+								StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteHyperlink.fkUriPWorkitem + ") as fk_uri_p_workitem")
 								);
 	
 				SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
