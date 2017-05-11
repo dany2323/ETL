@@ -313,18 +313,18 @@ public class SireHistoryWorkitemDAO {
 					.list(
 
 							//fonteHistoryWorkItems.all()
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteHistoryWorkItems.fkUriModule + ") || '%' || c_rev as fk_module"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteHistoryWorkItems.fkUriModule + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".module where module.c_pk = fk_module) as fk_module"),
 							StringTemplate.create("0 as c_is_local"),
 							fonteHistoryWorkItems.cPriority,
 							fonteHistoryWorkItems.cAutosuspect,
 							fonteHistoryWorkItems.cResolution, 
 							fonteHistoryWorkItems.cCreated,
 							fonteHistoryWorkItems.cOutlinenumber,
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " +  fonteHistoryWorkItems.fkUriProject + ") || '%' || c_rev as fk_project"),
+							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " +  fonteHistoryWorkItems.fkUriProject + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".project where project.c_pk = fk_project) as fk_project"),
 							fonteHistoryWorkItems.cDeleted,
 							fonteHistoryWorkItems.cPlannedend,
 							fonteHistoryWorkItems.cUpdated, 
-							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " +  fonteHistoryWorkItems.fkUriAuthor + ") || '%' || c_rev as fk_author"),
+							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " +  fonteHistoryWorkItems.fkUriAuthor + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_author) as fk_author"),
 							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " +  fonteHistoryWorkItems.cUri + ") as c_uri"),
 							StringTemplate.create("(SELECT e.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " e WHERE e.c_id = " +  fonteHistoryWorkItems.fkUriModule+ ") as fk_uri_module"),
 							fonteHistoryWorkItems.cTimespent,
@@ -342,7 +342,7 @@ public class SireHistoryWorkitemDAO {
 							fonteHistoryWorkItems.cType,
 							StringTemplate.create("(SELECT h.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " h WHERE h.c_id = " +  fonteHistoryWorkItems.cUri + ") || '%' || c_rev as c_pk"),
 							fonteHistoryWorkItems.cLocation,
-							StringTemplate.create("(SELECT i.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " i WHERE i.c_id = " +  fonteHistoryWorkItems.fkUriTimepoint + ") || '%' || c_rev as fk_timepoint"),
+							StringTemplate.create("(SELECT i.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " i WHERE i.c_id = " +  fonteHistoryWorkItems.fkUriTimepoint + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".timepoint where timepoint.c_pk = fk_timepoint) as fk_timepoint"),
 							fonteHistoryWorkItems.cInitialestimate,
 							StringTemplate.create("(SELECT j.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " j WHERE j.c_id = " +  fonteHistoryWorkItems.fkUriTimepoint + ") as fk_uri_timepoint"),
 							fonteHistoryWorkItems.cPreviousstatus

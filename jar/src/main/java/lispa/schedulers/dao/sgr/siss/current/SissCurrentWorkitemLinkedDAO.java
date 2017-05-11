@@ -114,7 +114,8 @@ public class SissCurrentWorkitemLinkedDAO {
 			List<Tuple> cfworkitems = query.from(fonteWorkitemLinked).list(
 					new QTuple(
 							StringTemplate.create("CASE WHEN " + fonteWorkitemLinked.cSuspect + "= 'true' THEN 1 ELSE 0 END as c_suspect"), 
-							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRole + ",0,4000) as c_role"),									fonteWorkitemLinked.fkPWorkitem, 
+							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRole + ",0,4000) as c_role"),									
+							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteWorkitemLinked.fkUriPWorkitem + ") as fk_p_workitem"),
 							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRevision + ",0,4000) as c_revision"),
 							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteWorkitemLinked.fkUriPWorkitem + ") as fk_uri_p_workitem"), 
 							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteWorkitemLinked.fkUriWorkitem + ") as fk_uri_workitem"), 

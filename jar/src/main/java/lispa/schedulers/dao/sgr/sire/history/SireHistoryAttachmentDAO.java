@@ -72,12 +72,12 @@ public class SireHistoryAttachmentDAO {
 							fonteAttachment.cUpdated,
 							StringTemplate.create("(SELECT b.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " + fonteAttachment.cUri + ") as c_uri"),
 							fonteAttachment.cUrl,
-							StringTemplate.create("(SELECT c.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " + fonteAttachment.fkUriAuthor + ") || '%' || c_rev as fk_author"),
-							StringTemplate.create("(SELECT d.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " + fonteAttachment.fkUriProject + ") || '%' || c_rev as fk_project"),
+							StringTemplate.create("(SELECT c.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " + fonteAttachment.fkUriAuthor + ") || '%' || (select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_author) as fk_author"),
+							StringTemplate.create("(SELECT d.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " + fonteAttachment.fkUriProject + ") || '%' || (select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".project where project.c_pk = fk_project) as fk_project"),
 							StringTemplate.create("(SELECT e.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " e WHERE e.c_id = " + fonteAttachment.fkUriAuthor + ") as fk_uri_author"),
 							StringTemplate.create("(SELECT f.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " f WHERE f.c_id = " + fonteAttachment.fkUriProject + ") as fk_uri_project"),
 							StringTemplate.create("(SELECT g.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " g WHERE g.c_id = " + fonteAttachment.fkUriWorkitem + ") as fk_uri_workitem"),
-							StringTemplate.create("(SELECT h.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " h WHERE h.c_id = " + fonteAttachment.fkUriWorkitem + ") || '%' || c_rev as fk_workitem")
+							StringTemplate.create("(SELECT h.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " h WHERE h.c_id = " + fonteAttachment.fkUriWorkitem + ") || '%' || (select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem")
 							);
 			
 			

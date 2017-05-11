@@ -1,19 +1,21 @@
 package lispa.schedulers.manager;
 
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_PSW;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_USERNAME;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_HISTORY_URL;
-
-public class DmAlmConstants {
+public class DmAlmConstants {	//TODO: move to lispa.schedulers.constant.DmAlmConstants
+	
+	private static String dbLinkPolarionCurrentSiss, dbLinkPolarionCurrentSire;
 	
 	public static String GetDbLinkPolarionCurrentSiss()
 	{
-		return GetDbLinkPolarionCurrent(ConnectionManager.GetPropertiesReader(), true);
+		if(dbLinkPolarionCurrentSiss == null)
+			dbLinkPolarionCurrentSiss = GetDbLinkPolarionCurrent(ConnectionManager.GetPropertiesReader(), true);
+		return dbLinkPolarionCurrentSiss;
 	}
 	
 	public static String GetDbLinkPolarionCurrentSire()
 	{
-		return GetDbLinkPolarionCurrent(ConnectionManager.GetPropertiesReader(), false);
+		if(dbLinkPolarionCurrentSire == null)
+			dbLinkPolarionCurrentSire = GetDbLinkPolarionCurrent(ConnectionManager.GetPropertiesReader(), false);
+		return dbLinkPolarionCurrentSire;
 	}	
 	
 	private static String GetDbLinkPolarionCurrent(PropertiesReader propertiesReader, boolean siss)
@@ -50,4 +52,15 @@ public class DmAlmConstants {
 		
 		return select;
 	}
+	
+	public static String GetPolarionSchemaSissHistory()
+	{
+		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
+	}
+	
+	public static String GetPolarionSchemaSireHistory()
+	{
+		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
+	}
+	
 }

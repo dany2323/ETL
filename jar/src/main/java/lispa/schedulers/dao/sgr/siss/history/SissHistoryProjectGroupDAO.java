@@ -59,9 +59,9 @@ public class SissHistoryProjectGroupDAO
 							
 							fonteProjectGroups.cLocation,
 							StringTemplate.create("0 as c_is_local"),
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteProjectGroups.cUri + ") as c_pk"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteProjectGroups.cUri + ") || '%' || c_rev as c_pk"),
 							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteProjectGroups.fkUriParent + ") as fk_uri_parent"),
-							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " c WHERE c.c_id = " + fonteProjectGroups.fkUriParent + ") || '%' || c_rev as fk_parent"),
+							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " c WHERE c.c_id = " + fonteProjectGroups.fkUriParent + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".projectgroup where projectgroup.c_pk = fk_parent) as fk_parent"),
 							fonteProjectGroups.cName,
 							fonteProjectGroups.cDeleted,
 							fonteProjectGroups.cRev,

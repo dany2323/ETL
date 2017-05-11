@@ -154,7 +154,7 @@ public class SissHistoryCfWorkitemDAO {
 									fonteCFWorkItems.cBooleanValue,
 									fonteCFWorkItems.cName,
 									StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_uri_workitem"),
-									StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_workitem"),
+									StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
 									fonteCFWorkItems.cLongValue,
 									fonteCFWorkItems.cDurationtimeValue,
 									fonteCFWorkItems.cCurrencyValue
