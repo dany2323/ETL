@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import junit.framework.TestCase;
 import lispa.schedulers.bean.staging.sgr.ProjectCName;
@@ -119,6 +120,10 @@ public class TestCompareDbs extends TestCase {
 		selects.add("DMALM_STG_SCHEDE_SERVIZIO;id;DT_CARICAMENTO;DMALM_SCHEDE_SERVIZIO_PK");
 		selects.add("DMALM_USER_ROLES;utente,ruolo;user_roles_pk,repository;user_roles_pk;DATA_CARICAMENTO;DATA_MODIFICA");
 		
+		
+		
+		
+		
 		/*
 		
 		
@@ -204,7 +209,7 @@ public class TestCompareDbs extends TestCase {
 	    	int sloupcu = rsPgOr.getMetaData().getColumnCount();
 	    	if(rsH2Or.getMetaData().getColumnCount() != sloupcu)
 	    	{
-	    		System.out.println("Diferent column count. " + select);
+	    		System.out.println("Diferent column count. ");
 	    		continue;
 	    	}
 	    	
@@ -218,7 +223,7 @@ public class TestCompareDbs extends TestCase {
 	    	
 	    	if(cPg.getInt(1) != cH2.getInt(1))
 	    	{
-	    		System.out.println("Diferent rows count. " + select);
+	    		System.out.println("Diferent rows count. ");
 	    		//continue;
 	    	}
 	    	
@@ -251,6 +256,20 @@ public class TestCompareDbs extends TestCase {
 	    		h2Data.add(list.toArray(new String[list.size()]));
     		}
 	    	
+
+	    	String sPrimaryKey = 
+	    			"SELECT cols.table_name, cols.column_name, cols.position, cons.status, cons.owner " +
+"FROM all_constraints cons, all_cons_columns cols " +
+"WHERE cols.table_name = '" + split[0] + "' " +
+"AND cons.constraint_type = 'P' " +
+"AND cons.constraint_name = cols.constraint_name " +
+"AND cons.owner = cols.owner " +
+"ORDER BY cols.table_name, cols.position"
+;
+			ResultSet rs = pgOr.prepareStatement(sPrimaryKey).executeQuery();
+			rs.next();
+			String primaryKeyName = rs.getString(2).toLowerCase().trim();
+	    	
 	    	for(int pgIndex = 0; pgIndex < pgData.size(); pgIndex++)
 	    	{
 	    		for(int h2Index = 0; h2Index < h2Data.size(); h2Index++)
@@ -264,7 +283,7 @@ public class TestCompareDbs extends TestCase {
 	    				for(int i = 1; i < split.length; i++)
 	    				{
 	    					String sColumnName = split[i].toLowerCase().trim();
-	    					if(sColumnName.equals(currentColumnName))
+	    					if(sColumnName.equals(currentColumnName) || primaryKeyName.equals(currentColumnName) || currentColumnName.equals("DATA_CARICAMENTO".toLowerCase()))
 	    					{
 	    						ignored = true;
 	    						break;
@@ -297,30 +316,48 @@ public class TestCompareDbs extends TestCase {
 	    	}
 	    	
 	    	
-	    	System.out.println("Rows that don't match (POSTGRESS)");
+	    	List<String> pgLst = new LinkedList<String>();
+	    	List<String> h2Lst = new LinkedList<String>();
+	    	
+	    	
+	    	//System.out.println("Rows that don't match (POSTGRESS)");
 	    	for(int i = 0; i < pgData.size(); i++)
 	    	{
 	    		for(int clmIndex = 0; clmIndex < sloupcu; clmIndex++)
 	    		{
+	    			if(rsPgOr.getMetaData().getColumnName(clmIndex + 1).toLowerCase().trim().equals(primaryKeyName.toLowerCase().trim()))
+	    				pgLst.add(pgData.get(i)[clmIndex]);
+	    			/*
 	    			System.out.print(pgData.get(i)[clmIndex]);
-	    			System.out.print("\t");
+	    			System.out.print("\t");*/
 	    		}
-	    		System.out.println();
+	    		//System.out.println();
 	    	}
-	    	
+	    	/*
 	    	System.out.println();
 	    	System.out.println();
-	    	System.out.println();
-	    	System.out.println("Rows that don't match (H2)");
+	    	System.out.println();*/
+	    	//System.out.println("Rows that don't match (H2)");
 	    	for(int i = 0; i < h2Data.size(); i++)
 	    	{
 	    		for(int clmIndex = 0; clmIndex < sloupcu; clmIndex++)
 	    		{
+	    			if(rsH2Or.getMetaData().getColumnName(clmIndex + 1).toLowerCase().trim().equals(primaryKeyName.toLowerCase()))
+	    				h2Lst.add(h2Data.get(i)[clmIndex]);
+	    			/*
 	    			System.out.print(h2Data.get(i)[clmIndex]);
-	    			System.out.print("\t");
+	    			System.out.print("\t");*/
 	    		}
-	    		System.out.println();
+	    		//System.out.println();
 	    	}
+	    	
+	    	System.out.println("PG");
+	    	System.out.println("SELECT * FROM " + split[0] + " WHERE " + primaryKeyName + " IN ('" + pgLst.stream().collect(Collectors.joining("', '")) + "')");
+	    	
+	    	System.out.println();
+	    	
+	    	System.out.println("H2");
+	    	System.out.println("SELECT * FROM " + split[0] + " WHERE " + primaryKeyName + " IN ('" + h2Lst.stream().collect(Collectors.joining("', '")) + "')");
 	    	
 	    	
 	    	/*
