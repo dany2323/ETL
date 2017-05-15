@@ -137,6 +137,8 @@ public class UserRolesSgrDAO {
 			ps.setString(3, repository);
 
 			rs = ps.executeQuery();
+			logger.info("userroles.sql eseguito");
+
 
 			while (rs.next()) {
 				bean = new DmalmUserRolesSgr();

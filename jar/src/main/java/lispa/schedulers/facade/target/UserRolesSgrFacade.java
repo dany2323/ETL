@@ -44,7 +44,10 @@ public class UserRolesSgrFacade {
 		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 
 		try {
-			for (Tuple row : UserRolesSgrDAO.getDistinctProjectID()) {
+			logger.info("START UserRolesSgrDAO.getDistinctProjectID");
+			List<Tuple> distinctProjectIDs = UserRolesSgrDAO.getDistinctProjectID();
+			logger.info("STOP UserRolesSgrDAO.getDistinctProjectID");
+			for (Tuple row : distinctProjectIDs) {
 //				Collection<List<DmalmUserRolesSgr>> userRolesGroupedByProjID = UserRolesSgrDAO
 //						.getAllUserRolesGroupedByProjectIDandRevision(
 //								dataEsecuzione,
@@ -94,11 +97,14 @@ public class UserRolesSgrFacade {
 //					}
 //				}
 
+				logger.info("START UserRolesSgrDAO.getAllUserRolesGroupedByProjectIDandRevision");
 				Collection<List<DmalmUserRolesSgr>> userRolesGroupedByProjID = UserRolesSgrDAO
 				.getAllUserRolesGroupedByProjectIDandRevision(
 						dataEsecuzione,
 						row.get(stgUserRoles.idProject),
 						row.get(stgUserRoles.repository));
+				logger.info("STOP UserRolesSgrDAO.getAllUserRolesGroupedByProjectIDandRevision");
+
 				
 				Iterator<List<DmalmUserRolesSgr>> it = userRolesGroupedByProjID.iterator();
 
@@ -106,30 +112,39 @@ public class UserRolesSgrFacade {
 					List<DmalmUserRolesSgr> listaStaging = it.next();
 					
 					if (listaStaging.size() > 0) {
+						logger.info("START UserRolesSgrDAO.getUserRolesByProjectID per "+row.get(stgUserRoles.idProject)+" in "+row.get(stgUserRoles.repository));
 						List<DmalmUserRolesSgr> listaTarget = UserRolesSgrDAO.getUserRolesByProjectID(row.get(stgUserRoles.idProject),
 								row.get(stgUserRoles.repository));
+						logger.info("STOP UserRolesSgrDAO.getUserRolesByProjectID");
 						
 						Timestamp c_created = listaStaging.get(0).getDtModifica();
+						logger.info("START UserRolesSgrDAO.getFkProject");
 						int fkProject = UserRolesSgrDAO.getFkProject(row.get(stgUserRoles.idProject),
 								row.get(stgUserRoles.repository), c_created);
+						logger.info("STOP UserRolesSgrDAO.getFkProject");
 						
 						if (listaTarget.size() == 0) {
 							//inserisce tutti
+							logger.info("Inserisco nuovo record");
 							UserRolesSgrDAO.insertUserRoles(listaStaging, fkProject);
 							righeNuove += listaStaging.size();
 						} else {
 							if (BeanUtils.areDifferent(fkProject, listaTarget
 									.get(0).getDmalmProjectFk01())) {
 								//storicizza e inserisce i nuovi
+								logger.info("Storicizzo record");
+								logger.info("Cambio data fine validità");
 								UserRolesSgrDAO.updateDataFineValidita(row.get(stgUserRoles.idProject),
 										row.get(stgUserRoles.repository), c_created);
 								
+								logger.info("Inserisco nuova versione del record");
 								UserRolesSgrDAO.insertUserRolesUpdate(listaStaging,
 										fkProject, c_created);
 								
 								righeModificate += listaStaging.size();
 							} else {
 								//inserisce i nuovi e chiude i vecchi non più presenti
+								logger.info("Inserisco i nuovi record e chiudo i vecchi non più presenti");
 								List<DmalmUserRolesSgr> listaNuovi = new ArrayList<DmalmUserRolesSgr>();
 								
 								for(DmalmUserRolesSgr userRole : listaStaging)
@@ -139,6 +154,7 @@ public class UserRolesSgrFacade {
 									}
 								}
 								
+								logger.info("Inserisco nuova versione del record");
 								UserRolesSgrDAO.insertUserRolesUpdate(listaNuovi,
 										fkProject, c_created);
 								righeNuove += listaStaging.size();
@@ -146,6 +162,7 @@ public class UserRolesSgrFacade {
 								for(DmalmUserRolesSgr userRole : listaTarget)
 								{  
 									if(!presenteSuLista(userRole, listaStaging)) {
+										logger.info("Cambio data fine validità");
 										UserRolesSgrDAO.updateDataFineValiditaUserRole(userRole, c_created);
 										righeModificate += 1;
 									}
@@ -167,11 +184,13 @@ public class UserRolesSgrFacade {
 			dtFineCaricamento = new Date();
 
 			try {
+				logger.info("START EsitiCaricamentoDAO.insert");
 				EsitiCaricamentoDAO.insert(dataEsecuzione,
 						DmAlmConstants.TARGET_USERROLES, stato, new Timestamp(
 								dtInizioCaricamento.getTime()), new Timestamp(
 								dtFineCaricamento.getTime()), righeNuove,
 						righeModificate, 0, 0);
+				logger.info("STOP EsitiCaricamentoDAO.insert");
 
 			} catch (DAOException | SQLException e) {
 				logger.error(e.getMessage(), e);
