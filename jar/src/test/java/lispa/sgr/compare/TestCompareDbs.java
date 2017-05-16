@@ -614,8 +614,6 @@ public class TestCompareDbs extends TestCase {
 		    	rowIndex++;
 	    	}
 	    	*/  
-	    	
-	    	break;
 		}
 		
 		
