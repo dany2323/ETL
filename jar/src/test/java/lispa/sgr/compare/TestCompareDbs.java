@@ -3,8 +3,11 @@ package lispa.sgr.compare;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,8 +38,37 @@ import com.mysema.query.types.template.StringTemplate;
 
 public class TestCompareDbs extends TestCase {
 	
+	/*
 	@Rule
     public ErrorCollector collector = new ErrorCollector();
+	*/
+	
+	private static List<boolean[]> variation(int cls, boolean[] usableValues) {
+        List<boolean[]> list = new ArrayList<boolean[]>((int) Math.pow(usableValues.length, cls)/*(1)*/);
+
+        if (cls == 0) {
+            list.add(new boolean[0]); /*(2)*/
+        } else {
+            List<boolean[]> l = variation(cls - 1, usableValues);
+            for (boolean c : usableValues) { /*(3)*/
+                for (boolean[] s : l) {
+                	boolean[] ar = new boolean[s.length + 1];
+                	ar[0] = c;
+                	for(int i = 1; i < ar.length; i++)
+                		ar[i] = s[i - 1];
+                    list.add(ar); /*(4)*/
+                }
+            }
+        }
+        return list;
+    }
+	
+	private class PartMatch
+	{
+		public String[] columnsThatDontMatch;
+		public String[] columns;
+		public boolean[] variace;
+	}
 	
 	@Test
 	public void testCompareDbs() throws Exception
@@ -198,6 +230,9 @@ public class TestCompareDbs extends TestCase {
 			String[] split = s.split(";");
 			String select = "SELECT * FROM " + split[0];
 			
+			System.out.println();
+			System.out.println();
+			System.out.println();
 			System.out.println("**************************** Table " + split[0] + " *********************************");
 			
 			Statement stPgOr = pgOr.createStatement();
@@ -206,8 +241,8 @@ public class TestCompareDbs extends TestCase {
 	    	Statement stH2Or = h2Or.createStatement();
 	    	ResultSet rsH2Or = stH2Or.executeQuery(select);
 	    	
-	    	int sloupcu = rsPgOr.getMetaData().getColumnCount();
-	    	if(rsH2Or.getMetaData().getColumnCount() != sloupcu)
+	    	int columnCount = rsPgOr.getMetaData().getColumnCount();
+	    	if(rsH2Or.getMetaData().getColumnCount() != columnCount)
 	    	{
 	    		System.out.println("Diferent column count. ");
 	    		continue;
@@ -269,25 +304,48 @@ public class TestCompareDbs extends TestCase {
 			ResultSet rs = pgOr.prepareStatement(sPrimaryKey).executeQuery();
 			rs.next();
 			String primaryKeyName = rs.getString(2).toLowerCase().trim();
-	    	
+			
+			int primaryKeyIndex = -1;
+			for(int i = 0; i < rsPgOr.getMetaData().getColumnCount(); i++)
+			{
+				if(rsPgOr.getMetaData().getColumnName(i + 1).toLowerCase().equals(primaryKeyName.toLowerCase()))
+				{
+					primaryKeyIndex = i;
+					break;
+				}
+			}
+			if(primaryKeyIndex < 0)
+				throw new Exception();
+			
+			
+			
+			
+			
 	    	for(int pgIndex = 0; pgIndex < pgData.size(); pgIndex++)
 	    	{
 	    		for(int h2Index = 0; h2Index < h2Data.size(); h2Index++)
 	    		{
 	    			boolean isSameData = true;
-	    			for(int clmIndex = 0; clmIndex < sloupcu; clmIndex++)
+	    			for(int clmIndex = 0; clmIndex < columnCount; clmIndex++)
 	    			{
-	    				String currentColumnName = rsH2Or.getMetaData().getColumnName(clmIndex + 1).toLowerCase().trim();
-	    				
 	    				boolean ignored = false;
-	    				for(int i = 1; i < split.length; i++)
+	    				
+	    				String currentColumnName = rsH2Or.getMetaData().getColumnName(clmIndex + 1).toLowerCase().trim();
+	    				if(primaryKeyName.equals(currentColumnName) || currentColumnName.equals("DATA_CARICAMENTO".toLowerCase()))
 	    				{
-	    					String sColumnName = split[i].toLowerCase().trim();
-	    					if(sColumnName.equals(currentColumnName) || primaryKeyName.equals(currentColumnName) || currentColumnName.equals("DATA_CARICAMENTO".toLowerCase()))
-	    					{
-	    						ignored = true;
-	    						break;
-	    					}
+	    					ignored = true;
+	    				}
+	    				else
+	    				{
+		    				for(int i = 1; i < split.length; i++)
+		    				{
+		    					String sColumnName = split[i].toLowerCase().trim();
+		    					if(sColumnName.equals(currentColumnName))
+		    					{
+		    						ignored = true;
+		    						break;
+		    					}
+		    				}
 	    				}
 	    				
 	    				if(ignored)
@@ -301,9 +359,13 @@ public class TestCompareDbs extends TestCase {
 		    					continue;
 	    				
 		    				if(pgVal == null || h2Val == null || !pgVal.equals(h2Val))
+		    				{
 		    					isSameData = false;
+		    					break;
+		    				}
 	    				}
 	    			}
+	    			
 	    			
 	    			if(isSameData)
 	    			{
@@ -316,6 +378,98 @@ public class TestCompareDbs extends TestCase {
 	    	}
 	    	
 	    	
+	    	
+	    	
+	    	List<boolean[]> lVariations = variation(columnCount, new boolean[] {true, false});
+	    	lVariations.remove(0);	//all true
+	    	lVariations.remove(lVariations.size() - 1);	//all false
+	    	lVariations.sort(new Comparator<boolean[]>() {
+
+				@Override
+				public int compare(boolean[] first, boolean[] second) {
+					
+					int aCnt = 0;
+					for(int i = 0; i < first.length; i++)
+					{
+						if(first[i])
+							aCnt++;
+					}
+					
+					int bCnt = 0;
+					for(int i = 0; i < second.length; i++)
+					{
+						if(second[i])
+							bCnt++;
+					}
+					
+					if(aCnt > bCnt)
+						return -1;
+					else if(aCnt < bCnt)
+						return 1;
+					else
+						return 0;
+				}
+	    		
+			});
+	    	
+	    	List<PartMatch> pgDif = new LinkedList<PartMatch>();
+	    	List<PartMatch> h2Dif = new LinkedList<PartMatch>();
+			
+	    	for(boolean[] var : lVariations)
+	    	{
+	    		for(int h2Row = 0; h2Row < h2Data.size(); h2Row++)
+	    		{
+	    			boolean br = false;
+	    			
+	    			for(int pgRow = 0; pgRow < pgData.size(); pgRow++)
+	    			{
+	    				boolean isSameData = true;
+	    				for(int cIndex = 0; cIndex < columnCount; cIndex++)
+	    				{
+	    					if(!var[cIndex])
+	    					{
+	    						continue;
+	    					}
+	    					
+	    					String pgVal = pgData.get(pgRow)[cIndex];
+		    				String h2Val = h2Data.get(h2Row)[cIndex];
+		    				
+		    				if(pgVal == null && h2Val == null)
+		    					continue;
+	    				
+		    				if(pgVal == null || h2Val == null || !pgVal.equals(h2Val))
+		    				{
+		    					isSameData = false;
+		    				}
+	    				}
+	    				
+	    				if(isSameData)
+	    				{
+	    					PartMatch h2PM = new PartMatch();
+	    					h2PM.columns = h2Data.remove(h2Row);
+	    					
+	    					PartMatch pgPM = new PartMatch();
+		    				pgPM.columns = pgData.remove(pgRow);
+		    				pgRow--;
+		    				br = true;
+		    				
+		    				h2PM.variace = var;
+		    				pgPM.variace = var;
+		    				
+		    				pgDif.add(pgPM);
+		    				h2Dif.add(h2PM);
+		    				
+		    				break;
+	    				}
+	    			}
+	    			
+	    			if(br)
+	    				break;
+	    		}
+	    	}
+	    	
+	    	
+
 	    	List<String> pgLst = new LinkedList<String>();
 	    	List<String> h2Lst = new LinkedList<String>();
 	    	
@@ -323,7 +477,7 @@ public class TestCompareDbs extends TestCase {
 	    	//System.out.println("Rows that don't match (POSTGRESS)");
 	    	for(int i = 0; i < pgData.size(); i++)
 	    	{
-	    		for(int clmIndex = 0; clmIndex < sloupcu; clmIndex++)
+	    		for(int clmIndex = 0; clmIndex < columnCount; clmIndex++)
 	    		{
 	    			if(rsPgOr.getMetaData().getColumnName(clmIndex + 1).toLowerCase().trim().equals(primaryKeyName.toLowerCase().trim()))
 	    				pgLst.add(pgData.get(i)[clmIndex]);
@@ -340,7 +494,7 @@ public class TestCompareDbs extends TestCase {
 	    	//System.out.println("Rows that don't match (H2)");
 	    	for(int i = 0; i < h2Data.size(); i++)
 	    	{
-	    		for(int clmIndex = 0; clmIndex < sloupcu; clmIndex++)
+	    		for(int clmIndex = 0; clmIndex < columnCount; clmIndex++)
 	    		{
 	    			if(rsH2Or.getMetaData().getColumnName(clmIndex + 1).toLowerCase().trim().equals(primaryKeyName.toLowerCase()))
 	    				h2Lst.add(h2Data.get(i)[clmIndex]);
@@ -351,14 +505,49 @@ public class TestCompareDbs extends TestCase {
 	    		//System.out.println();
 	    	}
 	    	
-	    	System.out.println("PG");
-	    	System.out.println("SELECT * FROM " + split[0] + " WHERE " + primaryKeyName + " IN ('" + pgLst.stream().collect(Collectors.joining("', '")) + "')");
+	    	
+	    	
+	    	
+	    	
+
+	    	if(pgDif.size() > 0 )
+	    	{
+	    		System.out.println("*** PG PART Differences ***");
+	    		WritePartMatch(pgDif, rsPgOr, primaryKeyName, primaryKeyIndex, split[0]);
+	    	}
+	    	
+	    	if(h2Dif.size() > 0 )
+	    	{
+	    		System.out.println("*** H2 PART Differences ***");
+	    		WritePartMatch(h2Dif, rsH2Or, primaryKeyName, primaryKeyIndex, split[0]);
+	    	}
 	    	
 	    	System.out.println();
 	    	
-	    	System.out.println("H2");
-	    	System.out.println("SELECT * FROM " + split[0] + " WHERE " + primaryKeyName + " IN ('" + h2Lst.stream().collect(Collectors.joining("', '")) + "')");
 	    	
+	    	if(pgLst.size() > 0)
+	    	{
+		    	System.out.println("*** PG rest ***");
+		    	System.out.println("SELECT * FROM " + split[0] + " WHERE " + primaryKeyName + " IN ('" + pgLst.stream().collect(Collectors.joining("', '")) + "')");
+	    	}
+
+	    	if(h2Lst.size() > 0)
+	    	{
+		    	System.out.println("*** H2 rest ***");
+		    	System.out.println("SELECT * FROM " + split[0] + " WHERE " + primaryKeyName + " IN ('" + h2Lst.stream().collect(Collectors.joining("', '")) + "')");
+	    	}
+	    	
+	    	
+	    	
+	    	
+	    	if(pgLst.size() == 0 && h2Lst.size() == 0 && pgDif.size() == 0 && h2Dif.size() == 0)
+	    	{
+	    		System.out.println("PASSED");
+	    	}
+	    	else
+	    	{
+	    		System.out.println("NOT PASSED");
+	    	}
 	    	
 	    	/*
 	    	boolean error = false;
@@ -424,10 +613,49 @@ public class TestCompareDbs extends TestCase {
 		    	
 		    	rowIndex++;
 	    	}
-	    	*/  	
+	    	*/  
+	    	
+	    	break;
 		}
 		
 		
 		System.out.println("End.");
+	}
+	
+	private void WritePartMatch(List<PartMatch> pgDif, ResultSet rsPgOr, String primaryKeyName, int primaryKeyIndex, String tableName) throws SQLException
+	{
+
+		boolean[] var = null;
+		LinkedList<String> inCondition = new LinkedList<String>();
+		
+		for(PartMatch dif : pgDif)
+		{
+			if(var == null || Arrays.equals(dif.variace, var))
+			{
+				if(inCondition.size() > 0)
+					System.out.println(inCondition.stream().collect(Collectors.joining("', '")) + "')");
+				
+				inCondition.clear();
+				var = dif.variace;
+				System.out.print("SELECT ");
+				
+				LinkedList<String> columnNames = new LinkedList<String>();
+				for(int iClm = 0; iClm < rsPgOr.getMetaData().getColumnCount(); iClm++)
+				{
+					if(var[iClm])
+						continue;
+					
+					columnNames.add(rsPgOr.getMetaData().getColumnName(iClm + 1));
+				}
+				
+				System.out.print(columnNames.stream().collect(Collectors.joining(", ")));
+				System.out.print(" FROM " + tableName + " WHERE " + primaryKeyName + " IN ('");
+			}
+			
+			inCondition.add(dif.columns[primaryKeyIndex]);
+		}
+		
+		if(inCondition.size() > 0)
+			System.out.println(inCondition.stream().collect(Collectors.joining("', '")) + "')");
 	}
 }
