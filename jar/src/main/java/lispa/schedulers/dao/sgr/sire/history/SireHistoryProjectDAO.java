@@ -89,7 +89,7 @@ public class SireHistoryProjectDAO {
 							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " + fonteProjects.fkUriProjectgroup + ") as FK_URI_PROJECTGROUP"),
 							fonteProjects.cActive, 
 							fonteProjects.cLocation,
-							StringTemplate.create("(SELECT e.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " e WHERE e.c_id = " + fonteProjects.fkUriProjectgroup + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".projectgroup where projectgroup.c_pk = fk_projectgroup) as fk_projectgroup"),
+							StringTemplate.create("(SELECT e.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " e WHERE e.c_id = " + fonteProjects.fkUriProjectgroup + ") || '%' || project.c_rev as fk_projectgroup"),
 							StringTemplate.create("(SELECT f.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " f WHERE f.c_id = " + fonteProjects.fkUriLead + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_lead) as fk_lead"),
 							fonteProjects.cLockworkrecordsdate,
 							fonteProjects.cName, 
