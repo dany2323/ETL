@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,29 +45,55 @@ public class TestCompareDbs extends TestCase {
     public ErrorCollector collector = new ErrorCollector();
 	*/
 	
-	private static List<boolean[]> variation(int cls, boolean[] usableValues) {
-        List<boolean[]> list = new ArrayList<boolean[]>((int) Math.pow(usableValues.length, cls)/*(1)*/);
+	private static List<boolean[]> variation(int cls, boolean[] usableValues, int maxFalses) {
+        List<boolean[]> list = new ArrayList<boolean[]>();
 
         if (cls == 0) {
-            list.add(new boolean[0]); /*(2)*/
+            list.add(new boolean[0]); 
         } else {
-            List<boolean[]> l = variation(cls - 1, usableValues);
-            for (boolean c : usableValues) { /*(3)*/
+                    
+            for (boolean c : usableValues) { 
+            	
+            	if(!c && maxFalses == 0)
+            		continue;
+            	
+            	List<boolean[]> l = variation(cls - 1, usableValues, !c ? maxFalses - 1 : maxFalses);
+            	
                 for (boolean[] s : l) {
                 	boolean[] ar = new boolean[s.length + 1];
                 	ar[0] = c;
                 	for(int i = 1; i < ar.length; i++)
                 		ar[i] = s[i - 1];
-                    list.add(ar); /*(4)*/
+                    list.add(ar); 
                 }
             }
         }
         return list;
     }
+	/*
+	private static List<boolean[]> variation(int cls, boolean[] usableValues)
+	{
+		List<boolean[]> list = new ArrayList<boolean[]>();
+		
+		for(int i = 0; i < cls; i++)
+		{
+			boolean[] ar = new boolean[cls];
+			
+			for(int ii = 0; ii < cls; ii++)
+			{
+				boolean val = i != ii;
+				ar[ii] = val;
+			}
+			
+			list.add(ar);
+		}
+		
+		return list;
+	}*/
 	
 	private class PartMatch
 	{
-		public String[] columnsThatDontMatch;
+		//public String[] columnsThatDontMatch;
 		public String[] columns;
 		public boolean[] variace;
 	}
@@ -380,7 +408,7 @@ public class TestCompareDbs extends TestCase {
 	    	
 	    	
 	    	
-	    	List<boolean[]> lVariations = variation(columnCount, new boolean[] {true, false});
+	    	List<boolean[]> lVariations = variation(columnCount, new boolean[] {true, false}, 5);
 	    	lVariations.remove(0);	//all true
 	    	lVariations.remove(lVariations.size() - 1);	//all false
 	    	lVariations.sort(new Comparator<boolean[]>() {
@@ -414,9 +442,22 @@ public class TestCompareDbs extends TestCase {
 	    	
 	    	List<PartMatch> pgDif = new LinkedList<PartMatch>();
 	    	List<PartMatch> h2Dif = new LinkedList<PartMatch>();
+	    	
+	    	Calendar sDate = Calendar.getInstance();
 			
+	    	int nRevision = 1;
 	    	for(boolean[] var : lVariations)
 	    	{
+	    		nRevision++;
+	    		
+	    		Calendar cDate = Calendar.getInstance();
+	    		cDate.add(Calendar.MINUTE, -1);
+	    		if(cDate.after(sDate))
+	    		{
+	    			System.out.println("PartMatch was broken after one minute.");
+	    			break;
+	    		}
+	    		
 	    		for(int h2Row = 0; h2Row < h2Data.size(); h2Row++)
 	    		{
 	    			boolean br = false;
