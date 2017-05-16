@@ -121,6 +121,9 @@ public class TestCompareDbs extends TestCase {
 			
 		LinkedList<String> selects = new LinkedList<String>();
 		
+		
+		
+		
 		selects.add("DMALM_SISS_HISTORY_WORK_LINKED;DATA_CARICAMENTO;SISS_HISTORY_WORK_LINKED_PK");
 		
 
@@ -137,7 +140,7 @@ public class TestCompareDbs extends TestCase {
 		
 		
 		
-		//selects.add("DMALM_SIRE_HISTORY_WORK_LINKED;fk_uri_p_workitem, fk_uri_workitem, fk_workitem, fk_p_workitem;DATA_CARICAMENTO");
+		selects.add("DMALM_SIRE_HISTORY_WORK_LINKED;DATA_CARICAMENTO");
 		
 		
 		selects.add("DMALM_SIRE_HISTORY_ATTACHMENT;SIRE_HISTORY_ATTACHMENT_PK;DATA_CARICAMENTO;C_URL");
@@ -180,79 +183,7 @@ public class TestCompareDbs extends TestCase {
 		selects.add("DMALM_STG_SCHEDE_SERVIZIO;id;DT_CARICAMENTO;DMALM_SCHEDE_SERVIZIO_PK");
 		selects.add("DMALM_USER_ROLES;utente,ruolo;user_roles_pk,repository;user_roles_pk;DATA_CARICAMENTO;DATA_MODIFICA");
 		
-		
-		
-		
-		
-		/*
-		
-		
-		
-		//selects.add("DMALM_PROJECT_ROLES;ruolo;project_roles_pk");
-		//selects.add("DMALM_SIRE_CURRENT_PROJECT;C_TRACKERPREFIX;data_caricamento;sire_current_project_pk");
-		selects.add("DMALM_SIRE_CURRENT_PROJECT;C_PK;SIRE_CURRENT_PROJECT_PK;DATA_CARICAMENTO");
-		selects.add("DMALM_SISS_CURRENT_PROJECT;C_PK;data_caricamento;siss_current_project_pk");
-		//selects.add("DMALM_SIRE_CURRENT_WORK_LINKED;fk_uri_p_workitem, fk_uri_workitem, fk_workitem, fk_p_workitem;data_caricamento;sire_current_work_linked_pk");
-		
-		selects.add("DMALM_SIRE_CURRENT_WORK_LINKED;fk_uri_p_workitem, fk_uri_workitem, fk_workitem, fk_p_workitem;DATA_CARICAMENTO;SIRE_CURRENT_WORK_LINKED_PK");
-		selects.add("DMALM_SISS_CURRENT_WORK_LINKED;fk_uri_p_workitem, fk_uri_workitem, fk_workitem, fk_p_workitem;DATA_CARICAMENTO;SISS_CURRENT_WORK_LINKED_PK");
-		
-		
-		
-		//selects.add("DMALM_SIRE_HISTORY_WORK_LINKED;fk_uri_p_workitem, fk_uri_workitem, fk_workitem, fk_p_workitem;DATA_CARICAMENTO");
-		
-		
-		selects.add("DMALM_SIRE_HISTORY_ATTACHMENT;c_pk;SIRE_HISTORY_ATTACHMENT_PK;DATA_CARICAMENTO;C_URL");
-		selects.add("DMALM_SISS_HISTORY_ATTACHMENT;c_pk;SISS_HISTORY_ATTACHMENT_PK;DATA_CARICAMENTO;C_URL");
-		
-		
-		//skipped
-		selects.add("DMALM_SIRE_HISTORY_CF_WORKITEM;c_name, fk_workitem, fk_uri_workitem;SIRE_HISTORY_CF_WORKITEM_PK;DATA_CARICAMENTO");
-		selects.add("DMALM_SISS_HISTORY_CF_WORKITEM;c_name, fk_workitem, fk_uri_workitem;SISS_HISTORY_CF_WORKITEM_PK;DATA_CARICAMENTO");
-		
-		//skipped
-		selects.add("DMALM_SIRE_HISTORY_HYPERLINK;fk_p_workitem, c_role, c_uri;DATA_CARICAMENTO;SIRE_HISTORY_HYPERLINK_PK");
-		selects.add("DMALM_SISS_HISTORY_HYPERLINK;fk_p_workitem, c_role, c_uri;DATA_CARICAMENTO;SISS_HISTORY_HYPERLINK_PK");
-		
-		
-		
-		
-		
-		selects.add("DMALM_SIRE_HISTORY_PROJECT;c_pk;SIRE_HISTORY_PROJECT_PK;DATA_CARICAMENTO");
-		selects.add("DMALM_SIRE_HISTORY_PROJGROUP;c_pk;DATA_CARICAMENTO;SIRE_HISTORY_PROJGROUP_PK");
-		selects.add("DMALM_SIRE_HISTORY_REVISION;c_pk");
-		selects.add("DMALM_SIRE_HISTORY_USER;c_pk");
-		
-		selects.add("DMALM_SIRE_HISTORY_WORKITEM;c_pk");
-		selects.add("DMALM_SIRE_HISTORY_WORKUSERASS;fk_workitem, fk_user");
-		selects.add("DMALM_SISS_CURRENT_PROJECT;C_TRACKERPREFIX;data_caricamento;siss_current_project_pk;c_pk");
-		
-		
-		
-		
-		selects.add("DMALM_SISS_HISTORY_PROJECT;c_pk;SISS_HISTORY_PROJECT_PK;DATA_CARICAMENTO");
-		selects.add("DMALM_SISS_HISTORY_PROJGROUP;c_pk;DATA_CARICAMENTO;SISS_HISTORY_PROJECTGRP_PK");
-		selects.add("DMALM_SISS_HISTORY_REVISION;c_pk");
-		selects.add("DMALM_SISS_HISTORY_USER;c_pk");
-		selects.add("DMALM_SISS_HISTORY_WORK_LINKED;fk_p_workitem, fk_uri_workitem");
-		selects.add("DMALM_SISS_HISTORY_WORKITEM;c_pk");
-		selects.add("DMALM_SISS_HISTORY_WORKUSERASS;fk_workitem, fk_user");
-		selects.add("DMALM_STATO_WORKITEM_SVN;id,WORKITEM_TYPE,TEMPLATE;DATA_CARICAMENTO;STATO_WORKITEM_PK");
-		selects.add("DMALM_STG_CURRENT_WORKITEMS;stg_pk");
-		selects.add("DMALM_STG_SCHEDE_SERVIZIO;id;DT_CARICAMENTO;DMALM_SCHEDE_SERVIZIO_PK");
-		selects.add("DMALM_USER_ROLES;utente,ruolo;user_roles_pk,repository;user_roles_pk;DATA_CARICAMENTO;DATA_MODIFICA");
-		*/
-		
-		
-		/*
-		selects.add("DMALM_SISS_CURRENT_WORK_LINKED");
-		selects.add("DMALM_SISS_CURRENT_PROJECT;c_id");
-		selects.add("DMALM_SIRE_CURRENT_WORK_LINKED");
-		selects.add("DMALM_SIRE_CURRENT_PROJECT;c_id");
-		//history
-		selects.add("SELECT c_active,c_deleted,c_finish,c_id,c_location,c_lockworkrecordsdate,c_name,c_rev,c_start,c_trackerprefix FROM DMALM_SISS_HISTORY_PROJECT;c_id");
-		*/
-		
+	
 		for(String s : selects)
 		{
 			String[] split = s.split(";");
@@ -410,7 +341,7 @@ public class TestCompareDbs extends TestCase {
 	    	
 	    	List<boolean[]> lVariations = variation(columnCount, new boolean[] {true, false}, 5);
 	    	lVariations.remove(0);	//all true
-	    	lVariations.remove(lVariations.size() - 1);	//all false
+	    	//lVariations.remove(lVariations.size() - 1);	//all false
 	    	lVariations.sort(new Comparator<boolean[]>() {
 
 				@Override
@@ -440,16 +371,25 @@ public class TestCompareDbs extends TestCase {
 	    		
 			});
 	    	
+    	
 	    	List<PartMatch> pgDif = new LinkedList<PartMatch>();
 	    	List<PartMatch> h2Dif = new LinkedList<PartMatch>();
 	    	
 	    	Calendar sDate = Calendar.getInstance();
 			
-	    	int nRevision = 1;
 	    	for(boolean[] var : lVariations)
 	    	{
-	    		nRevision++;
-	    		
+	    		/*
+	    		int cnt = 0;
+	    		for(boolean item : var)
+	    		{
+	    			System.out.print(item + ";");
+	    			if(!item)
+	    				cnt++;
+	    		}
+	    		System.out.print("\t" + cnt);
+	    		System.out.println();
+*/
 	    		Calendar cDate = Calendar.getInstance();
 	    		cDate.add(Calendar.MINUTE, -1);
 	    		if(cDate.after(sDate))
@@ -460,13 +400,24 @@ public class TestCompareDbs extends TestCase {
 	    		
 	    		for(int h2Row = 0; h2Row < h2Data.size(); h2Row++)
 	    		{
-	    			boolean br = false;
-	    			
 	    			for(int pgRow = 0; pgRow < pgData.size(); pgRow++)
 	    			{
+	    				/*
+	    				if(pgData.get(pgRow)[10].equals("205465") && h2Data.get(h2Row)[10].equals("205451"))
+    					{
+    						if(var[3] && var[0] && var[1]&& var[5]&& var[6]&& var[7]&& var[8]
+    								&& !var[2]&& !var[4]&& !var[9]&& !var[10])
+    						{
+	    						System.out.println(pgData.get(pgRow)[3]);
+	    						System.out.println(h2Data.get(h2Row)[3]);
+    						}
+    					}*/
+	    				
 	    				boolean isSameData = true;
 	    				for(int cIndex = 0; cIndex < columnCount; cIndex++)
 	    				{
+	    					
+	    					
 	    					if(!var[cIndex])
 	    					{
 	    						continue;
@@ -486,26 +437,25 @@ public class TestCompareDbs extends TestCase {
 	    				
 	    				if(isSameData)
 	    				{
+	    					
+	    					
 	    					PartMatch h2PM = new PartMatch();
 	    					h2PM.columns = h2Data.remove(h2Row);
+	    					h2Row--;
 	    					
 	    					PartMatch pgPM = new PartMatch();
 		    				pgPM.columns = pgData.remove(pgRow);
 		    				pgRow--;
-		    				br = true;
-		    				
+
 		    				h2PM.variace = var;
 		    				pgPM.variace = var;
 		    				
 		    				pgDif.add(pgPM);
 		    				h2Dif.add(h2PM);
-		    				
+
 		    				break;
 	    				}
 	    			}
-	    			
-	    			if(br)
-	    				break;
 	    		}
 	    	}
 	    	
@@ -663,18 +613,18 @@ public class TestCompareDbs extends TestCase {
 	
 	private void WritePartMatch(List<PartMatch> pgDif, ResultSet rsPgOr, String primaryKeyName, int primaryKeyIndex, String tableName) throws SQLException
 	{
-
 		boolean[] var = null;
 		LinkedList<String> inCondition = new LinkedList<String>();
 		
 		for(PartMatch dif : pgDif)
 		{
-			if(var == null || Arrays.equals(dif.variace, var))
+			if(var == null || !Arrays.equals(dif.variace, var))
 			{
 				if(inCondition.size() > 0)
 					System.out.println(inCondition.stream().collect(Collectors.joining("', '")) + "')");
 				
 				inCondition.clear();
+				
 				var = dif.variace;
 				System.out.print("SELECT ");
 				
@@ -690,6 +640,7 @@ public class TestCompareDbs extends TestCase {
 				System.out.print(columnNames.stream().collect(Collectors.joining(", ")));
 				System.out.print(" FROM " + tableName + " WHERE " + primaryKeyName + " IN ('");
 			}
+
 			
 			inCondition.add(dif.columns[primaryKeyIndex]);
 		}
