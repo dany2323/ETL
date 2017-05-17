@@ -152,7 +152,7 @@ public class SireHistoryRevisionDAO {
 					.list(
 							//fonteRevisions.all()
 							
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteRevisions.cUri + ") || '%' || c_rev as c_pk"),
+							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteRevisions.cUri + ") as c_pk"),
 							fonteRevisions.cAuthor,
 							fonteRevisions.cCreated,
 							fonteRevisions.cDeleted,

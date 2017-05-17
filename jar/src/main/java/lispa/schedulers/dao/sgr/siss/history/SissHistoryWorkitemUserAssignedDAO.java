@@ -96,8 +96,8 @@ public class SissHistoryWorkitemUserAssignedDAO
 						stgWorkitemUserAssignees.dmalmWorkUserAssPk
 						)
 						.values(								
-								vals[0],
-								StringUtils.getMaskedValue((String)vals[1]),
+								StringUtils.getMaskedValue((String)vals[0]),
+								vals[1],
 								vals[2],
 								StringUtils.getMaskedValue((String)vals[3]),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
