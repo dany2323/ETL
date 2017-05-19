@@ -88,8 +88,8 @@ public class SissHistoryWorkitemUserAssignedDAO
 						stgWorkitemUserAssignees.dmalmWorkUserAssPk
 						)
 						.values(								
-								row.get(fonteWorkitemAssignees.fkUser),
-								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUriWorkitem)),
+								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUser)),
+								row.get(fonteWorkitemAssignees.fkUriWorkitem),
 								row.get(fonteWorkitemAssignees.fkWorkitem),
 								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUriUser)),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
