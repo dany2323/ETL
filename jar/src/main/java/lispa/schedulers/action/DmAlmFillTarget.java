@@ -227,6 +227,18 @@ public class DmAlmFillTarget {
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
+				
+				// Aggiunto checkpoint di recovery in data 19/04/17
+				if (ErrorManager.getInstance().hasError()) {
+					RecoverManager.getInstance().startRecoverTarget();
+					RecoverManager.getInstance().startRecoverStaging();
+
+					// MPS
+					if (ExecutionManager.getInstance().isExecutionMps())
+						RecoverManager.getInstance().startRecoverStgMps();
+
+					return;
+				}
 
 				logger.info("START UserRolesSgrFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_USERROLES)) {
