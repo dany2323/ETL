@@ -3,12 +3,14 @@ package lispa.schedulers.dao.target;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_PROJECT;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,8 +25,11 @@ import lispa.schedulers.dao.UserRolesDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.CsvReader;
 import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
@@ -75,6 +80,7 @@ public class ProjectSgrCmDAO {
 		DmalmProject bean = null;
 		List<DmalmProject> project = new LinkedList<DmalmProject>();
 		List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO = new LinkedList<DmalmProjectUnitaOrganizzativaEccezioni>();
+		
 
 		try {
 			// lista delle eccezioni Project/Unita organizzativa
@@ -232,176 +238,227 @@ public class ProjectSgrCmDAO {
 	public static String gestioneCodiceAreaUO(
 			List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO,
 			String idProject, String idRepository, String nomeProject,
-			String template, String projectGroup, Timestamp dataEsecuzione, boolean isElettra) {
+			String template, String projectGroup, Timestamp dataEsecuzione, boolean isElettra
+			) throws SQLException, PropertiesReaderException, DAOException {
 		// Se trova l'eccezione riporta il codice area dell'eccezione altrimenti
 		// esegue l'algoritmo di calcolo della UO
 
 		String codiceAreaUO = "";
-
-		for (DmalmProjectUnitaOrganizzativaEccezioni eccezione : eccezioniProjectUO) {
-			if (eccezione.getIdRepository().equals(idRepository)
-					&& eccezione.getNomeCompletoProject().equals(nomeProject)
-					&& ((eccezione.getTemplate() == null && template == null) || (eccezione
-							.getTemplate() != null && eccezione.getTemplate()
-							.equals(template)))) {
-
-				codiceAreaUO = eccezione.getCodiceArea();
-				break;
+		
+		ConnectionManager cm = ConnectionManager.getInstance();
+		Connection con = null;
+		try
+		{
+			con = cm.getConnectionOracle();
+			
+	
+			for (DmalmProjectUnitaOrganizzativaEccezioni eccezione : eccezioniProjectUO) {
+				if (eccezione.getIdRepository().equals(idRepository)
+						&& eccezione.getNomeCompletoProject().equals(nomeProject)
+						&& ((eccezione.getTemplate() == null && template == null) || (eccezione
+								.getTemplate() != null && eccezione.getTemplate()
+								.equals(template)))) {
+	
+					codiceAreaUO = eccezione.getCodiceArea();
+					break;
+				}
 			}
-		}
-
-		// Se il project non ha una eccezione
-		if (codiceAreaUO.equalsIgnoreCase("")) {
-			if (template == null) {
-				// Nessun Template
-				codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-			} else {
-				switch (template) {
-				case DmAlmConstants.SVILUPPO:
-					// Template SVILUPPO
-					if (nomeProject == null) {
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-					} else if (nomeProject.startsWith("SW-")) {
-						try {
-							if (nomeProject.indexOf("{", 1) != -1
-									&& nomeProject.indexOf("}", 1) != -1) {
-								String siglaProject = nomeProject.substring(
-										nomeProject.indexOf("{", 1) + 1,
-										nomeProject.indexOf("}", 1));
-								String[] multiSiglaProject = null;
-								multiSiglaProject = siglaProject
-										.split("\\.\\.");
-								String codiceProdotto = multiSiglaProject[0];
-								if (codiceProdotto.contains(".")) {
-									codiceProdotto = codiceProdotto.substring(
-											0, codiceProdotto.indexOf("."));
-								}
-
-								if(isElettra) {
-									// Elettra
-									 List<Tuple> productList = ElettraProdottiArchitettureDAO.getProductByAcronym(codiceProdotto);
-									 if (productList.size() == 0) {
-										 codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-									 } else {
-										 if (productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto) != null) {
-											 codiceAreaUO =	 productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto);
-										} else {
-											codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-										}
-									 }
-								} else {
-									// Edma
-									List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
-									if (productList.size() == 0) {
-										codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+	
+			// Se il project non ha una eccezione
+			if (codiceAreaUO.equalsIgnoreCase("")) {
+				if (template == null) {
+					// Nessun Template
+					//codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+				} else {
+					switch (template) {
+					case DmAlmConstants.SVILUPPO:
+						// Template SVILUPPO
+						if (nomeProject == null) {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						} else if (nomeProject.startsWith("SW-")) {
+							try {
+								if (nomeProject.indexOf("{", 1) != -1
+										&& nomeProject.indexOf("}", 1) != -1) {
+									String siglaProject = nomeProject.substring(
+											nomeProject.indexOf("{", 1) + 1,
+											nomeProject.indexOf("}", 1));
+									String[] multiSiglaProject = null;
+									multiSiglaProject = siglaProject
+											.split("\\.\\.");
+									String codiceProdotto = multiSiglaProject[0];
+									if (codiceProdotto.contains(".")) {
+										codiceProdotto = codiceProdotto.substring(
+												0, codiceProdotto.indexOf("."));
+									}
+	
+									if(isElettra) {
+										// Elettra
+										 List<Tuple> productList = ElettraProdottiArchitettureDAO.getProductByAcronym(codiceProdotto);
+										 if (productList.size() == 0) {
+											 codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+										 } else {
+											 if (productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto) != null) {
+												 codiceAreaUO =	 productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto);
+											} else {
+												codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+											}
+										 }
 									} else {
-										List<DmalmStrutturaOrganizzativa> structureList = StrutturaOrganizzativaEdmaLispaDAO
-												.getStrutturaOrganizzativaByPrimaryKey(productList
-														.get(0)
-														.get(dmalmProdotto.dmalmUnitaOrganizzativaFk01));
-										if (structureList.size() == 0) {
+										// Edma
+										List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
+										if (productList.size() == 0) {
 											codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 										} else {
-											codiceAreaUO = structureList.get(0)
-													.getCdArea();
+											List<DmalmStrutturaOrganizzativa> structureList = StrutturaOrganizzativaEdmaLispaDAO
+													.getStrutturaOrganizzativaByPrimaryKey(productList
+															.get(0)
+															.get(dmalmProdotto.dmalmUnitaOrganizzativaFk01));
+											if (structureList.size() == 0) {
+												codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+											} else {
+												codiceAreaUO = structureList.get(0)
+														.getCdArea();
+											}
 										}
 									}
+								} else {
+									codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 								}
+							} catch (Exception e) {
+								logger.error(e.getMessage(), e);
+								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+							}
+						} else if (nomeProject.startsWith("RichiesteSupporto.")) {
+							try {
+								codiceAreaUO = "LI"
+										+ nomeProject.substring(18,
+												nomeProject.length());
+							} catch (Exception e) {
+								logger.error(e.getMessage(), e);
+								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+							}
+						} else {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						}
+						break;
+	
+					case DmAlmConstants.DEMAND:
+						// Template DEMAND e DEMAND2016
+						if (nomeProject.indexOf(".", 1) != -1) {
+							codiceAreaUO = "LI"
+									+ nomeProject.substring(0,
+											nomeProject.indexOf(".", 1));
+						} else {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						}
+						break;
+						
+					case DmAlmConstants.DEMAND2016:
+						if(isElettra)
+						{
+							PreparedStatement ps = con.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = 'LIF800'");
+							ResultSet rs = ps.executeQuery();
+							rs.next();
+							codiceAreaUO = rs.getString(0);
+						}
+						else
+						{
+							// Template DEMAND e DEMAND2016
+							if (nomeProject.indexOf(".", 1) != -1) {
+								codiceAreaUO = "LI"
+										+ nomeProject.substring(0,
+												nomeProject.indexOf(".", 1));
 							} else {
 								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 							}
-						} catch (Exception e) {
-							logger.error(e.getMessage(), e);
-							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 						}
-					} else if (nomeProject.startsWith("RichiesteSupporto.")) {
-						try {
+						break;
+	
+					case DmAlmConstants.ASSISTENZA:
+						// Template ASSISTENZA
+						if (nomeProject.startsWith("Assistenza.")) {
 							codiceAreaUO = "LI"
-									+ nomeProject.substring(18,
+									+ nomeProject.substring("Assistenza.".length(),
 											nomeProject.length());
-						} catch (Exception e) {
-							logger.error(e.getMessage(), e);
+						} else {
 							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 						}
-					} else {
+						break;
+	
+					case DmAlmConstants.IT:
+						// Template IT (sempre 'LIA352' - Area Integrazione
+						// Tecnica)
+						
+						
+						if(isElettra)
+						{
+							PreparedStatement ps = con.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = 'LIW8B6'");
+							ResultSet rs = ps.executeQuery();
+							rs.next();
+							codiceAreaUO = rs.getString(0);
+						}
+						else
+						{
+							codiceAreaUO = "LIA352";
+						}
+						
+						
+						break;
+	
+					case DmAlmConstants.SERDEP:
+						// Template SERDEP
+						if (nomeProject.indexOf(".", 1) != -1) {
+							codiceAreaUO = "LI"
+									+ nomeProject.substring(0,
+											nomeProject.indexOf(".", 1));
+						} else {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						}
+						break;
+	
+					default:
+						// Template non gestito
 						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						break;
 					}
-					break;
-
-				case DmAlmConstants.DEMAND:
-				case DmAlmConstants.DEMAND2016:
-					// Template DEMAND e DEMAND2016
-					if (nomeProject.indexOf(".", 1) != -1) {
-						codiceAreaUO = "LI"
-								+ nomeProject.substring(0,
-										nomeProject.indexOf(".", 1));
+				}
+			}
+	
+			if (codiceAreaUO.equals(DmAlmConstants.NON_PRESENTE)) {
+				try {
+					String tabellaFonte = "";
+					if (idRepository.equals(DmAlmConstants.REPOSITORY_SIRE)) {
+						tabellaFonte = DmAlmConstants.FONTE_SGR_SIRE_HISTORY_PROJECT;
 					} else {
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						tabellaFonte = DmAlmConstants.FONTE_SGR_SISS_HISTORY_PROJECT;
 					}
-					break;
-
-				case DmAlmConstants.ASSISTENZA:
-					// Template ASSISTENZA
-					if (nomeProject.startsWith("Assistenza.")) {
-						codiceAreaUO = "LI"
-								+ nomeProject.substring("Assistenza.".length(),
-										nomeProject.length());
-					} else {
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-					}
-					break;
-
-				case DmAlmConstants.IT:
-					// Template IT (sempre 'LIA352' - Area Integrazione
-					// Tecnica)
-					codiceAreaUO = "LIA352";
-					break;
-
-				case DmAlmConstants.SERDEP:
-					// Template SERDEP
-					if (nomeProject.indexOf(".", 1) != -1) {
-						codiceAreaUO = "LI"
-								+ nomeProject.substring(0,
-										nomeProject.indexOf(".", 1));
-					} else {
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-					}
-					break;
-
-				default:
-					// Template non gestito
-					codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-					break;
+	
+					String record = "";
+					record = "[ Id : " + idProject + "§ ";
+					record += "Name : " + nomeProject + "§ ";
+					record += "Template : " + template + "§ ";
+					record += "IdRepository : " + idRepository + "§ ";
+					record += "ProjectGroup : " + projectGroup + " ] ";
+	
+					ErroriCaricamentoDAO.insert(tabellaFonte,
+							DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT, record,
+							DmAlmConstants.WRONG_LINK_PROJECT_UNITAORGANIZZATIVA,
+							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+							dataEsecuzione);
+				} catch (Exception e) {
+					logger.error("Exception: " + e.getMessage());
 				}
 			}
 		}
-
-		if (codiceAreaUO.equals(DmAlmConstants.NON_PRESENTE)) {
-			try {
-				String tabellaFonte = "";
-				if (idRepository.equals(DmAlmConstants.REPOSITORY_SIRE)) {
-					tabellaFonte = DmAlmConstants.FONTE_SGR_SIRE_HISTORY_PROJECT;
-				} else {
-					tabellaFonte = DmAlmConstants.FONTE_SGR_SISS_HISTORY_PROJECT;
+		finally
+		{
+			if(con != null)
+				try {
+					cm.closeConnection(con);
+				} catch (DAOException e) {
+					e.printStackTrace();
 				}
-
-				String record = "";
-				record = "[ Id : " + idProject + "§ ";
-				record += "Name : " + nomeProject + "§ ";
-				record += "Template : " + template + "§ ";
-				record += "IdRepository : " + idRepository + "§ ";
-				record += "ProjectGroup : " + projectGroup + " ] ";
-
-				ErroriCaricamentoDAO.insert(tabellaFonte,
-						DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT, record,
-						DmAlmConstants.WRONG_LINK_PROJECT_UNITAORGANIZZATIVA,
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						dataEsecuzione);
-			} catch (Exception e) {
-				logger.error("Exception: " + e.getMessage());
-			}
 		}
-
 		return codiceAreaUO;
 	}
 

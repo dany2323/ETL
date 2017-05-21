@@ -1,20 +1,29 @@
 package lispa.schedulers.facade.target;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.ProjectUnitaOrganizzativaEccezioniDAO;
 import lispa.schedulers.dao.target.StrutturaOrganizzativaEdmaLispaDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.CsvReader;
+import lispa.schedulers.manager.DmAlmConfigReader;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
@@ -47,6 +56,156 @@ public class ProjectSgrCmFacade {
 
 		try {
 			staging_projects = ProjectSgrCmDAO.getAllProject(dataEsecuzione);
+			
+
+			DmAlmConfigReader cfgReader = DmAlmConfigReader.getInstance();
+			String csvFileName = cfgReader.getProperty(DmAlmConfigReaderProperties.ELETTRA_PROJECT_LOOKUP_CSV);
+			File csvFile = new File(csvFileName);
+			CsvReader csvReader = null;
+			if(csvFile.exists())
+			{
+				csvReader = new CsvReader();
+				csvReader.ReadFile(csvFileName);
+				
+				for(int i = 0; i < csvReader.getRowCount(); i++)
+				{
+					String csvRepository = csvReader.getCell(i,  "REPOSITORY");
+					String csvIdProject = csvReader.getCell(i,  "ID_PROJECT");
+					String csvNomeCompletoProject = csvReader.getCell(i, "NOME_COMPLETO_PROJECT");
+					String csvTipoTemplate = csvReader.getCell(i, "TIPO_TEMPLATE");
+					String csvDataUpdateProgrammato = csvReader.getCell(i, "DATA_UPDATE_PROGRAMMATO");
+					String csvCdUoDiriferimentoProject = csvReader.getCell(i, "cd_uo_diriferimento_project");
+					String csvIdReferenteLispaProject = csvReader.getCell(i, "ID_REFERENTE_LISPA_PROJECT");
+					String csvNomeCogLispaProject = csvReader.getCell(i, "NOME_COGNOMEREFERENTE_LISPA_PROJECT");
+					
+					//repository
+					boolean isValid = true;
+					if(csvRepository != "SIRE" && csvRepository != "SISS")
+					{
+						ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"REPOSITORY: " + csvRepository,
+								"Repository " + csvRepository + " is not valid.",
+								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+								dataEsecuzione);
+						isValid = false;
+					}
+					
+					//idProject
+					DmalmProject pr = null;
+					boolean existsProject = false;
+					for(DmalmProject project : staging_projects)
+					{
+						if(project.getAnnullato() == null && project.getIdProject().equals(csvIdProject) && project.getIdRepository().equals(csvRepository))
+						{
+							pr = project;
+							existsProject = true;
+							break;
+						}
+					
+					}
+					if(!existsProject)
+					{
+						isValid = false;
+					
+						ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"ID_PROJECT: " + csvIdProject,
+								"Project " + csvIdProject+ " is not valid.",
+								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+								dataEsecuzione);
+					}
+					
+					//csvNomeCompletoProject
+					existsProject = false;
+					for(DmalmProject project : staging_projects)
+					{
+						if(project.getNomeCompletoProject().equals(csvNomeCompletoProject) && project.getIdRepository().equals(csvRepository) && project.getIdProject().equals(csvIdProject))
+						{
+							existsProject = true;
+							break;
+						}
+					
+					}
+					if(!existsProject)
+					{
+						isValid = false;
+					
+						ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"NOME_COMPLETO_PROJECT: " + csvNomeCompletoProject,
+								"NOME_COMPLETO_PROJECT " + csvNomeCompletoProject+ " is not valid.",
+								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+								dataEsecuzione);
+					}
+					
+					//csvTipoTemplate
+					String[] tipoTemplates = new String[] {"SVILUPPO", "IT", "DEMAND", "DEMAND2016", "ASSISTENZA", "SERDEP"};
+					if(Arrays.asList(tipoTemplates).indexOf(csvTipoTemplate) < 0)
+					{
+						isValid = false;
+						
+						ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"TIPO_TEMPLATE: " + csvTipoTemplate,
+								"TIPO_TEMPLATE " + csvTipoTemplate+ " is not valid.",
+								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+								dataEsecuzione);
+					}
+					
+					
+					//csvDataUpdateProgrammato
+					boolean isDateValid = true;
+					
+					SimpleDateFormat sdfrmt = new SimpleDateFormat("dd/MM/yyyy");
+			        sdfrmt.setLenient(false);
+			        /* Create Date object */
+			        Date javaDate = null;
+			        /* parse the string into date form */
+			        try
+			        {
+			            javaDate = sdfrmt.parse(csvDataUpdateProgrammato); 
+			        }
+			        /* Date format is invalid */
+			        catch (Exception e)
+			        {
+			            isDateValid = false;
+			        }
+			        
+			        if(!isDateValid)
+			        {
+			        	isValid = false;
+			        	
+						ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"DATA_UPDATE_PROGRAMMATO: " + csvDataUpdateProgrammato,
+								"DATA_UPDATE_PROGRAMMATO " + csvDataUpdateProgrammato+ " is not valid.",
+								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+								dataEsecuzione);
+			        }
+			        else
+			        {
+			        	if(pr != null)	//TODO: move to the end and check isValid ?
+			        	{
+				        	if(dataEsecuzione.equals(javaDate))
+				        	{
+				        		//ProjectSgrCmDAO.updateDataFineValidita(dataEsecuzione, pr);
+				        		//ProjectSgrCmDAO.insertProjectUpdate()
+				        	}
+			        	}
+			        }
+			        
+			        //csvCdUoDiriferimentoProject
+			        
+			        
+					
+					//rest stuff
+					if(!isValid)
+					{
+						csvReader.RemoveRow(i);
+					}
+				}
+			}
 
 			for (DmalmProject project : staging_projects) {
 				project_tmp = project;
