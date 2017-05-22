@@ -1,6 +1,8 @@
 package lispa.schedulers.facade.target;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,21 +57,22 @@ public class ProjectSgrCmFacade {
 		Date dtInizioCaricamento = new Date();
 		Date dtFineCaricamento = null;
 		DmalmProject project_tmp = null;
+		
+		//dataEsecuzione = Timestamp.valueOf("2017-05-22 0:0:0");
 
 		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 
 		try {
 			staging_projects = ProjectSgrCmDAO.getAllProject(dataEsecuzione);
 			
-
 			DmAlmConfigReader cfgReader = DmAlmConfigReader.getInstance();
-			String csvFileName = cfgReader.getProperty(DmAlmConfigReaderProperties.ELETTRA_PROJECT_LOOKUP_CSV);
-			File csvFile = new File(csvFileName);
+			Path csvFileName = Paths.get(cfgReader.getProperty(DmAlmConfigReaderProperties.ELETTRA_PROJECT_LOOKUP_CSV), "DMALM_SOURCE_PROJECT_ECCEZIONI.csv");
+			File csvFile = csvFileName.toFile();
 			CsvReader csvReader = null;
 			if(csvFile.exists())
 			{
 				csvReader = new CsvReader();
-				csvReader.ReadFile(csvFileName);
+				csvReader.ReadFile(csvFile);
 				
 				for(int i = 0; i < csvReader.getRowCount(); i++)
 				{
@@ -80,11 +83,11 @@ public class ProjectSgrCmFacade {
 					String csvDataUpdateProgrammato = csvReader.getCell(i, "DATA_UPDATE_PROGRAMMATO");
 					String csvCdUoDiriferimentoProject = csvReader.getCell(i, "cd_uo_diriferimento_project");
 					String csvIdReferenteLispaProject = csvReader.getCell(i, "ID_REFERENTE_LISPA_PROJECT");
-					String csvNomeCogLispaProject = csvReader.getCell(i, "NOME_COGNOMEREFERENTE_LISPA_PROJECT");
+					String csvNomeCogLispaProject = csvReader.getCell(i, "nome_cognome_referente_lispa_project");
 					
 					//repository
 					boolean isValid = true;
-					if(csvRepository != "SIRE" && csvRepository != "SISS")
+					if(!csvRepository.equals("SIRE") && !csvRepository.equals("SISS"))
 					{
 						ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
 								"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
@@ -189,10 +192,11 @@ public class ProjectSgrCmFacade {
 			        }
 			        else
 			        {
-			        	if(pr != null)	//TODO: move to the end and check isValid ?
+			        	if(pr != null)	
 			        	{
 				        	if(dataEsecuzione.equals(javaDate))
 				        	{
+				        		//TODO: nevolat tady, volá se níž
 				        		//ProjectSgrCmDAO.updateDataFineValidita(dataEsecuzione, pr);
 				        		//ProjectSgrCmDAO.insertProjectUpdate()
 				        	}
@@ -237,13 +241,32 @@ public class ProjectSgrCmFacade {
 			        }
 			        
 			        //csvNomeCogLispaProject
+			        if(csvNomeCogLispaProject != null && csvNomeCogLispaProject.trim().length() > 0)
+			        {
+			        	String[] split = csvNomeCogLispaProject.split("\\s+");
+			        	String sname = split.length > 0 ? split[0] : "";
+			        	String name = split.length > 1 ? split[1] : "";
+			        	
+			        	Tuple per = ElettraPersonaleDAO.findByName(name, sname);
+			        	
+			        	if(per == null)
+			        	{
+			        		ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+									"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+									"nome_cognome_referente_lispa_project: " + csvNomeCogLispaProject,
+									"nome_cognome_referente_lispa_project " + csvNomeCogLispaProject+ " is not valid.",
+									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+									dataEsecuzione);
+			        	}
+			        }
 			        
 					
 					//rest stuff
+			        /*
 					if(!isValid)
 					{
 						csvReader.RemoveRow(i);
-					}
+					}*/
 				}
 			}
 

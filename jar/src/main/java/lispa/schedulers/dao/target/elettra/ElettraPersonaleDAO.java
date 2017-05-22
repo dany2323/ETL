@@ -378,6 +378,41 @@ public class ElettraPersonaleDAO {
 		return strutture;
 	}
 	
+
+	public static Tuple findByName(String name, String surname)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> strutture;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			strutture = query
+					.from(qDmalmElPersonale)
+					.where(qDmalmElPersonale.nome.eq(name))
+					.where(qDmalmElPersonale.cognome.eq(surname))
+					.list(qDmalmElPersonale.all());
+			
+			if(strutture.isEmpty())
+				return null;
+			else
+				return strutture.get(0);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+	
 	public static boolean ExistsWithAnnullatoNull(Integer dmalm_personale_pk) throws DAOException
 	{
 		ConnectionManager cm = null;

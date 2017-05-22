@@ -122,7 +122,7 @@ public class DmAlmConfigReaderProperties
 	public static final String ELETTRA_DB_URL= "dmalm.fonte.elettra.url";
 	
 	//project lookup csv file name
-	public static final String ELETTRA_PROJECT_LOOKUP_CSV = "dmalm.fonte.elettra.project.csv";
+	public static final String ELETTRA_PROJECT_LOOKUP_CSV = "dmalm.fonte.elettra.csv";
 	
 	// DATABASE H2
 	public static final String H2_DRIVER_CLASS_NAME = "h2.driver_class_name";

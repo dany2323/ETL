@@ -1,8 +1,10 @@
 package lispa.schedulers.manager;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -62,7 +64,7 @@ public class CsvReader {
 		this.csvFile.remove(rowIndex);
 	}
 	
-	public void ReadFile(String fileName)
+	public void ReadFile(File csvFileName)
 	{
 		BufferedReader br = null;
 		String line;
@@ -70,12 +72,12 @@ public class CsvReader {
 		
 		try
 		{
-			br = new BufferedReader(new FileReader(fileName));
+			br = new BufferedReader(new FileReader(csvFileName));
 			line = br.readLine();
 			
 			if(line != null)
 			{
-				columnNames = line.split(csvSplitBy);
+				columnNames = line.split(csvSplitBy, -1);
 				for(int i = 0; i < columnNames.length; i++)
 					columnNames[i] = columnNames[i].trim().toLowerCase();
 			}
@@ -83,7 +85,7 @@ public class CsvReader {
 	        while ((line = br.readLine()) != null) {
 	
 	            // use comma as separator
-	            String[] cells = line.split(csvSplitBy);
+	            String[] cells = line.split(csvSplitBy, -1);
 	            for(int i = 0; i < cells.length; i++)
 	            	cells[i] = cells[i].trim();
 	            csvFile.add(cells);
