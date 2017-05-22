@@ -239,7 +239,7 @@ public class ProjectSgrCmDAO {
 			List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO,
 			String idProject, String idRepository, String nomeProject,
 			String template, String projectGroup, Timestamp dataEsecuzione, boolean isElettra
-			) throws SQLException, PropertiesReaderException, DAOException {
+			) throws Exception {
 		// Se trova l'eccezione riporta il codice area dell'eccezione altrimenti
 		// esegue l'algoritmo di calcolo della UO
 
@@ -356,10 +356,15 @@ public class ProjectSgrCmDAO {
 					case DmAlmConstants.DEMAND2016:
 						if(isElettra)
 						{
+							/*
 							PreparedStatement ps = con.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = 'LIF800'");
 							ResultSet rs = ps.executeQuery();
 							rs.next();
 							codiceAreaUO = rs.getString(0);
+							*/
+							
+							Integer val = UnitaOrganizzativeDAO.FindByCdArea(dataEsecuzione, "LIF800");
+							codiceAreaUO = val.toString();	//TODO: this can throw an exception on null val
 						}
 						else
 						{
@@ -392,10 +397,15 @@ public class ProjectSgrCmDAO {
 						
 						if(isElettra)
 						{
+							/*
 							PreparedStatement ps = con.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = 'LIW8B6'");
 							ResultSet rs = ps.executeQuery();
 							rs.next();
 							codiceAreaUO = rs.getString(0);
+							*/
+							
+							Integer val = UnitaOrganizzativeDAO.FindByCdArea(dataEsecuzione, "LIW8B6");
+							codiceAreaUO = val.toString();	//TODO: this can throw exception on null val
 						}
 						else
 						{

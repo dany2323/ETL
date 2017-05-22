@@ -1,6 +1,8 @@
 package lispa.schedulers.facade.target;
 
 import java.io.File;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -19,6 +21,8 @@ import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.ProjectUnitaOrganizzativaEccezioniDAO;
 import lispa.schedulers.dao.target.StrutturaOrganizzativaEdmaLispaDAO;
+import lispa.schedulers.dao.target.UnitaOrganizzativeDAO;
+import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.CsvReader;
@@ -196,7 +200,43 @@ public class ProjectSgrCmFacade {
 			        }
 			        
 			        //csvCdUoDiriferimentoProject
+			        Integer unitaOrgPk = UnitaOrganizzativeDAO.FindByCdArea(dataEsecuzione, csvCdUoDiriferimentoProject);
+			        if(unitaOrgPk == null)
+			        {
+						ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"cd_uo_diriferimento_project: " + csvCdUoDiriferimentoProject,
+								"cd_uo_diriferimento_project " + csvCdUoDiriferimentoProject+ " is not valid.",
+								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+								dataEsecuzione);
+			        }
+			        else
+			        {
+			        	pr.setDmalmUnitaOrganizzativaFk(unitaOrgPk);
+			        }
 			        
+			        //csvIdReferenteLispaProject
+			        Integer iCsvIdRef;
+			        try
+			        {
+			        	iCsvIdRef = Integer.parseInt(csvIdReferenteLispaProject);
+			        }
+			        catch(NumberFormatException exc)
+			        {
+			        	iCsvIdRef = null;
+			        }
+			        
+			        if(iCsvIdRef == null || !ElettraPersonaleDAO.ExistsWithAnnullatoNull(iCsvIdRef))
+			        {
+			        	ErroriCaricamentoDAO.insert("DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"DMALM_SOURCE_PROJECT_ECCEZIONI.csv",
+								"ID_REFERENTE_LISPA_PROJECT: " + csvIdReferenteLispaProject,
+								"ID_REFERENTE_LISPA_PROJECT " + csvIdReferenteLispaProject+ " is not valid.",
+								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+								dataEsecuzione);
+			        }
+			        
+			        //csvNomeCogLispaProject
 			        
 					
 					//rest stuff
