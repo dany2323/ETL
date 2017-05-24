@@ -34,7 +34,7 @@ public class CsvReader {
 	
 	public String getCell(int row, String columnName)
 	{
-		if(row < 0 || row >= getColumnCount())
+		if(row < 0 || row >= getRowCount())
 			throw new IllegalArgumentException();
 		
 		if(columnName == null || columnName.trim().length() == 0)

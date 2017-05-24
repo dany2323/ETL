@@ -363,7 +363,7 @@ public class ProjectSgrCmDAO {
 							codiceAreaUO = rs.getString(0);
 							*/
 							
-							Integer val = UnitaOrganizzativeDAO.FindByCdArea(dataEsecuzione, "LIF800");
+							Integer val = ElettraUnitaOrganizzativeDAO.findByCdArea(dataEsecuzione, "LIF800");
 							codiceAreaUO = val.toString();	//TODO: this can throw an exception on null val
 						}
 						else
@@ -404,7 +404,7 @@ public class ProjectSgrCmDAO {
 							codiceAreaUO = rs.getString(0);
 							*/
 							
-							Integer val = UnitaOrganizzativeDAO.FindByCdArea(dataEsecuzione, "LIW8B6");
+							Integer val = ElettraUnitaOrganizzativeDAO.findByCdArea(dataEsecuzione, "LIW8B6");
 							codiceAreaUO = val.toString();	//TODO: this can throw exception on null val
 						}
 						else

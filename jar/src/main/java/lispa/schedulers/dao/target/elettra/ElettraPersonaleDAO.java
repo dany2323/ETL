@@ -413,7 +413,7 @@ public class ElettraPersonaleDAO {
 		}
 	}
 	
-	public static boolean ExistsWithAnnullatoNull(Integer dmalm_personale_pk) throws DAOException
+	public static boolean existsWithAnnullatoNull(Integer dmalm_personale_pk) throws DAOException
 	{
 		ConnectionManager cm = null;
 		Connection connection = null;
