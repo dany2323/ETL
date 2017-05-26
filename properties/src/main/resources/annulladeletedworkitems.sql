@@ -1,209 +1,230 @@
-SELECT DISTINCT cd_ANOMALIA AS CODICE,
-                ID_REPOSITORY,
-                'anomalia' AS TYPE
-FROM dmalm_anomalia_prodotto
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_DOCUMENTO AS codice,
-                ID_REPOSITORY,
-                'documento' AS TYPE
-FROM dmalm_documento
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_manutenzione AS CODICE,
-                ID_REPOSITORY,
-                'sman' AS TYPE
-FROM dmalm_manutenzione
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_difetto AS CODICE,
-                ID_REPOSITORY,
-                'defect' AS TYPE
-FROM dmalm_difetto_prodotto
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_anomalia_ass AS CODICE,
-                ID_REPOSITORY,
-                'anomalia_assistenza' AS TYPE
-FROM dmalm_anomalia_assistenza
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_build AS CODICE,
-                ID_REPOSITORY,
-                'build' AS TYPE
-FROM dmalm_build
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_fase AS CODICE,
-                ID_REPOSITORY,
-                'fase' AS TYPE
-FROM dmalm_fase
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_pei AS CODICE,
-                ID_REPOSITORY,
-                'pei' AS TYPE
-FROM dmalm_pei
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_progetto_demand AS CODICE,
-                ID_REPOSITORY,
-                'rqd' AS TYPE
-FROM dmalm_progetto_demand
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_progetto_ese AS CODICE,
-                ID_REPOSITORY,
-                'progettoese' AS TYPE
-FROM dmalm_progetto_ese
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_PROG_SVIL_D AS CODICE,
-                ID_REPOSITORY ,
-                'drqs' AS TYPE
-FROM dmalm_progetto_sviluppo_dem
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_PROG_SVIL_S AS CODICE,
-                ID_REPOSITORY,
-                'srqs' AS TYPE
-FROM dmalm_progetto_sviluppo_svil
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_PROGRAMMA AS CODICE,
-                ID_REPOSITORY,
-                'programma' AS TYPE
-FROM dmalm_programma
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_RELEASEDIPROG AS CODICE,
-                ID_REPOSITORY ,
-                'release' AS TYPE
-FROM dmalm_release_di_progetto
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_release_it AS CODICE,
-                ID_REPOSITORY,
-                'release_it' AS TYPE
-FROM dmalm_release_it
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_REL_SERVIZI AS CODICE,
-                ID_REPOSITORY,
-                'release_ser' AS TYPE
-FROM dmalm_release_servizi
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_RICHIESTA_GEST AS CODICE,
-                ID_REPOSITORY,
-                'richiesta_gestione' AS TYPE
-FROM dmalm_richiesta_gestione
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_RICHIESTA_MANUTENZIONE AS CODICE,
-                ID_REPOSITORY ,
-                'dman' AS TYPE
-FROM dmalm_richiesta_manutenzione
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_SOTTOPROGRAMMA AS CODICE,
-                ID_REPOSITORY,
-                'sottoprogramma' AS TYPE
-FROM dmalm_sottoprogramma
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_task AS CODICE,
-                ID_REPOSITORY,
-                'task' AS TYPE
-FROM dmalm_task
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_task_it AS CODICE,
-                ID_REPOSITORY,
-                'taskit' AS TYPE
-FROM dmalm_task_it
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_testcase AS CODICE,
-                ID_REPOSITORY,
-                'testcase' AS TYPE
-FROM dmalm_testcase
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-UNION ALL
-SELECT DISTINCT cd_classificatore AS CODICE,
-                ID_REPOSITORY,
-                'classificatore' AS TYPE
-FROM dmalm_classificatore
-WHERE annullato IS NULL
-  AND changed IS NULL minus
-  SELECT DISTINCT CODICE , ID_REPOSITORY, TYPE
-  FROM DMALM_STG_CURRENT_WORKITEMS
-ORDER BY 2,
-         3,
-         1
+select
+   distinct cd_ANOMALIA as CODICE,
+   ID_REPOSITORY, 'anomalia' as type
+   from dmalm_anomalia_prodotto
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_DOCUMENTO as codice,
+   ID_REPOSITORY, 'documento' as type
+   from dmalm_documento
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_manutenzione as CODICE,
+   ID_REPOSITORY, 'sman' as type
+   from dmalm_manutenzione
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_difetto as CODICE,
+   ID_REPOSITORY, 'defect' as type
+   from dmalm_difetto_prodotto
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_anomalia_ass as CODICE,
+   ID_REPOSITORY, 'anomalia_assistenza' as type
+   from dmalm_anomalia_assistenza
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_build as CODICE,
+   ID_REPOSITORY, 'build' as type
+   from dmalm_build
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_fase as CODICE,
+   ID_REPOSITORY, 'fase' as type
+   from dmalm_fase
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_pei as CODICE,
+   ID_REPOSITORY, 'pei' as type
+   from dmalm_pei
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_progetto_demand as CODICE,
+   ID_REPOSITORY, 'rqd' as type
+   from dmalm_progetto_demand
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_progetto_ese as CODICE,
+   ID_REPOSITORY, 'progettoese' as type
+   from dmalm_progetto_ese
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_PROG_SVIL_D as CODICE,
+   ID_REPOSITORY , 'drqs' as type
+   from dmalm_progetto_sviluppo_dem
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_PROG_SVIL_S as CODICE,
+   ID_REPOSITORY, 'srqs' as type
+   from dmalm_progetto_sviluppo_svil
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_PROGRAMMA as CODICE,
+   ID_REPOSITORY, 'programma' as type
+   from dmalm_programma
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_RELEASEDIPROG as CODICE,
+   ID_REPOSITORY , 'release' as type
+   from dmalm_release_di_progetto
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_release_it as CODICE,
+   ID_REPOSITORY, 'release_it' as type
+   from dmalm_release_it
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_REL_SERVIZI as CODICE,
+   ID_REPOSITORY, 'release_ser' as type
+   from dmalm_release_servizi
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_RICHIESTA_GEST as CODICE,
+   ID_REPOSITORY, 'richiesta_gestione' as type
+   from dmalm_richiesta_gestione
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_RICHIESTA_MANUTENZIONE as CODICE,
+   ID_REPOSITORY , 'dman' as type
+   from dmalm_richiesta_manutenzione
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_SOTTOPROGRAMMA as CODICE,
+   ID_REPOSITORY, 'sottoprogramma' as type
+   from dmalm_sottoprogramma
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_task as CODICE,
+   ID_REPOSITORY, 'task' as type
+   from dmalm_task
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_task_it as CODICE, 
+   ID_REPOSITORY, 'taskit' as type
+   from dmalm_task_it
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_testcase as CODICE,
+   ID_REPOSITORY, 'testcase' as type
+   from dmalm_testcase
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_classificatore as CODICE,
+   ID_REPOSITORY, 'classificatore' as type
+   from dmalm_classificatore
+   where annullato is NULL
+   and changed is null
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+ ORDER BY 2, 3, 1    
+  
