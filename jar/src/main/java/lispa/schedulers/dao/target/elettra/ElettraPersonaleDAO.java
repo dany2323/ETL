@@ -378,6 +378,69 @@ public class ElettraPersonaleDAO {
 		return strutture;
 	}
 	
+
+	public static Tuple findByName(String name, String surname)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> strutture;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			strutture = query
+					.from(qDmalmElPersonale)
+					.where(qDmalmElPersonale.nome.eq(name))
+					.where(qDmalmElPersonale.cognome.eq(surname))
+					.list(qDmalmElPersonale.all());
+			
+			if(strutture.isEmpty())
+				return null;
+			else
+				return strutture.get(0);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+	
+	public static boolean existsWithAnnullatoNull(Integer dmalm_personale_pk) throws DAOException
+	{
+		ConnectionManager cm = null;
+		Connection connection = null;
+		
+		boolean valToReturn = false;
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			
+			PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM DMALM_EL_PERSONALE WHERE DMALM_PERSONALE_PK = ? AND ANNULLATO IS NULL");
+			ps.setInt(1, dmalm_personale_pk);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+				valToReturn = rs.getInt(1) > 0;
+			
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+		
+		return valToReturn;
+	}
+	
 	public static ResultSet getAllPersonaleUnitaOrganizzativa() throws DAOException {	
 		ConnectionManager cm = null;
 		Connection connection = null;
