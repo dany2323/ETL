@@ -3,33 +3,39 @@ package lispa.schedulers.dao.target;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_PROJECT;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.OracleTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
+import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.template.StringTemplate;
+
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.bean.target.DmalmStrutturaOrganizzativa;
+import lispa.schedulers.bean.utils.ProjectsCSVExceptionsBean;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.UserRolesDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.CsvReader;
 import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
@@ -43,23 +49,13 @@ import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLSubQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.sql.dml.SQLUpdateClause;
-import com.mysema.query.types.template.StringTemplate;
+import lispa.schedulers.utils.ProjectsCSVExceptionsUtils;
 
 public class ProjectSgrCmDAO {
 
 	private static Logger logger = Logger.getLogger(ProjectSgrCmDAO.class);
 
-	private static SQLTemplates dialect = new HSQLDBTemplates();
+	private static OracleTemplates dialect = new OracleTemplates();
 
 	private static QDmalmProject proj = QDmalmProject.dmalmProject;
 	private static QSireCurrentProject currProjSire = QSireCurrentProject.sireCurrentProject;
@@ -145,6 +141,10 @@ public class ProjectSgrCmDAO {
 				
 				if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
 					bean.setDmalmUnitaOrganizzativaFk(0);
+				} else if(codiceAreaUOElettra.equals(DmAlmConstants.ECCEZIONE)) {
+					String projectKey = rs.getString("ID_PROJECT") + "," + rs.getString("ID_REPOSITORY");
+					ProjectsCSVExceptionsBean projectData = ProjectsCSVExceptionsUtils.projectsExceptions.get(projectKey);
+					bean.setDmalmUnitaOrganizzativaFk(projectData.getCsvCdUoDiriferimentoProject());
 				} else {
 					// UO Elettra
 					bean.setDmalmUnitaOrganizzativaFk(ElettraUnitaOrganizzativeDAO
@@ -247,11 +247,10 @@ public class ProjectSgrCmDAO {
 		
 		ConnectionManager cm = ConnectionManager.getInstance();
 		Connection con = null;
-		try
-		{
+		try {	
+			
 			con = cm.getConnectionOracle();
 			
-	
 			for (DmalmProjectUnitaOrganizzativaEccezioni eccezione : eccezioniProjectUO) {
 				if (eccezione.getIdRepository().equals(idRepository)
 						&& eccezione.getNomeCompletoProject().equals(nomeProject)
@@ -263,13 +262,17 @@ public class ProjectSgrCmDAO {
 					break;
 				}
 			}
+			
+			ProjectsCSVExceptionsUtils.importCsv(dataEsecuzione);
 	
 			// Se il project non ha una eccezione
 			if (codiceAreaUO.equalsIgnoreCase("")) {
 				if (template == null) {
 					// Nessun Template
 					//codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-				} else {
+				} else if(ProjectsCSVExceptionsUtils.isAnException(idProject,idRepository)){
+					return DmAlmConstants.ECCEZIONE;
+				}	else {
 					switch (template) {
 					case DmAlmConstants.SVILUPPO:
 						// Template SVILUPPO
@@ -355,16 +358,9 @@ public class ProjectSgrCmDAO {
 						
 					case DmAlmConstants.DEMAND2016:
 						if(isElettra)
-						{
-							/*
-							PreparedStatement ps = con.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = 'LIF800'");
-							ResultSet rs = ps.executeQuery();
-							rs.next();
-							codiceAreaUO = rs.getString(0);
-							*/
-							
+						{							
 							Integer val = ElettraUnitaOrganizzativeDAO.findByCdArea(dataEsecuzione, "LIF800");
-							codiceAreaUO = val.toString();	//TODO: this can throw an exception on null val
+							codiceAreaUO = val.toString();
 						}
 						else
 						{
@@ -391,21 +387,10 @@ public class ProjectSgrCmDAO {
 						break;
 	
 					case DmAlmConstants.IT:
-						// Template IT (sempre 'LIA352' - Area Integrazione
-						// Tecnica)
-						
-						
 						if(isElettra)
 						{
-							/*
-							PreparedStatement ps = con.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = 'LIW8B6'");
-							ResultSet rs = ps.executeQuery();
-							rs.next();
-							codiceAreaUO = rs.getString(0);
-							*/
-							
 							Integer val = ElettraUnitaOrganizzativeDAO.findByCdArea(dataEsecuzione, "LIW8B6");
-							codiceAreaUO = val.toString();	//TODO: this can throw exception on null val
+							codiceAreaUO = val.toString();
 						}
 						else
 						{

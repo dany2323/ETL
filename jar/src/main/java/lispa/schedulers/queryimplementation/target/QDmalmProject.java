@@ -96,6 +96,8 @@ public class QDmalmProject extends com.mysema.query.sql.RelationalPathBase<Dmalm
     
     public final StringPath cDescription = createString("C_DESCRIPTION");
     
+    public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
+    
     public QDmalmProject(String variable) {
         super(DmalmProject.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROJECT");
     }
@@ -108,6 +110,5 @@ public class QDmalmProject extends com.mysema.query.sql.RelationalPathBase<Dmalm
         super(DmalmProject.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROJECT");
     }
 
-    public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
 }
 

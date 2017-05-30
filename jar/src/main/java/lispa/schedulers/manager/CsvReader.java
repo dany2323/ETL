@@ -4,15 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class CsvReader {
-	public CsvReader()
-	{
-		//import au.com.bytecode.opencsv.CSVReader;
-	}
 	
 	private LinkedList<String[]> csvFile = new LinkedList<String[]>();
 	private String[] columnNames = null;

@@ -480,15 +480,13 @@ public class ElettraUnitaOrganizzativeDAO {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			
-			ps = connection.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = ?");
+			ps = connection.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = ? ORDER BY DT_FINE_VALIDITA DESC");
 			ps.setString(1, cdArea);
 			
 			logger.debug("ps executing ");
 			rs = ps.executeQuery();
 			if(rs.next())
-			{
 				pkVal = rs.getInt(0);
-			}
 			else
 				pkVal = null;
 

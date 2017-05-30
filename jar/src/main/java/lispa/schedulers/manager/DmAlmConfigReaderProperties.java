@@ -6,7 +6,7 @@ public class DmAlmConfigReaderProperties
 	public static final String PROPERTIES_READER_FILE_NAME = "datamart.properties";
 	
 	//wi-191
-	public static final String VERSIONE_ETL = "4.8.00";
+	public static final String VERSIONE_ETL = "4.9.00";
 	
 	//QUERY FATTI
 	public static final String SQL_ANOMALIA					    = "anomalia.sql";
@@ -122,7 +122,7 @@ public class DmAlmConfigReaderProperties
 	public static final String ELETTRA_DB_URL= "dmalm.fonte.elettra.url";
 	
 	//project lookup csv file name
-	public static final String ELETTRA_PROJECT_LOOKUP_CSV = "dmalm.fonte.elettra.csv";
+	public static final String ELETTRA_PROJECT_LOOKUP_CSV = "DMALM_SOURCE_PROJECT_ECCEZIONI.csv";
 	
 	// DATABASE H2
 	public static final String H2_DRIVER_CLASS_NAME = "h2.driver_class_name";
