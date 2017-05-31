@@ -486,7 +486,7 @@ public class ElettraUnitaOrganizzativeDAO {
 			logger.debug("ps executing ");
 			rs = ps.executeQuery();
 			if(rs.next())
-				pkVal = rs.getInt(0);
+				pkVal = rs.getInt("DMALM_UNITA_ORG_PK");
 			else
 				pkVal = null;
 

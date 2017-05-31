@@ -263,14 +263,12 @@ public class ProjectSgrCmDAO {
 				}
 			}
 			
-			ProjectsCSVExceptionsUtils.importCsv(dataEsecuzione);
-	
 			// Se il project non ha una eccezione
 			if (codiceAreaUO.equalsIgnoreCase("")) {
 				if (template == null) {
 					// Nessun Template
 					//codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-				} else if(ProjectsCSVExceptionsUtils.isAnException(idProject,idRepository)){
+				} else if(isElettra && ProjectsCSVExceptionsUtils.isAnException(idProject,idRepository)){
 					return DmAlmConstants.ECCEZIONE;
 				}	else {
 					switch (template) {

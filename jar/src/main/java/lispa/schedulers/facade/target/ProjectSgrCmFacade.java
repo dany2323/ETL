@@ -48,6 +48,9 @@ public class ProjectSgrCmFacade {
 		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 
 		try {
+			// Import CSV con i progetti per cui si applica l'eccezione del legame con le UO
+			ProjectsCSVExceptionsUtils.importCsv(dataEsecuzione);
+			
 			staging_projects = ProjectSgrCmDAO.getAllProject(dataEsecuzione);
 
 			for (DmalmProject project : staging_projects) {

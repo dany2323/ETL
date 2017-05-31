@@ -60,9 +60,9 @@ public class ProjectsCSVExceptionsUtils {
 	// Value: Bean
 	public static void importCsv(Timestamp dataEsecuzione) throws Exception {
 		DmAlmConfigReader cfgReader = DmAlmConfigReader.getInstance();
-		String sourceCSVFileName = cfgReader.getProperty(DmAlmConfigReaderProperties.ELETTRA_PROJECT_LOOKUP_CSV);
-		Path csvFileName = Paths.get(cfgReader.getProperty(DmAlmConfigReaderProperties.DMALM_SFERA_PATH), sourceCSVFileName);
-		File csvFile = csvFileName.toFile();
+		String sourceCSVFileName = DmAlmConstants.ELETTRA_PROJECT_LOOKUP_CSV;
+		Path csvFilePath = Paths.get(cfgReader.getProperty(DmAlmConfigReaderProperties.DMALM_SFERA_PATH), sourceCSVFileName);
+		File csvFile = csvFilePath.toFile();
 		CsvReader csvReader = null;
 		projectsExceptions = new HashMap<String,ProjectsCSVExceptionsBean>();
 
@@ -83,6 +83,7 @@ public class ProjectsCSVExceptionsUtils {
 				String csvCdUoDiriferimentoProject = csvReader.getCell(i, cd_uo_diriferimento_project);
 				String csvIdReferenteLispaProject = csvReader.getCell(i, ID_REFERENTE_LISPA_PROJECT);
 				String csvNomeCogLispaProject = csvReader.getCell(i, NOME_COGNOME_REFERENTE_LISPA_PROJECT);
+				logger.info("Project ID: "+csvIdProject);
 				
 				// csvDataUpdateProgrammato 
 				// if csvDataUpdateProgrammato is not the current date, continue
@@ -96,20 +97,29 @@ public class ProjectsCSVExceptionsUtils {
 		        	parsedDate = sdfrmt.parse(csvDataUpdateProgrammato); 
 		        } catch (Exception e) {
 		            isDateValid = false;
+		            continue;
 		        }
-		        Calendar today = Calendar.getInstance();
-		        today.setTime(parsedDate);
-		        today.clear(Calendar.HOUR);
-		        today.clear(Calendar.MINUTE);
-		        today.clear(Calendar.SECOND);
+		        Calendar csvDateCalendar = Calendar.getInstance();
+		        csvDateCalendar.setTimeInMillis(parsedDate.getTime());
+		        csvDateCalendar.clear(Calendar.HOUR);
+		        csvDateCalendar.clear(Calendar.HOUR_OF_DAY);
+		        csvDateCalendar.clear(Calendar.MINUTE);
+		        csvDateCalendar.clear(Calendar.SECOND);
 				
 				Calendar dataEsecuzioneCalendar = Calendar.getInstance();
 				dataEsecuzioneCalendar.setTimeInMillis(dataEsecuzione.getTime());
 				dataEsecuzioneCalendar.clear(Calendar.HOUR);
+				dataEsecuzioneCalendar.clear(Calendar.HOUR_OF_DAY);
 				dataEsecuzioneCalendar.clear(Calendar.MINUTE);
 				dataEsecuzioneCalendar.clear(Calendar.SECOND);
-				
-		        if(!isDateValid || !dataEsecuzioneCalendar.equals(today)) {
+
+		        if(!isDateValid || 
+		        		dataEsecuzioneCalendar.get(Calendar.YEAR)!=csvDateCalendar.get(Calendar.YEAR) || 
+		        		dataEsecuzioneCalendar.get(Calendar.MONTH)!=csvDateCalendar.get(Calendar.MONTH) ||
+		        		dataEsecuzioneCalendar.get(Calendar.DAY_OF_MONTH)!=csvDateCalendar.get(Calendar.DAY_OF_MONTH)) {
+		        	logger.info("La data programmata non coincide con la data di esecuzione");
+					logger.info("Data del CSV: "+csvDateCalendar.toString());
+					logger.info("Data esecuzione: "+dataEsecuzioneCalendar.toString());
 					continue;
 		        }
 		        
@@ -142,6 +152,7 @@ public class ProjectsCSVExceptionsUtils {
 							REPOSITORY + " " + csvRepository + " is not valid.",
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
+		        	logger.error("Il campo "+REPOSITORY+" non contiene SISS o SIRE");
 					isRowValid = false;
 					continue;
 				}
@@ -154,6 +165,7 @@ public class ProjectsCSVExceptionsUtils {
 							ID_PROJECT + " " + csvIdProject+ " is not valid.",
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
+		        	logger.error("Non è presente nessun progetto "+csvIdProject+" in "+csvRepository+" con ANNULLATO = NULL");
 					isRowValid = false;
 					continue;
 				}
@@ -174,6 +186,7 @@ public class ProjectsCSVExceptionsUtils {
 							NOME_COMPLETO_PROJECT + " " + csvNomeCompletoProject+ " is not valid.",
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
+		        	logger.error("Non è presente nessun progetto di nome "+csvNomeCompletoProject+" in "+csvRepository+" con ANNULLATO = NULL");
 					isRowValid = false;
 					continue;
 				}
@@ -187,6 +200,7 @@ public class ProjectsCSVExceptionsUtils {
 							TIPO_TEMPLATE + " " + csvTipoTemplate+ " is not valid.",
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
+					logger.error("Il template '"+csvTipoTemplate+"' non è valido");
 					isRowValid = false;
 					continue;
 				}
@@ -200,6 +214,8 @@ public class ProjectsCSVExceptionsUtils {
 							cd_uo_diriferimento_project + " " + csvCdUoDiriferimentoProject+ " is not valid.",
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
+		        	logger.error("Non è presente nessuna area organizzativa in DMALM_EL_UNITA_ORGANIZZATIVE con il campo CD_AREA = "+csvCdUoDiriferimentoProject);
+
 					isRowValid = false;
 					continue;
 		        }
@@ -219,6 +235,7 @@ public class ProjectsCSVExceptionsUtils {
 							ID_REFERENTE_LISPA_PROJECT + " " + csvIdReferenteLispaProject+ " is not valid.",
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
+				    logger.error("Non è presente nessuna area organizzativa in DMALM_EL_PERSONALE con il campo DMALM_PERSONALE_PK = "+iCsvIdRef);
 					isRowValid = false;
 					continue;
 		        }
@@ -226,8 +243,8 @@ public class ProjectsCSVExceptionsUtils {
 		        //csvNomeCogLispaProject
 		        if(csvNomeCogLispaProject != null && csvNomeCogLispaProject.trim().length() > 0) {
 		        	String[] split = csvNomeCogLispaProject.split(NAME_SURNAME_SPLITTER);
-		        	String sname = split.length > 0 ? split[0] : "";
-		        	String name = split.length > 1 ? split[1] : "";
+		        	String name = split.length > 0 ? split[0] : "";
+		        	String sname = split.length > 1 ? split[1] : "";
 		        	
 		        	Tuple per = ElettraPersonaleDAO.findByName(StringUtils.getMaskedValue(name), StringUtils.getMaskedValue(sname));
 		        	
@@ -238,6 +255,7 @@ public class ProjectsCSVExceptionsUtils {
 									NOME_COGNOME_REFERENTE_LISPA_PROJECT + " " + csvNomeCogLispaProject+ " is not valid.",
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
+		        		logger.error("Non è presente nessun record in DMALM_EL_PERSONALE con NOME = "+name+" e COGNOME = "+sname);
 						isRowValid = false;
 						continue;
 		        	}
