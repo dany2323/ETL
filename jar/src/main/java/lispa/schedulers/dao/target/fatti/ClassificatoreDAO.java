@@ -258,7 +258,7 @@ public class ClassificatoreDAO {
 		if (cfWorkitem != null && cfWorkitem.size() > 0) {
 			customFieldInString = "";
 
-			List<String> sortList = cfWorkitem.subList(1, cfWorkitem.size());
+			List<String> sortList = cfWorkitem.subList(0, cfWorkitem.size());
 			Collections.sort(sortList);
 
 			for (String row : sortList) {
