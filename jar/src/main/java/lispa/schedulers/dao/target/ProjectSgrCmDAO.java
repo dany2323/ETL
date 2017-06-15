@@ -277,9 +277,7 @@ public class ProjectSgrCmDAO {
 								
 								List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(codiceProdotto);
 								
-								if(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))
-									codiceProdotto=DmAlmConstants.SISCOAGRI_ADMIN;
-								else{
+								if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
 									if (codiceProdotto.contains(".")) {
 										codiceProdotto = codiceProdotto.substring(
 												0, codiceProdotto.indexOf("."));

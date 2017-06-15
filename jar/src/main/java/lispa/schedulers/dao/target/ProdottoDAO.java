@@ -540,9 +540,7 @@ public class ProdottoDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 			List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(sigla);
 			
-			if(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))
-				sigla=DmAlmConstants.SISCOAGRI_ADMIN;
-			else{
+			if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
 				if (sigla.contains(".")) {
 					sigla = sigla.substring(0, sigla.indexOf("."));
 				}

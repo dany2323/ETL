@@ -118,9 +118,7 @@ public class CheckLinkProjectSgrCmProdottiArchFacade {
 
 					for (String siglaPrj : multiSiglaProject) {
 						List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(siglaPrj);
-						if(dmAlmSourceElProdEccez!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))
-							siglaPrj=DmAlmConstants.SISCOAGRI_ADMIN;
-						else{
+						if(!(dmAlmSourceElProdEccez!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
 								// toglie eventuali moduli dopo il nome Project
 							if (siglaPrj.contains(".")) {
 								siglaPrj = siglaPrj.substring(0,

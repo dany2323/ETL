@@ -151,9 +151,7 @@ public class CheckLinkAsmSferaProdottiArchFacade {
 
 					for (String asmName : multiAsm) {
 						List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(asmName);
-						if(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))
-							asmName=DmAlmConstants.SISCOAGRI_ADMIN;
-						else{
+						if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
 							// toglie eventuali moduli dopo il nome Asm
 							if (asmName.contains(".")) {
 								asmName = asmName

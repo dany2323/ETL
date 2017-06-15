@@ -7,16 +7,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 
-import lispa.schedulers.bean.target.elettra.DmAlmSourceElProdEccez;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
-import lispa.schedulers.utils.DateUtils;
 
 public class DmAlmSourceElProdEccezDAO {
 	
@@ -36,7 +33,7 @@ public class DmAlmSourceElProdEccezDAO {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates();
+			SQLTemplates dialect = new OracleTemplates();
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			relList = query.from(dmAlmSourceElProd).list(dmAlmSourceElProd.siglaOggettoElettra,dmAlmSourceElProd.tipoElProdEccezione);
@@ -64,11 +61,11 @@ public class DmAlmSourceElProdEccezDAO {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates();
+			SQLTemplates dialect = new OracleTemplates();
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			
-			relList.addAll(query.from(dmAlmSourceElProd).where(dmAlmSourceElProd.siglaOggettoElettra.eq(id)).list(dmAlmSourceElProd.siglaOggettoElettra,dmAlmSourceElProd.tipoElProdEccezione));
+			relList=query.from(dmAlmSourceElProd).where(dmAlmSourceElProd.siglaOggettoElettra.eq(id)).list(dmAlmSourceElProd.siglaOggettoElettra,dmAlmSourceElProd.tipoElProdEccezione);
 					
 		} catch (Exception e) {
 			logger.error(e.getMessage());

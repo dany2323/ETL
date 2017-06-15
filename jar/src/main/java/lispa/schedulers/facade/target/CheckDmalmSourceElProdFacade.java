@@ -36,17 +36,20 @@ public class CheckDmalmSourceElProdFacade {
 
 		
 		relList=DmAlmSourceElProdEccezDAO.getData();
-		
+		if(relList==null){
+			logger.info("STOP CheckDmalmSourceElProdFacade");
+			return;
+		}
 		for(Tuple row: relList)
 		{
 			String sigla=row.get(dmAlmSourceElProd.siglaOggettoElettra);
 			String [] splitting=sigla.split(".");
-			if(splitting.length>2)
+			if(splitting.length>3)
 			{
 				ErroriCaricamentoDAO.insert("DMALM_SOURCE_EL_PROD_ECCEZ", "DMALM_SOURCE_EL_PROD_ECCEZ", "SIGLA_OGGETTO_ELETTRA", "Il campo SIGLA_OGGETTO_ELETTRA non è compliant alle specifiche, ci sono più di due punti: "+sigla, DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, dataEsecuzione);
 			}
 			Integer tipo=row.get(dmAlmSourceElProd.tipoElProdEccezione);
-			if(tipo< 0 && tipo>1)
+			if(tipo!= 0 || tipo!=1)
 			{
 				ErroriCaricamentoDAO.insert("DMALM_SOURCE_EL_PROD_ECCEZ", "DMALM_SOURCE_EL_PROD_ECCEZ", "TIPO_EL_PROD_ECCEZIONE", "Il campo TIPO_EL_PROD_ECCEZIONE, con chiave "+sigla+" non è valido : "+tipo, DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, dataEsecuzione);
 			}
