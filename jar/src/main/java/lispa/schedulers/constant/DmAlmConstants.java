@@ -518,6 +518,7 @@ public final class DmAlmConstants {
 	public static final String WRONG_SVI_MSR_ORDER = "MISURA ST3 SPAIATA NON PRECEDUTA DA ST1 e/o ST2 o PRECEDUTA DA NOMI DI MISURA CON FORMATO ERRATO";
 	public static final String BASELINE = "Baseline";
 	public static final String PATR = "PATR";
+	public static final String SISCOAGRI_ADMIN = "SISCOAGRI.ADMIN";
 
 	public static String getProperty(String property) {
 

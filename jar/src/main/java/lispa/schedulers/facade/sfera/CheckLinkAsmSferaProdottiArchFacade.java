@@ -10,9 +10,11 @@ import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.oreste.ProdottiArchitettureDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmProdottiArchitettureDAO;
+import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
@@ -28,6 +30,7 @@ public class CheckLinkAsmSferaProdottiArchFacade {
 	private static QDmalmAsm dmalmAsm = QDmalmAsm.dmalmAsm;
 	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 	private static QDmalmAsmProdottiArchitetture qDmalmAsmProdottiArchitetture = QDmalmAsmProdottiArchitetture.qDmalmAsmProdottiArchitetture;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
 	public static void execute(Timestamp dataEsecuzione, boolean check)
 			throws Exception, DAOException {
@@ -147,12 +150,16 @@ public class CheckLinkAsmSferaProdottiArchFacade {
 					multiAsm = applicazione.split("\\.\\.");
 
 					for (String asmName : multiAsm) {
-						// toglie eventuali moduli dopo il nome Asm
-						if (asmName.contains(".")) {
-							asmName = asmName
-									.substring(0, asmName.indexOf("."));
+						List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(asmName);
+						if(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))
+							asmName=DmAlmConstants.SISCOAGRI_ADMIN;
+						else{
+							// toglie eventuali moduli dopo il nome Asm
+							if (asmName.contains(".")) {
+								asmName = asmName
+										.substring(0, asmName.indexOf("."));
+							}
 						}
-
 						// scarta nomi duplicati
 						if (!asmLinkedList.contains(asmName)) {
 							asmLinkedList.add(asmName);

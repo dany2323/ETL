@@ -10,12 +10,14 @@ import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.oreste.ProdottiArchitettureDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
+import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmAsmProjectEl;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.utils.DateUtils;
@@ -38,6 +40,7 @@ public class CheckLinkAsmSferaProjectElFacade {
 	private static QDmalmAsmProjectEl asmProject = QDmalmAsmProjectEl.dmalmAsmProject;
 	private static QDmalmElProdottiArchitetture prodotto = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 	private static SQLTemplates dialect = new HSQLDBTemplates();
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
 	public static void execute() throws Exception, DAOException {
 		ConnectionManager cm = null;
@@ -200,11 +203,14 @@ public class CheckLinkAsmSferaProjectElFacade {
 			throws DAOException {
 		try {
 			List<Tuple> r = new ArrayList<Tuple>();
-			
-			if (sigla.contains(".")) {
-				sigla = sigla.substring(0, sigla.indexOf("."));
+			List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(sigla);
+			if(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))
+				sigla=DmAlmConstants.SISCOAGRI_ADMIN;
+			else{
+				if (sigla.contains(".")) {
+					sigla = sigla.substring(0, sigla.indexOf("."));
+				}
 			}
-			
 			//per cercare il Prodotto prendo il range temporale minore equivalente alla validità sia di Asm che di project
 			Timestamp inizioVal = ta.get(dmalmAsm.dataInizioValidita);
 			Timestamp fineVal = ta.get(dmalmAsm.dataFineValidita);
@@ -358,11 +364,14 @@ public class CheckLinkAsmSferaProjectElFacade {
 			throws DAOException {
 		try {
 			List<Tuple> r = new ArrayList<Tuple>();
-			
-			if (sigla.contains(".")) {
-				sigla = sigla.substring(0, sigla.indexOf("."));
+			List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(sigla);
+			if(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))
+				sigla=DmAlmConstants.SISCOAGRI_ADMIN;
+			else{
+				if (sigla.contains(".")) {
+					sigla = sigla.substring(0, sigla.indexOf("."));
+				}
 			}
-			
 			//per cercare il Prodotto prendo il range temporale minore equivalente alla validità sia di Asm che di project
 			Timestamp inizioVal = tp.get(project.dtInizioValidita);
 			Timestamp fineVal = tp.get(project.dtFineValidita);

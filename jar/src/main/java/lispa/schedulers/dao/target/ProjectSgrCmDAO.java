@@ -36,6 +36,7 @@ import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistor
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
 
@@ -64,6 +65,7 @@ public class ProjectSgrCmDAO {
 	private static QDmalmProdotto dmalmProdotto = QDmalmProdotto.dmalmProdotto;
 	private static QDmalmProjectProdotto projectProdotto = QDmalmProjectProdotto.dmalmProjectProdotto;
 	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
 	public static List<DmalmProject> getAllProject(Timestamp dataEsecuzione)
 			throws Exception {
@@ -272,11 +274,17 @@ public class ProjectSgrCmDAO {
 								multiSiglaProject = siglaProject
 										.split("\\.\\.");
 								String codiceProdotto = multiSiglaProject[0];
-								if (codiceProdotto.contains(".")) {
-									codiceProdotto = codiceProdotto.substring(
-											0, codiceProdotto.indexOf("."));
+								
+								List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(codiceProdotto);
+								
+								if(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))
+									codiceProdotto=DmAlmConstants.SISCOAGRI_ADMIN;
+								else{
+									if (codiceProdotto.contains(".")) {
+										codiceProdotto = codiceProdotto.substring(
+												0, codiceProdotto.indexOf("."));
+									}
 								}
-
 								if(isElettra) {
 									// Elettra
 									 List<Tuple> productList = ElettraProdottiArchitettureDAO.getProductByAcronym(codiceProdotto);
