@@ -20,7 +20,7 @@ public class DmAlmSourceElProdEccezDAO {
 	private static Logger logger = Logger
 			.getLogger(DmAlmSourceElProdEccezDAO.class);
 
-	private static QDmAlmSourceElProdEccez dmAlmSourceElProd = QDmAlmSourceElProdEccez.dmAlmSourceElProd;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccezz = QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 	
 	public static List<Tuple> getData() throws DAOException {
 		
@@ -36,7 +36,7 @@ public class DmAlmSourceElProdEccezDAO {
 			SQLTemplates dialect = new OracleTemplates();
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			relList = query.from(dmAlmSourceElProd).list(dmAlmSourceElProd.siglaOggettoElettra,dmAlmSourceElProd.tipoElProdEccezione);
+			relList = query.from(dmAlmSourceElProdEccezz).list(dmAlmSourceElProdEccezz.siglaOggettoElettra,dmAlmSourceElProdEccezz.tipoElProdEccezione);
 					
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -65,7 +65,7 @@ public class DmAlmSourceElProdEccezDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			
-			relList=query.from(dmAlmSourceElProd).where(dmAlmSourceElProd.siglaOggettoElettra.eq(id)).list(dmAlmSourceElProd.siglaOggettoElettra,dmAlmSourceElProd.tipoElProdEccezione);
+			relList=query.from(dmAlmSourceElProdEccezz).where(dmAlmSourceElProdEccezz.siglaOggettoElettra.eq(id)).list(dmAlmSourceElProdEccezz.siglaOggettoElettra,dmAlmSourceElProdEccezz.tipoElProdEccezione);
 					
 		} catch (Exception e) {
 			logger.error(e.getMessage());
