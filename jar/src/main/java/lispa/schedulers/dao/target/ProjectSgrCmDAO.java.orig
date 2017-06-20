@@ -264,7 +264,34 @@ public class ProjectSgrCmDAO {
 					break;
 				}
 			}
-		
+<<<<<<< HEAD
+			
+			// Se il project non ha una eccezione
+			if (codiceAreaUO.equalsIgnoreCase("")) {
+				if (template == null) {
+					// Nessun Template
+					//codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+				} else if(isElettra && ProjectsCSVExceptionsUtils.isAnException(idProject,idRepository)){
+					return DmAlmConstants.ECCEZIONE;
+				}	else {
+					switch (template) {
+					case DmAlmConstants.SVILUPPO:
+						// Template SVILUPPO
+						if (nomeProject == null) {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						} else if (nomeProject.startsWith("SW-")) {
+							try {
+								if (nomeProject.indexOf("{", 1) != -1
+										&& nomeProject.indexOf("}", 1) != -1) {
+									String siglaProject = nomeProject.substring(
+											nomeProject.indexOf("{", 1) + 1,
+											nomeProject.indexOf("}", 1));
+									String[] multiSiglaProject = null;
+									multiSiglaProject = siglaProject
+											.split("\\.\\.");
+									String codiceProdotto = multiSiglaProject[0];
+=======
+		}
 
 		// Se il project non ha una eccezione
 		if (codiceAreaUO.equalsIgnoreCase("")) {
@@ -292,10 +319,26 @@ public class ProjectSgrCmDAO {
 								List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(codiceProdotto);
 								
 								if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
+>>>>>>> DM_ALM-263
 									if (codiceProdotto.contains(".")) {
 										codiceProdotto = codiceProdotto.substring(
 												0, codiceProdotto.indexOf("."));
 									}
+<<<<<<< HEAD
+	
+									if(isElettra) {
+										// Elettra
+										 List<Tuple> productList = ElettraProdottiArchitettureDAO.getProductByAcronym(codiceProdotto);
+										 if (productList.size() == 0) {
+											 codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+										 } else {
+											 if (productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto) != null) {
+												 codiceAreaUO =	 productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto);
+											} else {
+												codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+											}
+										 }
+=======
 								}
 								if(isElettra) {
 									// Elettra
@@ -311,6 +354,12 @@ public class ProjectSgrCmDAO {
 									 }
 								} else {
 									// Edma
+									List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
+									if (productList.size() == 0) {
+										codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+>>>>>>> DM_ALM-263
+									} else {
+										// Edma
 										List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
 										if (productList.size() == 0) {
 											codiceAreaUO = DmAlmConstants.NON_PRESENTE;
