@@ -47,6 +47,7 @@ import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistor
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.ProjectsCSVExceptionsUtils;
@@ -65,6 +66,7 @@ public class ProjectSgrCmDAO {
 	private static QDmalmProdotto dmalmProdotto = QDmalmProdotto.dmalmProdotto;
 	private static QDmalmProjectProdotto projectProdotto = QDmalmProjectProdotto.dmalmProjectProdotto;
 	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
 	public static List<DmalmProject> getAllProject(Timestamp dataEsecuzione)
 			throws Exception {
@@ -262,48 +264,56 @@ public class ProjectSgrCmDAO {
 					break;
 				}
 			}
-			
-			// Se il project non ha una eccezione
-			if (codiceAreaUO.equalsIgnoreCase("")) {
-				if (template == null) {
-					// Nessun Template
-					//codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-				} else if(isElettra && ProjectsCSVExceptionsUtils.isAnException(idProject,idRepository)){
-					return DmAlmConstants.ECCEZIONE;
-				}	else {
-					switch (template) {
-					case DmAlmConstants.SVILUPPO:
-						// Template SVILUPPO
-						if (nomeProject == null) {
-							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-						} else if (nomeProject.startsWith("SW-")) {
-							try {
-								if (nomeProject.indexOf("{", 1) != -1
-										&& nomeProject.indexOf("}", 1) != -1) {
-									String siglaProject = nomeProject.substring(
-											nomeProject.indexOf("{", 1) + 1,
-											nomeProject.indexOf("}", 1));
-									String[] multiSiglaProject = null;
-									multiSiglaProject = siglaProject
-											.split("\\.\\.");
-									String codiceProdotto = multiSiglaProject[0];
+		}
+
+		// Se il project non ha una eccezione
+		if (codiceAreaUO.equalsIgnoreCase("")) {
+			if (template == null) {
+				// Nessun Template
+				codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+			} else {
+				switch (template) {
+				case DmAlmConstants.SVILUPPO:
+					// Template SVILUPPO
+					if (nomeProject == null) {
+						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+					} else if (nomeProject.startsWith("SW-")) {
+						try {
+							if (nomeProject.indexOf("{", 1) != -1
+									&& nomeProject.indexOf("}", 1) != -1) {
+								String siglaProject = nomeProject.substring(
+										nomeProject.indexOf("{", 1) + 1,
+										nomeProject.indexOf("}", 1));
+								String[] multiSiglaProject = null;
+								multiSiglaProject = siglaProject
+										.split("\\.\\.");
+								String codiceProdotto = multiSiglaProject[0];
+								
+								List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(codiceProdotto);
+								
+								if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
 									if (codiceProdotto.contains(".")) {
 										codiceProdotto = codiceProdotto.substring(
 												0, codiceProdotto.indexOf("."));
 									}
-	
-									if(isElettra) {
-										// Elettra
-										 List<Tuple> productList = ElettraProdottiArchitettureDAO.getProductByAcronym(codiceProdotto);
-										 if (productList.size() == 0) {
-											 codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-										 } else {
-											 if (productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto) != null) {
-												 codiceAreaUO =	 productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto);
-											} else {
-												codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-											}
-										 }
+								}
+								if(isElettra) {
+									// Elettra
+									 List<Tuple> productList = ElettraProdottiArchitettureDAO.getProductByAcronym(codiceProdotto);
+									 if (productList.size() == 0) {
+										 codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+									 } else {
+										 if (productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto) != null) {
+											 codiceAreaUO =	 productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto);
+										} else {
+											codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+										}
+									 }
+								} else {
+									// Edma
+									List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
+									if (productList.size() == 0) {
+										codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 									} else {
 										// Edma
 										List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);

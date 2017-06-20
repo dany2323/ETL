@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -13,6 +14,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.fonte.oreste.OresteDmAlmProdottiArchitetture;
 import lispa.schedulers.queryimplementation.staging.oreste.QStgProdottiArchitetture;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
@@ -35,7 +37,7 @@ public class ProdottiArchitettureDAO {
 			.getLogger(ProdottiArchitettureDAO.class);
 	private static QDmalmElProdottiArchitetture dmalmElProdArc = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 	private static QDmalmAsmProdottiArchitetture dmalmAsmProdArch = QDmalmAsmProdottiArchitetture.qDmalmAsmProdottiArchitetture;
-
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 	public static long fillProdottiArchitetture() throws Exception {
 
 		ConnectionManager cm = null;
@@ -603,9 +605,11 @@ public class ProdottiArchitettureDAO {
 		Connection connection = null;
 
 		List<Tuple> prodotti = new ArrayList<Tuple>();
-		
-		if (sigla.contains(".")) {
-			sigla = sigla.substring(0, sigla.indexOf("."));
+		List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(sigla);
+		if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
+			if (sigla.contains(".")) {
+				sigla = sigla.substring(0, sigla.indexOf("."));
+			}
 		}
 		try {
 			cm = ConnectionManager.getInstance();

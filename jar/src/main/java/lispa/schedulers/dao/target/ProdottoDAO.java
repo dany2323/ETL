@@ -17,6 +17,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdotto;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
@@ -38,6 +39,7 @@ public class ProdottoDAO {
 	private static QDmalmProdotto dmalmProdotto = QDmalmProdotto.dmalmProdotto;
 	private static QDmalmAsmProdotto dmalmAsmProdotto = QDmalmAsmProdotto.dmalmAsmProdotto;
 	private static QDmalmProjectProdotto dmalmProjectProdotto = QDmalmProjectProdotto.dmalmProjectProdotto;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
 	public static List<DmalmProdotto> getAllProdotti(Timestamp dataEsecuzione)
 			throws Exception {
@@ -536,11 +538,13 @@ public class ProdottoDAO {
 			connection = cm.getConnectionOracle();
 
 			SQLQuery query = new SQLQuery(connection, dialect);
+			List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(sigla);
 			
-			if (sigla.contains(".")) {
-				sigla = sigla.substring(0, sigla.indexOf("."));
+			if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
+				if (sigla.contains(".")) {
+					sigla = sigla.substring(0, sigla.indexOf("."));
+				}
 			}
-			
 			prodotti = query
 					.from(dmalmProdotto)
 					.where(dmalmProdotto.sigla.eq(sigla))

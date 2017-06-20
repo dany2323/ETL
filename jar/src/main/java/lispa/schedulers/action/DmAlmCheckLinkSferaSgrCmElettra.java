@@ -6,6 +6,7 @@ import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProjectElFacade;
 import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProjectFacade;
 import lispa.schedulers.facade.sfera.CheckLinkSferaSgrCmFacade;
+import lispa.schedulers.facade.target.CheckDmalmSourceElProdFacade;
 import lispa.schedulers.facade.target.CheckLinkProjectSgrCmProdottiArchFacade;
 import lispa.schedulers.facade.target.CheckLinkProjectSgrCmProdottoFacade;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -25,6 +26,10 @@ public class DmAlmCheckLinkSferaSgrCmElettra {
 
 			// ELETTRA/SGRCM
 			if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
+				
+				//Validation Data on DMALM_SOURCE_EL_PROD_ECCEZ
+				CheckDmalmSourceElProdFacade.execute(dataEsecuzione);
+				
 				// Prodotto Oreste
 				CheckLinkProjectSgrCmProdottoFacade.execute(dataEsecuzione); //TODO non ho commentato ancora nulla
 				// ProdottiArchitetture Elettra
