@@ -569,7 +569,8 @@ public class ProjectSgrCmDAO {
 							project.getcLockworkrecordsdate())
 					.set(proj.cRev, project.getcRev())
 					.set(proj.cDescription, project.getcDescription())
-					.set(proj.annullato, project.getAnnullato()).execute();
+					.set(proj.annullato, project.getAnnullato())
+					.set(proj.dtAnnullamento, project.getDtAnnullamento()).execute();
 
 			connection.commit();
 
