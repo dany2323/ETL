@@ -51,7 +51,7 @@ public class ProjectsCSVExceptionsUtils {
 	private static final String SIRE = "SIRE";
 	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String[] ALLOWED_TEMPLATE = new String[] {"SVILUPPO", "IT", "DEMAND", "DEMAND2016", "ASSISTENZA", "SERDEP"};
-	private static final String NAME_SURNAME_SPLITTER = "\\s+";
+	private static final String NAME_SURNAME_SPLITTER = ",";
 	
 	public static HashMap<String,ProjectsCSVExceptionsBean> projectsExceptions = null;
 
@@ -245,6 +245,9 @@ public class ProjectsCSVExceptionsUtils {
 		        	String[] split = csvNomeCogLispaProject.split(NAME_SURNAME_SPLITTER);
 		        	String name = split.length > 0 ? split[0] : "";
 		        	String sname = split.length > 1 ? split[1] : "";
+
+					name = name.trim();
+					sname = sname.trim();
 		        	
 		        	Tuple per = ElettraPersonaleDAO.findByName(StringUtils.getMaskedValue(name), StringUtils.getMaskedValue(sname));
 		        	
