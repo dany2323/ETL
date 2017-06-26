@@ -115,7 +115,7 @@ public class ClassificatoreOdsDAO {
 								classificatore.getStgPk(),
 								classificatore.getTitoloClassificatore(),
 								classificatore.getUriClassficatore(),
-								classificatore.getRmResponsabileProgetto(),
+								classificatore.getRmResponsabiliProgetto(),
 								classificatore.isProgettoInDeroga(),
 								classificatore.getAssigneeProgettoItInDeroga(),
 								classificatore.getLocationSorgenti(),

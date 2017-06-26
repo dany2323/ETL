@@ -69,7 +69,7 @@ public class DmalmClassificatore {
 	
 	private String uriClassficatore;
 	
-	private String rmResponsabileProgetto;
+	private String rmResponsabiliProgetto;
 	
 	private boolean progettoInDeroga;
 	
@@ -89,12 +89,12 @@ public class DmalmClassificatore {
 		this.codiceServizi = codiceServizi;
 	}
 
-	public String getRmResponsabileProgetto() {
-		return rmResponsabileProgetto;
+	public String getRmResponsabiliProgetto() {
+		return rmResponsabiliProgetto;
 	}
 
-	public void setRmResponsabileProgetto(String rmResponsabileProgetto) {
-		this.rmResponsabileProgetto = rmResponsabileProgetto;
+	public void setRmResponsabiliProgetto(String rmResponsabiliProgetto) {
+		this.rmResponsabiliProgetto = rmResponsabiliProgetto;
 	}
 
 	public boolean isProgettoInDeroga() {
