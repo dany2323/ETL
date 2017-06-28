@@ -1,0 +1,13 @@
+/**Aumento dimensione campo SEVERITY nelle seguenti tabelle per evitare errori in insert quando viene usata una
+**severity di lunghezza maggiore di 10 caratteri
+** 28 giugno 2017*/
+-- Add/modify columns 
+alter table DMALM_DIFETTO_PRODOTTO modify SEVERITY VARCHAR2(20);
+-- Add/modify columns 
+alter table DMALM_DIFETTO_PRODOTTO_DUMMY modify SEVERITY VARCHAR2(20);
+-- Add/modify columns 
+alter table DMALM_DIFETTO_PRODOTTO_ODS modify SEVERITY_DIFETTO VARCHAR2(20);
+-- Add/modify columns 
+alter table T_DMALM_DIFETTO_PROD_DUMMY modify SEVERITY VARCHAR2(20);
+-- Add/modify columns 
+alter table T_DMALM_DIFETTO_PRODOTTO modify SEVERITY VARCHAR2(20);
