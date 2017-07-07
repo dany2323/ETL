@@ -53,5 +53,20 @@ public class TestElettra extends TestCase{
 		}
 		
 	}
-
+	
+	public void testGetPersonalePk() {
+		try {
+			Log4JConfiguration.inizialize();
+			ConnectionManager.getInstance().getConnectionOracle();
+			
+			System.out.println(ElettraPersonaleDAO.getPersonalePk());
+			
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PropertiesReaderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
