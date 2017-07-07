@@ -106,7 +106,7 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 							{
 								modificato = true;
 							}
-							if(!modificato && BeanUtils.areDifferent(row.get(c.rmResponsabiliProgetto), classificatore.getRmResponsabileProgetto()))
+							if(!modificato && BeanUtils.areDifferent(row.get(c.rmResponsabiliProgetto), classificatore.getRmResponsabiliProgetto()))
 							{
 								modificato = true;
 							}

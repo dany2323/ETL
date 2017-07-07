@@ -262,8 +262,11 @@ public class DmAlmConfigReaderProperties
 	public static final String MAIL_LOG_PATH="mail.log.path";
 
 	//WORKITEM
-	public static final String WORKITEM_PK_NEXTVAL="dmalm_workitem_pk_nextval.sql";;
+	public static final String WORKITEM_PK_NEXTVAL="dmalm_workitem_pk_nextval.sql";
 	
+	//EL_PERSONALE
+	public static final String PERSONALE_PK_MAXVAL="dmalm_personale_pk_maxval.sql";
+
 	//SFERA
 	public static final String NOTLINKED_PROJSF_WORKITEM="notlinked_projsf_wi.sql";;
 	public static final String DMALM_SFERA_PATH="dmalm.sfera.path";

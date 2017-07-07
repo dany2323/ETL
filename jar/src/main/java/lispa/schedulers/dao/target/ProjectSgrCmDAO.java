@@ -1463,7 +1463,7 @@ public class ProjectSgrCmDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-		path = path + "%";
+		path = path + "/%";
 		List<Tuple> projects = new ArrayList<Tuple>();
 		DmalmProject ret = new DmalmProject();
 		try {

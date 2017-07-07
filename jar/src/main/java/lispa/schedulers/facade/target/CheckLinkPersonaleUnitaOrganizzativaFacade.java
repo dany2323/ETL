@@ -72,6 +72,8 @@ public class CheckLinkPersonaleUnitaOrganizzativaFacade {
 							ElettraPersonaleDAO.updateDataFineValidita(
 									dataEsecuzione, personale);
 
+							personale.setPersonalePk(ElettraPersonaleDAO.getPersonalePk());
+							
 							// inserisco un nuovo record
 							ElettraPersonaleDAO
 									.insertPersonaleUpdate(dataEsecuzione, personale);
