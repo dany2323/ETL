@@ -659,7 +659,7 @@ public class DmAlmFillTarget {
 
 				// step 1 crea legami Asm/Prodotto
 				// Prodotto Oreste
-				CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
+				//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
 				// ProdottiArchitetture Elettra
 				CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, false);
 				
@@ -671,7 +671,7 @@ public class DmAlmFillTarget {
 				// step 3 crea i nuovi legami per eventuali asm storicizzate da
 				// CheckLinkAsmSferaStrutturaOrganizzativaFacade
 				// Prodotto Oreste
-				CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
+				//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
 				// ProdottiArchitetture Elettra
 				CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, false);
 
@@ -683,7 +683,7 @@ public class DmAlmFillTarget {
 				// step 5 crea i nuovi legami per eventuali asm storicizzate da
 				// CheckLinkAsmSferaUnitaOrganizzativaFacade
 				// Prodotto Oreste
-				CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, true);
+				//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, true);
 				// ProdottiArchitetture Elettra
 				CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, true);
 				
