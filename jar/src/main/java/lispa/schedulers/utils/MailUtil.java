@@ -1,6 +1,7 @@
 package lispa.schedulers.utils;
 
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -68,10 +69,15 @@ public class MailUtil {
 	        String fileName = "ETL_DM_ALM_"+dataEsecuzione+".log";
 	      
 	        DataSource source = new FileDataSource(file);
-	        attachment.setDataHandler(new DataHandler(source));
-	        attachment.setFileName(fileName);
+	        File logFile = new File(file);
+	        if(logFile.length()<16000000){
+		        attachment.setDataHandler(new DataHandler(source));
+		        attachment.setFileName(fileName);
+		        multipart.addBodyPart(attachment);
+	        } else {
+	        	body += "\nIl log si trova al seguente path sul server: "+DmAlmConfigReaderProperties.MAIL_LOG_PATH;
+	        }
 	        plaintext.setText(body);
-	        multipart.addBodyPart(attachment);
 	        multipart.addBodyPart(plaintext);
 	        
 
