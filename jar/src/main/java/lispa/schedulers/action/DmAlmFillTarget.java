@@ -242,7 +242,8 @@ public class DmAlmFillTarget {
 
 				logger.info("START UserRolesSgrFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_USERROLES)) {
-					UserRolesSgrFacade.execute(dataEsecuzione);
+					logger.info("UserRolesSgrFacade.execute commentata");
+					//UserRolesSgrFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}

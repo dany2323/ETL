@@ -21,7 +21,8 @@ public class SissUserRolesRunnable implements Runnable {
 
 		try {
 			logger.debug("START fillUserRoles SISS "+ new Date());
-			SISSUserRolesXML.fillSISSHistoryUserRoles();
+			logger.debug("SISSUserRolesXML.fillSISSHistoryUserRoles commentata");
+			//SISSUserRolesXML.fillSISSHistoryUserRoles();
 			logger.debug("STOP fillUserRoles SISS "+ new Date());
 		}
 		catch(Exception e)
