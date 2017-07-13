@@ -269,7 +269,7 @@ public class UserRolesSgrDAO {
 
 	}
 	
-	public static void insertUserRoleUpdate(DmalmUserRolesSgr projectUserRole, int fkProject, Timestamp c_created) throws DAOException {
+	public static void insertUserRoleUpdate(DmalmUserRolesSgr projectUserRole, int fkProject, Timestamp c_created, Timestamp dataEsecuzione) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -294,7 +294,7 @@ public class UserRolesSgrDAO {
 							projectUserRole.getOrigine(),
 							projectUserRole.getUserid(), 
 							projectUserRole.getRuolo(),
-							projectUserRole.getDtCaricamento(),
+							dataEsecuzione,
 							c_created,
 							DateUtils.setDtFineValidita9999(), 
 							projectUserRole.getRepository(),
@@ -397,7 +397,7 @@ public class UserRolesSgrDAO {
 					dmalmUserRoles.dmalmProjectFk01)
 					.values(getMaxPk(), userRole.getOrigine(),
 							userRole.getUserid(), userRole.getRuolo(),
-							userRole.getDtCaricamento(),
+							dataEsecuzione,
 							dataEsecuzione,
 							DateUtils.setDtFineValidita9999(), 
 							userRole.getRepository(),
@@ -572,6 +572,14 @@ public class UserRolesSgrDAO {
 			SVNFileRevision svnfr = new SVNFileRevision(filePath, c_rev, fileProperties, fileProperties);
 
 			baos = new ByteArrayOutputStream();
+			if(repository.checkPath(svnfr.getPath(), svnfr.getRevision()) == SVNNodeKind.NONE){
+				if(svnfr.getRevision() == -1)
+					logger.info("Il path SVN " + svnfr.getPath() + " non esiste alla revisione HEAD");
+				else	
+					logger.info("Il path SVN " + svnfr.getPath() + " non esiste alla revisione " + svnfr.getRevision());
+				return projectUserRoles;
+			}
+			
 			repository.getFile(svnfr.getPath(), svnfr.getRevision(),
 					fileProperties, baos);
 			String mimeType = fileProperties
@@ -646,13 +654,44 @@ public class UserRolesSgrDAO {
 
 	
 	private static Integer getMaxPk() throws DAOException {
-		ConnectionManager cm = ConnectionManager.getInstance();
-		Connection connection = cm.getConnectionOracle();
-		QDmalmUserRolesSgr userRolesSgr = QDmalmUserRolesSgr.dmalmUserRolesSgr;
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-		SQLQuery query = new SQLQuery(connection, dialect);
+		Integer resUserRolesSgrPk = 0;
 		
-		return query.from(userRolesSgr).singleResult(userRolesSgr.dmalmUserRolesPk.max());
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = QueryManager.getInstance().getQuery(
+					DmAlmConfigReaderProperties.USER_ROLES_SGR_PK_MAXVAL);
+			ps = connection.prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			rs.next();
+			resUserRolesSgrPk = rs.getInt("DMALM_USER_ROLES_PK")+1;
+			
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return resUserRolesSgrPk;
 	}
 
 }

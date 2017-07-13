@@ -118,6 +118,7 @@ public class UserRolesSgrFacade {
 					+ distinctDmalmProjects.size());
 
 			for (Tuple prj : distinctDmalmProjects) {
+				logger.info("fillCurrentUserRoles - Inizio gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
 				String projectSVNPath = SIREUserRolesXML.getProjectSVNPath(prj.get(project.pathProject));
 
 				if (projectSVNPath != null) {
@@ -133,76 +134,81 @@ public class UserRolesSgrFacade {
 								repositorySiss);
 					}
 					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SIRE)) {
-						System.out.println(prj.get(project.idRepository));
-						System.out.println(prj.get(project.idProject));
-						System.out.println(prj.get(project.cRev));
-						System.out.println(prj.get(project.cCreated));
 						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
 								prj.get(project.idProject), projectSVNPath,
 								revision, prj.get(project.cCreated), 
 								repositorySire);
 					}
+					
+					logger.info("START UserRolesSgrDAO.getUserRolesByProjectID");
+					List<DmalmUserRolesSgr> listaTarget = UserRolesSgrDAO.getUserRolesByProjectID(prj.get(project.idProject),
+							prj.get(project.idRepository));
+					logger.info("STOP UserRolesSgrDAO.getUserRolesByProjectID");
+					logger.info("Attualmente ci sono "+listaTarget.size()+" utenti-ruoli per questo progetto nella DMALM_USER_ROLES_SGR");
+					
+					List<DmalmUserRolesSgr> listaNuovi = new ArrayList<DmalmUserRolesSgr>();
+					List<DmalmUserRolesSgr> listaVecchi = new ArrayList<DmalmUserRolesSgr>();
 				
-					for(DmalmUserRolesSgr projectUserRole: userRolesGroupedByProjID){					
-						logger.info("START UserRolesSgrDAO.getUserRolesByProjectID per "+prj.get(project.idProject)+" in "+prj.get(project.idRepository));
-						List<DmalmUserRolesSgr> listaTarget = UserRolesSgrDAO.getUserRolesByProjectID(prj.get(project.idProject),
-								prj.get(project.idRepository));
-						logger.info("STOP UserRolesSgrDAO.getUserRolesByProjectID");
-						
-						Timestamp c_created = projectUserRole.getDtModifica();
-						logger.info("START UserRolesSgrDAO.getFkProject");
-						int fkProject = UserRolesSgrDAO.getFkProject(prj.get(project.idProject),
-								prj.get(project.idRepository), c_created);
-						logger.info("STOP UserRolesSgrDAO.getFkProject");
+					for(DmalmUserRolesSgr projectUserRole: userRolesGroupedByProjID){											
+						int fkProject = getFkProject(prj, projectUserRole);
 						
 						if (listaTarget.size() == 0) {
 							//inserisce tutti
-							logger.info("Inserisco nuovo record");
+							logger.info("Inserisco record nuovi, il progetto non aveva nessun utente-ruolo associato");
 							UserRolesSgrDAO.insertUserRole(projectUserRole, fkProject, dataEsecuzione);
 							righeNuove += 1;
-						} else {
-							if (BeanUtils.areDifferent(fkProject, listaTarget
-									.get(0).getDmalmProjectFk01())) {
-								//storicizza e inserisce i nuovi
-								logger.info("Storicizzo record");
-								logger.info("Cambio data fine validità");
-								UserRolesSgrDAO.updateDataFineValidita(prj.get(project.idProject),
-										prj.get(project.idRepository), c_created);
-								
-								logger.info("Inserisco nuova versione del record");
-								UserRolesSgrDAO.insertUserRoleUpdate(projectUserRole,
-										fkProject, c_created);
-								
-								righeModificate += 1;
+						} else {							
+							if(!presenteSuLista(projectUserRole, listaTarget)) {
+								listaNuovi.add(projectUserRole);
 							} else {
-								//inserisce i nuovi e chiude i vecchi non più presenti
-								logger.info("Inserisco i nuovi record e chiudo i vecchi non più presenti");
-								List<DmalmUserRolesSgr> listaNuovi = new ArrayList<DmalmUserRolesSgr>();
-								
-								if(!presenteSuLista(projectUserRole, listaTarget)) {
-									listaNuovi.add(projectUserRole);
-								}
-								
-								logger.info("Inserisco nuova versione del record");
-								for(DmalmUserRolesSgr nuovo: listaNuovi){
-									UserRolesSgrDAO.insertUserRoleUpdate(nuovo,
-											fkProject, c_created);
-									righeNuove += 1;
-								}
-								
-								for(DmalmUserRolesSgr userRole : listaTarget)
-								{  
-									if(!presenteSuLista(userRole, userRolesGroupedByProjID)) {
-										logger.info("Cambio data fine validità");
-										UserRolesSgrDAO.updateDataFineValiditaUserRole(userRole, c_created);
-										righeModificate += 1;
-									}
-								}
+								listaVecchi.add(projectUserRole);
 							}
 						}
 					}
+					
+					// nuovi UserRoles
+					for(DmalmUserRolesSgr projectUserRole: listaNuovi){	
+						int fkProject = getFkProject(prj, projectUserRole);
+
+						logger.info("Inserisco record nuovi");
+						UserRolesSgrDAO.insertUserRole(projectUserRole, fkProject, dataEsecuzione);
+						righeNuove += 1;						
+					}
+					
+					// vecchi UserRoles
+					for(DmalmUserRolesSgr projectUserRole: listaVecchi){
+						Timestamp c_created = projectUserRole.getDtModifica();
+
+						int fkProject = getFkProject(prj, projectUserRole);
+
+						if (BeanUtils.areDifferent(fkProject, listaTarget
+								.get(0).getDmalmProjectFk01())) {
+							//storicizza e inserisce i nuovi
+							logger.info("Storicizzo record");
+							logger.info("Cambio data fine validità");
+							UserRolesSgrDAO.updateDataFineValidita(prj.get(project.idProject),
+									prj.get(project.idRepository), c_created);
+							
+							logger.info("Inserisco nuova versione del record");
+							UserRolesSgrDAO.insertUserRoleUpdate(projectUserRole,
+									fkProject, c_created, dataEsecuzione);
+							
+							righeModificate += 1;
+						}
+					}
+					
+					// UserRoles cancellati
+					for(DmalmUserRolesSgr userRole : listaTarget){  
+						if(!presenteSuLista(userRole, userRolesGroupedByProjID)) {
+							logger.info("User Role non piu presente");
+							UserRolesSgrDAO.updateDataFineValiditaUserRole(userRole, dataEsecuzione);
+							righeModificate += 1;
+						}
+					}
 				}
+				logger.info("fillCurrentUserRoles - Fine gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
 			}
+			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
@@ -227,6 +233,16 @@ public class UserRolesSgrFacade {
 				logger.error(e.getMessage(), e);
 			}
 		}
+	}
+	
+	private static int getFkProject(Tuple prj, DmalmUserRolesSgr projectUserRole) throws DAOException {
+		Timestamp c_created = projectUserRole.getDtModifica();
+		
+		//logger.info("START UserRolesSgrDAO.getFkProject");
+		int fkProject = UserRolesSgrDAO.getFkProject(prj.get(project.idProject),
+				prj.get(project.idRepository), c_created);
+		//logger.info("STOP UserRolesSgrDAO.getFkProject");
+		return fkProject;
 	}
 	
 	private static boolean presenteSuLista(DmalmUserRolesSgr utenteRuolo, List<DmalmUserRolesSgr> lista) {
