@@ -125,9 +125,9 @@ public class FillSISSHistoryFacade {
 			VSissHistoryWorkitemLinkDAO.delete();
 			logger.debug("STOP VSissWorkitemLink.delete  " + new Date());
 
-			logger.debug("START UserRolesDAO.delete  " + new Date());
-			UserRolesDAO.delete(dataEsecuzione, DmAlmConstants.REPOSITORY_SISS);
-			logger.debug("STOP UserRolesDAO.delete  " + new Date());
+			//logger.debug("START UserRolesDAO.delete  " + new Date());
+			//UserRolesDAO.delete(dataEsecuzione, DmAlmConstants.REPOSITORY_SISS);
+			//logger.debug("STOP UserRolesDAO.delete  " + new Date());
 
 			logger.debug("START SissHistoryCfWorkitemDAO.delete  " + new Date());
 			SissHistoryCfWorkitemDAO.delete(dataEsecuzione);

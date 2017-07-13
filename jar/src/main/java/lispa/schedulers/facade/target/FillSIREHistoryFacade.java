@@ -127,9 +127,9 @@ public class FillSIREHistoryFacade {
 			VSireHistoryWorkitemLinkDAO.delete();
 			logger.debug("STOP VSireWorkitemLink.delete  " + new Date());
 
-			logger.debug("START UserRolesDAO.delete  " + new Date());
-			UserRolesDAO.delete(dataEsecuzione, DmAlmConstants.REPOSITORY_SIRE);
-			logger.debug("STOP UserRolesDAO.delete  " + new Date());
+			//logger.debug("START UserRolesDAO.delete  " + new Date());
+			//UserRolesDAO.delete(dataEsecuzione, DmAlmConstants.REPOSITORY_SIRE);
+			//logger.debug("STOP UserRolesDAO.delete  " + new Date());
 
 			logger.debug("START SireHistoryCfWorkitemDAO.delete  " + new Date());
 			SireHistoryCfWorkitemDAO.delete(dataEsecuzione);

@@ -2,6 +2,8 @@ package lispa.schedulers.dao.target;
 
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_USERROLES;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,18 +16,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lispa.schedulers.bean.target.DmalmUserRolesSgr;
-import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRoles;
-import lispa.schedulers.queryimplementation.target.QDmalmProject;
-import lispa.schedulers.queryimplementation.target.QDmalmUserRolesSgr;
-import lispa.schedulers.utils.DateUtils;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
+import org.tmatesoft.svn.core.SVNNodeKind;
+import org.tmatesoft.svn.core.SVNProperties;
+import org.tmatesoft.svn.core.SVNProperty;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
+import org.tmatesoft.svn.core.io.SVNFileRevision;
+import org.tmatesoft.svn.core.io.SVNRepository;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -35,6 +40,21 @@ import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.Projections;
+
+import lispa.schedulers.bean.target.DmalmUserRolesSgr;
+import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.constant.DmalmRegex;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DmAlmConfigReader;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
+import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRoles;
+import lispa.schedulers.queryimplementation.target.QDmalmProject;
+import lispa.schedulers.queryimplementation.target.QDmalmUserRolesSgr;
+import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 public class UserRolesSgrDAO {
 
@@ -46,71 +66,6 @@ public class UserRolesSgrDAO {
 	private static QDmalmProject dmalmProject = QDmalmProject.dmalmProject;
 
 	private static SQLTemplates dialect = new HSQLDBTemplates();
-
-	// public static List<DmalmUserRolesSgr> getAllUserRoles(
-	// Timestamp dataEsecuzione, String ID, String repository) throws
-	// DAOException {
-	// ConnectionManager cm = null;
-	// Connection connection = null;
-	// PreparedStatement ps = null;
-	// ResultSet rs = null;
-	// DmalmUserRolesSgr bean = null;
-	// List<DmalmUserRolesSgr> userRoles = new LinkedList<DmalmUserRolesSgr>();
-	//
-	// try {
-	// cm = ConnectionManager.getInstance();
-	// connection = cm.getConnectionOracle();
-	//
-	// String sql = QueryManager.getInstance().getQuery(SQL_USERROLES);
-	//
-	// ps = connection.prepareStatement(sql);
-	//
-	// ps.setFetchSize(200);
-	// ps.setTimestamp(1, dataEsecuzione);
-	// ps.setString(2, ID);
-	// ps.setString(3, repository);
-	//
-	// rs = ps.executeQuery();
-	//
-	// while (rs.next()) {
-	// bean = new DmalmUserRolesSgr();
-	//
-	// bean.setDmalmUserRolesPk(rs.getInt("DMALM_USER_ROLES_PK"));
-	// bean.setOrigine(rs.getString("ORIGINE"));
-	// bean.setUserid(rs.getString("USERID"));
-	// bean.setRuolo(rs.getString("RUOLO"));
-	// bean.setRepository(rs.getString("REPOSITORY"));
-	// bean.setDtCaricamento(dataEsecuzione);
-	// bean.setDtInizioValidita(DateUtils.setDtInizioValidita1900());
-	// bean.setDtFineValidita(DateUtils.setDtFineValidita9999());
-	// bean.setDtModifica(rs.getTimestamp("DT_MODIFICA"));
-	//
-	// userRoles.add(bean);
-	// }
-	// } catch (DAOException e) {
-	// logger.error(e.getMessage(), e);
-	// throw new DAOException(e);
-	// } catch (Exception e) {
-	// logger.error(e.getMessage(), e);
-	// throw new DAOException(e);
-	// } finally {
-	// try {
-	// if (rs != null)
-	// rs.close();
-	// } catch (SQLException e) {
-	// }
-	// try {
-	// if (ps != null)
-	// ps.close();
-	// } catch (SQLException e) {
-	// }
-	//
-	// if (cm != null)
-	// cm.closeConnection(connection);
-	// }
-	//
-	// return userRoles;
-	// }
 
 	public static Collection<List<DmalmUserRolesSgr>> getAllUserRolesGroupedByProjectIDandRevision(
 			Timestamp dataEsecuzione, String ID, String repository)
@@ -313,6 +268,58 @@ public class UserRolesSgrDAO {
 		}
 
 	}
+	
+	public static void insertUserRoleUpdate(DmalmUserRolesSgr projectUserRole, int fkProject, Timestamp c_created) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
+					dmalmUserRoles);
+			int i = 0;
+
+			insert.columns(dmalmUserRoles.dmalmUserRolesPk,
+					dmalmUserRoles.origine, dmalmUserRoles.userid,
+					dmalmUserRoles.ruolo, dmalmUserRoles.dtCaricamento,
+					dmalmUserRoles.dtInizioValidita,
+					dmalmUserRoles.dtFineValidita,
+					dmalmUserRoles.repository,
+					dmalmUserRoles.dmalmProjectFk01)
+					.values(getMaxPk(), 
+							projectUserRole.getOrigine(),
+							projectUserRole.getUserid(), 
+							projectUserRole.getRuolo(),
+							projectUserRole.getDtCaricamento(),
+							c_created,
+							DateUtils.setDtFineValidita9999(), 
+							projectUserRole.getRepository(),
+							fkProject).addBatch();
+			i++;
+			if (i % DmAlmConstants.BATCH_SIZE == 0) {
+				insert.execute();
+				insert = new SQLInsertClause(connection, dialect,
+						dmalmUserRoles);
+			}
+			
+
+			if (!insert.isEmpty())
+				insert.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}	
+	}
 
 	public static void insertUserRoles(List<DmalmUserRolesSgr> userRoles,
 			int fkProject) throws DAOException {
@@ -350,6 +357,58 @@ public class UserRolesSgrDAO {
 							dmalmUserRoles);
 				}
 			}
+
+			if (!insert.isEmpty())
+				insert.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+	}
+	
+	public static void insertUserRole(DmalmUserRolesSgr userRole,
+			int fkProject, Timestamp dataEsecuzione) throws DAOException {
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			connection.setAutoCommit(false);
+
+			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
+					dmalmUserRoles);
+			int i = 0;
+			userRole.setDmalmProjectFk01(fkProject);
+			insert.columns(dmalmUserRoles.dmalmUserRolesPk,
+					dmalmUserRoles.origine, dmalmUserRoles.userid,
+					dmalmUserRoles.ruolo, dmalmUserRoles.dtCaricamento,
+					dmalmUserRoles.dtInizioValidita,
+					dmalmUserRoles.dtFineValidita,
+					dmalmUserRoles.repository,
+					dmalmUserRoles.dmalmProjectFk01)
+					.values(getMaxPk(), userRole.getOrigine(),
+							userRole.getUserid(), userRole.getRuolo(),
+							userRole.getDtCaricamento(),
+							dataEsecuzione,
+							DateUtils.setDtFineValidita9999(), 
+							userRole.getRepository(),
+							fkProject).addBatch();
+			i++;
+			if (i % DmAlmConstants.BATCH_SIZE == 0) {
+				insert.execute();
+				insert = new SQLInsertClause(connection, dialect,
+						dmalmUserRoles);
+			}
+			
 
 			if (!insert.isEmpty())
 				insert.execute();
@@ -476,6 +535,124 @@ public class UserRolesSgrDAO {
 
 		return res;
 
+	}
+	
+	public static List<DmalmUserRolesSgr> getUserRolesForProjectAtRevision(String myrepo,
+			String projectId, String projectLocation, long c_rev,
+			Timestamp c_created, SVNRepository repository) throws Exception {
+		
+		List<DmalmUserRolesSgr> projectUserRoles = new ArrayList<DmalmUserRolesSgr>();
+
+		Connection connection = null;
+		ConnectionManager cm = null;
+
+		String filePath = "";
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			DAVRepositoryFactory.setup();
+
+			connection.setAutoCommit(false);
+			SVNURL root = repository.getRepositoryRoot(true);
+			String absolutepath = root + projectLocation;
+			projectLocation = SVNURLUtil.getRelativeURL(root,
+					SVNURL.parseURIEncoded(absolutepath), false);
+			filePath = projectLocation
+					.concat(DmAlmConfigReader
+							.getInstance()
+							.getProperty(
+									DmAlmConfigReaderProperties.SIRE_SVN_USER_ROLES_FILE));
+
+			SVNNodeKind nodeKind = repository.checkPath(filePath, c_rev);
+			SVNProperties fileProperties = null;
+			ByteArrayOutputStream baos = null;
+			fileProperties = new SVNProperties();
+
+			SVNFileRevision svnfr = new SVNFileRevision(filePath, c_rev, fileProperties, fileProperties);
+
+			baos = new ByteArrayOutputStream();
+			repository.getFile(svnfr.getPath(), svnfr.getRevision(),
+					fileProperties, baos);
+			String mimeType = fileProperties
+					.getStringValue(SVNProperty.MIME_TYPE);
+
+			boolean isTextType = SVNProperty.isTextMimeType(mimeType);
+			String xmlContent = "";
+			if (isTextType) {
+				xmlContent = baos.toString();
+			} else {
+				throw new Exception("");
+			}
+
+			if (nodeKind == SVNNodeKind.FILE) {
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+						.newInstance();
+				Document doc = dbFactory.newDocumentBuilder()
+						.parse(new ByteArrayInputStream(xmlContent
+								.getBytes()));
+				doc.getDocumentElement().normalize();
+
+				NodeList nList = doc.getElementsByTagName("user");
+
+				String data = svnfr.getRevisionProperties()
+						.getSVNPropertyValue(SVNProperty.COMMITTED_DATE)
+						.getString().toString().replace("T", " ")
+						.replaceFirst(DmalmRegex.REGEXSVNDATE, "");
+
+				for (int temp = 0; temp < nList.getLength(); temp++) {
+					Node nNode = nList.item(temp);
+
+					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element eElement = (Element) nNode;
+
+						NodeList ruoli = eElement.getChildNodes();
+
+						for (int tempruolo = 0; tempruolo < ruoli
+								.getLength(); tempruolo++) {
+
+							Node ruolo = ruoli.item(tempruolo);
+
+							if (ruolo.getNodeType() == Node.ELEMENT_NODE) {
+
+								Element el = (Element) ruolo;
+
+								DmalmUserRolesSgr userRolesSgr = new DmalmUserRolesSgr();
+								userRolesSgr.setOrigine(projectId);
+								userRolesSgr.setUserid(StringUtils.getMaskedValue(eElement.getAttribute("name")));
+								userRolesSgr.setRuolo(el.getAttribute("name"));
+								userRolesSgr.setRepository(myrepo);
+								userRolesSgr.setDtModifica(DateUtils.stringToTimestamp(data,"yyyy-MM-dd HH:mm:ss"));
+
+								projectUserRoles.add(userRolesSgr);
+								
+							}
+						}
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+				
+		return projectUserRoles;
+	}
+
+	
+	private static Integer getMaxPk() throws DAOException {
+		ConnectionManager cm = ConnectionManager.getInstance();
+		Connection connection = cm.getConnectionOracle();
+		QDmalmUserRolesSgr userRolesSgr = QDmalmUserRolesSgr.dmalmUserRolesSgr;
+
+		SQLQuery query = new SQLQuery(connection, dialect);
+		
+		return query.from(userRolesSgr).singleResult(userRolesSgr.dmalmUserRolesPk.max());
 	}
 
 }
