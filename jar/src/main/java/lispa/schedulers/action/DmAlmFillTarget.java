@@ -207,6 +207,18 @@ public class DmAlmFillTarget {
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}
+				
+				// Aggiunto checkpoint di recovery in data 17/07/17
+				if (ErrorManager.getInstance().hasError()) {
+					RecoverManager.getInstance().startRecoverTarget();
+					RecoverManager.getInstance().startRecoverStaging();
+
+					// MPS
+					if (ExecutionManager.getInstance().isExecutionMps())
+						RecoverManager.getInstance().startRecoverStgMps();
+
+					return;
+				}
 
 				logger.info("START ProjectSgrCmFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT)) {
