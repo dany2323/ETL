@@ -109,6 +109,7 @@ public class ElettraAmbienteTecnologicoDAO {
 		List<Tuple> ambienti = new ArrayList<Tuple>();
 		
 		if(bean.getIdAmbienteTecnologico() != null){
+		if(bean.getIdAmbienteTecnologico() != null) {
 			try {
 				cm = ConnectionManager.getInstance();
 				connection = cm.getConnectionOracle();
