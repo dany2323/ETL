@@ -366,8 +366,8 @@ public class RecoverManager {
 			logger.debug("START recover XML");
 			LinkedWorkItemRolesXML.recoverLinkedWorkItemRoles();
 			ProjectRolesXML.recoverAllProjectRoles();
-			SIREUserRolesXML.recoverSIREUserRoles();
-			SISSUserRolesXML.recoverSISSUserRoles();
+			//SIREUserRolesXML.recoverSIREUserRoles();
+			//SISSUserRolesXML.recoverSISSUserRoles();
 			StatoWorkItemXML.recoverStatoWorkitem();
 			SIRESchedeServizioXML.recoverSIRESchedeServizio();
 			SISSSchedeServizioXML.recoverSISSSchedeServizio();

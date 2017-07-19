@@ -107,31 +107,34 @@ public class ElettraAmbienteTecnologicoDAO {
 		Connection connection = null;
 
 		List<Tuple> ambienti = new ArrayList<Tuple>();
+		
+		if(bean.getIdAmbienteTecnologico() != null) {
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			ambienti = query
-					.from(qDmalmElAmbienteTecnologico)
-					.where(qDmalmElAmbienteTecnologico.idAmbienteTecnologico
-							.eq(bean.getIdAmbienteTecnologico()))
-					.where(qDmalmElAmbienteTecnologico.dataFineValidita
-							.in(new SQLSubQuery()
-									.from(qDmalmElAmbienteTecnologico)
-									.where(qDmalmElAmbienteTecnologico.idAmbienteTecnologico
-											.eq(bean.getIdAmbienteTecnologico()))
-									.list(qDmalmElAmbienteTecnologico.dataFineValidita
-											.max())))
-					.list(qDmalmElAmbienteTecnologico.all());
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
+			try {
+				cm = ConnectionManager.getInstance();
+				connection = cm.getConnectionOracle();
+	
+				SQLQuery query = new SQLQuery(connection, dialect);
+	
+				ambienti = query
+						.from(qDmalmElAmbienteTecnologico)
+						.where(qDmalmElAmbienteTecnologico.idAmbienteTecnologico
+								.eq(bean.getIdAmbienteTecnologico()))
+						.where(qDmalmElAmbienteTecnologico.dataFineValidita
+								.in(new SQLSubQuery()
+										.from(qDmalmElAmbienteTecnologico)
+										.where(qDmalmElAmbienteTecnologico.idAmbienteTecnologico
+												.eq(bean.getIdAmbienteTecnologico()))
+										.list(qDmalmElAmbienteTecnologico.dataFineValidita
+												.max())))
+						.list(qDmalmElAmbienteTecnologico.all());
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				throw new DAOException(e);
+			} finally {
+				if (cm != null) {
+					cm.closeConnection(connection);
+				}
 			}
 		}
 
