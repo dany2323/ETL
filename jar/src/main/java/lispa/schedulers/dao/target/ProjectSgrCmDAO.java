@@ -27,7 +27,6 @@ import com.mysema.query.types.template.StringTemplate;
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.bean.target.DmalmStrutturaOrganizzativa;
-import lispa.schedulers.bean.utils.ProjectsCSVExceptionsBean;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.UserRolesDAO;
@@ -50,7 +49,6 @@ import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.ProjectsCSVExceptionsUtils;
 
 public class ProjectSgrCmDAO {
 
@@ -143,10 +141,6 @@ public class ProjectSgrCmDAO {
 				
 				if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
 					bean.setDmalmUnitaOrganizzativaFk(0);
-				} else if(codiceAreaUOElettra.equals(DmAlmConstants.ECCEZIONE)) {
-					String projectKey = rs.getString("ID_PROJECT") + "," + rs.getString("ID_REPOSITORY");
-					ProjectsCSVExceptionsBean projectData = ProjectsCSVExceptionsUtils.projectsExceptions.get(projectKey);
-					bean.setDmalmUnitaOrganizzativaFk(projectData.getCsvCdUoDiriferimentoProject());
 				} else {
 					// UO Elettra
 					bean.setDmalmUnitaOrganizzativaFk(ElettraUnitaOrganizzativeDAO

@@ -12,7 +12,6 @@ import com.mysema.query.Tuple;
 
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
-import lispa.schedulers.bean.utils.ProjectsCSVExceptionsBean;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
@@ -25,7 +24,6 @@ import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.LogUtils;
-import lispa.schedulers.utils.ProjectsCSVExceptionsUtils;
 
 public class ProjectSgrCmFacade {
 
@@ -49,7 +47,6 @@ public class ProjectSgrCmFacade {
 
 		try {
 			// Import CSV con i progetti per cui si applica l'eccezione del legame con le UO
-			ProjectsCSVExceptionsUtils.importCsv(dataEsecuzione);
 			
 			staging_projects = ProjectSgrCmDAO.getAllProject(dataEsecuzione);
 
@@ -180,10 +177,6 @@ public class ProjectSgrCmFacade {
 
 					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
 						unitaOrganizzativaFk = 0;
-					} else if(codiceAreaUOElettra.equals(DmAlmConstants.ECCEZIONE)){
-						String projectKey = row.get(proj.idProject) + "," + row.get(proj.idRepository);
-						ProjectsCSVExceptionsBean projectData = ProjectsCSVExceptionsUtils.projectsExceptions.get(projectKey);
-						unitaOrganizzativaFk = projectData.getCsvCdUoDiriferimentoProject();
 					} else {
 						unitaOrganizzativaFk = ElettraUnitaOrganizzativeDAO
 								.getUnitaOrganizzativaByCodiceArea(

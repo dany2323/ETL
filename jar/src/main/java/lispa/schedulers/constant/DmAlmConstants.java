@@ -22,8 +22,6 @@ public final class DmAlmConstants {
 	
 	public static final String NON_PRESENTE = "Non presente";	
 	
-	public static final String ELETTRA_PROJECT_LOOKUP_CSV = "DMALM_SOURCE_PROJECT_ECCEZIONI.csv";
-	public static final String ECCEZIONE = "PROGETTO_ECCEZIONE";
 
 	public static final String CARICAMENTO_IN_ATTESA = "In attesa di caricamento";
 	public static final String CARICAMENTO_TERMINATO_CORRETTAMENTE = "Caricamento terminato correttamente";
