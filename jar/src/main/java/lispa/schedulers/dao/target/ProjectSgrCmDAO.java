@@ -356,8 +356,7 @@ public class ProjectSgrCmDAO {
 					case DmAlmConstants.DEMAND2016:
 						if(isElettra)
 						{							
-							Integer val = ElettraUnitaOrganizzativeDAO.findByCdArea(dataEsecuzione, "LIF800");
-							codiceAreaUO = val.toString();
+							codiceAreaUO = "LIF800";
 						}
 						else
 						{
@@ -386,8 +385,7 @@ public class ProjectSgrCmDAO {
 					case DmAlmConstants.IT:
 						if(isElettra)
 						{
-							Integer val = ElettraUnitaOrganizzativeDAO.findByCdArea(dataEsecuzione, "LIW8B6");
-							codiceAreaUO = val.toString();
+							codiceAreaUO = "LIW8B6";
 						}
 						else
 						{

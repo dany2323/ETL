@@ -9,17 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzative;
-import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzative;
-import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.LogUtils;
-
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
@@ -30,6 +19,16 @@ import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.Projections;
+
+import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzative;
+import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzative;
+import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.LogUtils;
 
 public class ElettraUnitaOrganizzativeDAO {
 	private static Logger logger = Logger
@@ -466,52 +465,5 @@ public class ElettraUnitaOrganizzativeDAO {
 
 		return resultList;
 	}
-	
 
-	public static Integer findByCdArea(Timestamp dataEsecuzione, String cdArea)
-			throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		Integer pkVal = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-			
-			ps = connection.prepareStatement("SELECT DMALM_UNITA_ORG_PK FROM DMALM_EL_UNITA_ORGANIZZATIVE WHERE CD_AREA = ? ORDER BY DT_FINE_VALIDITA DESC");
-			ps.setString(1, cdArea);
-			
-			logger.debug("ps executing ");
-			rs = ps.executeQuery();
-			if(rs.next())
-				pkVal = rs.getInt("DMALM_UNITA_ORG_PK");
-			else
-				pkVal = null;
-
-			if (rs != null) {
-				logger.debug("rs close");
-				rs.close();
-			}
-			if (ps != null) {
-				logger.debug("ps close");
-				ps.close();
-			}
-		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		} finally {
-			if (cm != null) {
-				logger.debug("connection close");
-				cm.closeConnection(connection);
-			}
-		}
-
-		logger.debug("return");
-		return pkVal;
-	}
 }
