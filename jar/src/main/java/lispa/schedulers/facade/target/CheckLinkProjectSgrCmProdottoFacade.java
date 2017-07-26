@@ -8,6 +8,7 @@ import lispa.schedulers.bean.target.DmalmProjectProdotto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.target.DmAlmProjectProdottoDAO;
+import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.dao.target.ProdottoDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.exception.DAOException;
@@ -15,6 +16,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.utils.DateUtils;
 
 import org.apache.log4j.Logger;
@@ -27,7 +29,7 @@ public class CheckLinkProjectSgrCmProdottoFacade {
 	private static QDmalmProject dmalmProject = QDmalmProject.dmalmProject;
 	private static QDmalmProdotto dmalmProdotto = QDmalmProdotto.dmalmProdotto;
 	private static QDmalmProjectProdotto dmalmProjectProdotto = QDmalmProjectProdotto.dmalmProjectProdotto;
-
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 	public static void execute(Timestamp dataEsecuzione) throws Exception,
 			DAOException {
 		try {
@@ -113,12 +115,14 @@ public class CheckLinkProjectSgrCmProdottoFacade {
 					multiSiglaProject = siglaProject.split("\\.\\.");
 
 					for (String siglaPrj : multiSiglaProject) {
+						List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(siglaPrj);
+						if(!(dmAlmSourceElProdEccez!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
 						// toglie eventuali moduli dopo il nome Project
 						if (siglaPrj.contains(".")) {
 							siglaPrj = siglaPrj.substring(0,
 									siglaPrj.indexOf("."));
 						}
-
+						}
 						// scarta nomi duplicati
 						if (!prjLinkedList.contains(siglaPrj)) {
 							prjLinkedList.add(siglaPrj);

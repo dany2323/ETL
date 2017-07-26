@@ -31,7 +31,7 @@ public class DmAlmCheckLinkSferaSgrCmElettra {
 				CheckDmalmSourceElProdFacade.execute(dataEsecuzione);
 				
 				// Prodotto Oreste
-				CheckLinkProjectSgrCmProdottoFacade.execute(dataEsecuzione); //TODO non ho commentato ancora nulla
+				//CheckLinkProjectSgrCmProdottoFacade.execute(dataEsecuzione); //TODO non ho commentato ancora nulla
 				// ProdottiArchitetture Elettra
 				CheckLinkProjectSgrCmProdottiArchFacade.execute(dataEsecuzione);
 			}
