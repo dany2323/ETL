@@ -261,8 +261,7 @@ public class DifettoDAO {
 							difetto.getMotivoRisoluzioneDifetto())
 					.set(difettoProdotto.severity, difetto.getSeverity())
 					.set(difettoProdotto.dsDifetto, difetto.getDsDifetto())
-					.set(difettoProdotto.provenienzaDifetto,
-							difetto.getProvenienzaDifetto())
+					//3-8-17: .set(difettoProdotto.provenienzaDifetto,difetto.getProvenienzaDifetto())
 					.set(difettoProdotto.causaDifetto,
 							difetto.getCausaDifetto())
 					.set(difettoProdotto.naturaDifetto,
@@ -408,7 +407,7 @@ public class DifettoDAO {
 							difetto.nrGiorniFestivi,
 							difetto.numeroLineaDifetto,
 							difetto.numeroTestataDifetto,
-							difetto.provenienzaDifetto,
+							//3-8-17: difetto.provenienzaDifetto,
 							difetto.rankStatoDifetto, difetto.severity,
 							difetto.causaDifetto, difetto.naturaDifetto,
 							difetto.tempoTotRisoluzioneDifetto,
@@ -442,7 +441,7 @@ public class DifettoDAO {
 							bean.getNrGiorniFestivi(),
 							bean.getNumeroLineaDifetto(),
 							bean.getNumeroTestataDifetto(),
-							bean.getProvenienzaDifetto(),
+							//3-8-17: bean.getProvenienzaDifetto(),
 							pkValue == true ? new Short("1")  : bean.getRankStatoDifetto(),
 							bean.getSeverity(),
 							bean.getCausaDifetto(),
