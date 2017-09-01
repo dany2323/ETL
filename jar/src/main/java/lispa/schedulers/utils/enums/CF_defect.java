@@ -5,5 +5,6 @@ public enum CF_defect {
 	causa,
 	natura,
 	costosviluppo,
-	data_disp
+	data_disp,
+	role
 }
