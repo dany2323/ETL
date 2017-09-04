@@ -66,11 +66,10 @@ public class DifettoDAO {
 
 			rs = ps.executeQuery();
 
-			List<String> SISSutentiIT = SISSUserRolesXML.getUtentiIT();
-			List<String> SIREutentiIT = SIREUserRolesXML.getUtentiIT();
-
-			// unisco le due arraylist
-			SISSutentiIT.addAll(SIREutentiIT);
+			//DM_ALM-289: rimuovo liste non più utilizzate per il calcolo del campo PROVENIENZA_DIFETTO
+			//List<String> SISSutentiIT = SISSUserRolesXML.getUtentiIT();
+			//List<String> SIREutentiIT = SIREUserRolesXML.getUtentiIT();
+			//SISSutentiIT.addAll(SIREutentiIT);
 
 			logger.debug("Query Eseguita!");
 

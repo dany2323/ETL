@@ -137,9 +137,6 @@ public class DifettoProdottoFacade {
 								DifettoDAO.updateRankFlagUltimaSituazione(difetto,
 										new Double(0), new Short("0"));
 
-								//3-8-17
-								difetto.setProvenienzaDifetto(row.get(dif.provenienzaDifetto));
-								
 								// inserisco un nuovo record
 								DifettoDAO.insertDifettoProdottoUpdate(
 										dataEsecuzione, difetto, true);

@@ -70,6 +70,7 @@ public class MailUtil {
 	      
 	        DataSource source = new FileDataSource(file);
 	        File logFile = new File(file);
+	        logger.info("Dimensione del file di log: "+logFile.length());
 	        if(logFile.length()<16000000){
 		        attachment.setDataHandler(new DataHandler(source));
 		        attachment.setFileName(fileName);
