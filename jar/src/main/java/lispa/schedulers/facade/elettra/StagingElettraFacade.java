@@ -82,7 +82,7 @@ public class StagingElettraFacade {
 			StgElPersonaleDAO.fillStaging();
 			StgElClassificatoriDAO.fillStaging();
 			StgElProdottiDAO.fillStaging();
-			StgElModuliDAO.fillStaging();
+			//StgElModuliDAO.fillStaging();
 			StgElFunzionalitaDAO.fillStaging();
 			StgElAmbienteTecnologicoDAO.fillStaging();
 			StgElAmbienteTecnologicoClassificatoriDAO.fillStaging();
