@@ -1,0 +1,33 @@
+--DMALM_ASM
+-- Add/modify columns 
+alter table DMALM_ASM modify APPLICAZIONE VARCHAR2(400);
+-- Add/modify columns 
+alter table T_DMALM_ASM modify APPLICAZIONE VARCHAR2(400);
+-- Add/modify columns 
+alter table DMALM_STG_MISURA modify APPLICAZIONE VARCHAR2(400);--dimensione originale 4000
+alter table DMALM_STG_MISURA modify P_APP_DN_ASM VARCHAR2(400);--dimensione originale 1000
+--
+--DMALM_PROGETTO_SFERA
+-- Add/modify columns 
+alter table DMALM_PROGETTO_SFERA modify P_PRJ_FORNITORE_MPP VARCHAR2(200);
+alter table DMALM_PROGETTO_SFERA modify P_PRJ_FORNITORE_SVILUPPO_MEV VARCHAR2(200);
+alter table DMALM_PROGETTO_SFERA modify NOME_PROGETTO VARCHAR2(400);
+-- Add/modify columns 
+alter table T_DMALM_PROGETTO_SFERA modify P_PRJ_FORNITORE_MPP VARCHAR2(200);
+alter table T_DMALM_PROGETTO_SFERA modify P_PRJ_FORNITORE_SVILUPPO_MEV VARCHAR2(200);
+alter table T_DMALM_PROGETTO_SFERA modify NOME_PROGETTO VARCHAR2(400);
+--
+--Correlate DMALM_PROGETTO_SFERA
+-- Add/modify columns 
+alter table DMALM_STG_MISURA modify NOME_PROGETTO VARCHAR2(400);--dimensione originale 4000
+alter table DMALM_STG_MISURA modify P_PRJ_FORNITORE_SVILUPPO_MEV VARCHAR2(200);
+alter table DMALM_STG_MISURA modify P_PRJ_FORNITORE_MPP VARCHAR2(200);
+--
+--DMALM_MISURA
+-- Add/modify columns 
+alter table DMALM_MISURA modify NOME_MISURA VARCHAR2(400);
+-- Add/modify columns 
+alter table T_DMALM_MISURA modify NOME_MISURA VARCHAR2(400);
+-- Add/modify columns 
+alter table DMALM_STG_MISURA modify NOME_MISURA VARCHAR2(400);--dimensione originale 4000
+----
