@@ -175,6 +175,9 @@ public class UserRolesSgrFacade {
 						righeNuove += 1;						
 					}
 					
+					/*
+					 * DM_ALM-292 Commentare
+					 
 					// vecchi UserRoles
 					for(DmalmUserRolesSgr projectUserRole: listaVecchi){
 						Timestamp c_created = projectUserRole.getDtModifica();
@@ -196,12 +199,14 @@ public class UserRolesSgrFacade {
 							righeModificate += 1;
 						}
 					}
+					*/
 					
 					// UserRoles cancellati
 					for(DmalmUserRolesSgr userRole : listaTarget){  
 						if(!presenteSuLista(userRole, userRolesGroupedByProjID)) {
 							logger.info("User Role non piu presente");
-							UserRolesSgrDAO.updateDataFineValiditaUserRole(userRole, dataEsecuzione);
+//commento DM_ALM_292		UserRolesSgrDAO.updateDataFineValiditaUserRole(userRole, dataEsecuzione);
+							UserRolesSgrDAO.deleteUserRolesDeletedInPolarion(userRole);
 							righeModificate += 1;
 						}
 					}

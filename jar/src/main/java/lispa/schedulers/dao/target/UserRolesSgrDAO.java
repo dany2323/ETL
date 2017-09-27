@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.Projections;
@@ -694,4 +696,47 @@ public class UserRolesSgrDAO {
 		return resUserRolesSgrPk;
 	}
 
+
+/**
+ * Claudio DM_ALM-292 da testare
+ * @param userRole
+ * @throws DAOException
+ * @throws SQLException
+ */
+	public static void deleteUserRolesDeletedInPolarion(DmalmUserRolesSgr userRole)
+			throws DAOException, SQLException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			
+			connection.setAutoCommit(false);//
+
+			String sql = QueryManager.getInstance().getQuery(
+					DmAlmConstants.DELETE_OLD_USER_ROLES);
+
+			ps = connection.prepareStatement(sql);
+			
+			ps.setInt(1, userRole.getDmalmUserRolesPk());
+
+			ps.executeUpdate();
+			
+			connection.commit();//
+
+		} catch (Exception e) {
+			throw new DAOException(e);
+
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+	
 }
