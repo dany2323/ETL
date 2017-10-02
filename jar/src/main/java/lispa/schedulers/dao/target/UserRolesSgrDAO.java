@@ -698,7 +698,9 @@ public class UserRolesSgrDAO {
 
 
 /**
- * Claudio DM_ALM-292 da testare
+ * Cancellazione dei record tabella DMALM_USER_ROLES_SGR 
+ * che non hanno più alcuna corrispondenza in Polarion
+ * DM_ALM-292
  * @param userRole
  * @throws DAOException
  * @throws SQLException
@@ -713,7 +715,7 @@ public class UserRolesSgrDAO {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			
-			connection.setAutoCommit(false);//
+			connection.setAutoCommit(false);
 
 			String sql = QueryManager.getInstance().getQuery(
 					DmAlmConstants.DELETE_OLD_USER_ROLES);
@@ -724,11 +726,17 @@ public class UserRolesSgrDAO {
 
 			ps.executeUpdate();
 			
-			connection.commit();//
+			connection.commit();
 
+		} catch (SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
 		} catch (Exception e) {
-			throw new DAOException(e);
-
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (ps != null) {
 				ps.close();
@@ -739,4 +747,90 @@ public class UserRolesSgrDAO {
 		}
 	}
 	
+	/**
+	 * Cancellazione dei dati storici nella tabella DMALM_USER_ROLES_SGR
+	 * DM_ALM-292
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
+		public static void deleteUserRolesHistoricalData() throws DAOException, SQLException {
+			ConnectionManager cm = null;
+			Connection connection = null;
+			PreparedStatement ps = null;
+
+			try {
+				cm = ConnectionManager.getInstance();
+				connection = cm.getConnectionOracle();
+				
+				connection.setAutoCommit(false);
+				
+				String query="";
+				
+				query = "delete from dmalm_user_roles_sgr "
+						+ "where dt_fine_validita < ?";
+
+				ps = connection.prepareStatement(query);
+
+				ps.setTimestamp(1, DateUtils.setDtFineValidita9999());
+				
+				ps.executeUpdate();
+				
+				connection.commit();
+
+			} catch (SQLException e) {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+				logger.error(e.getMessage(), e);
+			} catch (DAOException e) {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+				logger.error(e.getMessage(), e);
+			} catch (Exception e) {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+				logger.error(e.getMessage(), e);
+			} finally {
+				if (ps != null) {
+					ps.close();
+				}
+				if (cm != null) {
+					cm.closeConnection(connection);
+				}
+			}
+		}
+		
+/**
+ * Data la PK aggiorna la FK del progetto e la Data di caricamento
+ * @param projectUserRole
+ * @param fkProject
+ * @param dataEsecuzione
+ * @throws DAOException
+ */
+		public static void updateUserRoles(DmalmUserRolesSgr projectUserRole, int fkProject, 
+				Timestamp dataEsecuzione) throws DAOException {
+
+			ConnectionManager cm = null;
+			Connection connection = null;
+
+			try {
+
+				cm = ConnectionManager.getInstance();
+				connection = cm.getConnectionOracle();
+
+				connection.setAutoCommit(false);
+
+				new SQLUpdateClause(connection, dialect, dmalmUserRoles)
+						.where(dmalmUserRoles.dmalmUserRolesPk.eq(projectUserRole.getDmalmUserRolesPk()))
+						.set(dmalmUserRoles.dmalmProjectFk01, fkProject)
+						.set(dmalmUserRoles.dtCaricamento, dataEsecuzione)
+						.execute();
+
+				connection.commit();
+
+			} catch (Exception e) {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+
+			} finally {
+				if (cm != null)
+					cm.closeConnection(connection);
+			}
+
+		}				
 }
