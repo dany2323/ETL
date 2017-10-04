@@ -804,7 +804,7 @@ public class UserRolesSgrDAO {
  * @throws DAOException
  */
 		public static void updateUserRoles(DmalmUserRolesSgr projectUserRole, int fkProject, 
-				Timestamp dataEsecuzione) throws DAOException {
+				Timestamp dataEsecuzione, String projID, String repo) throws DAOException {
 
 			ConnectionManager cm = null;
 			Connection connection = null;
@@ -817,10 +817,30 @@ public class UserRolesSgrDAO {
 				connection.setAutoCommit(false);
 
 				new SQLUpdateClause(connection, dialect, dmalmUserRoles)
-						.where(dmalmUserRoles.dmalmUserRolesPk.eq(projectUserRole.getDmalmUserRolesPk()))
-						.set(dmalmUserRoles.dmalmProjectFk01, fkProject)
+//non ho la pk          .where(dmalmUserRoles.dmalmUserRolesPk.eq(projectUserRole.getDmalmUserRolesPk()))
+				        .where(dmalmUserRoles.origine.eq(projID))
+				        .where(dmalmUserRoles.repository.eq(repo))
+				        .where(dmalmUserRoles.userid.eq(projectUserRole.getUserid()))
+				        .where(dmalmUserRoles.ruolo.eq(projectUserRole.getRuolo()))				        
+						.where(dmalmUserRoles.dtFineValidita.in(new SQLSubQuery()
+								.from(dmalmUserRoles)
+								.where(dmalmUserRoles.origine.eq(projID))
+								.where(dmalmUserRoles.repository.eq(repo))
+								.list(dmalmUserRoles.dtFineValidita.max())))
+				        .set(dmalmUserRoles.dmalmProjectFk01, fkProject)
 						.set(dmalmUserRoles.dtCaricamento, dataEsecuzione)
 						.execute();
+/*				
+				
+				select *
+				from DMALM_USER_ROLES_SGR T
+				where T.ORIGINE='AADBINT'
+				AND T.REPOSITORY = 'SISS'
+				and userid = 'msalimbeni'
+				and ruolo = 'RA'
+				AND T.DT_FINE_VALIDITA = (SELECT MAX(DT_FINE_VALIDITA) FROM DMALM_USER_ROLES_SGR); 
+*/				
+				
 
 				connection.commit();
 

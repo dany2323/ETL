@@ -30,7 +30,7 @@ public class TestUserRolesSgr extends TestCase {
 			//SissHistoryProjectDAO.fillSissHistoryProject(user_minRevision, project_minRevision);
 			//SireHistoryProjectDAO.fillSireHistoryProject(user_minRevision, project_minRevision);
 			//ProjectSgrCmFacade.execute(DateUtils.stringToTimestamp("2017-07-13 11:00:00.0", "yyyy-MM-dd HH:mm:00"));
-			UserRolesSgrFacade.execute(DateUtils.stringToTimestamp("2017-09-29 13:00:00.0", "yyyy-MM-dd HH:mm:00"));
+			UserRolesSgrFacade.execute(DateUtils.stringToTimestamp("2017-10-02 11:00:00.0", "yyyy-MM-dd HH:mm:00"));
 
 		} catch (PropertiesReaderException e) {
 			e.printStackTrace();

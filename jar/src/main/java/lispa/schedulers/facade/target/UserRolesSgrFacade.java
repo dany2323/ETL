@@ -195,7 +195,8 @@ public class UserRolesSgrFacade {
 //									fkProject, c_created, dataEsecuzione);
 							//Non storicizzo ma data la PK vado ad aggiornare i campi
 							//fkProject e data di caricamento
-							UserRolesSgrDAO.updateUserRoles(projectUserRole, fkProject, dataEsecuzione);							
+							UserRolesSgrDAO.updateUserRoles(projectUserRole, fkProject, dataEsecuzione,
+									prj.get(project.idProject),prj.get(project.idRepository));							
 							righeModificate += 1;
 						}
 					}
