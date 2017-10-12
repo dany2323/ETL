@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -705,7 +706,7 @@ public class UserRolesSgrDAO {
  * @throws DAOException
  * @throws SQLException
  */
-	public static void deleteUserRolesDeletedInPolarion(DmalmUserRolesSgr userRole)
+	public static void deleteUserRolesDeletedInPolarion(List<DmalmUserRolesSgr> usersRole)
 			throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -722,9 +723,11 @@ public class UserRolesSgrDAO {
 
 			ps = connection.prepareStatement(sql);
 			
-			ps.setInt(1, userRole.getDmalmUserRolesPk());
+			for (DmalmUserRolesSgr userRole : usersRole) {
+				ps.setInt(1, userRole.getDmalmUserRolesPk());
 
-			ps.executeUpdate();
+				ps.executeUpdate();
+			}
 			
 			connection.commit();
 
@@ -803,7 +806,7 @@ public class UserRolesSgrDAO {
  * @param dataEsecuzione
  * @throws DAOException
  */
-		public static void updateUserRoles(DmalmUserRolesSgr projectUserRole, int fkProject, 
+		public static void updateUserRoles(Map<DmalmUserRolesSgr, Integer> mapUserRolesSgr, 
 				Timestamp dataEsecuzione, String projID, String repo) throws DAOException {
 
 			ConnectionManager cm = null;
@@ -816,20 +819,23 @@ public class UserRolesSgrDAO {
 
 				connection.setAutoCommit(false);
 
-				new SQLUpdateClause(connection, dialect, dmalmUserRoles)
+				for (Entry<DmalmUserRolesSgr, Integer> userRoles : mapUserRolesSgr.entrySet()) {
+					new SQLUpdateClause(connection, dialect, dmalmUserRoles)
 //non ho la pk          .where(dmalmUserRoles.dmalmUserRolesPk.eq(projectUserRole.getDmalmUserRolesPk()))
 				        .where(dmalmUserRoles.origine.eq(projID))
 				        .where(dmalmUserRoles.repository.eq(repo))
-				        .where(dmalmUserRoles.userid.eq(projectUserRole.getUserid()))
-				        .where(dmalmUserRoles.ruolo.eq(projectUserRole.getRuolo()))				        
+				        .where(dmalmUserRoles.userid.eq(userRoles.getKey().getUserid()))
+				        .where(dmalmUserRoles.ruolo.eq(userRoles.getKey().getRuolo()))				        
 						.where(dmalmUserRoles.dtFineValidita.in(new SQLSubQuery()
 								.from(dmalmUserRoles)
 								.where(dmalmUserRoles.origine.eq(projID))
 								.where(dmalmUserRoles.repository.eq(repo))
 								.list(dmalmUserRoles.dtFineValidita.max())))
-				        .set(dmalmUserRoles.dmalmProjectFk01, fkProject)
+				        .set(dmalmUserRoles.dmalmProjectFk01, userRoles.getValue())
 						.set(dmalmUserRoles.dtCaricamento, dataEsecuzione)
 						.execute();
+				}
+				
 /*				
 				
 				select *
