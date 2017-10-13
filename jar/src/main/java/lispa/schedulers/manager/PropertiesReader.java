@@ -20,7 +20,6 @@ public class PropertiesReader
 		try
 		{
 			properties = new Properties();
-			
 			properties.load(getClass().getClassLoader().getResourceAsStream(propertiesFile));
 			
 			try (FileInputStream fis = new FileInputStream(properties.getProperty("dm_alm.properties"))) 
