@@ -309,11 +309,14 @@ public class DmalmDifettoProdotto {
     }
 
     public String getProvenienzaDifetto() {
-        return provenienzaDifetto;
+        return provenienzaDifetto.trim(); //DM_ALM-289 Aggiunto commento # 4
     }
 
     public void setProvenienzaDifetto(String provenienzaDifetto) {
-        this.provenienzaDifetto = provenienzaDifetto;
+    	//DM_ALM-289 Aggiunto commento # 4
+    	if(provenienzaDifetto.contains("SVI"))
+    		provenienzaDifetto.replaceAll("SVI", "SV");
+        this.provenienzaDifetto = provenienzaDifetto.trim();
     }
 
     public Double getRankStatoDifetto() {
