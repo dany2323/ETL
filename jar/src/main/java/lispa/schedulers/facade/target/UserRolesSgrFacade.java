@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNURL;
@@ -116,7 +118,45 @@ public class UserRolesSgrFacade {
 
 			logger.debug("fillCurrentUserRoles - distinctDmalmProjects.size: "
 					+ distinctDmalmProjects.size());
-
+			
+			// test di verifica sul numero di user-role recuperati per progetto
+//			int totalCount = 0;
+//			System.out.println("fillCurrentUserRoles - distinctDmalmProjects.size: "
+//					+ distinctDmalmProjects.size());
+//			for (Tuple prj : distinctDmalmProjects) {
+//				String projectSVNPath = SIREUserRolesXML.getProjectSVNPath(prj.get(project.pathProject));
+//				System.out.println(projectSVNPath);
+//				if (projectSVNPath != null) {
+//					List<DmalmUserRolesSgr> userRolesGroupedByProjID = new ArrayList<DmalmUserRolesSgr>();
+//					long revision = -1;
+//					if(prj.get(project.cRev) != null) {
+//						revision = prj.get(project.cRev);
+//					}
+//					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SISS)) {
+//						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
+//								prj.get(project.idProject), projectSVNPath,
+//								revision, prj.get(project.cCreated), 
+//								repositorySiss);
+//					}
+//					System.out.println("userRolesGroupedByProjID SISS: "+userRolesGroupedByProjID.size());
+//					
+//					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SIRE)) {
+//						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
+//								prj.get(project.idProject), projectSVNPath,
+//								revision, prj.get(project.cCreated), 
+//								repositorySire);
+//					}
+//					System.out.println("userRolesGroupedByProjID SIRE: "+userRolesGroupedByProjID.size());
+//					
+//					List<DmalmUserRolesSgr> listaTarget = UserRolesSgrDAO.getUserRolesByProjectID(prj.get(project.idProject),
+//							prj.get(project.idRepository));
+//					totalCount += listaTarget.size();
+//					System.out.println("listaTarget: "+listaTarget.size());
+//				}
+//			}
+//			System.out.println("Totale listaTarget: "+totalCount);
+			// fine verifica
+			
 			for (Tuple prj : distinctDmalmProjects) {
 				logger.info("fillCurrentUserRoles - Inizio gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
 				String projectSVNPath = SIREUserRolesXML.getProjectSVNPath(prj.get(project.pathProject));
@@ -133,19 +173,19 @@ public class UserRolesSgrFacade {
 								revision, prj.get(project.cCreated), 
 								repositorySiss);
 					}
+					
 					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SIRE)) {
 						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
 								prj.get(project.idProject), projectSVNPath,
 								revision, prj.get(project.cCreated), 
 								repositorySire);
 					}
-					
 					logger.info("START UserRolesSgrDAO.getUserRolesByProjectID");
 					List<DmalmUserRolesSgr> listaTarget = UserRolesSgrDAO.getUserRolesByProjectID(prj.get(project.idProject),
 							prj.get(project.idRepository));
 					logger.info("STOP UserRolesSgrDAO.getUserRolesByProjectID");
 					logger.info("Attualmente ci sono "+listaTarget.size()+" utenti-ruoli per questo progetto nella DMALM_USER_ROLES_SGR");
-					
+
 					List<DmalmUserRolesSgr> listaNuovi = new ArrayList<DmalmUserRolesSgr>();
 					List<DmalmUserRolesSgr> listaVecchi = new ArrayList<DmalmUserRolesSgr>();
 				
@@ -169,13 +209,14 @@ public class UserRolesSgrFacade {
 					// nuovi UserRoles
 					for(DmalmUserRolesSgr projectUserRole: listaNuovi){	
 						int fkProject = getFkProject(prj, projectUserRole);
-
 						logger.info("Inserisco record nuovi");
 						UserRolesSgrDAO.insertUserRole(projectUserRole, fkProject, dataEsecuzione);
 						righeNuove += 1;						
 					}
 					
+
 					// vecchi UserRoles
+					Map<DmalmUserRolesSgr, Integer> mapUserRolesSgr = new HashMap<DmalmUserRolesSgr, Integer>();
 					for(DmalmUserRolesSgr projectUserRole: listaVecchi){
 						Timestamp c_created = projectUserRole.getDtModifica();
 
@@ -183,31 +224,53 @@ public class UserRolesSgrFacade {
 
 						if (BeanUtils.areDifferent(fkProject, listaTarget
 								.get(0).getDmalmProjectFk01())) {
-							//storicizza e inserisce i nuovi
-							logger.info("Storicizzo record");
-							logger.info("Cambio data fine validità");
-							UserRolesSgrDAO.updateDataFineValidita(prj.get(project.idProject),
-									prj.get(project.idRepository), c_created);
-							
-							logger.info("Inserisco nuova versione del record");
-							UserRolesSgrDAO.insertUserRoleUpdate(projectUserRole,
-									fkProject, c_created, dataEsecuzione);
-							
+//							DM_ALM-292
+							mapUserRolesSgr.put(projectUserRole, fkProject);
+							//storicizza e inserisce i nuovi							
+//							logger.info("Storicizzo record");
+//							logger.info("Cambio data fine validità");
+//							UserRolesSgrDAO.updateDataFineValidita(prj.get(project.idProject),
+//									prj.get(project.idRepository), c_created);	
+//							logger.info("Inserisco nuova versione del record");
+//							UserRolesSgrDAO.insertUserRoleUpdate(projectUserRole,
+//									fkProject, c_created, dataEsecuzione);
+							//Non storicizzo ma data la PK vado ad aggiornare i campi
+							//fkProject e data di caricamento
+														
 							righeModificate += 1;
 						}
 					}
+					if (!mapUserRolesSgr.isEmpty()) {
+						UserRolesSgrDAO.updateUserRoles(mapUserRolesSgr, dataEsecuzione,
+								prj.get(project.idProject),prj.get(project.idRepository));
+						
+					}
 					
+					List<DmalmUserRolesSgr> usersRoleToDelete = new ArrayList<DmalmUserRolesSgr>();
 					// UserRoles cancellati
 					for(DmalmUserRolesSgr userRole : listaTarget){  
 						if(!presenteSuLista(userRole, userRolesGroupedByProjID)) {
+							
 							logger.info("User Role non piu presente");
-							UserRolesSgrDAO.updateDataFineValiditaUserRole(userRole, dataEsecuzione);
+							usersRoleToDelete.add(userRole);
+/*Commentato DM_ALM_292		UserRolesSgrDAO.updateDataFineValiditaUserRole(userRole, dataEsecuzione);*/
+//							UserRolesSgrDAO.deleteUserRolesDeletedInPolarion(userRole);
 							righeModificate += 1;
 						}
+					}
+					if (usersRoleToDelete.size() > 0) {
+						UserRolesSgrDAO.deleteUserRolesDeletedInPolarion(usersRoleToDelete);	
 					}
 				}
 				logger.info("fillCurrentUserRoles - Fine gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
 			}
+			
+			/**
+			 * DM_ALM-292 
+			 * cancellazione dati storici 
+			 */
+			UserRolesSgrDAO.deleteUserRolesHistoricalData();
+			
 			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
