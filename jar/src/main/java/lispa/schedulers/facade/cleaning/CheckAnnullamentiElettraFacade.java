@@ -186,7 +186,7 @@ public class CheckAnnullamentiElettraFacade {
 
 			conn.commit();
 			
-			ps= conn.prepareStatement(annullaFisicamenteSql);
+			ps= conn.prepareStatement(annullaLogicamenteSql);
 			ps.setString(1, DmAlmConstants.DISMESSO);
 			ps.setString(2, DmAlmConstants.FISICAMENTE);
 			
