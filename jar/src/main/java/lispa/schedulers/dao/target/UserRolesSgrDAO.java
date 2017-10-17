@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +15,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -39,7 +37,6 @@ import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.Projections;
@@ -697,166 +694,4 @@ public class UserRolesSgrDAO {
 		return resUserRolesSgrPk;
 	}
 
-
-/**
- * Cancellazione dei record tabella DMALM_USER_ROLES_SGR 
- * che non hanno più alcuna corrispondenza in Polarion
- * DM_ALM-292
- * @param userRole
- * @throws DAOException
- * @throws SQLException
- */
-	public static void deleteUserRolesDeletedInPolarion(List<DmalmUserRolesSgr> usersRole)
-			throws DAOException, SQLException {
-		ConnectionManager cm = null;
-		Connection connection = null;
-		PreparedStatement ps = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-			
-			connection.setAutoCommit(false);
-
-			String sql = QueryManager.getInstance().getQuery(
-					DmAlmConstants.DELETE_OLD_USER_ROLES);
-
-			ps = connection.prepareStatement(sql);
-			
-			for (DmalmUserRolesSgr userRole : usersRole) {
-				ps.setInt(1, userRole.getDmalmUserRolesPk());
-
-				ps.executeUpdate();
-			}
-			
-			connection.commit();
-
-		} catch (SQLException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(e.getMessage(), e);
-		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(e.getMessage(), e);
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (ps != null) {
-				ps.close();
-			}
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-	}
-	
-	/**
-	 * Cancellazione dei dati storici nella tabella DMALM_USER_ROLES_SGR
-	 * DM_ALM-292
-	 * @throws DAOException
-	 * @throws SQLException
-	 */
-		public static void deleteUserRolesHistoricalData() throws DAOException, SQLException {
-			ConnectionManager cm = null;
-			Connection connection = null;
-			PreparedStatement ps = null;
-
-			try {
-				cm = ConnectionManager.getInstance();
-				connection = cm.getConnectionOracle();
-				
-				connection.setAutoCommit(false);
-				
-				String query="";
-				
-				query = "delete from dmalm_user_roles_sgr "
-						+ "where dt_fine_validita < ?";
-
-				ps = connection.prepareStatement(query);
-
-				ps.setTimestamp(1, DateUtils.setDtFineValidita9999());
-				
-				ps.executeUpdate();
-				
-				connection.commit();
-
-			} catch (SQLException e) {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-				logger.error(e.getMessage(), e);
-			} catch (DAOException e) {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-				logger.error(e.getMessage(), e);
-			} catch (Exception e) {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-				logger.error(e.getMessage(), e);
-			} finally {
-				if (ps != null) {
-					ps.close();
-				}
-				if (cm != null) {
-					cm.closeConnection(connection);
-				}
-			}
-		}
-		
-/**
- * Data la PK aggiorna la FK del progetto e la Data di caricamento
- * @param projectUserRole
- * @param fkProject
- * @param dataEsecuzione
- * @throws DAOException
- */
-		public static void updateUserRoles(Map<DmalmUserRolesSgr, Integer> mapUserRolesSgr, 
-				Timestamp dataEsecuzione, String projID, String repo) throws DAOException {
-
-			ConnectionManager cm = null;
-			Connection connection = null;
-
-			try {
-
-				cm = ConnectionManager.getInstance();
-				connection = cm.getConnectionOracle();
-
-				connection.setAutoCommit(false);
-
-				for (Entry<DmalmUserRolesSgr, Integer> userRoles : mapUserRolesSgr.entrySet()) {
-					new SQLUpdateClause(connection, dialect, dmalmUserRoles)
-//non ho la pk          .where(dmalmUserRoles.dmalmUserRolesPk.eq(projectUserRole.getDmalmUserRolesPk()))
-				        .where(dmalmUserRoles.origine.eq(projID))
-				        .where(dmalmUserRoles.repository.eq(repo))
-				        .where(dmalmUserRoles.userid.eq(userRoles.getKey().getUserid()))
-				        .where(dmalmUserRoles.ruolo.eq(userRoles.getKey().getRuolo()))				        
-						.where(dmalmUserRoles.dtFineValidita.in(new SQLSubQuery()
-								.from(dmalmUserRoles)
-								.where(dmalmUserRoles.origine.eq(projID))
-								.where(dmalmUserRoles.repository.eq(repo))
-								.list(dmalmUserRoles.dtFineValidita.max())))
-				        .set(dmalmUserRoles.dmalmProjectFk01, userRoles.getValue())
-						.set(dmalmUserRoles.dtCaricamento, dataEsecuzione)
-						.execute();
-				}
-				
-/*				
-				
-				select *
-				from DMALM_USER_ROLES_SGR T
-				where T.ORIGINE='AADBINT'
-				AND T.REPOSITORY = 'SISS'
-				and userid = 'msalimbeni'
-				and ruolo = 'RA'
-				AND T.DT_FINE_VALIDITA = (SELECT MAX(DT_FINE_VALIDITA) FROM DMALM_USER_ROLES_SGR); 
-*/				
-				
-
-				connection.commit();
-
-			} catch (Exception e) {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-
-			} finally {
-				if (cm != null)
-					cm.closeConnection(connection);
-			}
-
-		}				
 }

@@ -190,8 +190,6 @@ public final class DmAlmConstants {
 	public static final String M_UPDATE_PERSONALE_UOFLATFK = "m_update_personale_uoflatfk.sql";
 	public static final String M_SEPARATOR = ";";
 	
-	//File .sql cancellazione associazioni non più valide tabella dmalm_user_roles_sgr
-	public static final String DELETE_OLD_USER_ROLES = "delete_old_user_roles.sql";
 	
 	public static final String ANNULLATO_LOGICAMENTE = "#ANNULLATO_LOGICAMENTE##";
 	public static final String ANNULLATO_FISICAMENTE = "#ANNULLATO_FISICAMENTE##";
