@@ -1,0 +1,5 @@
+Aggiunti campy Severity e Priority (Entrambi Varchar 255) nelle seguenti tabelle:
+
+-DMALM_RELEASE_IT;
+-T_DMALM_RELEASE_IT;
+-DMAILM_RELEASE_IT_ODS;
