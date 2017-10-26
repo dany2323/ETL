@@ -466,4 +466,36 @@ public class ElettraUnitaOrganizzativeDAO {
 		return resultList;
 	}
 
+	public static List<DmalmElUnitaOrganizzative> getUnitaOrganizzativaTappo() throws DAOException,
+	SQLException { //Aggiunta per DM_ALM-313
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<DmalmElUnitaOrganizzative>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			resultList = query
+					.from(qDmalmElUnitaOrganizzative)
+					.where(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk.eq(0))
+					.list(Projections.bean(DmalmElUnitaOrganizzative.class,
+							qDmalmElUnitaOrganizzative.all()));
+
+		} catch (Exception e) {
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return resultList;
+	}
+
 }
