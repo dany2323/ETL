@@ -86,7 +86,10 @@ public class ReleaseItOdsDAO {
 								releaseItOds.dtDisponibilitaEffRelease,
 								releaseItOds.dtRilascioRelease,
 								releaseItOds.dtInizioRelease,
-								releaseItOds.dmalmUserFk06, releaseItOds.uri)
+								releaseItOds.dmalmUserFk06, 
+								releaseItOds.uri,
+								releaseItOds.severityReleaseIt,
+								releaseItOds.priorityReleaseIt)
 						.values(releaseIt.getCdReleaseIt(),
 								releaseIt.getDescrizioneReleaseIt(),
 								releaseIt.getDmalmReleaseItPk(),
@@ -113,7 +116,10 @@ public class ReleaseItOdsDAO {
 								releaseIt.getDtRilascioRelease(),
 								releaseIt.getDtInizioRelease(),
 								releaseIt.getDmalmUserFk06(),
-								releaseIt.getUri()).execute();
+								releaseIt.getUri(),
+								releaseIt.getSeverityReleaseIt(),
+								releaseIt.getPriorityReleaseIt()).execute();
+								
 
 				connection.commit();
 			}

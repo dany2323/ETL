@@ -71,6 +71,10 @@ public class QDmalmReleaseIt extends com.mysema.query.sql.RelationalPathBase<Dma
     public final StringPath idRepository = createString("ID_REPOSITORY");
 
     public final StringPath motivoRisoluzioneReleaseIt = createString("MOTIVO_RISOLUZIONE_RELEASE_IT");
+    
+    public final StringPath severityReleaseIt = createString("SEVERITY");
+    
+    public final StringPath priorityReleaseIt = createString("PRIORITY");
 
     public final NumberPath<Double> rankStatoReleaseIt = createNumber("RANK_STATO_RELEASE_IT", Double.class);
 

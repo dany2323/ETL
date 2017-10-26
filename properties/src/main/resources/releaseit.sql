@@ -32,6 +32,8 @@ SELECT 'SIRE' as ID_REPOSITORY,
 		(select distinct hcf.c_dateonly_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_dispok') as DATA_DISPONIBILITA_EFF,
 		(select distinct hcf.c_dateonly_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_it_start') as DATA_INIZIO_IT,
 		(select distinct hcf.c_dateonly_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_it_end') as DATA_FINE_IT
+		(select distinct hcf.c_string_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'severity') as SEVERITY
+		(select distinct hcf.c_string_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'priority') as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk
 		left join DMALM_SIRE_HISTORY_USER hu 
@@ -79,6 +81,8 @@ SELECT 'SISS' as ID_REPOSITORY,
 		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_dispok') as DATA_DISPONIBILITA_EFF,
 		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_it_start') as DATA_INIZIO_IT,
 		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_it_end') as DATA_FINE_IT
+		(select distinct hcf.c_string_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'severity') as SEVERITY
+		(select distinct hcf.c_string_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'priority') as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk
 		left join DMALM_SISS_HISTORY_USER hu 
