@@ -117,7 +117,7 @@ public class DifettoDAO {
 				bean.setEffortCostoSviluppo(rs.getInt("EFFORT_COSTO_SVILUPPO"));
 				bean.setDtDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 				//DM_ALM-320
-				bean.setPriority(rs.getString("PRIORITY_ANOMALIA"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				difetti.add(bean);
 			}
