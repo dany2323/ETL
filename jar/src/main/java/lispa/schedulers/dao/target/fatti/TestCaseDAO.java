@@ -100,7 +100,10 @@ public class TestCaseDAO {
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_TESTCASE_PK"));
 				bean.setTitoloTestcase(rs.getString("TITOLO_TESTCASE"));
-
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
+				
 				testcases.add(bean);
 			}
 
@@ -190,7 +193,8 @@ public class TestCaseDAO {
 							tstcs.numeroTestata, tstcs.rankStatoTestcase,
 							tstcs.titoloTestcase, tstcs.stgPk,
 							tstcs.dmalmUserFk06, tstcs.uri,
-							tstcs.dtAnnullamento)
+							tstcs.dtAnnullamento,
+							tstcs.severity, tstcs.priority)
 					.values(testcase.getCdTestcase(), testcase.getCodice(),
 							testcase.getDataEsecuzioneTestcase(),
 							testcase.getDescrizioneTestcase(),
@@ -215,7 +219,9 @@ public class TestCaseDAO {
 							testcase.getNumeroTestata(), new Double(1),
 							testcase.getTitoloTestcase(), testcase.getStgPk(),
 							testcase.getDmalmUserFk06(), testcase.getUri(),
-							testcase.getDtAnnullamento()).execute();
+							testcase.getDtAnnullamento(),
+							//DM_ALM-320
+							testcase.getSeverity(), testcase.getPriority()).execute();
 
 			connection.commit();
 
@@ -293,7 +299,8 @@ public class TestCaseDAO {
 							tstcs.titoloTestcase, tstcs.stgPk,
 							tstcs.dmalmUserFk06, tstcs.uri,
 							tstcs.dtAnnullamento, tstcs.changed,
-							tstcs.annullato)
+							tstcs.annullato,
+							tstcs.severity, tstcs.priority)
 					.values(testcase.getCdTestcase(),
 							testcase.getCodice(),
 							testcase.getDataEsecuzioneTestcase(),
@@ -324,7 +331,8 @@ public class TestCaseDAO {
 							testcase.getTitoloTestcase(), testcase.getStgPk(),
 							testcase.getDmalmUserFk06(), testcase.getUri(),
 							testcase.getDtAnnullamento(),
-							testcase.getChanged(), testcase.getAnnullato())
+							testcase.getChanged(), testcase.getAnnullato(),
+							testcase.getSeverity(), testcase.getPriority())
 					.execute();
 
 			connection.commit();
@@ -396,6 +404,9 @@ public class TestCaseDAO {
 					.set(tstcs.uri, testcase.getUri())
 					.set(tstcs.dtAnnullamento, testcase.getDtAnnullamento())
 					.set(tstcs.annullato, testcase.getAnnullato())
+					//DM_ALM-320
+					.set(tstcs.severity, testcase.getSeverity())
+					.set(tstcs.priority, testcase.getPriority())
 					.execute();
 
 			connection.commit();
@@ -471,7 +482,10 @@ public class TestCaseDAO {
 			e.setStgPk(t.get(tstcs.stgPk));
 			e.setTitoloTestcase(t.get(tstcs.titoloTestcase));
 			e.setUri(t.get(tstcs.uri));
-
+			//DM_ALM-320
+			e.setSeverity(t.get(tstcs.severity));
+			e.setPriority(t.get(tstcs.priority));
+			
 			return e;
 		} else
 			return null;

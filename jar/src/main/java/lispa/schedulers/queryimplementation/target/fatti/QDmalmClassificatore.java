@@ -115,6 +115,12 @@ public class QDmalmClassificatore extends
 	
 	public final StringPath codiceServizi = createString("CODICE_SERVIZI");
 
+	//DM_ALM-320
+	public final StringPath severity = createString("SEVERITY");
+	    
+	public final StringPath priority = createString("PRIORITY");
+	
+	
 	public QDmalmClassificatore(String variable) {
 		super(DmalmClassificatore.class, forVariable(variable), "DMALM",
 				"DMALM_CLASSIFICATORE");

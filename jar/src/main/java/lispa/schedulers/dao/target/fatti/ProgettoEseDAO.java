@@ -97,6 +97,9 @@ public class ProgettoEseDAO {
 				bean.setMotivoRisoluzioneProgEse(rs
 						.getString("MOTIVO_RISOLUZIONE_PROGETTOESE"));
 				bean.setTitoloProgettoEse(rs.getString("TITOLO_PROGETTO_ESE"));
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				progetti.add(bean);
 			}
@@ -223,7 +226,8 @@ public class ProgettoEseDAO {
 							progettoEse.cfDtUltimaSottomissione,
 							progettoEse.dmalmUserFk06, progettoEse.uri,
 							progettoEse.dtAnnullamento, progettoEse.changed,
-							progettoEse.annullato)
+							progettoEse.annullato,
+							progettoEse.severity, progettoEse.priority)
 					.values(progetto.getCdProgettoEse(),
 							progetto.getDescrizioneProgettoEse(),
 							pkValue == true ? progetto.getDmalmProgettoEsePk()
@@ -253,7 +257,8 @@ public class ProgettoEseDAO {
 							progetto.getCfDtUltimaSottomissione(),
 							progetto.getDmalmUserFk06(), progetto.getUri(),
 							progetto.getDtAnnullamento(),
-							progetto.getChanged(), progetto.getAnnullato())
+							progetto.getChanged(), progetto.getAnnullato(),
+							progetto.getSeverity(), progetto.getPriority())
 					.execute();
 
 			connection.commit();
@@ -303,7 +308,8 @@ public class ProgettoEseDAO {
 							progettoEse.cfCodice, progettoEse.stgPk,
 							progettoEse.cfDtUltimaSottomissione,
 							progettoEse.dmalmUserFk06, progettoEse.uri,
-							progettoEse.dtAnnullamento)
+							progettoEse.dtAnnullamento,
+							progettoEse.severity, progettoEse.priority)
 					.values(progetto.getCdProgettoEse(),
 							progetto.getDescrizioneProgettoEse(),
 							progetto.getDmalmProgettoEsePk(),
@@ -326,7 +332,8 @@ public class ProgettoEseDAO {
 							progetto.getCfCodice(), progetto.getStgPk(),
 							progetto.getCfDtUltimaSottomissione(),
 							progetto.getDmalmUserFk06(), progetto.getUri(),
-							progetto.getDtAnnullamento()).execute();
+							progetto.getDtAnnullamento(),
+							progetto.getSeverity(), progetto.getPriority()).execute();
 
 			connection.commit();
 
@@ -394,6 +401,8 @@ public class ProgettoEseDAO {
 					.set(progettoEse.dtAnnullamento,
 							progetto.getDtAnnullamento())
 					.set(progettoEse.annullato, progetto.getAnnullato())
+					.set(progettoEse.severity, progetto.getSeverity())
+					.set(progettoEse.priority, progetto.getPriority())
 					.execute();
 
 			connection.commit();
@@ -477,6 +486,9 @@ public class ProgettoEseDAO {
 			p.setStgPk(t.get(progettoEse.stgPk));
 			p.setTitoloProgettoEse(t.get(progettoEse.titoloProgettoEse));
 			p.setUri(t.get(progettoEse.uri));
+			//DM_ALM-320
+			p.setSeverity(t.get(progettoEse.severity));
+			p.setPriority(t.get(progettoEse.priority));
 
 			return p;
 

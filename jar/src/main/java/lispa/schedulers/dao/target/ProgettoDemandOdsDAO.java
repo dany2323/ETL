@@ -100,7 +100,9 @@ public class ProgettoDemandOdsDAO {
 								progettoDemandODS.uri,
 								progettoDemandODS.codObiettivoAziendale,
 								progettoDemandODS.codObiettivoUtente,
-								progettoDemandODS.cfClassificazione)
+								progettoDemandODS.cfClassificazione,
+								progettoDemandODS.severity, 
+								progettoDemandODS.priority)
 						.values(progettoDemand.getCdProgettoDemand(),
 								progettoDemand.getDescrizioneProgettoDemand(),
 								progettoDemand.getDmalmProgettoDemandPk(),
@@ -138,7 +140,10 @@ public class ProgettoDemandOdsDAO {
 								progettoDemand.getUri(),
 								progettoDemand.getCodObiettivoAziendale(),
 								progettoDemand.getCodObiettivoUtente(),
-								progettoDemand.getCfClassificazione())
+								progettoDemand.getCfClassificazione(),
+								//DM_ALM-320
+								progettoDemand.getSeverity(),
+								progettoDemand.getPriority())
 						.execute();
 
 				connection.commit();

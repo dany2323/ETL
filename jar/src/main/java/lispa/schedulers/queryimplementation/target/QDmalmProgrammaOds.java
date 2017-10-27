@@ -90,6 +90,11 @@ public class QDmalmProgrammaOds extends com.mysema.query.sql.RelationalPathBase<
 
     public final com.mysema.query.sql.PrimaryKey<DmalmProgrammaOds> sysC0023109 = createPrimaryKey(dmalmProgrammaPk);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
     public QDmalmProgrammaOds(String variable) {
         super(DmalmProgrammaOds.class, forVariable(variable), "DMALM", "DMALM_PROGRAMMA_ODS");
     }

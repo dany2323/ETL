@@ -115,6 +115,15 @@ public class ProgrammaFacade {
 							{
 								modificato = true;
 							}
+							//DM_ALM-320
+							if(!modificato && BeanUtils.areDifferent(row.get(prog.severity), programma.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(prog.priority), programma.getPriority()))
+							{
+								modificato = true;
+							}
 							
 							if(modificato)
 							{

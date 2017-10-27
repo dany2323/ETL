@@ -217,6 +217,10 @@ public class ClassificatoreDAO {
 						"codiceServizi"));
 
 				bean.setType(DmAlmConstants.WORKITEM_TYPE_CLASSIFICATORE);
+				//DM_ALM-320
+				bean.setSeverity(rsClass.getString("SEVERITY"));
+				bean.setPriority(rsClass.getString("PRIORITY"));
+				
 				classificatoriList.add(bean);
 			}
 
@@ -367,7 +371,8 @@ public class ClassificatoreDAO {
 							qClassificatore.assigneeProgettoItInDeroga,
 							qClassificatore.locationSorgenti,
 							qClassificatore.type,
-							qClassificatore.codiceServizi)
+							qClassificatore.codiceServizi,
+							qClassificatore.severity, qClassificatore.priority)
 					.values(classificatore.getCd_classificatore(), classificatore.getCf_ambito(),
 							classificatore.getCf_area(), classificatore.getCf_riferimenti(),
 							classificatore.getCf_scheda_servizio(),
@@ -394,7 +399,9 @@ public class ClassificatoreDAO {
 							classificatore.getAssigneeProgettoItInDeroga(),
 							classificatore.getLocationSorgenti(),
 							classificatore.getType(),
-							classificatore.getCodiceServizi()).execute();
+							classificatore.getCodiceServizi(),
+							classificatore.getSeverity(),
+							classificatore.getPriority()).execute();
 
 			connection.commit();
 
@@ -478,7 +485,8 @@ public class ClassificatoreDAO {
 							qClassificatore.assigneeProgettoItInDeroga,
 							qClassificatore.locationSorgenti,
 							qClassificatore.type,
-							qClassificatore.codiceServizi)
+							qClassificatore.codiceServizi,
+							qClassificatore.severity, qClassificatore.priority)
 					.values(classificatore.getCd_classificatore(),
 							classificatore.getCf_ambito(),
 							classificatore.getCf_area(),
@@ -510,7 +518,9 @@ public class ClassificatoreDAO {
 							classificatore.getAssigneeProgettoItInDeroga(),
 							classificatore.getLocationSorgenti(),
 							classificatore.getType(),
-							classificatore.getCodiceServizi()).execute();
+							classificatore.getCodiceServizi(),
+							classificatore.getSeverity(),
+							classificatore.getPriority()).execute();
 
 			connection.commit();
 
@@ -584,6 +594,9 @@ public class ClassificatoreDAO {
 					.set(qClassificatore.locationSorgenti, classificatore.getLocationSorgenti())
 					.set(qClassificatore.type, classificatore.getType())
 					.set(qClassificatore.codiceServizi,  classificatore.getCodiceServizi())
+					.set(qClassificatore.severity, classificatore.getSeverity())
+					.set(qClassificatore.priority,  classificatore.getPriority())
+					
 					.execute();
 
 			connection.commit();
@@ -663,6 +676,9 @@ public class ClassificatoreDAO {
 			c.setLocationSorgenti(t.get(qClassificatore.locationSorgenti));
 			c.setType(t.get(qClassificatore.type));
 			c.setCodiceServizi(t.get(qClassificatore.codiceServizi));
+			//DM_ALM-320
+			c.setSeverity(t.get(qClassificatore.severity));
+			c.setPriority(t.get(qClassificatore.priority));
 			return c;
 
 		} else

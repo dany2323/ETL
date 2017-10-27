@@ -102,6 +102,9 @@ public class RichiestaGestioneDAO {
 				bean.setTicketid(rs.getString("CF_ticketid"));
 				bean.setTitoloRichiestaGest(rs
 						.getString("TITOLO_RICH_GESTIONE"));
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				richiesteGestione.add(bean);
 			}
@@ -193,7 +196,8 @@ public class RichiestaGestioneDAO {
 							rchgs.rankStatoRichiestaGest, rchgs.stgPk,
 							rchgs.ticketid, rchgs.titoloRichiestaGest,
 							rchgs.dmalmUserFk06, rchgs.uri,
-							rchgs.dtAnnullamento)
+							rchgs.dtAnnullamento,
+							rchgs.severity, rchgs.priority)
 					.values(richiesta.getCategoria(),
 							richiesta.getCdRichiestaGest(),
 							richiesta.getDataChiusura(),
@@ -219,7 +223,8 @@ public class RichiestaGestioneDAO {
 							richiesta.getTicketid(),
 							richiesta.getTitoloRichiestaGest(),
 							richiesta.getDmalmUserFk06(), richiesta.getUri(),
-							richiesta.getDtAnnullamento()).execute();
+							richiesta.getDtAnnullamento(),
+							richiesta.getSeverity(), richiesta.getPriority()).execute();
 
 			connection.commit();
 
@@ -298,7 +303,8 @@ public class RichiestaGestioneDAO {
 							rchgs.ticketid, rchgs.titoloRichiestaGest,
 							rchgs.dmalmUserFk06, rchgs.uri,
 							rchgs.dtAnnullamento, rchgs.changed,
-							rchgs.annullato)
+							rchgs.annullato,
+							rchgs.severity, rchgs.priority)
 					.values(richiesta.getCategoria(),
 							richiesta.getCdRichiestaGest(),
 							richiesta.getDataChiusura(),
@@ -330,7 +336,8 @@ public class RichiestaGestioneDAO {
 							richiesta.getTitoloRichiestaGest(),
 							richiesta.getDmalmUserFk06(), richiesta.getUri(),
 							richiesta.getDtAnnullamento(),
-							richiesta.getChanged(), richiesta.getAnnullato())
+							richiesta.getChanged(), richiesta.getAnnullato(),
+							richiesta.getSeverity(), richiesta.getPriority())
 					.execute();
 
 			connection.commit();
@@ -401,7 +408,9 @@ public class RichiestaGestioneDAO {
 					.set(rchgs.titoloRichiestaGest,
 							richiesta.getTitoloRichiestaGest())
 					.set(rchgs.dtAnnullamento, richiesta.getDtAnnullamento())
-					.set(rchgs.annullato, richiesta.getAnnullato()).execute();
+					.set(rchgs.annullato, richiesta.getAnnullato())
+					.set(rchgs.severity, richiesta.getSeverity())
+					.set(rchgs.priority, richiesta.getPriority()).execute();
 
 			connection.commit();
 
@@ -479,6 +488,9 @@ public class RichiestaGestioneDAO {
 			r.setTicketid(t.get(rchgs.ticketid));
 			r.setTitoloRichiestaGest(t.get(rchgs.titoloRichiestaGest));
 			r.setUri(t.get(rchgs.uri));
+			//DM_ALM-320
+			r.setSeverity(t.get(rchgs.severity));
+			r.setPriority(t.get(rchgs.priority));
 
 			return r;
 

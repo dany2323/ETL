@@ -81,6 +81,12 @@ public class QDmalmRichiestaGestioneOds extends com.mysema.query.sql.RelationalP
 
     public final com.mysema.query.sql.PrimaryKey<DmalmRichiestaGestioneOds> sysC0024213 = createPrimaryKey(dmalmRichiestaGestPk);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmRichiestaGestioneOds(String variable) {
         super(DmalmRichiestaGestioneOds.class, forVariable(variable), "DMALM", "DMALM_RICHIESTA_GESTIONE_ODS");
     }

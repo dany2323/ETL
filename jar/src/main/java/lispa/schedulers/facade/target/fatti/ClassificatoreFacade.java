@@ -126,6 +126,14 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(c.severity), classificatore.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(c.priority), classificatore.getPriority()))
+							{
+								modificato = true;
+							}
 							
 							if(modificato)
 							{

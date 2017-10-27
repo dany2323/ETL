@@ -64,6 +64,11 @@ public class DmalmSottoprogrammaOds {
     
     private String uri;
 
+  //DM_ALM-320
+    private String severity;
+    	
+    private String priority;
+    
     public String getUri() {
 		return uri;
 	}
@@ -287,6 +292,22 @@ public class DmalmSottoprogrammaOds {
 
 	public void setDmalmUserFk06(Integer dmalmUserFk06) {
 		this.dmalmUserFk06 = dmalmUserFk06;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 
 

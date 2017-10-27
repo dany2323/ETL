@@ -124,6 +124,14 @@ public class PeiFacade {
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(p.severity), pei.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(p.priority), pei.getPriority()))
+							{
+								modificato = true;
+							}
 							
 							if(modificato)
 							{

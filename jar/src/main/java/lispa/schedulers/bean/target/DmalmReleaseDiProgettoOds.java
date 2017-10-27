@@ -84,6 +84,12 @@ public class DmalmReleaseDiProgettoOds {
 
 	private Integer numQuickFix;
 
+	//DM_ALM-320
+	private String severity;
+	
+	private String priority;
+	
+	
 	public String getUri() {
 		return uri;
 	}
@@ -393,6 +399,22 @@ public class DmalmReleaseDiProgettoOds {
 
 	public void setNumQuickFix(Integer numQuickFix) {
 		this.numQuickFix = numQuickFix;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 
 }

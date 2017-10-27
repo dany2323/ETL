@@ -13,8 +13,8 @@ SELECT
 		hw.c_duedate as DATA_SCADENZA_DOCUMENTO,
 		hu.c_id as ID_AUTORE_DOCUMENTO, 
 		hu.c_name as NOME_AUTORE_DOCUMENTO, 
-		hw.c_severity as SEVERITY_DOCUMENTO,
-		hw.c_priority as PRIORITY_DOCUMENTO,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY,
 		nvl(
 			hw.c_resolvedon
 			, {ts '9999-12-31 00:00:00'}
@@ -55,8 +55,8 @@ UNION ALL
 		hw.c_duedate as DATA_SCADENZA_DOCUMENTO,
 		hu.c_id as ID_AUTORE_DOCUMENTO, 
 		hu.c_name as NOME_AUTORE_DOCUMENTO, 
-		hw.c_severity as SEVERITY_DOCUMENTO,
-		hw.c_priority as PRIORITY_DOCUMENTO,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY,
 		nvl(
 			hw.c_resolvedon
 			, {ts '9999-12-31 00:00:00'}

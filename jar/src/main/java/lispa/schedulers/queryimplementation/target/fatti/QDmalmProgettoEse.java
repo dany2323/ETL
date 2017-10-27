@@ -82,6 +82,12 @@ public class QDmalmProgettoEse extends com.mysema.query.sql.RelationalPathBase<D
     
     public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmProgettoEse(String variable) {
         super(DmalmProgettoEse.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_ESE");
     }
