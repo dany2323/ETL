@@ -319,11 +319,14 @@ public class DmalmDifettoProdotto {
     	//DM_ALM-289 Aggiunto commento # 4
     	if(provenienzaDifetto!=null)
     	{
-    		provenienzaDifetto=provenienzaDifetto.split(" ")[0];
+    		provenienzaDifetto=provenienzaDifetto.trim();
 	    	if(provenienzaDifetto.contains("SVI"))
 	    		provenienzaDifetto.replaceAll("SVI", "SV");
     	}
         this.provenienzaDifetto = provenienzaDifetto;
+    	if(provenienzaDifetto.contains("SVI"))
+    		provenienzaDifetto.replaceAll("SVI", "SV");
+        this.provenienzaDifetto = provenienzaDifetto.trim();
     }
 
     public Double getRankStatoDifetto() {
