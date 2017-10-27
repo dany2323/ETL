@@ -99,7 +99,8 @@ public class ReleaseItDAO {
 				bean.setDtInizioRelease(rs.getTimestamp("DATA_INIZIO_IT"));
 				bean.setDtRilascioRelease(rs
 						.getTimestamp("DATA_RILASCIO_AD_ESERCIZIO"));
-
+				bean.setPriorityReleaseIt(rs.getString("PRIORITY"));
+				bean.setSeverityReleaseIT(rs.getString("SEVERITY"));
 				releases.add(bean);
 			}
 
@@ -194,7 +195,10 @@ public class ReleaseItDAO {
 							releaseIt.dtDisponibilitaEffRelease,
 							releaseIt.dtRilascioRelease,
 							releaseIt.dtInizioRelease, releaseIt.dmalmUserFk06,
-							releaseIt.uri, releaseIt.dtAnnullamento)
+							releaseIt.uri, 
+							releaseIt.dtAnnullamento,
+							releaseIt.severityReleaseIt,
+							releaseIt.priorityReleaseIt)
 					.values(release.getCdReleaseIt(),
 							release.getDescrizioneReleaseIt(),
 							release.getDmalmReleaseItPk(),
@@ -220,7 +224,9 @@ public class ReleaseItDAO {
 							release.getDtRilascioRelease(),
 							release.getDtInizioRelease(),
 							release.getDmalmUserFk06(), release.getUri(),
-							release.getDtAnnullamento()).execute();
+							release.getDtAnnullamento(),
+							release.getSeverityReleaseIt(),
+							release.getPriorityReleaseIt()).execute();
 
 			connection.commit();
 
@@ -301,7 +307,12 @@ public class ReleaseItDAO {
 							releaseIt.dtDisponibilitaEffRelease,
 							releaseIt.dtRilascioRelease,
 							releaseIt.dtInizioRelease, releaseIt.dmalmUserFk06,
-							releaseIt.uri, releaseIt.dtAnnullamento, releaseIt.changed, releaseIt.annullato)
+							releaseIt.uri, 
+							releaseIt.dtAnnullamento, 
+							releaseIt.changed, 
+							releaseIt.annullato,
+							releaseIt.severityReleaseIt,
+							releaseIt.priorityReleaseIt)
 					.values(release.getCdReleaseIt(),
 							release.getDescrizioneReleaseIt(),
 							pkValue == true ? release.getDmalmReleaseItPk() : StringTemplate
@@ -329,7 +340,11 @@ public class ReleaseItDAO {
 							release.getDtRilascioRelease(),
 							release.getDtInizioRelease(),
 							release.getDmalmUserFk06(), release.getUri(),
-							release.getDtAnnullamento(), release.getChanged(), release.getAnnullato()).execute();
+							release.getDtAnnullamento(),
+							release.getChanged(),
+							release.getAnnullato(),
+							release.getSeverityReleaseIt(),
+							release.getPriorityReleaseIt()).execute();
 
 			connection.commit();
 
@@ -403,6 +418,8 @@ public class ReleaseItDAO {
 							release.getDtInizioRelease())
 					.set(releaseIt.dtAnnullamento, release.getDtAnnullamento())
 					.set(releaseIt.annullato, release.getAnnullato())
+					.set(releaseIt.severityReleaseIt, release.getSeverityReleaseIt())
+					.set(releaseIt.priorityReleaseIt,release.getPriorityReleaseIt())
 					.execute();
 
 			connection.commit();
