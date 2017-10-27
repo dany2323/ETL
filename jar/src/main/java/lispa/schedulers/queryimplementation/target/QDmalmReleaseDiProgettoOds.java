@@ -100,6 +100,12 @@ public class QDmalmReleaseDiProgettoOds extends com.mysema.query.sql.RelationalP
 
     public final com.mysema.query.sql.PrimaryKey<DmalmReleaseDiProgettoOds> sysC0023176 = createPrimaryKey(dmalmReleasediprogPk);
 
+    //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+    
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmReleaseDiProgettoOds(String variable) {
         super(DmalmReleaseDiProgettoOds.class, forVariable(variable), "DMALM", "DMALM_RELEASE_DI_PROGETTO_ODS");
     }

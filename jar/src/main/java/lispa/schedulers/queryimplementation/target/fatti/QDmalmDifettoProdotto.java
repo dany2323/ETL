@@ -108,6 +108,9 @@ public class QDmalmDifettoProdotto extends com.mysema.query.sql.RelationalPathBa
     //DM_ALM-223
     public final DateTimePath<java.sql.Timestamp> dataDisponibilita = createDateTime("DATA_DISPONIBILITA", java.sql.Timestamp.class);
     
+    //DM_ALM-320
+    public final StringPath priority = createString("PRIORITY");
+    
     public QDmalmDifettoProdotto(String variable) {
         super(DmalmDifettoProdotto.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_DIFETTO_PRODOTTO");
     }

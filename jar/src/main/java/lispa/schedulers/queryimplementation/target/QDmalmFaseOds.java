@@ -93,6 +93,11 @@ public class QDmalmFaseOds extends com.mysema.query.sql.RelationalPathBase<Dmalm
 
     public final com.mysema.query.sql.PrimaryKey<DmalmFaseOds> sysC0023554 = createPrimaryKey(dmalmFasePk);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
     public QDmalmFaseOds(String variable) {
         super(DmalmFaseOds.class, forVariable(variable), "DMALM", "DMALM_FASE_ODS");
     }

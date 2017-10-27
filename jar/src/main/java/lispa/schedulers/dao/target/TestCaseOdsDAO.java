@@ -93,7 +93,8 @@ public class TestCaseOdsDAO {
 								testCaseODS.numeroTestata,
 								testCaseODS.rankStatoTestcase,
 								testCaseODS.titoloTestcase, testCaseODS.stgPk,
-								testCaseODS.dmalmUserFk06, testCaseODS.uri)
+								testCaseODS.dmalmUserFk06, testCaseODS.uri,
+								testCaseODS.severity, testCaseODS.priority)
 						.values(testcase.getCdTestcase(), testcase.getCodice(),
 								testcase.getDataEsecuzioneTestcase(),
 								testcase.getDescrizioneTestcase(),
@@ -118,7 +119,8 @@ public class TestCaseOdsDAO {
 								testcase.getNumeroTestata(), new Double(1),
 								testcase.getTitoloTestcase(),
 								testcase.getStgPk(),
-								testcase.getDmalmUserFk06(), testcase.getUri())
+								testcase.getDmalmUserFk06(), testcase.getUri(),
+								testcase.getSeverity(), testcase.getPriority())
 						.execute();
 
 			}

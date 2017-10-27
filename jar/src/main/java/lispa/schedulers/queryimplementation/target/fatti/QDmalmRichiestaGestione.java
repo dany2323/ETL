@@ -86,6 +86,12 @@ public class QDmalmRichiestaGestione extends com.mysema.query.sql.RelationalPath
 
     public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
     
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmRichiestaGestione(String variable) {
         super(DmalmRichiestaGestione.class, forVariable(variable), "DMALM", "DMALM_RICHIESTA_GESTIONE");
     }

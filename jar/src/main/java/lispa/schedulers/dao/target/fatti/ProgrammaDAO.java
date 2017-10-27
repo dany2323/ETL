@@ -101,6 +101,10 @@ public class ProgrammaDAO {
 				bean.setCfReferenteRegionale(rs
 						.getString("REFERENTE_REGIONALE_PROGRAMMA"));
 				bean.setCfTipologia(rs.getString("TIPOLOGIA_PROGRAMMA"));
+				
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				programmi.add(bean);
 			}
@@ -188,7 +192,8 @@ public class ProgrammaDAO {
 							prog.titoloProgramma, prog.cfContratto,
 							prog.cfReferenteRegionale, prog.cfServiceManager,
 							prog.cfTipologia, prog.stgPk, prog.dmalmUserFk06,
-							prog.codice, prog.uri, prog.dtAnnullamento)
+							prog.codice, prog.uri, prog.dtAnnullamento,
+							prog.severity, prog.priority)
 					.values(program.getAssignee(), program.getCdProgramma(),
 							program.getDescrizioneProgramma(),
 							program.getDmalmProgrammaPk(),
@@ -215,7 +220,9 @@ public class ProgrammaDAO {
 							program.getCfServiceManager(),
 							program.getCfTipologia(), program.getStgPk(),
 							program.getDmalmUserFk06(), program.getCodice(),
-							program.getUri(), program.getDtAnnullamento())
+							program.getUri(), program.getDtAnnullamento(),
+							//DM_ALM-320
+							program.getSeverity(), program.getPriority())
 					.execute();
 
 			connection.commit();
@@ -289,7 +296,8 @@ public class ProgrammaDAO {
 							prog.cfReferenteRegionale, prog.cfServiceManager,
 							prog.cfTipologia, prog.stgPk, prog.dmalmUserFk06,
 							prog.codice, prog.uri, prog.dtAnnullamento,
-							prog.changed, prog.annullato)
+							prog.changed, prog.annullato,
+							prog.severity, prog.priority)
 					.values(program.getAssignee(),
 							program.getCdProgramma(),
 							program.getDescrizioneProgramma(),
@@ -322,7 +330,9 @@ public class ProgrammaDAO {
 							program.getCfTipologia(), program.getStgPk(),
 							program.getDmalmUserFk06(), program.getCodice(),
 							program.getUri(), program.getDtAnnullamento(),
-							program.getChanged(), program.getAnnullato())
+							program.getChanged(), program.getAnnullato(),
+							//DM_ALM-320
+							program.getSeverity(), program.getPriority())
 					.execute();
 
 			connection.commit();
@@ -389,6 +399,9 @@ public class ProgrammaDAO {
 					.set(prog.codice, program.getCodice())
 					.set(prog.dtAnnullamento, program.getDtAnnullamento())
 					.set(prog.annullato, program.getAnnullato())
+					.set(prog.severity, program.getSeverity())
+					//DM_ALM-320
+					.set(prog.priority, program.getPriority())
 					.execute();
 
 			connection.commit();
@@ -467,7 +480,10 @@ public class ProgrammaDAO {
 			p.setStgPk(t.get(prog.stgPk));
 			p.setTitoloProgramma(t.get(prog.titoloProgramma));
 			p.setUri(t.get(prog.uri));
-
+			//DM_ALM-320
+			p.setSeverity(t.get(prog.severity));
+			p.setPriority(t.get(prog.priority));
+			
 			return p;
 
 		} else

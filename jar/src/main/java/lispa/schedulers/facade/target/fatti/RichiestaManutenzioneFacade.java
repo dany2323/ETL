@@ -115,6 +115,14 @@ private static Logger logger = Logger.getLogger(RichiestaManutenzioneFacade.clas
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(rich.severity), richiesta.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(rich.priority), richiesta.getPriority()))
+							{
+								modificato = true;
+							}
 
 							if(modificato)
 							{

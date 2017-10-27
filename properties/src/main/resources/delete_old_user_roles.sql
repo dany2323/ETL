@@ -1,0 +1,1 @@
+delete from dmalm_user_roles_sgr ur where ur.dmalm_user_roles_pk = ?

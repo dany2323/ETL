@@ -84,7 +84,8 @@ public class ProgettoEseOdsDAO {
 								progettoEseOds.cfCodice, progettoEseOds.stgPk,
 								progettoEseOds.cfDtUltimaSottomissione,
 								progettoEseOds.dmalmUserFk06,
-								progettoEseOds.uri)
+								progettoEseOds.uri,
+								progettoEseOds.severity, progettoEseOds.priority)
 						.values(progetto.getCdProgettoEse(),
 								progetto.getDescrizioneProgettoEse(),
 								progetto.getDmalmProgettoEsePk(),
@@ -106,7 +107,8 @@ public class ProgettoEseOdsDAO {
 								new Double(1), progetto.getTitoloProgettoEse(),
 								progetto.getCfCodice(), progetto.getStgPk(),
 								progetto.getCfDtUltimaSottomissione(),
-								progetto.getDmalmUserFk06(), progetto.getUri())
+								progetto.getDmalmUserFk06(), progetto.getUri(),
+								progetto.getSeverity(), progetto.getPriority())
 						.execute();
 
 				connection.commit();

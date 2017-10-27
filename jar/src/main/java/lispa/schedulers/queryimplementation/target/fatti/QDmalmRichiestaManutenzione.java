@@ -117,6 +117,12 @@ public class QDmalmRichiestaManutenzione extends
 	public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime(
 			"DT_ANNULLAMENTO", java.sql.Timestamp.class);
 
+	//DM_ALM-320
+	public final StringPath severity = createString("SEVERITY");
+	    
+	public final StringPath priority = createString("PRIORITY");
+	
+	
 	public QDmalmRichiestaManutenzione(String variable) {
 		super(DmalmRichiestaManutenzione.class, forVariable(variable), "DMALM",
 				"DMALM_RICHIESTA_MANUTENZIONE");

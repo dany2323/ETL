@@ -112,6 +112,10 @@ public class SottoprogrammaDAO {
 				bean.setDtCompletamento(rs
 						.getTimestamp("DATA_COMPLETAMENTO_SP"));
 
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
+				
 				sottoprogrammi.add(bean);
 			}
 
@@ -207,7 +211,8 @@ public class SottoprogrammaDAO {
 							sottoprogramma.dmalmTempoFk04,
 							sottoprogramma.dtCaricamentoSottoprogramma,
 							sottoprogramma.stgPk, sottoprogramma.dmalmUserFk06,
-							sottoprogramma.uri, sottoprogramma.dtAnnullamento)
+							sottoprogramma.uri, sottoprogramma.dtAnnullamento,
+							sottoprogramma.severity, sottoprogramma.priority)
 					.values(subprogram.getIdRepository(),
 							subprogram.getDmalmSottoprogrammaPk(),
 							subprogram.getCdSottoprogramma(),
@@ -232,7 +237,8 @@ public class SottoprogrammaDAO {
 							subprogram.getDtCaricamentoSottoprogramma(),
 							subprogram.getStgPk(),
 							subprogram.getDmalmUserFk06(), subprogram.getUri(),
-							subprogram.getDtAnnullamento()).execute();
+							subprogram.getDtAnnullamento(),
+							subprogram.getSeverity(), subprogram.getPriority()).execute();
 
 			connection.commit();
 
@@ -324,7 +330,8 @@ public class SottoprogrammaDAO {
 							sottoprogramma.dtCaricamentoSottoprogramma,
 							sottoprogramma.stgPk, sottoprogramma.dmalmUserFk06,
 							sottoprogramma.uri, sottoprogramma.dtAnnullamento,
-							sottoprogramma.changed, sottoprogramma.annullato)
+							sottoprogramma.changed, sottoprogramma.annullato,
+							sottoprogramma.severity, sottoprogramma.priority)
 					.values(subprogram.getIdRepository(),
 							pkValue == true ? subprogram
 									.getDmalmSottoprogrammaPk()
@@ -356,7 +363,8 @@ public class SottoprogrammaDAO {
 							subprogram.getStgPk(),
 							subprogram.getDmalmUserFk06(), subprogram.getUri(),
 							subprogram.getDtAnnullamento(),
-							subprogram.getChanged(), subprogram.getAnnullato())
+							subprogram.getChanged(), subprogram.getAnnullato(),
+							subprogram.getSeverity(), subprogram.getPriority())
 					.execute();
 
 			connection.commit();
@@ -430,7 +438,11 @@ public class SottoprogrammaDAO {
 					.set(sottoprogramma.uri, subprogram.getUri())
 					.set(sottoprogramma.dtAnnullamento,
 							subprogram.getDtAnnullamento())
-					.set(sottoprogramma.annullato, subprogram.getAnnullato()).execute();
+					.set(sottoprogramma.annullato, subprogram.getAnnullato())
+					//DM_ALM-320
+					.set(sottoprogramma.severity, subprogram.getSeverity())
+					.set(sottoprogramma.priority, subprogram.getPriority())
+					.execute();
 
 			connection.commit();
 
@@ -521,6 +533,9 @@ public class SottoprogrammaDAO {
 			s.setTitoloSottoprogramma(t
 					.get(sottoprogramma.titoloSottoprogramma));
 			s.setUri(t.get(sottoprogramma.uri));
+			//DM_ALM-320
+			s.setSeverity(t.get(sottoprogramma.severity));
+			s.setPriority(t.get(sottoprogramma.priority));
 
 			return s;
 

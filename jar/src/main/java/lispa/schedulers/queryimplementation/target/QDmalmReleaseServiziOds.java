@@ -79,6 +79,12 @@ public class QDmalmReleaseServiziOds extends com.mysema.query.sql.RelationalPath
 
     public final com.mysema.query.sql.PrimaryKey<DmalmReleaseServiziOds> sysC0024515 = createPrimaryKey(dmalmRelServiziPk);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmReleaseServiziOds(String variable) {
         super(DmalmReleaseServiziOds.class, forVariable(variable), "DMALM", "DMALM_RELEASE_SERVIZI_ODS");
     }

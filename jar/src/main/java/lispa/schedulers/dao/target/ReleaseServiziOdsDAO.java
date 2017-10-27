@@ -88,7 +88,9 @@ public class ReleaseServiziOdsDAO {
 								releaseserviziODS.previstoFermoServizioRel,
 								releaseserviziODS.richiestaAnalisiImpattiRel,
 								releaseserviziODS.dmalmUserFk06,
-								releaseserviziODS.uri)
+								releaseserviziODS.uri,
+								releaseserviziODS.severity,
+								releaseserviziODS.priority)
 						.values(release.getCdRelServizi(),
 								release.getDescrizioneRelServizi(),
 								release.getDmalmRelServiziPk(),
@@ -112,7 +114,8 @@ public class ReleaseServiziOdsDAO {
 								release.getMotivoSospensioneReleaseSer(),
 								release.getPrevistoFermoServizioRel(),
 								release.getRichiestaAnalisiImpattiRel(),
-								release.getDmalmUserFk06(), release.getUri())
+								release.getDmalmUserFk06(), release.getUri(),
+								release.getSeverity(), release.getPriority())
 						.execute();
 				connection.commit();
 			}

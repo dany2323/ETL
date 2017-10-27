@@ -89,7 +89,8 @@ public class ClassificatoreOdsDAO {
 								ods.assigneeProgettoItInDeroga,
 								ods.locationSorgenti,
 								ods.type,
-								ods.codiceServizi)
+								ods.codiceServizi,
+								ods.severity, ods.priority)
 						.values(classificatore.getCd_classificatore(),
 								classificatore.getCf_ambito(), classificatore.getCf_area(),
 								classificatore.getCf_riferimenti(),
@@ -120,7 +121,9 @@ public class ClassificatoreOdsDAO {
 								classificatore.getAssigneeProgettoItInDeroga(),
 								classificatore.getLocationSorgenti(),
 								classificatore.getType(),
-								classificatore.getCodiceServizi()).execute();
+								classificatore.getCodiceServizi(),
+								classificatore.getSeverity(),
+								classificatore.getPriority()).execute();
 
 			}
 

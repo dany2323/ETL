@@ -99,7 +99,8 @@ public class ReleaseDiProgettoOdsDAO {
 								releaseODS.dmalmAreaTematicaFk05,
 								releaseODS.dmalmUserFk06, releaseODS.uri,
 								releaseODS.dtInizioQF, releaseODS.dtFineQF,
-								releaseODS.numQuickFix)
+								releaseODS.numQuickFix,
+								releaseODS.severity, releaseODS.priority)
 						.values(release.getCdReleasediprog(),
 								release.getCodice(),
 								release.getDataDisponibilitaEff(),
@@ -129,7 +130,9 @@ public class ReleaseDiProgettoOdsDAO {
 								release.getDmalmAreaTematicaFk05(),
 								release.getDmalmUserFk06(), release.getUri(),
 								release.getDtInizioQF(), release.getDtFineQF(),
-								release.getNumQuickFix()).execute();
+								release.getNumQuickFix(),
+								//DM_ALM-320
+								release.getSeverity(), release.getPriority()).execute();
 
 			}
 

@@ -80,6 +80,12 @@ public class QDmalmPeiOds extends com.mysema.query.sql.RelationalPathBase<DmalmP
 
     public final com.mysema.query.sql.PrimaryKey<DmalmPeiOds> sysC0023624 = createPrimaryKey(dmalmPeiPk);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmPeiOds(String variable) {
         super(DmalmPeiOds.class, forVariable(variable), "DMALM", "DMALM_PEI_ODS");
     }

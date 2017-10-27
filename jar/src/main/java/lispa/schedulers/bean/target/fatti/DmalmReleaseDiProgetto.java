@@ -86,6 +86,12 @@ public class DmalmReleaseDiProgetto {
 	
 	private String annullato;
     
+	//DM_ALM-320
+	private String severity;
+	
+	private String priority;
+	
+	
     public String getChanged() {
 		return changed;
 	}
@@ -397,6 +403,22 @@ public class DmalmReleaseDiProgetto {
 
 	public void setAnnullato(String annullato) {
 		this.annullato = annullato;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 
 

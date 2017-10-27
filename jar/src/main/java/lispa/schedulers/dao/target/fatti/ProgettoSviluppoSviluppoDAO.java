@@ -110,6 +110,9 @@ public class ProgettoSviluppoSviluppoDAO {
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_PROG_SVIL_S_PK"));
 				bean.setTitoloProgSvilS(rs.getString("TITOLO_PROG_SVIL_S"));
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				progettiSviluppo.add(bean);
 			}
@@ -214,7 +217,9 @@ public class ProgettoSviluppoSviluppoDAO {
 							progetto.dtStoricizzazione, progetto.stgPk,
 							progetto.dmalmUserFk06, progetto.uri,
 							progetto.dmalmProgettoSferaFk,
-							progetto.dtAnnullamento)
+							progetto.dtAnnullamento,
+							progetto.severity,
+							progetto.priority)
 					.values(progettoSviluppo.getCdProgSvilS(),
 							progettoSviluppo.getCodice(),
 							progettoSviluppo.getDataChiusuraProgSvilS(),
@@ -250,7 +255,10 @@ public class ProgettoSviluppoSviluppoDAO {
 							progettoSviluppo.getDmalmUserFk06(),
 							progettoSviluppo.getUri(),
 							progettoSviluppo.getDmalmProgettoSferaFk(),
-							progettoSviluppo.getDtAnnullamento()).execute();
+							progettoSviluppo.getDtAnnullamento(),
+							//DM_ALM-320
+							progettoSviluppo.getSeverity(),
+							progettoSviluppo.getPriority()).execute();
 
 			connection.commit();
 
@@ -342,7 +350,9 @@ public class ProgettoSviluppoSviluppoDAO {
 							progetto.dmalmUserFk06, progetto.uri,
 							progetto.dmalmProgettoSferaFk,
 							progetto.dtAnnullamento, progetto.changed,
-							progetto.annullato)
+							progetto.annullato,
+							progetto.severity,
+							progetto.priority)
 					.values(progettoSviluppo.getCdProgSvilS(),
 							progettoSviluppo.getCodice(),
 							progettoSviluppo.getDataChiusuraProgSvilS(),
@@ -384,7 +394,10 @@ public class ProgettoSviluppoSviluppoDAO {
 							progettoSviluppo.getDmalmProgettoSferaFk(),
 							progettoSviluppo.getDtAnnullamento(),
 							progettoSviluppo.getChanged(),
-							progettoSviluppo.getAnnullato()).execute();
+							progettoSviluppo.getAnnullato(),
+							//DM_ALM-320
+							progettoSviluppo.getSeverity(),
+							progettoSviluppo.getPriority()).execute();
 
 			connection.commit();
 
@@ -473,6 +486,9 @@ public class ProgettoSviluppoSviluppoDAO {
 					.set(progetto.dtAnnullamento,
 							progettoSviluppo.getDtAnnullamento())
 					.set(progetto.annullato, progettoSviluppo.getAnnullato())
+					//DM_ALM-320
+					.set(progetto.severity, progettoSviluppo.getSeverity())
+					.set(progetto.priority, progettoSviluppo.getPriority())
 					.execute();
 
 			connection.commit();
@@ -561,7 +577,10 @@ public class ProgettoSviluppoSviluppoDAO {
 			p.setStgPk(t.get(progetto.stgPk));
 			p.setTitoloProgSvilS(t.get(progetto.stgPk));
 			p.setUri(t.get(progetto.uri));
-
+			//DM_ALM-320
+			p.setSeverity(t.get(progetto.severity));
+			p.setPriority(t.get(progetto.priority));
+			
 			return p;
 
 		} else

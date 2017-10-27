@@ -45,7 +45,9 @@ SELECT
            {ts '1900-01-01 00:00:00'}
            ))
            else {ts '9999-12-31 00:00:00'}
-		END as DATA_PASSAGGIO_ESECUZIONE_FASE
+		END as DATA_PASSAGGIO_ESECUZIONE_FASE,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -106,7 +108,9 @@ SELECT
            {ts '1900-01-01 00:00:00'}
            ))
            else {ts '9999-12-31 00:00:00'}
-		END as DATA_PASSAGGIO_ESECUZIONE_FASE
+		END as DATA_PASSAGGIO_ESECUZIONE_FASE,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 
