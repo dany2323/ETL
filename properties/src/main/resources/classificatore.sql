@@ -18,7 +18,9 @@ SELECT 'SIRE' as ID_REPOSITORY,
 			, TO_TIMESTAMP('31-12-9999 00:00:00','DD-MM-YYYY HH24:MI:SS')
 		) as  DT_RISOLUZIONE_CLASSIF,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_CLASSIF,
-		hw.codice as CODICE
+		hw.codice as CODICE,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -52,7 +54,9 @@ SELECT 'SISS' as ID_REPOSITORY,
 			, TO_TIMESTAMP('31-12-9999 00:00:00','DD-MM-YYYY HH24:MI:SS')
 		) as  DT_RISOLUZIONE_CLASSIF,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_CLASSIF,
-		hw.codice as CODICE
+		hw.codice as CODICE,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 

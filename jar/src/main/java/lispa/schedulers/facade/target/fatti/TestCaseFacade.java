@@ -115,6 +115,15 @@ private static Logger logger = Logger.getLogger(TestCaseFacade.class);
 							{
 								modificato = true;
 							}
+							//DM_ALM-320
+							if(!modificato && BeanUtils.areDifferent(row.get(tstcs.severity), testcase.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(tstcs.priority), testcase.getPriority()))
+							{
+								modificato = true;
+							}
 							if(!modificato && BeanUtils.areDifferent(row.get(tstcs.annullato), testcase.getAnnullato()))
 							{
 								logger.debug("_______________________________________________----_________________________________________");

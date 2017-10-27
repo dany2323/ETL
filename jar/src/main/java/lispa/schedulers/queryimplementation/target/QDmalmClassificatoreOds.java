@@ -108,6 +108,12 @@ public class QDmalmClassificatoreOds extends
 	
 	public final StringPath codiceServizi = createString("CODICE_SERVIZI");
 
+	//DM_ALM-320
+	public final StringPath severity = createString("SEVERITY");
+	    
+	public final StringPath priority = createString("PRIORITY");
+	
+	
 	public QDmalmClassificatoreOds(Path<? extends DmalmClassificatoreDemOds> path) {
 		super(path.getType(), path.getMetadata(), "DMALM",
 				"DMALM_CLASSIFICATORE_ODS");

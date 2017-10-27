@@ -90,7 +90,8 @@ public class SottoprogrammaOdsDAO {
 								sottoprogrammaODS.dtCaricamentoSottoprogramma,
 								sottoprogrammaODS.dmalmTempoFk04,
 								sottoprogrammaODS.dmalmUserFk06,
-								sottoprogrammaODS.uri)
+								sottoprogrammaODS.uri,
+								sottoprogrammaODS.severity, sottoprogrammaODS.priority)
 						.values(sottoprogramma.getIdRepository(),
 								sottoprogramma.getDmalmSottoprogrammaPk(),
 								sottoprogramma.getCdSottoprogramma(),
@@ -114,7 +115,9 @@ public class SottoprogrammaOdsDAO {
 								sottoprogramma.getDtCaricamentoSottoprogramma(),
 								sottoprogramma.getDmalmTempoFk04(),
 								sottoprogramma.getDmalmUserFk06(),
-								sottoprogramma.getUri()).execute();
+								sottoprogramma.getUri(),
+								//DM_ALM-320
+								sottoprogramma.getSeverity(), sottoprogramma.getPriority()).execute();
 			}
 			connection.commit();
 		} catch (Exception e) {

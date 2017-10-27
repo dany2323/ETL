@@ -109,6 +109,9 @@ public class QDmalmAnomaliaProdotto extends com.mysema.query.sql.RelationalPathB
     //DM_ALM-223
     public final DateTimePath<java.sql.Timestamp> dataDisponibilita = createDateTime("DATA_DISPONIBILITA", java.sql.Timestamp.class);
     
+    //DM_ALM-320
+    public final StringPath priority = createString("PRIORITY");
+    
     public QDmalmAnomaliaProdotto(String variable) {
         super(DmalmAnomaliaProdotto.class, forVariable(variable), "DMALM", "DMALM_ANOMALIA_PRODOTTO");
     }

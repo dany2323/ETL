@@ -77,7 +77,8 @@ public class DifettoProdottoOdsDAO {
 								difettoODS.naturaDifetto,
 								difettoODS.dmalmUserFk06, difettoODS.uri,
 								difettoODS.effortCostoSviluppo,
-								difettoODS.dtDisponibilita)
+								difettoODS.dtDisponibilita,
+								difettoODS.priority)
 						.values(difetto.getCdDifetto(),
 								difetto.getDmalmDifettoProdottoPk(),
 								difetto.getDmalmProjectFk02(),
@@ -108,7 +109,9 @@ public class DifettoProdottoOdsDAO {
 								difetto.getNaturaDifetto(),
 								difetto.getDmalmUserFk06(), difetto.getUri(),
 								difetto.getEffortCostoSviluppo(),
-								difetto.getDtDisponibilita()).execute();
+								difetto.getDtDisponibilita(),
+								//DM_ALM-320
+								difetto.getPriority()).execute();
 			}
 
 			connection.commit();

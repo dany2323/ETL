@@ -114,7 +114,10 @@ public class RichiestaManutenzioneDAO {
 						.getString("TITOLO_RICH_MANUTENZIONE"));
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_RICH_MANUTENZIONE_PK"));
-
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
+				
 				richieste.add(bean);
 			}
 
@@ -215,7 +218,8 @@ public class RichiestaManutenzioneDAO {
 							rch_man.rankStatoRichManutenzione,
 							rch_man.titoloRichiestaManutenzione, rch_man.stgPk,
 							rch_man.dmalmUserFk06, rch_man.uri,
-							rch_man.dtAnnullamento)
+							rch_man.dtAnnullamento,
+							rch_man.severity, rch_man.priority)
 					.values(richiesta.getCdRichiestaManutenzione(),
 							richiesta.getClasseDiFornitura(),
 							richiesta.getCodice(),
@@ -245,7 +249,8 @@ public class RichiestaManutenzioneDAO {
 							new Double(1),
 							richiesta.getTitoloRichiestaManutenzione(),
 							richiesta.getStgPk(), richiesta.getDmalmUserFk06(),
-							richiesta.getUri(), richiesta.getDtAnnullamento())
+							richiesta.getUri(), richiesta.getDtAnnullamento(),
+							richiesta.getSeverity(), richiesta.getPriority())
 					.execute();
 
 			connection.commit();
@@ -335,7 +340,8 @@ public class RichiestaManutenzioneDAO {
 							rch_man.titoloRichiestaManutenzione, rch_man.stgPk,
 							rch_man.dmalmUserFk06, rch_man.uri,
 							rch_man.dtAnnullamento, rch_man.changed,
-							rch_man.annullato)
+							rch_man.annullato,
+							rch_man.severity, rch_man.priority)
 					.values(richiesta.getCdRichiestaManutenzione(),
 							richiesta.getClasseDiFornitura(),
 							richiesta.getCodice(),
@@ -371,7 +377,8 @@ public class RichiestaManutenzioneDAO {
 							richiesta.getTitoloRichiestaManutenzione(),
 							richiesta.getStgPk(), richiesta.getDmalmUserFk06(),
 							richiesta.getUri(), richiesta.getDtAnnullamento(),
-							richiesta.getChanged(), richiesta.getAnnullato())
+							richiesta.getChanged(), richiesta.getAnnullato(),
+							richiesta.getSeverity(), richiesta.getPriority())
 					.execute();
 
 			connection.commit();
@@ -454,6 +461,8 @@ public class RichiestaManutenzioneDAO {
 					.set(rch_man.uri, richiesta.getUri())
 					.set(rch_man.dtAnnullamento, richiesta.getDtAnnullamento())
 					.set(rch_man.annullato, richiesta.getAnnullato())
+					.set(rch_man.severity, richiesta.getSeverity())
+					.set(rch_man.priority, richiesta.getPriority())
 					.execute();
 
 			connection.commit();
@@ -541,6 +550,9 @@ public class RichiestaManutenzioneDAO {
 			r.setTitoloRichiestaManutenzione(t
 					.get(rch_man.titoloRichiestaManutenzione));
 			r.setUri(t.get(rch_man.uri));
+			//DM_ALM-320
+			r.setSeverity(t.get(rch_man.severity));
+			r.setPriority(t.get(rch_man.priority));
 
 			return r;
 

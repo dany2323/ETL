@@ -116,6 +116,8 @@ public class DifettoDAO {
 				bean.setNaturaDifetto(rs.getString("NATURA"));
 				bean.setEffortCostoSviluppo(rs.getInt("EFFORT_COSTO_SVILUPPO"));
 				bean.setDtDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
+				//DM_ALM-320
+				bean.setPriority(rs.getString("PRIORITY_ANOMALIA"));
 
 				difetti.add(bean);
 			}
@@ -270,6 +272,8 @@ public class DifettoDAO {
 							difetto.getDtAnnullamento())
 					.set(difettoProdotto.annullato, difetto.getAnnullato())
 					.set(difettoProdotto.dataDisponibilita, difetto.getDtDisponibilita())
+					//DM_ALM-320
+					.set(difettoProdotto.priority, difetto.getPriority())
 					.execute();
 
 			connection.commit();
@@ -326,7 +330,8 @@ public class DifettoDAO {
 							difetto.effortCostoSviluppo,
 							difetto.flagUltimaSituazione,
 							difetto.dtAnnullamento,
-							difetto.dataDisponibilita)
+							difetto.dataDisponibilita,
+							difetto.priority)
 					.values(bean.getCdDifetto(),
 							bean.getDmalmDifettoProdottoPk(),
 							bean.getDmalmProjectFk02(),
@@ -355,7 +360,9 @@ public class DifettoDAO {
 							bean.getDmalmUserFk06(), bean.getUri(),
 							bean.getEffortCostoSviluppo(), new Short("1"),
 							bean.getDtAnnullamento(),
-							bean.getDtDisponibilita()).execute();
+							bean.getDtDisponibilita(),
+							//DM_ALM-320
+							bean.getPriority()).execute();
 
 			connection.commit();
 
@@ -413,7 +420,8 @@ public class DifettoDAO {
 							difetto.flagUltimaSituazione,
 							difetto.dtAnnullamento, difetto.changed,
 							difetto.annullato,
-							difetto.dataDisponibilita)
+							difetto.dataDisponibilita,
+							difetto.priority)
 					.values(bean.getCdDifetto(),
 							pkValue == true ? bean.getDmalmDifettoProdottoPk()
 									: StringTemplate
@@ -449,7 +457,9 @@ public class DifettoDAO {
 							bean.getUri(), bean.getEffortCostoSviluppo(),
 							pkValue == true ? new Short("1")  : bean.getFlagUltimaSituazione(), bean.getDtAnnullamento(),
 							bean.getChanged(), bean.getAnnullato(),
-							bean.getDtDisponibilita()).execute();
+							bean.getDtDisponibilita(),
+							//DM_ALM-320
+							bean.getPriority()).execute();
 
 			connection.commit();
 
@@ -606,6 +616,8 @@ public class DifettoDAO {
 					.get(difetto.tempoTotRisoluzioneDifetto));
 			d.setUri(t.get(difetto.uri));
 			d.setDtDisponibilita(t.get(difetto.dataDisponibilita));
+			//DM_ALM-320
+			d.setPriority(t.get(difetto.priority));
 
 			return d;
 

@@ -90,6 +90,9 @@ public class BuildDAO {
 				bean.setTitoloBuild(rs.getString("TITOLO_BUILD"));
 				bean.setStgPk(rs.getString("STG_BUILD_PK"));
 				bean.setUri(rs.getString("URI_WI"));
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				builds.add(bean);
 			}
@@ -181,7 +184,8 @@ public class BuildDAO {
 							BuildDAO.build.titoloBuild, BuildDAO.build.stgPk,
 							BuildDAO.build.codice,
 							BuildDAO.build.dmalmUserFk06, BuildDAO.build.uri,
-							BuildDAO.build.dtAnnullamento)
+							BuildDAO.build.dtAnnullamento,
+							BuildDAO.build.severity, BuildDAO.build.priority)
 					.values(build.getCdBuild(), build.getDescrizioneBuild(),
 							build.getDmalmBuildPk(),
 							build.getDmalmProjectFk02(),
@@ -200,7 +204,8 @@ public class BuildDAO {
 							build.getMotivoRisoluzioneBuild(), new Double(1),
 							build.getTitoloBuild(), build.getStgPk(),
 							build.getCodice(), build.getDmalmUserFk06(),
-							build.getUri(), build.getDtAnnullamento())
+							build.getUri(), build.getDtAnnullamento(),
+							build.getSeverity(), build.getPriority())
 					.execute();
 
 			connection.commit();
@@ -278,7 +283,8 @@ public class BuildDAO {
 							BuildDAO.build.codice,
 							BuildDAO.build.dmalmUserFk06, BuildDAO.build.uri,
 							BuildDAO.build.dtAnnullamento,
-							BuildDAO.build.changed, BuildDAO.build.annullato)
+							BuildDAO.build.changed, BuildDAO.build.annullato,
+							BuildDAO.build.severity, BuildDAO.build.priority)
 					.values(build.getCdBuild(),
 							build.getDescrizioneBuild(),
 							pkValue == true ? build.getDmalmBuildPk()
@@ -303,7 +309,8 @@ public class BuildDAO {
 							build.getTitoloBuild(), build.getStgPk(),
 							build.getCodice(), build.getDmalmUserFk06(),
 							build.getUri(), build.getDtAnnullamento(),
-							build.getChanged(), build.getAnnullato()).execute();
+							build.getChanged(), build.getAnnullato(),
+							build.getSeverity(), build.getPriority()).execute();
 
 			connection.commit();
 
@@ -363,8 +370,11 @@ public class BuildDAO {
 					.set(BuildDAO.build.codice, build.getCodice())
 					.set(BuildDAO.build.dtAnnullamento,
 							build.getDtAnnullamento())
-					.set(BuildDAO.build.annullato, build.getAnnullato()).execute();
-
+					.set(BuildDAO.build.annullato, build.getAnnullato())
+					.set(BuildDAO.build.severity, build.getSeverity())
+					.set(BuildDAO.build.priority, build.getPriority())
+					.execute();
+					
 			connection.commit();
 
 		} catch (Exception e) {
@@ -432,6 +442,9 @@ public class BuildDAO {
 			b.setStgPk(t.get(bb.stgPk));
 			b.setTitoloBuild(t.get(bb.titoloBuild));
 			b.setUri(t.get(bb.uri));
+			//DM_ALM-320
+			b.setSeverity(t.get(bb.severity));
+			b.setPriority(t.get(bb.priority));
 
 			return b;
 

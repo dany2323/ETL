@@ -94,7 +94,12 @@ public class QDmalmProgettoSviluppoSOds extends com.mysema.query.sql.RelationalP
     public final StringPath titoloProgSvilS = createString("TITOLO_PROG_SVIL_S");
 
     public final com.mysema.query.sql.PrimaryKey<DmalmProgettoSviluppoSOds> sysC0022942 = createPrimaryKey(dmalmProgSvilSPk);
-
+    
+    //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+    
+    public final StringPath priority = createString("PRIORITY");
+    
     public QDmalmProgettoSviluppoSOds(String variable) {
         super(DmalmProgettoSviluppoSOds.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_SVILUPPO_S_ODS");
     }

@@ -145,6 +145,21 @@ public class ProgettoDemandFacade {
 											progetto.getAnnullato())) {
 								modificato = true;
 							}
+							//DM_ALM-320
+							if (!modificato
+									&& BeanUtils.areDifferent(
+											row.get(progDemand.severity),
+											progetto.getSeverity())) {
+								modificato = true;
+							}
+							if (!modificato
+									&& BeanUtils.areDifferent(
+											row.get(progDemand.priority),
+											progetto.getPriority())) {
+								modificato = true;
+							}
+							
+							
 							if (modificato) {
 								righeModificate++;
 								// STORICIZZO

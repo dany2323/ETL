@@ -19,7 +19,9 @@ SELECT 'SIRE' as ID_REPOSITORY,
 			hw.c_resolvedon
 			, {ts '9999-12-31 00:00:00'}
 		) as DATA_RISOLUZIONE_BUILD,
-		TO_CHAR(hw.c_description) as DESCRIPTION
+		TO_CHAR(hw.c_description) as DESCRIPTION,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -54,7 +56,9 @@ SELECT 'SISS' as ID_REPOSITORY,
 			hw.c_resolvedon
 			, {ts '9999-12-31 00:00:00'}
 		) as DATA_RISOLUZIONE_BUILD,
-		TO_CHAR(hw.c_description) as DESCRIPTION
+		TO_CHAR(hw.c_description) as DESCRIPTION,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 

@@ -22,7 +22,9 @@ SELECT 'SIRE' as ID_REPOSITORY,
 		TO_CHAR(hw.c_description) as DESCRIPTION,
 		hw.codice as CODICE,
 		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_fornitura_reqs') as DATA_CF_FORNITURA_REQS_PEI,
-		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_passaggio_prod') as DATA_CF_FORNITURA_PROD_PEI
+		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_passaggio_prod') as DATA_CF_FORNITURA_PROD_PEI,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -60,7 +62,9 @@ SELECT 'SISS' as ID_REPOSITORY,
 		TO_CHAR(hw.c_description) as DESCRIPTION,
 		hw.codice as CODICE,
 		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_fornitura_reqs') as DATA_CF_FORNITURA_REQS_PEI,
-		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_passaggio_prod') as DATA_CF_FORNITURA_PROD_PEI
+		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_passaggio_prod') as DATA_CF_FORNITURA_PROD_PEI,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 

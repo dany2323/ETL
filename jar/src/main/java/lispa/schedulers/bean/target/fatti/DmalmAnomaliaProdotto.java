@@ -95,6 +95,9 @@ public class DmalmAnomaliaProdotto {
 	//DM_ALM-223
 	private java.sql.Timestamp dtDisponibilita;
 	
+	//DM_ALM-320
+	private String priority;
+	
     public java.sql.Timestamp getDtDisponibilita() {
 		return dtDisponibilita;
 	}
@@ -437,6 +440,14 @@ public class DmalmAnomaliaProdotto {
 
 	public void setNoteContestazione(String noteContestazione) {
 		this.noteContestazione = noteContestazione;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 
 }

@@ -115,6 +115,14 @@ public class BuildFacade {
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(build_it.severity), build.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(build_it.priority), build.getPriority()))
+							{
+								modificato = true;
+							}
 							
 							
 							if(modificato)
