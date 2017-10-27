@@ -76,58 +76,58 @@ public class DmAlmETL {
 				logger.debug(e);
 			}
 
-//			logger.info("START DmAlmFillTarget.doWork()");
-//			DmAlmFillTarget.doWork();
-//			logger.info("STOP DmAlmFillTarget.doWork()");
-//
-//			// ATTIVITA' POST TARGET
-//			// se non è stato eseguito il recover passo agli step successivi
-//			if (!RecoverManager.getInstance().isRecovered()) {
-//				logger.info("START DmAlmCheckAnnullamenti.doWork()");
-//				DmAlmCheckAnnullamenti.doWork();
-//				logger.info("STOP DmAlmCheckAnnullamenti.doWork()");
-//
-//				// se errore non eseguo gli step successivi
-//				if (!ErrorManager.getInstance().hasError()) {
-//					logger.info("START DmAlmCheckLinkSferaSgrCmElettra.doWork()");
-//					DmAlmCheckLinkSferaSgrCmElettra.doWork();
-//					logger.info("STOP DmAlmCheckLinkSferaSgrCmElettra.doWork()");
-//				}
-//
-//				// se errore non eseguo gli step successivi
-//				if (!ErrorManager.getInstance().hasError()) {
-//					logger.info("START DmAlmCheckChangedWorkitem.doWork()");
-//					DmAlmCheckChangedWorkitem.doWork();
-//					logger.info("STOP DmAlmCheckChangedWorkitem.doWork()");
-//				}
-//
-//				// gestione esecuzione effettuata direttamente nel facade
-//				CheckAnomaliaDifettoProdottoFacade.execute();
-//
-//				// Gestione delle filiere, gestione esecuzione effettuata direttamente nel facade
-//				DmAlmFiliere.doWork();
-//				
-//				// pulizia tabelle esiti e errori caricamento
-//				SvecchiamentoFacade.execute();
-//
-//				// se errore in uno degli step precedenti eseguo il ripristino
-//				// di tutto
-//				if (ErrorManager.getInstance().hasError()) {
-//					// SFERA/ELETTRA/SGRCM
-//					if (ExecutionManager.getInstance().isExecutionSfera()
-//							|| ExecutionManager.getInstance()
-//									.isExecutionElettraSgrcm()) {
-//						RecoverManager.getInstance().startRecoverTarget();
-//						RecoverManager.getInstance().startRecoverStaging();
-//					}
-//
-//					// MPS
-//					if (ExecutionManager.getInstance().isExecutionMps()) {
-//						RecoverManager.getInstance().startRecoverTrgMps();
-//						RecoverManager.getInstance().startRecoverStgMps();
-//					}
-//				}
-//			}
+			logger.info("START DmAlmFillTarget.doWork()");
+			DmAlmFillTarget.doWork();
+			logger.info("STOP DmAlmFillTarget.doWork()");
+
+			// ATTIVITA' POST TARGET
+			// se non è stato eseguito il recover passo agli step successivi
+			if (!RecoverManager.getInstance().isRecovered()) {
+				logger.info("START DmAlmCheckAnnullamenti.doWork()");
+				DmAlmCheckAnnullamenti.doWork();
+				logger.info("STOP DmAlmCheckAnnullamenti.doWork()");
+
+				// se errore non eseguo gli step successivi
+				if (!ErrorManager.getInstance().hasError()) {
+					logger.info("START DmAlmCheckLinkSferaSgrCmElettra.doWork()");
+					DmAlmCheckLinkSferaSgrCmElettra.doWork();
+					logger.info("STOP DmAlmCheckLinkSferaSgrCmElettra.doWork()");
+				}
+
+				// se errore non eseguo gli step successivi
+				if (!ErrorManager.getInstance().hasError()) {
+					logger.info("START DmAlmCheckChangedWorkitem.doWork()");
+					DmAlmCheckChangedWorkitem.doWork();
+					logger.info("STOP DmAlmCheckChangedWorkitem.doWork()");
+				}
+
+				// gestione esecuzione effettuata direttamente nel facade
+				CheckAnomaliaDifettoProdottoFacade.execute();
+
+				// Gestione delle filiere, gestione esecuzione effettuata direttamente nel facade
+				DmAlmFiliere.doWork();
+				
+				// pulizia tabelle esiti e errori caricamento
+				SvecchiamentoFacade.execute();
+
+				// se errore in uno degli step precedenti eseguo il ripristino
+				// di tutto
+				if (ErrorManager.getInstance().hasError()) {
+					// SFERA/ELETTRA/SGRCM
+					if (ExecutionManager.getInstance().isExecutionSfera()
+							|| ExecutionManager.getInstance()
+									.isExecutionElettraSgrcm()) {
+						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverStaging();
+					}
+
+					// MPS
+					if (ExecutionManager.getInstance().isExecutionMps()) {
+						RecoverManager.getInstance().startRecoverTrgMps();
+						RecoverManager.getInstance().startRecoverStgMps();
+					}
+				}
+			}
 		}
 
 		// gestione della mail di notifica
