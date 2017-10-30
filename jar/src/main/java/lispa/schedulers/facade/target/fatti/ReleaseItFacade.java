@@ -119,11 +119,11 @@ public class ReleaseItFacade {
 							{
 								modificato = true;
 							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel_it.severityReleaseIt),release.getSeverityReleaseIt()))
+							if(!modificato && BeanUtils.areDifferent(row.get(rel_it.severity),release.getSeverity()))
 							{
 								modificato=true;
 							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel_it.priorityReleaseIt),release.getPriorityReleaseIt()))
+							if(!modificato && BeanUtils.areDifferent(row.get(rel_it.priority),release.getPriority()))
 							{
 								modificato=true;
 							}

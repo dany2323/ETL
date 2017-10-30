@@ -12,9 +12,11 @@ SELECT 'SIRE' as ID_REPOSITORY,
 		hu.c_id as ID_AUTORE_RELEASEIT, 
 		hu.c_name as NOME_AUTORE_RELEASEIT,
 		hw.c_title as TITOLO_RELEASEIT,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY,
 		nvl(
 			hw.c_resolvedon
-			, {ts '9999-12-31 00:00:00'}
+			, TO_TIMESTAMP('31-12-9999 00:00:00','DD-MM-YYYY HH24:MI:SS')
 		) as DATA_RISOLUZIONE_RELIT,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_RELIT,
 		TO_CHAR(hw.c_description) as DESCRIPTION,
@@ -32,8 +34,6 @@ SELECT 'SIRE' as ID_REPOSITORY,
 		(select distinct hcf.c_dateonly_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_dispok') as DATA_DISPONIBILITA_EFF,
 		(select distinct hcf.c_dateonly_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_it_start') as DATA_INIZIO_IT,
 		(select distinct hcf.c_dateonly_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_it_end') as DATA_FINE_IT
-		(select distinct hcf.c_string_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'severity') as SEVERITY
-		(select distinct hcf.c_string_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'priority') as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk
 		left join DMALM_SIRE_HISTORY_USER hu 
@@ -61,9 +61,11 @@ SELECT 'SISS' as ID_REPOSITORY,
 		hu.c_id as ID_AUTORE_RELEASEIT, 
 		hu.c_name as NOME_AUTORE_RELEASEIT,
 		hw.c_title as TITOLO_RELEASEIT,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY,
 		nvl(
 		hw.c_resolvedon
-		, {ts '9999-12-31 00:00:00'}
+			, TO_TIMESTAMP('31-12-9999 00:00:00','DD-MM-YYYY HH24:MI:SS')
 		) as DATA_RISOLUZIONE_RELIT,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_RELIT,
 		TO_CHAR(hw.c_description) as DESCRIPTION,
@@ -81,8 +83,6 @@ SELECT 'SISS' as ID_REPOSITORY,
 		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_dispok') as DATA_DISPONIBILITA_EFF,
 		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_it_start') as DATA_INIZIO_IT,
 		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_it_end') as DATA_FINE_IT
-		(select distinct hcf.c_string_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'severity') as SEVERITY
-		(select distinct hcf.c_string_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'priority') as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk
 		left join DMALM_SISS_HISTORY_USER hu 

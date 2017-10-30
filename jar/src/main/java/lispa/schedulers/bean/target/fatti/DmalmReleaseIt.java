@@ -76,19 +76,20 @@ public class DmalmReleaseIt {
 	
 	private String severity;
     
-    public String getPriorityReleaseIt() {
+
+	public String getPriority() {
 		return priority;
 	}
 
-	public void setPriorityReleaseIt(String priority) {
+	public void setPriority(String priority) {
 		this.priority = priority;
 	}
 
-	public String getSeverityReleaseIt() {
+	public String getSeverity() {
 		return severity;
 	}
 
-	public void setSeverityReleaseIT(String severity) {
+	public void setSeverity(String severity) {
 		this.severity = severity;
 	}
 
