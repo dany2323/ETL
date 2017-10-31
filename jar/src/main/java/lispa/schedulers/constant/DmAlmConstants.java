@@ -282,7 +282,6 @@ public final class DmAlmConstants {
 	public static final String TARGET_PROJECTROLES = "DMALM_PROJECT_ROLES_SGR";
 	public static final String TARGET_USERROLES = "DMALM_USER_ROLES_SGR";
 	public static final String TARGET_USER = "DMALM_USER";
-	public static final String TARGET_USER_EL_PERSONALE = "DMALM_USER_EL_PERSONALE";
 	public static final String TARGET_SCHEDE_SERVIZIO = "DMALM_SCHEDE_SERVIZIO";
 
 	public static final String TARGET_SGR_SIRE_CURRENT_PROJECT = "DMALM_PROJECT";
@@ -300,6 +299,7 @@ public final class DmAlmConstants {
 	public static final String TARGET_FILIERA_PRODUTTIVA = "DMALM_FILIERA_PRODUTTIVA";
 
 	public static final String TARGET_ALL = "ALL";
+	
 
 	// MESSAGGI ERRORE
 	// CLASSIFICATORI
@@ -310,6 +310,10 @@ public final class DmAlmConstants {
 	public static final String ELETTRA_ANN_UNITA_ORGANIZZATIVE = "getannullamenti_el_unita_org.sql";
 	public static final String ELETTRA_ANN_AMBTEC_CLASSIF = "getannullamenti_el_ambtec_classif.sql";
 	public static final String ELETTRA_ANN_PERSONALE = "getannullamenti_el_personale.sql";
+	public static final String ELETTRA_ANN_FUNZIONALITA = "getannullamenti_el_funzionalita.sql";
+	public static final String ELETTRA_ANN_MODULO = "getannullamenti_el_modulo.sql";
+	public static final String ELETTRA_ANN_PRODOTTO = "getannullamenti_el_prodotto.sql";
+	public static final String ELETTRA_ANN_PRODOTTO_FISICAMENTE= "getannullamenti_el_prodotto_fisicamente.sql";
 
 	// MESSAGGI ERRORE
 	// PRODOTTO
@@ -394,6 +398,7 @@ public final class DmAlmConstants {
 	public static final String ROOT_UO_CD_ENTE = "LI";
 	public static final String LOGICAMENTE = "UNMARKED";
 	public static final String FISICAMENTE = "ANNULLATO FISICAMENTE";
+	public static final String DISMESSO = "DISMESSO";
 	
 	// MESSAGGI ERRORE
 	// SGR PROJECT
@@ -421,7 +426,7 @@ public final class DmAlmConstants {
 	public static final String SCHEDULAZIONE_BO_ENABLE = "enable";
 
 	public static final String ENABLER = "enable";
-
+	public static final String ANNULLATO_LOGICAMENTE_ELETTRA="ANNULLATO LOGICAMENTE";
 	public static final String UNMARKED = "UNMARKED";
 	
 	public static final String PROJECT_PATH_SUFFIX = "/.polarion/polarion-project.xml";
