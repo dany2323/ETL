@@ -229,14 +229,19 @@ public class RecoverManager {
 			String separator = ";";
 
 			// cancella tutto il contenuto delle tabelle di backup
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.TRUNCATE_BACKUP_TABLES, separator);
+//			qm.executeMultipleStatementsFromFile(
+//					DmAlmConstants.TRUNCATE_BACKUP_TABLES, separator);
 
 			// inserisce il contenuto delle tabelle di target nelle tabelle di
 			// backup
-			qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET,
-					separator);
-
+//			qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET,
+//					separator);
+			
+			// DM_ALM-325
+			String separatorTable = ":";
+			String separatorLine = ";";
+			qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET_WITH_PROCEDURE,
+					separatorTable, separatorLine);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

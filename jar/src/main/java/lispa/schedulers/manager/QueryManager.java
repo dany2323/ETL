@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -151,6 +152,49 @@ public class QueryManager {
 			}
 			
 			executeStatement(statement);
+		}
+	}
+	
+	public synchronized void executeMultipleStatementsFromFile(String file,
+			String separatorTable, String separatorLine) throws Exception {
+
+		List<String> records = getQueryList(file, separatorLine);
+
+		for (String record : records) {
+			String[] splitRecord = record.split(":");
+			executeProcedure(splitRecord[0], splitRecord[1]);
+		}
+	}
+	
+	public synchronized void executeProcedure(String backupTable, String targetTable)
+			throws DAOException, SQLException {
+
+		ConnectionManager cm = null;
+		Connection conn = null;
+		CallableStatement cstmt = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			conn = cm.getConnectionOracle();
+			
+			cstmt = conn.prepareCall("{call BACKUP_TARGET(?, ?)}");
+			cstmt.setString(1, backupTable);
+			cstmt.setString(2, targetTable);
+			cstmt.executeUpdate();
+			
+			conn.commit();
+			
+			logger.info("ESEGUITA PROCEDURE PER LE TABELLE: " + backupTable + " e " + targetTable);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			
+		} finally {
+			if (cstmt != null) {
+				cstmt.close();
+			}
+			if (cm != null) {
+				cm.closeConnection(conn);
+			}
 		}
 	}
 }

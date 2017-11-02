@@ -169,6 +169,7 @@ public final class DmAlmConstants {
 	
 	//Query per procedura di ripristino: attenzione questi file contengono istruzioni sql multiple
 	public static final String BACKUP_TARGET = "backup_target.sql";
+	public static final String BACKUP_TARGET_WITH_PROCEDURE = "backup_target_with_procedure.sql";
 	public static final String BACKUP_MPS_TARGET = "backup_mps_target.sql";
 	public static final String TRUNCATE_BACKUP_TABLES = "truncate_backup_tables.sql";
 	public static final String TRUNCATE_BACKUP_MPS_TABLES = "truncate_backup_mps_tables.sql";
