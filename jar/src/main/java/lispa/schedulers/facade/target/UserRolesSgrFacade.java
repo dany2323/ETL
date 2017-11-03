@@ -119,44 +119,6 @@ public class UserRolesSgrFacade {
 			logger.debug("fillCurrentUserRoles - distinctDmalmProjects.size: "
 					+ distinctDmalmProjects.size());
 			
-			// test di verifica sul numero di user-role recuperati per progetto
-//			int totalCount = 0;
-//			System.out.println("fillCurrentUserRoles - distinctDmalmProjects.size: "
-//					+ distinctDmalmProjects.size());
-//			for (Tuple prj : distinctDmalmProjects) {
-//				String projectSVNPath = SIREUserRolesXML.getProjectSVNPath(prj.get(project.pathProject));
-//				System.out.println(projectSVNPath);
-//				if (projectSVNPath != null) {
-//					List<DmalmUserRolesSgr> userRolesGroupedByProjID = new ArrayList<DmalmUserRolesSgr>();
-//					long revision = -1;
-//					if(prj.get(project.cRev) != null) {
-//						revision = prj.get(project.cRev);
-//					}
-//					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SISS)) {
-//						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
-//								prj.get(project.idProject), projectSVNPath,
-//								revision, prj.get(project.cCreated), 
-//								repositorySiss);
-//					}
-//					System.out.println("userRolesGroupedByProjID SISS: "+userRolesGroupedByProjID.size());
-//					
-//					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SIRE)) {
-//						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
-//								prj.get(project.idProject), projectSVNPath,
-//								revision, prj.get(project.cCreated), 
-//								repositorySire);
-//					}
-//					System.out.println("userRolesGroupedByProjID SIRE: "+userRolesGroupedByProjID.size());
-//					
-//					List<DmalmUserRolesSgr> listaTarget = UserRolesSgrDAO.getUserRolesByProjectID(prj.get(project.idProject),
-//							prj.get(project.idRepository));
-//					totalCount += listaTarget.size();
-//					System.out.println("listaTarget: "+listaTarget.size());
-//				}
-//			}
-//			System.out.println("Totale listaTarget: "+totalCount);
-			// fine verifica
-			
 			for (Tuple prj : distinctDmalmProjects) {
 				logger.info("fillCurrentUserRoles - Inizio gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
 				String projectSVNPath = SIREUserRolesXML.getProjectSVNPath(prj.get(project.pathProject));

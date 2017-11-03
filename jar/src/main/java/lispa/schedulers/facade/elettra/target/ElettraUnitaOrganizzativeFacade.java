@@ -222,12 +222,6 @@ public class ElettraUnitaOrganizzativeFacade {
 						insertedUnitaOrganizzativeList, dataEsecuzione);
 			}
 			
-			//DM_ALM-313 Aggiunta Record Tappo nella tabella flat UO
-			
-			//List<DmalmElUnitaOrganizzative> tappoUnitaOrganizzativa = ElettraUnitaOrganizzativeDAO.getUnitaOrganizzativaTappo();
-			//gestisciLista(-1, tappoUnitaOrganizzativa, insertedUnitaOrganizzativeList, dataEsecuzione);
-			
-			
 			logger.info("STOP fillElettraUnitaOrganizzativeFlat");
 		} catch (DAOException e) {
 			//ErrorManager.getInstance().exceptionOccurred(true, e);
