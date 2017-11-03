@@ -50,7 +50,9 @@
 		hw.fornitura as CLASSE_DI_FORNITURA,
 		(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ref_dir_ese') as REFERENTE_DIREZIONE_ESERCIZIO,
 		(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'classificazione') as CLASSIFICAZIONE, 
-		hw.aoid as ORACLE_APPLICATION_ID
+		hw.aoid as ORACLE_APPLICATION_ID,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -116,7 +118,9 @@ SELECT
 		hw.fornitura as CLASSE_DI_FORNITURA,
 		(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ref_dir_ese') as REFERENTE_DIREZIONE_ESERCIZIO,
 		(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'classificazione') as CLASSIFICAZIONE, 
-		hw.aoid as ORACLE_APPLICATION_ID
+		hw.aoid as ORACLE_APPLICATION_ID,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 

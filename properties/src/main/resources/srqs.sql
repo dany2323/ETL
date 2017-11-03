@@ -44,7 +44,9 @@
 		hw.data_inizio as DATA_INIZIO_PIANIFICATO,	
 		hw.data_inizio_eff as DATA_INIZIO_EFFETTIVO,
 		hw.data_disp as DATA_DISPONIBILITA_PIANIFICATA,	
-		(select distinct hcf.c_dateonly_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_dispok') as DATA_DISPONIBILITA_EFFETTIVA
+		(select distinct hcf.c_dateonly_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_dispok') as DATA_DISPONIBILITA_EFFETTIVA,
+		hw.C_SEVERITY as SEVERITY,
+		hw.C_PRIORITY as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -104,7 +106,9 @@ UNION ALL
 		hw.data_inizio as DATA_INIZIO_PIANIFICATO,	
 		hw.data_inizio_eff as DATA_INIZIO_EFFETTIVO,
 		hw.data_disp as DATA_DISPONIBILITA_PIANIFICATA,	
-		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_dispok') as DATA_DISPONIBILITA_EFFETTIVA
+		(select distinct hcf.c_dateonly_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_dispok') as DATA_DISPONIBILITA_EFFETTIVA,
+		hw.C_SEVERITY as SEVERITY,
+		hw.C_PRIORITY as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 

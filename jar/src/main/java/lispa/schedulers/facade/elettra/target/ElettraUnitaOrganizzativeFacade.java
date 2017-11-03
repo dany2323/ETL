@@ -452,5 +452,7 @@ public class ElettraUnitaOrganizzativeFacade {
     		// insert della riga flat
     		ElettraUnitaOrganizzativeFlatDAO.insert(unitaOrganizzativaFlat);
     	}
+
 	}
+
 }

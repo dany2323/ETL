@@ -114,6 +114,14 @@ public class SottoprogrammaFacade {
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(sottoprog.severity), sottoprogramma.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(sottoprog.priority), sottoprogramma.getPriority()))
+							{
+								modificato = true;
+							}
 							
 							if(modificato)
 							{

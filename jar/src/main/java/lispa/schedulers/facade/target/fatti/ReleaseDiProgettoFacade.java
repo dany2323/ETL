@@ -122,6 +122,16 @@ public class ReleaseDiProgettoFacade {
 								modificato = true;
 							}
 
+							//DM_ALM-320
+							if(!modificato && BeanUtils.areDifferent(row.get(rel.severity), release.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(rel.priority), release.getPriority()))
+							{
+								modificato = true;
+							}
+							
 							if(modificato)
 							{
 								righeModificate++;

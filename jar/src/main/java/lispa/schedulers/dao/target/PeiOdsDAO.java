@@ -86,7 +86,8 @@ public class PeiOdsDAO {
 								peiODS.idRepository,
 								peiODS.motivoRisoluzionePei,
 								peiODS.rankStatoPei, peiODS.titoloPei,
-								peiODS.stgPk, peiODS.dmalmUserFk06, peiODS.uri)
+								peiODS.stgPk, peiODS.dmalmUserFk06, peiODS.uri,
+								peiODS.severity, peiODS.priority)
 						.values(pei.getCdPei(), pei.getCodice(),
 								pei.getDescrizionePei(), pei.getDmalmPeiPk(),
 								pei.getDmalmProjectFk02(),
@@ -104,7 +105,8 @@ public class PeiOdsDAO {
 								pei.getIdAutorePei(), pei.getIdRepository(),
 								pei.getMotivoRisoluzionePei(), new Double(1),
 								pei.getTitoloPei(), pei.getStgPk(),
-								pei.getDmalmUserFk06(), pei.getUri()).execute();
+								pei.getDmalmUserFk06(), pei.getUri(),
+								pei.getSeverity(), pei.getPriority()).execute();
 
 			}
 

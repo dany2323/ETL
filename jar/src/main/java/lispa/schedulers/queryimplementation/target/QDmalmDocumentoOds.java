@@ -88,7 +88,13 @@ public class QDmalmDocumentoOds extends com.mysema.query.sql.RelationalPathBase<
     public final StringPath versione = createString("VERSIONE");
 
     public final com.mysema.query.sql.PrimaryKey<DmalmDocumentoOds> sysC0023023 = createPrimaryKey(dmalmDocumentoPk);
+    
+    //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
 
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmDocumentoOds(String variable) {
         super(DmalmDocumentoOds.class, forVariable(variable), "DMALM", "DMALM_DOCUMENTO_ODS");
     }

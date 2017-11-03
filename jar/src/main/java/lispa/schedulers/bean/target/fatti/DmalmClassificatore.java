@@ -81,6 +81,12 @@ public class DmalmClassificatore {
 	
 	private String codiceServizi;
 
+	//DM_ALM-320
+	private String severity;
+		
+	private String priority;
+	
+	
 	public String getCodiceServizi() {
 		return codiceServizi;
 	}
@@ -367,6 +373,22 @@ public class DmalmClassificatore {
 
 	public void setUriClassficatore(String uriClassficatore) {
 		this.uriClassficatore = uriClassficatore;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 	
 	

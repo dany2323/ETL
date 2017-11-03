@@ -137,6 +137,10 @@ public class ReleaseDiProgettoDAO {
 				bean.setDtFineQF(fine);
 				bean.setNumQuickFix(qf);
 
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
+				
 				releases.add(bean);
 			}
 
@@ -229,7 +233,8 @@ public class ReleaseDiProgettoDAO {
 							rls.titoloReleasediprog, rls.versione, rls.stgPk,
 							rls.dmalmAreaTematicaFk05, rls.dmalmUserFk06,
 							rls.uri, rls.dtAnnullamento, rls.dtInizioQF,
-							rls.dtFineQF, rls.numQuickFix)
+							rls.dtFineQF, rls.numQuickFix,
+							rls.severity, rls.priority)
 					.values(release.getCdReleasediprog(), release.getCodice(),
 							release.getDataDisponibilitaEff(),
 							release.getDataPassaggioInEsercizio(),
@@ -259,7 +264,9 @@ public class ReleaseDiProgettoDAO {
 							release.getDmalmUserFk06(), release.getUri(),
 							release.getDtAnnullamento(),
 							release.getDtInizioQF(), release.getDtFineQF(),
-							release.getNumQuickFix()).execute();
+							release.getNumQuickFix(),
+							//DM_ALM-320
+							release.getSeverity(), release.getPriority()).execute();
 
 			connection.commit();
 
@@ -339,7 +346,8 @@ public class ReleaseDiProgettoDAO {
 							rls.dmalmAreaTematicaFk05, rls.dmalmUserFk06,
 							rls.uri, rls.dtAnnullamento, rls.dtInizioQF,
 							rls.dtFineQF, rls.numQuickFix, rls.changed,
-							rls.annullato)
+							rls.annullato,
+							rls.severity, rls.priority)
 					.values(release.getCdReleasediprog(),
 							release.getCodice(),
 							release.getDataDisponibilitaEff(),
@@ -376,7 +384,9 @@ public class ReleaseDiProgettoDAO {
 							release.getDtAnnullamento(),
 							release.getDtInizioQF(), release.getDtFineQF(),
 							release.getNumQuickFix(), release.getChanged(),
-							release.getAnnullato()).execute();
+							release.getAnnullato(),
+							//DM_ALM-320
+							release.getSeverity(), release.getPriority()).execute();
 
 			connection.commit();
 
@@ -453,7 +463,10 @@ public class ReleaseDiProgettoDAO {
 					.set(rls.dtInizioQF, release.getDtInizioQF())
 					.set(rls.dtFineQF, release.getDtFineQF())
 					.set(rls.numQuickFix, release.getNumQuickFix())
-					.set(rls.annullato, release.getAnnullato()).execute();
+					.set(rls.annullato, release.getAnnullato())
+					//DM_ALM-320
+					.set(rls.severity, release.getSeverity())
+					.set(rls.priority, release.getPriority()).execute();
 
 			connection.commit();
 
@@ -538,7 +551,9 @@ public class ReleaseDiProgettoDAO {
 			r.setTitoloReleasediprog(t.get(rls.titoloReleasediprog));
 			r.setUri(t.get(rls.uri));
 			r.setVersione(t.get(rls.versione));
-
+			//DM_ALM-320
+			r.setSeverity(t.get(rls.severity));
+			r.setPriority(t.get(rls.priority));
 			return r;
 
 		} else

@@ -114,6 +114,14 @@ public class ProgettoEseFacade {
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(progEse.severity), progetto.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(progEse.priority), progetto.getPriority()))
+							{
+								modificato = true;
+							}
 							
 							if(modificato)
 							{

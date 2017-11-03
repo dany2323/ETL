@@ -74,6 +74,12 @@ public class QDmalmBuildOds extends com.mysema.query.sql.RelationalPathBase<Dmal
 
     public final com.mysema.query.sql.PrimaryKey<DmalmBuildOds> sysC0023778 = createPrimaryKey(dmalmBuildPk);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmBuildOds(String variable) {
         super(DmalmBuildOds.class, forVariable(variable), "DMALM", "DMALM_BUILD_ODS");
     }

@@ -96,6 +96,9 @@ public class PeiDAO {
 				bean.setTitoloPei(rs.getString("TITOLO_PEI"));
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_PEI_PK"));
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				peis.add(bean);
 			}
@@ -175,7 +178,8 @@ public class PeiDAO {
 							p.idAutorePei, p.idRepository,
 							p.motivoRisoluzionePei, p.rankStatoPei,
 							p.titoloPei, p.stgPk, p.dmalmUserFk06, p.uri,
-							p.dtAnnullamento)
+							p.dtAnnullamento,
+							p.severity, p.priority)
 					.values(pei.getCdPei(), pei.getCodice(),
 							pei.getDescrizionePei(), pei.getDmalmPeiPk(),
 							pei.getDmalmProjectFk02(),
@@ -193,7 +197,8 @@ public class PeiDAO {
 							pei.getMotivoRisoluzionePei(), new Double(1),
 							pei.getTitoloPei(), pei.getStgPk(),
 							pei.getDmalmUserFk06(), pei.getUri(),
-							pei.getDtAnnullamento()).execute();
+							pei.getDtAnnullamento(),
+							pei.getSeverity(), pei.getPriority()).execute();
 
 			connection.commit();
 
@@ -261,7 +266,8 @@ public class PeiDAO {
 							p.idAutorePei, p.idRepository,
 							p.motivoRisoluzionePei, p.rankStatoPei,
 							p.titoloPei, p.stgPk, p.dmalmUserFk06, p.uri,
-							p.dtAnnullamento, p.changed, p.annullato)
+							p.dtAnnullamento, p.changed, p.annullato,
+							p.severity, p.priority)
 					.values(pei.getCdPei(),
 							pei.getCodice(),
 							pei.getDescrizionePei(),
@@ -289,7 +295,8 @@ public class PeiDAO {
 							pei.getTitoloPei(), pei.getStgPk(),
 							pei.getDmalmUserFk06(), pei.getUri(),
 							pei.getDtAnnullamento(), pei.getChanged(),
-							pei.getAnnullato()).execute();
+							pei.getAnnullato(),
+							pei.getSeverity(), pei.getPriority()).execute();
 
 			connection.commit();
 
@@ -344,6 +351,8 @@ public class PeiDAO {
 					.set(p.stgPk, pei.getStgPk()).set(p.uri, pei.getUri())
 					.set(p.dtAnnullamento, pei.getDtAnnullamento())
 					.set(p.annullato, pei.getAnnullato())
+					.set(p.severity, pei.getSeverity())
+					.set(p.priority, pei.getPriority())
 					.execute();
 
 			connection.commit();
@@ -415,6 +424,9 @@ public class PeiDAO {
 			d.setStgPk(t.get(p.stgPk));
 			d.setTitoloPei(t.get(p.titoloPei));
 			d.setUri(t.get(p.uri));
+			//DM_ALM-320
+			d.setSeverity(t.get(p.severity));
+			d.setPriority(t.get(p.priority));
 
 			return d;
 

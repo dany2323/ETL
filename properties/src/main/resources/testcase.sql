@@ -30,7 +30,9 @@
            else {ts '9999-12-31 00:00:00'}
         END as DATA_ESECUZIONE_TESTCASE,
 		hw.codice as CODICE,
-		hw.cod_intervento as CODICE_INTERVENTO
+		hw.cod_intervento as CODICE_INTERVENTO,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -76,7 +78,9 @@ UNION ALL
            else {ts '9999-12-31 00:00:00'}
         END as DATA_ESECUZIONE_TESTCASE,
 		hw.codice as CODICE,
-		hw.cod_intervento as CODICE_INTERVENTO
+		hw.cod_intervento as CODICE_INTERVENTO,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 

@@ -76,7 +76,8 @@ public class AnomaliaProdottoOdsDAO {
 								anomaliaODS.stgPk, anomaliaODS.dmalmUserFk06,
 								anomaliaODS.uri, anomaliaODS.contestazione,
 								anomaliaODS.noteContestazione,
-								anomaliaODS.dtDisponibilita)
+								anomaliaODS.dtDisponibilita,
+								anomaliaODS.priority)
 						.values(anomalia.getDtCambioStatoAnomalia(),
 								anomalia.getDtCaricamentoRecordAnomalia(),
 								anomalia.getDtChiusuraAnomalia(),
@@ -112,7 +113,8 @@ public class AnomaliaProdottoOdsDAO {
 								anomalia.getDmalmUserFk06(), anomalia.getUri(),
 								anomalia.getContestazione(),
 								anomalia.getNoteContestazione(),
-								anomalia.getDtDisponibilita()).execute();
+								anomalia.getDtDisponibilita(),
+								anomalia.getPriority()).execute();
 
 			}
 

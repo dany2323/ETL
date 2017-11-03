@@ -82,6 +82,12 @@ public class QDmalmTestcaseOds extends com.mysema.query.sql.RelationalPathBase<D
 
     public final com.mysema.query.sql.PrimaryKey<DmalmTestcaseOds> sysC0023105 = createPrimaryKey(dmalmTestcasePk);
 
+    //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+    
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmTestcaseOds(String variable) {
         super(DmalmTestcaseOds.class, forVariable(variable), "DMALM", "DMALM_TESTCASE_ODS");
     }

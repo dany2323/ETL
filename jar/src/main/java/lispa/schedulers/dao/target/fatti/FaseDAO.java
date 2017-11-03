@@ -109,6 +109,10 @@ public class FaseDAO {
 				bean.setStgPk(rs.getString("STG_FASE_PK"));
 				bean.setTitoloFase(rs.getString("TITOLO_FASE"));
 
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
+				
 				fasi.add(bean);
 			}
 
@@ -191,7 +195,8 @@ public class FaseDAO {
 							fs.durataEffettivaFase, fs.idAutoreFase,
 							fs.idRepository, fs.motivoRisoluzioneFase,
 							fs.rankStatoFase, fs.titoloFase, fs.stgPk,
-							fs.dmalmUserFk06, fs.uri, fs.dtAnnullamento)
+							fs.dmalmUserFk06, fs.uri, fs.dtAnnullamento,
+							fs.severity, fs.priority)
 					.values(fase.getApplicabile(), fase.getCdFase(),
 							fase.getCodice(), fase.getDataFineBaseline(),
 							fase.getDataFineEffettiva(),
@@ -216,7 +221,8 @@ public class FaseDAO {
 							fase.getMotivoRisoluzioneFase(), new Double(1),
 							fase.getTitoloFase(), fase.getStgPk(),
 							fase.getDmalmUserFk06(), fase.getUri(),
-							fase.getDtAnnullamento()).execute();
+							fase.getDtAnnullamento(),
+							fase.getSeverity(), fase.getPriority()).execute();
 
 			connection.commit();
 
@@ -289,7 +295,8 @@ public class FaseDAO {
 							fs.idRepository, fs.motivoRisoluzioneFase,
 							fs.rankStatoFase, fs.titoloFase, fs.stgPk,
 							fs.dmalmUserFk06, fs.uri, fs.dtAnnullamento,
-							fs.changed, fs.annullato)
+							fs.changed, fs.annullato,
+							fs.severity, fs.priority)
 					.values(fase.getApplicabile(),
 							fase.getCdFase(),
 							fase.getCodice(),
@@ -324,7 +331,8 @@ public class FaseDAO {
 							fase.getTitoloFase(), fase.getStgPk(),
 							fase.getDmalmUserFk06(), fase.getUri(),
 							fase.getDtAnnullamento(), fase.getChanged(),
-							fase.getAnnullato()).execute();
+							fase.getAnnullato(),
+							fase.getSeverity(), fase.getPriority()).execute();
 
 			connection.commit();
 
@@ -389,6 +397,8 @@ public class FaseDAO {
 					.set(fs.stgPk, fase.getStgPk()).set(fs.uri, fase.getUri())
 					.set(fs.dtAnnullamento, fase.getDtAnnullamento())
 					.set(fs.annullato, fase.getAnnullato())
+					.set(fs.severity, fase.getSeverity())
+					.set(fs.priority, fase.getPriority())
 					.execute();
 
 			connection.commit();
@@ -466,7 +476,10 @@ public class FaseDAO {
 			f.setStgPk(t.get(fs.stgPk));
 			f.setTitoloFase(t.get(fs.titoloFase));
 			f.setUri(t.get(fs.uri));
-
+			//DM_ALM-320
+			f.setSeverity(t.get(fs.severity));
+			f.setPriority(t.get(fs.priority));
+			
 			return f;
 
 		} else
