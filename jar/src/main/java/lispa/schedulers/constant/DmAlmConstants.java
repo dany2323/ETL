@@ -148,7 +148,6 @@ public final class DmAlmConstants {
 	public static final String COUNT_ATTACHMENTS = "count_attachments.sql";
 	public static final String COUNT_HYPERLINKS = "count_hyperlinks.sql";
 	public static final String COUNT_LINKED_WORKITEMS = "count_linked_workitems.sql";
-	public static final String COUNT_USERROLES = "count_userroles.sql";
 	
 	
 	//cancellazione dei CF che non trovano corrispondenza in nessun workitem

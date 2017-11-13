@@ -153,20 +153,6 @@ public class RecoverManager {
 
 	}
 
-	public synchronized void startXMLRecover() {
-		try {
-			LinkedWorkItemRolesXML.recoverLinkedWorkItemRoles();
-			ProjectRolesXML.recoverAllProjectRoles();
-			SIREUserRolesXML.recoverSIREUserRoles();
-			SISSUserRolesXML.recoverSISSUserRoles();
-			StatoWorkItemXML.recoverStatoWorkitem();
-		} catch (Exception e) {
-			logger.debug(e.getMessage(), e);
-
-		}
-
-	}
-
 	/**
 	 * Per quanto riguarda le tabelle target, non si può applicare lo stesso
 	 * ragionamento dell’area di staging. La procedura di ripristino quindi
@@ -366,8 +352,6 @@ public class RecoverManager {
 			logger.debug("START recover XML");
 			LinkedWorkItemRolesXML.recoverLinkedWorkItemRoles();
 			ProjectRolesXML.recoverAllProjectRoles();
-			SIREUserRolesXML.recoverSIREUserRoles();
-			SISSUserRolesXML.recoverSISSUserRoles();
 			StatoWorkItemXML.recoverStatoWorkitem();
 			SIRESchedeServizioXML.recoverSIRESchedeServizio();
 			SISSSchedeServizioXML.recoverSISSSchedeServizio();
