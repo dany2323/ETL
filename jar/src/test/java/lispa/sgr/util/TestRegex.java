@@ -6,14 +6,12 @@ import junit.framework.TestCase;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
-import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRoles;
 import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
 public class TestRegex extends TestCase {
 	private static Logger logger = Logger.getLogger(TestRegex.class);
-	QDmAlmUserRoles qDmAlmUserRoles = QDmAlmUserRoles.dmAlmUserRoles;
 
 	public static void testSplitString() {
 		String stringa = "Invalid coluemN index";
