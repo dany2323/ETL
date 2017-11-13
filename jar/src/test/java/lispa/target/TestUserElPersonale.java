@@ -12,7 +12,7 @@ public class TestUserElPersonale extends TestCase {
 	public void test() {
 		try {
 			Log4JConfiguration.inizialize();
-			UserElPersonaleFacade.execute(DateUtils.stringToTimestamp("2017-10-30 11:00:00.0", "yyyy-MM-dd HH:mm:00"));
+			UserElPersonaleFacade.execute(DateUtils.stringToTimestamp("2017-11-13 11:00:00.0", "yyyy-MM-dd HH:mm:00"));
 
 		} catch (PropertiesReaderException e) {
 			e.printStackTrace();
