@@ -282,6 +282,7 @@ public final class DmAlmConstants {
 	public static final String TARGET_PROJECTROLES = "DMALM_PROJECT_ROLES_SGR";
 	public static final String TARGET_USERROLES = "DMALM_USER_ROLES_SGR";
 	public static final String TARGET_USER = "DMALM_USER";
+	public static final String TARGET_USER_EL_PERSONALE = "DMALM_USER_EL_PERSONALE";
 	public static final String TARGET_SCHEDE_SERVIZIO = "DMALM_SCHEDE_SERVIZIO";
 
 	public static final String TARGET_SGR_SIRE_CURRENT_PROJECT = "DMALM_PROJECT";

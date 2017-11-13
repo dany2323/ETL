@@ -1,0 +1,3 @@
+select ID_MODULO from DMALM_STG_EL_MODULI where DT_CARICAMENTO = ? 
+minus 
+select ID_MODULO from DMALM_STG_EL_MODULI where DT_CARICAMENTO = ? 

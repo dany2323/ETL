@@ -106,7 +106,7 @@ public class DifettoDAO {
 						.getString("NUMERO_LINEA_RDI")));
 				bean.setNumeroTestataDifetto(StringUtils.getTestata(rs
 						.getString("NUMERO_LINEA_RDI")));
-				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setSeverity(rs.getString("SEVERITY_DIFETTO"));
 				bean.setTempoTotRisoluzioneDifetto(rs
 						.getDouble("TEMPO_TOTALE_RISOLUZIONE")
 						- rs.getInt("GIORNI_FESTIVI"));

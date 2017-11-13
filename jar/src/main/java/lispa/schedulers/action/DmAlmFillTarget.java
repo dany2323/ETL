@@ -45,6 +45,7 @@ import lispa.schedulers.facade.target.ProjectSgrCmFacade;
 import lispa.schedulers.facade.target.SchedeServizioFacade;
 import lispa.schedulers.facade.target.StatoWorkitemSgrCmFacade;
 import lispa.schedulers.facade.target.StrutturaOrganizzativaEdmaFacade;
+import lispa.schedulers.facade.target.UserElPersonaleFacade;
 import lispa.schedulers.facade.target.UserRolesSgrFacade;
 import lispa.schedulers.facade.target.UserSgrCmFacade;
 import lispa.schedulers.facade.target.WorkitemUserAssigneeFacade;
@@ -502,6 +503,13 @@ public class DmAlmFillTarget {
 				logger.info("START HyperlinkFacade.execute " + new Date());
 				if (!alreadyExecuted(DmAlmConstants.TARGET_HYPERLINK)) {
 					HyperlinkFacade.execute(dataEsecuzione);
+				} else {
+					logger.info("Entità già elaborata per la data di esecuzione ");
+				}
+				
+				logger.info("START UserElPersonaleFacade.execute " + new Date());
+				if (!alreadyExecuted(DmAlmConstants.TARGET_USER_EL_PERSONALE)) {
+					UserElPersonaleFacade.execute(dataEsecuzione);
 				} else {
 					logger.info("Entità già elaborata per la data di esecuzione ");
 				}

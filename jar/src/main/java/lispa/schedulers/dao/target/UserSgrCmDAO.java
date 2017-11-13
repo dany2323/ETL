@@ -285,5 +285,35 @@ public class UserSgrCmDAO {
 				cm.closeConnection(connection);
 		}
 	}
+	
+	public static List<Tuple> getUserDistinctByIdUserUsername(QDmalmUser user) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> users = new ArrayList<Tuple>();
+
+		try {
+
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			users = query
+					.distinct()
+					.from(user)
+					.groupBy(user.idUser, user.userName)
+							.list(user.idUser, user.userName);
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return users;
+	}
 
 }
