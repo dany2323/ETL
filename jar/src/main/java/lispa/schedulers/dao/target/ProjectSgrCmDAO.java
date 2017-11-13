@@ -177,13 +177,6 @@ public class ProjectSgrCmDAO {
 
 				bean.setcCreated(rs.getTimestamp("C_CREATED"));
 				
-				// modifica DM_ALM-292 perchè la tabella di staging DMALM_USER_ROLES 
-				// è stata dismessa. Ora le informazioni verranno recuperate 
-				// accedendo alla tabella 
-//				String servMan = UserRolesDAO.getServiceManager(
-//						rs.getString("ID_PROJECT"),
-//						rs.getString("ID_REPOSITORY"),
-//						rs.getTimestamp("C_CREATED"));
 				String servMan = "";
 				if (rs.getString("ID_REPOSITORY").equals(DmAlmConstants.REPOSITORY_SIRE)) {
 					String urlSire = DmAlmConfigReader.getInstance().getProperty(

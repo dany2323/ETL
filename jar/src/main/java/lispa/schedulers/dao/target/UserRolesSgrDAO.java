@@ -1,7 +1,5 @@
 package lispa.schedulers.dao.target;
 
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_USERROLES;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
@@ -10,10 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,12 +28,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.Projections;
@@ -53,7 +45,6 @@ import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRoles;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.QDmalmUserRolesSgr;
 import lispa.schedulers.utils.DateUtils;
@@ -69,120 +60,6 @@ public class UserRolesSgrDAO {
 	private static QDmalmProject dmalmProject = QDmalmProject.dmalmProject;
 
 	private static SQLTemplates dialect = new HSQLDBTemplates();
-
-	public static Collection<List<DmalmUserRolesSgr>> getAllUserRolesGroupedByProjectIDandRevision(
-			Timestamp dataEsecuzione, String ID, String repository)
-			throws Exception {
-
-		ConnectionManager cm = null;
-		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		DmalmUserRolesSgr bean = null;
-		Map<String, List<DmalmUserRolesSgr>> userroles = new HashMap<String, List<DmalmUserRolesSgr>>();
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			String sql = QueryManager.getInstance().getQuery(SQL_USERROLES);
-
-			ps = connection.prepareStatement(sql);
-
-			ps.setFetchSize(200);
-			ps.setTimestamp(1, dataEsecuzione);
-			ps.setString(2, ID);
-			ps.setString(3, repository);
-
-			rs = ps.executeQuery();
-			logger.info("userroles.sql eseguito");
-
-
-			while (rs.next()) {
-				bean = new DmalmUserRolesSgr();
-
-				bean.setDmalmUserRolesPk(rs.getInt("DMALM_USER_ROLES_PK"));
-				bean.setOrigine(rs.getString("ORIGINE"));
-				bean.setUserid(rs.getString("USERID"));
-				bean.setRuolo(rs.getString("RUOLO"));
-				bean.setRepository(rs.getString("REPOSITORY"));
-				bean.setDtCaricamento(dataEsecuzione);
-				bean.setDtInizioValidita(DateUtils.setDtInizioValidita1900());
-				bean.setDtFineValidita(DateUtils.setDtFineValidita9999());
-				bean.setDtModifica(rs.getTimestamp("DT_MODIFICA"));
-
-				List<DmalmUserRolesSgr> list = userroles.get(bean.getOrigine()
-						+ "@" + bean.getRepository() + "@"
-						+ bean.getDtModifica());
-				if (list == null) {
-					list = new ArrayList<DmalmUserRolesSgr>();
-					userroles.put(
-							bean.getOrigine() + "@" + bean.getRepository()
-									+ "@" + bean.getDtModifica(), list);
-				}
-
-				list.add(bean);
-			}
-			
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
-		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		List<List<DmalmUserRolesSgr>> list = new ArrayList<List<DmalmUserRolesSgr>>(
-				userroles.values());
-		Collections.sort(list, new Comparator<List<DmalmUserRolesSgr>>() {
-
-			@Override
-			public int compare(List<DmalmUserRolesSgr> o1,
-					List<DmalmUserRolesSgr> o2) {
-				return o1.get(0).getDtModifica()
-						.compareTo(o2.get(0).getDtModifica());
-			}
-
-		});
-
-		return list;
-	}
-
-	public static List<Tuple> getDistinctProjectID() throws Exception {
-
-		QDmAlmUserRoles stgUserRoles = QDmAlmUserRoles.dmAlmUserRoles;
-
-		ConnectionManager cm = null;
-		Connection conn = null;
-		List<Tuple> IDs = new ArrayList<Tuple>();
-
-		try {
-
-			cm = ConnectionManager.getInstance();
-			conn = cm.getConnectionOracle();
-
-			IDs = new SQLQuery(conn, dialect).from(stgUserRoles).distinct()
-					.list(stgUserRoles.idProject, stgUserRoles.repository);
-
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		} finally {
-			if (cm != null)
-				cm.closeConnection(conn);
-		}
-		return IDs;
-
-	}
 
 	public static List<DmalmUserRolesSgr> getUserRolesByProjectID(
 			String projID, String repo) throws DAOException {

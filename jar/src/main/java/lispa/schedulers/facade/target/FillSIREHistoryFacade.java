@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
+
 import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.dao.UserRolesDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryAttachmentDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
@@ -38,8 +39,6 @@ import lispa.schedulers.runnable.staging.sire.history.SireHistoryUserRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryWorkitemUserAssignedRunnable;
 import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
-
-import org.apache.log4j.Logger;
 
 /**
  * In particolare, il popolamento delle tabelle di staging di SGR_CM avviene

@@ -3,13 +3,19 @@ package lispa.schedulers.runnable;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLUpdateClause;
 
 import junit.framework.TestCase;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
-import lispa.schedulers.bean.target.DmalmUserRolesSgr;
 import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -18,7 +24,6 @@ import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.ProjectUnitaOrganizzativaEccezioniDAO;
-import lispa.schedulers.dao.target.UserRolesSgrDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseDiProgettoDAO;
@@ -42,18 +47,7 @@ import lispa.schedulers.manager.RecoverManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmProgettoSfera;
-import lispa.schedulers.svn.SISSUserRolesXML;
-import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLSubQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLUpdateClause;
 
 /**
  * Provvede al caricamento delle tabelle di staging
@@ -139,7 +133,7 @@ public class DmalmStagingTest extends TestCase {
 
 		logger.info("SISSUserRolesXML.fillSISSHistoryUserRoles()");
 
-		SISSUserRolesXML.fillSISSHistoryUserRoles();
+		//SISSUserRolesXML.fillSISSHistoryUserRoles();
 	}
 
 	public void testCfWorkitem() throws Exception {
@@ -551,70 +545,6 @@ public class DmalmStagingTest extends TestCase {
 			logger.error(e.getMessage(), e);
 		}
 	}
-
-	public void testUserRoles() throws Exception {
-		try {
-			Log4JConfiguration.inizialize();
-
-			logger.debug("START testUserRoles");
-
-			DataEsecuzione.getInstance().setDataEsecuzione(
-					DateUtils.stringToTimestamp("2016-01-09 21:00:00.0",
-							"yyyy-MM-dd HH:mm:00"));
-
-			Collection<List<DmalmUserRolesSgr>> userRolesGroupedByProjID = UserRolesSgrDAO
-					.getAllUserRolesGroupedByProjectIDandRevision(
-							DataEsecuzione.getInstance().getDataEsecuzione(),
-							"COMMON_FLEX", "SISS");
-
-			Iterator<List<DmalmUserRolesSgr>> it = userRolesGroupedByProjID
-					.iterator();
-
-			while (it.hasNext()) {
-				List<DmalmUserRolesSgr> listaStaging = it.next();
-
-				logger.debug("----------------------");
-				logger.debug("listaStaging.size(): " + listaStaging.size());
-
-				if (listaStaging.size() > 0) {
-					List<DmalmUserRolesSgr> listaTarget = UserRolesSgrDAO
-							.getUserRolesByProjectID("COMMON_FLEX", "SISS");
-
-					logger.debug("listaTarget.size(): " + listaTarget.size());
-
-					Timestamp c_created = listaStaging.get(0).getDtModifica();
-					int fkProject = UserRolesSgrDAO.getFkProject("COMMON_FLEX",
-							"SISS", c_created);
-
-					logger.debug("c_created: "
-							+ listaStaging.get(0).getDtModifica());
-					logger.debug("fkProject: " + fkProject);
-
-					if (listaTarget.size() == 0) {
-						logger.debug("1. INSERISCE TUTTI");
-					} else {
-						if (BeanUtils.areDifferent(fkProject, listaTarget
-								.get(0).getDmalmProjectFk01())) {
-							// storicizza e inserisce i nuovi
-							logger.debug("2. STORICIZZA e inserisce i nuovi: "
-									+ listaStaging.size());
-						} else {
-							// inserisce i nuovi e chiude i vecchi non più
-							// presenti
-
-							logger.debug("3. INSERISCE NUOVI CHIUDE I VECCHI");
-						}
-					}
-				}
-			}
-
-			logger.debug("STOP testUserRoles");
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
-
 	public void testProgettiNonMovimentati() throws Exception {
 		try {
 			Log4JConfiguration.inizialize();

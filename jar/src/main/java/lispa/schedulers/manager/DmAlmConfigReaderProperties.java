@@ -50,7 +50,6 @@ public class DmAlmConfigReaderProperties
 	
 	public static final String SQL_CLASSIFICATORI 				= "classificatori.sql";
 	public static final String SQL_PROJECTROLES 				= "projectroles.sql";
-	public static final String SQL_USERROLES 					= "userroles.sql";
 	public static final String SQL_PERSONALE 					= "personale.sql";
 	public static final String SQL_PRODOTTI 					= "prodotti.sql";
 	public static final String SQL_SOTTOSISTEMI 				= "sottosistemi.sql";
