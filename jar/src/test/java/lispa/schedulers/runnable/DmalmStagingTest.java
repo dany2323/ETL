@@ -310,7 +310,7 @@ public class DmalmStagingTest extends TestCase {
 			logger.info("*** Eseguo Test testDeleteStaging ***");
 
 			DataEsecuzione.getInstance().setDataEsecuzione(
-					DateUtils.stringToTimestamp("2017-01-25 20:45:00.0",
+					DateUtils.stringToTimestamp("2017-11-16 20:45:00.0",
 							"yyyy-MM-dd HH:mm:00"));
 
 			RecoverManager.getInstance().startRecoverStaging();
