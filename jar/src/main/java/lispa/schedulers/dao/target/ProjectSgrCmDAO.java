@@ -381,10 +381,10 @@ public class ProjectSgrCmDAO {
 								logger.error(e.getMessage(), e);
 								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 							}
-						} else if (nomeProject.startsWith("RichiesteSupporto.")) {
+						} else if (nomeProject.contains("RichiesteSupporto")) {
 							try {
 								codiceAreaUO = "LI"
-										+ nomeProject.substring(18,
+										+ nomeProject.substring(nomeProject.indexOf(".")+1,
 												nomeProject.length());
 							} catch (Exception e) {
 								logger.error(e.getMessage(), e);
