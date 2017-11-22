@@ -2,8 +2,8 @@ DELETE FROM DMALM_SIRE_HISTORY_WORKITEM
 WHERE (data_caricamento <= ? 
       AND C_STATUS not in('chiuso', 'chiuso_falso', 'in_esercizio', 'in_esecuzione', 'completo', 'eseguito') 
       AND NOT c_type = 'defect' 
-      AND siss_history_workitem_pk NOT in ( 
-      SELECT hw.siss_history_workitem_pk 
+      AND sire_history_workitem_pk NOT in ( 
+      SELECT hw.sire_history_workitem_pk 
           FROM DMALM_SIRE_HISTORY_WORKITEM hw 
           JOIN (SELECT c_type, max(c_rev) AS max_c_rev 
              FROM DMALM_SIRE_HISTORY_WORKITEM hw2 
