@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
@@ -25,7 +27,9 @@ import lispa.schedulers.utils.DateUtils;
 import org.apache.log4j.Logger;
 
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 
 public class CheckAnnullamentiElettraFacade {
@@ -164,6 +168,8 @@ public class CheckAnnullamentiElettraFacade {
 			conn = cm.getConnectionOracle();
 			conn.setAutoCommit(false);
 
+			List<Integer> listIdProdotti = new ArrayList<Integer>();
+			
 			String annullaFisicamenteSql = QueryManager.getInstance().getQuery(
 					DmAlmConstants.ELETTRA_ANN_PRODOTTO);
 			String annullaLogicamenteSql = QueryManager.getInstance().getQuery(
@@ -182,10 +188,20 @@ public class CheckAnnullamentiElettraFacade {
 						.where(prodotti.idProdotto.equalsIgnoreCase(id))
 						.set(prodotti.annullato, DmAlmConstants.FISICAMENTE)
 						.set(prodotti.dataAnnullamento, dataOggi).execute();
+				
+				Integer idInt = Integer.parseInt(id);
+				listIdProdotti.add(idInt);
 			}
-
 			conn.commit();
 			
+			// aggiorno con ANNULLATO FISICAMENTE tutti i moduli 
+			// figli dei prodotti recuperati dalla query precedente DM_ALM-296
+			if (listIdProdotti.size() > 0) {
+				checkAnnullamentiElModulo(conn, listIdProdotti, DmAlmConstants.FISICAMENTE, dataOggi);
+			}
+			//fine
+			
+			listIdProdotti = new ArrayList<Integer>();
 			ps= conn.prepareStatement(annullaLogicamenteSql);
 			ps.setString(1, DmAlmConstants.DISMESSO);
 			ps.setString(2, DmAlmConstants.FISICAMENTE);
@@ -200,8 +216,18 @@ public class CheckAnnullamentiElettraFacade {
 						.where(prodotti.idProdotto.equalsIgnoreCase(id))
 						.set(prodotti.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
 						.set(prodotti.dataAnnullamento, dataOggi).execute();
+				
+				Integer idInt = Integer.parseInt(id);
+				listIdProdotti.add(idInt);
 			}
+			conn.commit();
 			
+			// aggiorno con ANNULLATO LOGICAMENTE tutti i moduli 
+			// figli dei prodotti recuperati dalla query precedente DM_ALM-296
+			if (listIdProdotti.size() > 0) {
+				checkAnnullamentiElModulo(conn, listIdProdotti, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA, dataOggi);
+			}
+			//fine
 			
 			if (rs != null) {
 				rs.close();
@@ -221,7 +247,53 @@ public class CheckAnnullamentiElettraFacade {
 		}
 		
 	}
+	
+	private static void checkAnnullamentiElModulo(Connection conn, List<Integer> listIdProdotti, String tipoAnnullamento, Timestamp dataOggi) throws DAOException{
 
+		try {
+			
+			List<String> listIdModuli = new ArrayList<String>();
+			
+			for (Integer id :listIdProdotti) {
+				new SQLUpdateClause(conn, dialect, moduli)
+						.where(moduli.prodottoFk.eq(id))
+						.set(moduli.annullato, tipoAnnullamento)
+						.set(moduli.dataAnnullamento, dataOggi).execute();
+				
+				SQLQuery query = new SQLQuery(conn, dialect);
+
+				listIdModuli = query
+						.from(moduli)
+						.where(moduli.prodottoFk.eq(id))
+						.list(moduli.idModulo);
+			}
+			conn.commit();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		}
+	}
+
+	private static void checkAnnullamentiElFunzionalita(Connection conn, List<String> listIdModuli, String tipoAnnullamento, Timestamp dataOggi) throws DAOException{
+
+		try {
+
+			for (String id :listIdModuli) {
+
+				new SQLUpdateClause(conn, dialect, funzionalita)
+					.where(funzionalita.idFunzionalita.equalsIgnoreCase(id))
+					.set(funzionalita.annullato, tipoAnnullamento)
+					.set(funzionalita.dtAnnullamento, dataOggi).execute();
+			}
+			conn.commit();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} 
+	}
+	
 	public static void checkAnnullamentiElUnitaOrganizzativa(
 			Timestamp dataOggi, Timestamp dataIeri) throws DAOException {
 		ConnectionManager cm = null;
