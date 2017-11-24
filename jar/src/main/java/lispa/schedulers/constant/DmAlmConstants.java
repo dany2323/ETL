@@ -399,6 +399,7 @@ public final class DmAlmConstants {
 	public static final String LOGICAMENTE = "UNMARKED";
 	public static final String FISICAMENTE = "ANNULLATO FISICAMENTE";
 	public static final String DISMESSO = "DISMESSO";
+	public static final String ELIMINATO = "ELIMINATO";
 	
 	// MESSAGGI ERRORE
 	// SGR PROJECT

@@ -226,7 +226,7 @@ public class CheckAnnullamentiElettraFacade {
 				id = rs.getString("ID_PRODOTTO");
 
 				new SQLUpdateClause(conn, dialect, prodotti).where(prodotti.idProdotto.equalsIgnoreCase(id))
-						.set(prodotti.annullato, DmAlmConstants.FISICAMENTE).set(prodotti.dataAnnullamento, dataOggi)
+						.set(prodotti.annullato, DmAlmConstants.FISICAMENTE).set(prodotti.stato, DmAlmConstants.ELIMINATO).set(prodotti.dataAnnullamento, dataOggi)
 						.execute();
 
 				Integer idInt = Integer.parseInt(id);
@@ -256,6 +256,7 @@ public class CheckAnnullamentiElettraFacade {
 
 				new SQLUpdateClause(conn, dialect, prodotti).where(prodotti.idProdotto.equalsIgnoreCase(id))
 						.set(prodotti.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
+						.set(prodotti.stato, DmAlmConstants.DISMESSO)
 						.set(prodotti.dataAnnullamento, dataOggi).execute();
 
 				Integer idInt = Integer.parseInt(id);
