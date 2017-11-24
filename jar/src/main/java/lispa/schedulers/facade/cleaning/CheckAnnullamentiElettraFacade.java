@@ -215,8 +215,6 @@ public class CheckAnnullamentiElettraFacade {
 			List<Integer> listIdProdotti = new ArrayList<Integer>();
 
 			String annullaFisicamenteSql = QueryManager.getInstance().getQuery(DmAlmConstants.ELETTRA_ANN_PRODOTTO);
-			String annullaLogicamenteSql = QueryManager.getInstance()
-					.getQuery(DmAlmConstants.ELETTRA_ANN_PRODOTTO_FISICAMENTE);
 
 			ps = conn.prepareStatement(annullaFisicamenteSql);
 			ps.setTimestamp(1, dataIeri);
@@ -244,6 +242,8 @@ public class CheckAnnullamentiElettraFacade {
 			// fine
 
 			listIdProdotti = new ArrayList<Integer>();
+			String annullaLogicamenteSql = QueryManager.getInstance()
+					.getQuery(DmAlmConstants.ELETTRA_ANN_PRODOTTO_FISICAMENTE);
 			ps = conn.prepareStatement(annullaLogicamenteSql);
 			ps.setString(1, DmAlmConstants.DISMESSO);
 			ps.setString(2, DmAlmConstants.FISICAMENTE);
