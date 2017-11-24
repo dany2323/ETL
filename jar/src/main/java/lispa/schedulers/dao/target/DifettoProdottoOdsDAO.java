@@ -34,7 +34,7 @@ public class DifettoProdottoOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listDifettoPk= new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -43,6 +43,11 @@ public class DifettoProdottoOdsDAO {
 
 			for (DmalmDifettoProdotto difetto : difetti) {
 
+				if(listDifettoPk.contains(difetto.getDmalmDifettoProdottoPk()))
+						logger.info("Trovata DmalmDifettoProdottoPk DUPLICATA!!!"+difetto.getDmalmDifettoProdottoPk());
+				else{
+					listDifettoPk.add(difetto.getDmalmDifettoProdottoPk());
+				
 				connection.setAutoCommit(false);
 
 				new SQLInsertClause(connection, dialect, difettoODS)
@@ -112,8 +117,8 @@ public class DifettoProdottoOdsDAO {
 								difetto.getDtDisponibilita(),
 								//DM_ALM-320
 								difetto.getPriority()).execute();
+				}
 			}
-
 			connection.commit();
 
 		} catch (Exception e) {

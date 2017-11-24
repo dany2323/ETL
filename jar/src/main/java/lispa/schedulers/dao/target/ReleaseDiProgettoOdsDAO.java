@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
@@ -60,7 +61,7 @@ public class ReleaseDiProgettoOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -69,6 +70,11 @@ public class ReleaseDiProgettoOdsDAO {
 
 			for (DmalmReleaseDiProgetto release : staging_releases) {
 
+				if(listPk.contains(release.getDmalmReleasediprogPk()))
+					logger.info("Trovata DmalmReleasediprogPk DUPLICATA!!!"+release.getDmalmReleasediprogPk());
+				else{
+					
+				listPk.add(release.getDmalmReleasediprogPk());
 				new SQLInsertClause(connection, dialect, releaseODS)
 						.columns(releaseODS.cdReleasediprog, releaseODS.codice,
 								releaseODS.dataDisponibilitaEff,
@@ -133,7 +139,7 @@ public class ReleaseDiProgettoOdsDAO {
 								release.getNumQuickFix(),
 								//DM_ALM-320
 								release.getSeverity(), release.getPriority()).execute();
-
+				}
 			}
 
 			connection.commit();

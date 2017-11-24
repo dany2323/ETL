@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaProdotto;
@@ -34,7 +35,7 @@ public class AnomaliaProdottoOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -42,7 +43,12 @@ public class AnomaliaProdottoOdsDAO {
 			connection.setAutoCommit(false);
 
 			for (DmalmAnomaliaProdotto anomalia : anomalie) {
-
+				
+				if(listPk.contains(anomalia.getDmalmAnomaliaProdottoPk()))
+					logger.info("Trovata DmalmAnomaliaProdottoPk DUPLICATA!!!"+anomalia.getDmalmAnomaliaProdottoPk());
+				else{
+				listPk.add(anomalia.getDmalmAnomaliaProdottoPk());
+				
 				new SQLInsertClause(connection, dialect, anomaliaODS)
 						.columns(anomaliaODS.dtCambioStatoAnomalia,
 								anomaliaODS.dtCaricamentoRecordAnomalia,
@@ -115,7 +121,7 @@ public class AnomaliaProdottoOdsDAO {
 								anomalia.getNoteContestazione(),
 								anomalia.getDtDisponibilita(),
 								anomalia.getPriority()).execute();
-
+				}
 			}
 
 			connection.commit();
