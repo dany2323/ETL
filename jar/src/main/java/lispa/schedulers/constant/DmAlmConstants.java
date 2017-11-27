@@ -191,8 +191,8 @@ public final class DmAlmConstants {
 	public static final String M_SEPARATOR = ";";
 	
 	
-	public static final String ANNULLATO_LOGICAMENTE = "#ANNULLATO_LOGICAMENTE##";
-	public static final String ANNULLATO_FISICAMENTE = "#ANNULLATO_FISICAMENTE##";
+	public static final String ANNULLATO_LOGICAMENTE = "#ANNULLATO LOGICAMENTE##";
+	public static final String ANNULLATO_FISICAMENTE = "#ANNULLATO FISICAMENTE##";
 	public static final String UO_NON_TROVATA = "Non trovata";
 	public static final String UO_SUFFIX = "LI";
 	public static final String UO_IT = "LIA362";

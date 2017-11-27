@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,10 @@ public class CheckAnnullamentiElettraFacade {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			conn.setAutoCommit(false);
-
+			
+			SimpleDateFormat formatDate = new SimpleDateFormat("YYYYMMDD");
+			String dataCaricamento = formatDate.format(dataOggi);
+			
 			String sql = QueryManager.getInstance().getQuery(DmAlmConstants.ELETTRA_ANN_FUNZIONALITA);
 
 			ps = conn.prepareStatement(sql);
@@ -79,7 +83,8 @@ public class CheckAnnullamentiElettraFacade {
 				id = rs.getString("ID_FUNZIONALITA");
 
 				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.idFunzionalita.equalsIgnoreCase(id))
-						.set(funzionalita.annullato, DmAlmConstants.FISICAMENTE)
+					.set(funzionalita.nome, "#"+DmAlmConstants.FISICAMENTE+"##"+dataCaricamento+"#"+id)		
+					.set(funzionalita.annullato, DmAlmConstants.FISICAMENTE)
 						.set(funzionalita.dtAnnullamento, dataOggi).execute();
 			}
 
@@ -96,7 +101,8 @@ public class CheckAnnullamentiElettraFacade {
 				id = rs.getString("DMALM_FUNZIONALITA_PK");
 
 				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.idFunzionalita.equalsIgnoreCase(id))
-						.set(funzionalita.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
+					.set(funzionalita.nome, "#"+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+"##"+dataCaricamento+"#"+id)	
+					.set(funzionalita.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
 						.set(funzionalita.dtAnnullamento, dataOggi).execute();
 
 			}
@@ -129,7 +135,9 @@ public class CheckAnnullamentiElettraFacade {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			conn.setAutoCommit(false);
-
+			SimpleDateFormat formatDate = new SimpleDateFormat("YYYYMMDD");
+			String dataCaricamento = formatDate.format(dataOggi);
+			
 			List<String> listIdModuli = new ArrayList<String>();
 			String sql = QueryManager.getInstance().getQuery(DmAlmConstants.ELETTRA_ANN_MODULO);
 
@@ -143,13 +151,14 @@ public class CheckAnnullamentiElettraFacade {
 				id = rs.getString("ID_MODULO");
 
 				new SQLUpdateClause(conn, dialect, moduli).where(moduli.idModulo.equalsIgnoreCase(id))
-						.set(moduli.annullato, DmAlmConstants.FISICAMENTE).set(moduli.dataAnnullamento, dataOggi)
+					.set(moduli.nome, "#"+DmAlmConstants.FISICAMENTE+"##"+dataCaricamento+"#"+id)	
+					.set(moduli.annullato, DmAlmConstants.FISICAMENTE).set(moduli.dataAnnullamento, dataOggi)
 						.execute();
 
 				listIdModuli.add(id);
 			}
 			// aggiorno con ANNULLATO FISICAMENTE tutte le funzionalita
-			// figlie dei prodotti recuperati dalla query precedente DM_ALM-296
+			// figlie dei moduli recuperati dalla query precedente DM_ALM-296
 			if (listIdModuli.size() > 0) {
 				checkAnnullamentiElFunzionalita(conn, listIdModuli, DmAlmConstants.FISICAMENTE, dataOggi);
 			}
@@ -168,7 +177,8 @@ public class CheckAnnullamentiElettraFacade {
 				id = rs.getString("DMALM_MODULO_PK");
 
 				new SQLUpdateClause(conn, dialect, moduli).where(moduli.idModulo.equalsIgnoreCase(id))
-						.set(moduli.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
+					.set(moduli.nome, "#"+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+"##"+dataCaricamento+"#"+id)	
+					.set(moduli.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
 						.set(moduli.dataAnnullamento, dataOggi).execute();
 
 				listIdModuli.add(id);
@@ -293,11 +303,13 @@ public class CheckAnnullamentiElettraFacade {
 			String tipoAnnullamento, Timestamp dataOggi) throws DAOException {
 
 		try {
-
+			SimpleDateFormat formatDate = new SimpleDateFormat("YYYYMMDD");
+			String dataCaricamento = formatDate.format(dataOggi);
 			List<String> listIdModuli = new ArrayList<String>();
 
 			for (Integer id : listIdProdotti) {
 				new SQLUpdateClause(conn, dialect, moduli).where(moduli.prodottoFk.eq(id))
+						.set(moduli.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
 						.set(moduli.annullato, tipoAnnullamento).set(moduli.dataAnnullamento, dataOggi).execute();
 
 				SQLQuery query = new SQLQuery(conn, dialect);
@@ -319,11 +331,14 @@ public class CheckAnnullamentiElettraFacade {
 
 		try {
 
+			SimpleDateFormat formatDate = new SimpleDateFormat("YYYYMMDD");
+			String dataCaricamento = formatDate.format(dataOggi);
 			for (String id : listIdModuli) {
 
 				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.idFunzionalita.equalsIgnoreCase(id))
-						.set(funzionalita.annullato, tipoAnnullamento).set(funzionalita.dtAnnullamento, dataOggi)
-						.execute();
+					.set(funzionalita.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
+					.set(funzionalita.annullato, tipoAnnullamento).set(funzionalita.dtAnnullamento, dataOggi)
+					.execute();
 			}
 			conn.commit();
 
