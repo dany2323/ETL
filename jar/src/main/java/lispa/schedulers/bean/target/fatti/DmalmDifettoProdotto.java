@@ -321,7 +321,7 @@ public class DmalmDifettoProdotto {
     	{
     		provenienzaDifetto=provenienzaDifetto.split(" ")[0];
 	    	if(provenienzaDifetto.contains("SVI"))
-	    		provenienzaDifetto.replaceAll("SVI", "SV");
+	    		provenienzaDifetto=provenienzaDifetto.replaceAll("SVI", "SV");
     	}    	
         this.provenienzaDifetto = provenienzaDifetto;
     }
