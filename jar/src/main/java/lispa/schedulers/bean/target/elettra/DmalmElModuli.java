@@ -24,7 +24,13 @@ public class DmalmElModuli {
     private Integer prodottoFk;
     private Date dataInizioValidita;
     private Date dataFineValidita;
-    
+    private String stato;
+	public String getStato() {
+		return stato;
+	}
+	public void setStato(String stato) {
+		this.stato = stato;
+	}
 	public Integer getModuloPk() {
 		return moduloPk;
 	}

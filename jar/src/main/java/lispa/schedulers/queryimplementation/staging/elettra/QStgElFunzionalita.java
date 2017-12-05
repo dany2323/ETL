@@ -32,7 +32,8 @@ public class QStgElFunzionalita extends com.mysema.query.sql.RelationalPathBase<
 	public final StringPath linguaggi = createString("LINGUAGGI");
 	public final StringPath tipiElaborazione = createString("TIPI_ELABORAZIONE");
 	public final DateTimePath<java.sql.Timestamp> dataCaricamento = createDateTime("DT_CARICAMENTO", java.sql.Timestamp.class);
-	
+	public final StringPath stato = createString("STATO");
+
 	public QStgElFunzionalita(String variable) {
         super(StgElFunzionalita.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_EL_FUNZIONALITA");
     }

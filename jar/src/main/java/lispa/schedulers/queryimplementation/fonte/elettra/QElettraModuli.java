@@ -28,6 +28,7 @@ public class QElettraModuli extends com.mysema.query.sql.RelationalPathBase<Elet
 	public final StringPath sottosistema = createString("Sottosistema");
 	public final StringPath tecnologia = createString("tecnologia");
 	public final StringPath tipoModulo = createString("tipo modulo");
+	public final StringPath stato = createString("STATO"); 
 	
 	public QElettraModuli(String variable) {
 		super(ElettraModuli.class, forVariable(variable),

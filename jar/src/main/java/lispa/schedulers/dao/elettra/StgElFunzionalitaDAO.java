@@ -98,7 +98,8 @@ public class StgElFunzionalitaDAO {
 								qStgElFunzionalita.categoria,
 								qStgElFunzionalita.linguaggi,
 								qStgElFunzionalita.tipiElaborazione,
-								qStgElFunzionalita.dataCaricamento)
+								qStgElFunzionalita.dataCaricamento,
+								qStgElFunzionalita.stato)
 						.values(StringTemplate
 								.create("STG_FUNZIONALITA_SEQ.nextval"),
 								row.get(qElettraFunzionalita.idEdmaFunzionalitaOreste),
@@ -118,8 +119,8 @@ public class StgElFunzionalitaDAO {
 								row.get(qElettraFunzionalita.categoriaFunzionalita),
 								row.get(qElettraFunzionalita.linguaggioProgrammazione),
 								row.get(qElettraFunzionalita.tipoElaborazione),
-								DataEsecuzione.getInstance()
-										.getDataEsecuzione()).execute();
+								DataEsecuzione.getInstance().getDataEsecuzione(),
+								row.get(qElettraFunzionalita.stato)).execute();
 			}
 
 			connection.commit();

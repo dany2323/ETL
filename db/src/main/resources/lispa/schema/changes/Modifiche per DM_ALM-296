@@ -1,0 +1,22 @@
+Modifica fonte,staging e target sulle tabelle Modulo e Funzionalità per aggiungere il campo Stato
+
+--Tabelle Fonte (Sono solo in Pre-Prod)
+
+alter table DM_ALM_EL_MODULI add STATO STRING VARCHAR2(100 BYTE);
+
+alter table DM_ALM_EL_FUNZIONALITA add STATO STRING VARCHAR2(100 BYTE);
+
+--Tabella Staging
+
+alter table DMALM_STG_EL_MODULI add STATO STRING VARCHAR2(100 BYTE);
+
+alter table DMALM_STG_EL_FUNZIONALITA add STATO STRING VARCHAR2(100 BYTE);
+
+
+
+--Tabelle Target
+alter table DMALM_EL_MODULI add STATO STRING VARCHAR2(100 BYTE);
+
+alter table DMALM_EL_FUNZIONALITA add STATO STRING VARCHAR2(100 BYTE);
+
+

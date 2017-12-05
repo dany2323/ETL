@@ -28,6 +28,8 @@ public class QElettraFunzionalita extends com.mysema.query.sql.RelationalPathBas
 	public final StringPath categoriaFunzionalita = createString("Categoria Funzionalità");
 	public final StringPath linguaggioProgrammazione = createString("Linguaggio di programmazione");
 	public final StringPath tipoElaborazione = createString("Tipo Elaborazione");
+	public final StringPath stato = createString("STATO");
+
 	
 	public QElettraFunzionalita(String variable) {
 		super(ElettraFunzionalita.class, forVariable(variable),

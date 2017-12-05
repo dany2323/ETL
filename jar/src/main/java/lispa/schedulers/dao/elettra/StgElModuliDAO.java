@@ -88,7 +88,6 @@ public class StgElModuliDAO {
 
 			List<Tuple> moduli = query.from(qElettraModuli).list(
 					qElettraModuli.all());
-			List<ElettraModuli> emList = getModuliFromCSV();
 			for (Tuple row : moduli) {
 				righeInserite += new SQLInsertClause(connection, dialect,
 						qStgElModuli)
@@ -107,7 +106,8 @@ public class StgElModuliDAO {
 								qStgElModuli.sottosistema,
 								qStgElModuli.tecnologie,
 								qStgElModuli.tipoModulo,
-								qStgElModuli.dataCaricamento)
+								qStgElModuli.dataCaricamento,
+								qStgElModuli.stato)
 						.values(StringTemplate.create("STG_MODULI_SEQ.nextval"),
 								row.get(qElettraModuli.idEdmaModuloOreste),
 								row.get(qElettraModuli.idEdmaPadreModuloOreste),
@@ -124,60 +124,12 @@ public class StgElModuliDAO {
 								row.get(qElettraModuli.sottosistema),
 								row.get(qElettraModuli.tecnologia),
 								row.get(qElettraModuli.tipoModulo),
-								DataEsecuzione.getInstance()
-										.getDataEsecuzione()).execute();
+								DataEsecuzione.getInstance().getDataEsecuzione(),
+								row.get(qElettraModuli.stato)).execute();
 			}
 
 			logger.debug("StgElModuliDAO.fillStaging - righeInserite: "
 					+ righeInserite);
-			
-			righeInserite = 0;
-
-			if (emList.size() > 0) {
-				for (ElettraModuli em : emList) {
-					righeInserite += new SQLInsertClause(connection, dialect,
-							qStgElModuli)
-							.columns(qStgElModuli.moduloPk,
-									qStgElModuli.idModuloEdma,
-									qStgElModuli.idModuloEdmaPadre,
-									qStgElModuli.idModulo,
-									qStgElModuli.tipoOggetto,
-									qStgElModuli.siglaProdotto,
-									qStgElModuli.siglaSottosistema,
-									qStgElModuli.siglaModulo,
-									qStgElModuli.nome,
-									qStgElModuli.descrizioneModulo,
-									qStgElModuli.annullato,
-									qStgElModuli.dataAnnullamento,
-									qStgElModuli.responsabile,
-									qStgElModuli.sottosistema,
-									qStgElModuli.tecnologie,
-									qStgElModuli.tipoModulo,
-									qStgElModuli.dataCaricamento)
-							.values(StringTemplate
-									.create("STG_MODULI_SEQ.nextval"),
-									em.getIdEdmaModuloOreste(),
-									em.getIdEdmaPadreModuloOreste(),
-									em.getIdModuloOreste(),
-									em.getTipoModuloOreste(),
-									em.getSiglaProdottoModulo(),
-									em.getSiglaSottosistemaModulo(),
-									em.getSiglaModuloOreste(),
-									em.getNomeModuloOreste(),
-									em.getDescrizioneModuloOreste(),
-									em.getModuloOresteAnnullato(),
-									em.getDfvModuloOresteAnnullato(),
-									em.getResponsabileOreste(),
-									em.getSottosistema(),
-									em.getTecnologia(),
-									em.getTipoModulo(),
-									DataEsecuzione.getInstance()
-											.getDataEsecuzione()).execute();
-				}
-
-				logger.debug("StgElModuliDAO.fillStaging from CSV - righeInserite: "
-						+ righeInserite);
-			}
 
 			connection.commit();
 

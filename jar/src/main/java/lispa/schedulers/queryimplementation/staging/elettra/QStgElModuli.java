@@ -32,6 +32,7 @@ public class QStgElModuli extends com.mysema.query.sql.RelationalPathBase<StgElM
 	public final StringPath tecnologie = createString("TECNOLOGIE");
 	public final StringPath tipoModulo = createString("TIPO_MODULO");
 	public final DateTimePath<java.sql.Timestamp> dataCaricamento = createDateTime("DT_CARICAMENTO", java.sql.Timestamp.class);
+	public final StringPath stato = createString("STATO");
 	
 	public QStgElModuli(String variable) {
         super(StgElModuli.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_EL_MODULI");
