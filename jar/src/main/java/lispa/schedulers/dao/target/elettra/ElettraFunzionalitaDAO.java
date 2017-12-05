@@ -79,7 +79,7 @@ public class ElettraFunzionalitaDAO {
 				bean.setLinguaggi(rs.getString("LINGUAGGI"));
 				bean.setTipiElaborazione(rs.getString("TIPI_ELABORAZIONE"));
 				bean.setDmalmModuloFk01(rs.getInt("MODULO_FK"));
-
+				bean.setStato(rs.getString("STATO"));
 				funzionalita.add(bean);
 			}
 
@@ -199,7 +199,8 @@ public class ElettraFunzionalitaDAO {
 							dmalmElFunzionalita.dtCaricamento,
 							dmalmElFunzionalita.dtInizioValidita,
 							dmalmElFunzionalita.dtFineValidita,
-							dmalmElFunzionalita.dmalmModuloFk01)
+							dmalmElFunzionalita.dmalmModuloFk01,
+							dmalmElFunzionalita.stato)
 					.values(bean.getFunzionalitaPk(),
 							bean.getIdFunzionalitaEdma(),
 							bean.getIdEdmaPadre(), bean.getIdFunzionalita(),
@@ -212,7 +213,8 @@ public class ElettraFunzionalitaDAO {
 							dataEsecuzione,
 							DateUtils.setDtInizioValidita1900(),
 							DateUtils.setDtFineValidita9999(),
-							bean.getDmalmModuloFk01()).execute();
+							bean.getDmalmModuloFk01(),
+							bean.getStato()).execute();
 
 			connection.commit();
 

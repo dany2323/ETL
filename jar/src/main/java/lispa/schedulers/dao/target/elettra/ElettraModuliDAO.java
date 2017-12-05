@@ -77,7 +77,7 @@ public class ElettraModuliDAO {
 				bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
 				bean.setPersonaleFk(rs.getInt("PERSONALE_FK"));
 				bean.setProdottoFk(rs.getInt("PRODOTTO_FK"));
-
+				bean.setStato(rs.getString("STATO"));
 				moduli.add(bean);
 			}
 
@@ -162,7 +162,8 @@ public class ElettraModuliDAO {
 							qDmalmElModuli.personaleFk,
 							qDmalmElModuli.prodottoFk,
 							qDmalmElModuli.dataInizioValidita,
-							qDmalmElModuli.dataFineValidita)
+							qDmalmElModuli.dataFineValidita,
+							qDmalmElModuli.stato)
 					.values(bean.getModuloPk(), bean.getIdModuloEdma(),
 							bean.getIdModuloEdmaPadre(), bean.getIdModulo(),
 							bean.getTipoOggetto(), bean.getSiglaProdotto(),
@@ -174,7 +175,8 @@ public class ElettraModuliDAO {
 							bean.getDataCaricamento(), bean.getPersonaleFk(),
 							bean.getProdottoFk(),
 							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.setDtFineValidita9999(),
+							bean.getStato()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -246,7 +248,8 @@ public class ElettraModuliDAO {
 							qDmalmElModuli.personaleFk,
 							qDmalmElModuli.prodottoFk,
 							qDmalmElModuli.dataInizioValidita,
-							qDmalmElModuli.dataFineValidita)
+							qDmalmElModuli.dataFineValidita,
+							qDmalmElModuli.stato)
 					.values(bean.getModuloPk(), bean.getIdModuloEdma(),
 							bean.getIdModuloEdmaPadre(), bean.getIdModulo(),
 							bean.getTipoOggetto(), bean.getSiglaProdotto(),
@@ -257,7 +260,8 @@ public class ElettraModuliDAO {
 							bean.getTecnologie(), bean.getTipoModulo(),
 							bean.getDataCaricamento(), bean.getPersonaleFk(),
 							bean.getProdottoFk(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.setDtFineValidita9999(),
+							bean.getStato()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -296,6 +300,7 @@ public class ElettraModuliDAO {
 					.set(qDmalmElModuli.tipoModulo, bean.getTipoModulo())
 					.set(qDmalmElModuli.prodottoFk, bean.getProdottoFk())
 					.set(qDmalmElModuli.personaleFk, bean.getPersonaleFk())
+					.set(qDmalmElModuli.stato, bean.getStato())
 					.execute();
 
 			connection.commit();

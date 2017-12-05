@@ -37,6 +37,7 @@ public class QDmalmElModuli extends
 	public final NumberPath<Integer> prodottoFk = createNumber("DMALM_PRODOTTO_FK_02", Integer.class);
 	public final DateTimePath<java.sql.Timestamp> dataInizioValidita = createDateTime("DT_INIZIO_VALIDITA", java.sql.Timestamp.class);
 	public final DateTimePath<java.sql.Timestamp> dataFineValidita = createDateTime("DT_FINE_VALIDITA", java.sql.Timestamp.class);
+	public final StringPath stato = createString("STATO");
 
 	public final com.mysema.query.sql.PrimaryKey<DmalmElModuli> dmalmModuloPk = createPrimaryKey(moduloPk);
 	

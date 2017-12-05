@@ -22,6 +22,15 @@ public class DmalmElFunzionalita {
 	private java.sql.Timestamp dtInizioValidita;
 	private java.sql.Timestamp dtFineValidita;
 	private Integer dmalmModuloFk01;
+	private String stato;
+
+	public String getStato() {
+		return stato;
+	}
+
+	public void setStato(String stato) {
+		this.stato = stato;
+	}
 
 	public Integer getFunzionalitaPk() {
 		return funzionalitaPk;

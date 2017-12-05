@@ -37,8 +37,8 @@ com.mysema.query.sql.RelationalPathBase<DmalmElFunzionalita> {
     public final DateTimePath<java.sql.Timestamp> dtInizioValidita = createDateTime("DT_INIZIO_VALIDITA", java.sql.Timestamp.class);
     public final DateTimePath<java.sql.Timestamp> dtFineValidita = createDateTime("DT_FINE_VALIDITA", java.sql.Timestamp.class);
     public final NumberPath<Integer> dmalmModuloFk01 = createNumber("DMALM_MODULO_FK_01", Integer.class);
-
     public final com.mysema.query.sql.PrimaryKey<DmalmElFunzionalita> dmalmFunzionalitaPk = createPrimaryKey(funzionalitaPk);
+	public final StringPath stato = createString("STATO");
 
     public QDmalmElFunzionalita(String variable) {
         super(DmalmElFunzionalita.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_EL_FUNZIONALITA");
