@@ -110,7 +110,6 @@ public class ProjectSgrCmFacade {
 							if (modificato) {
 								logger.debug("Project modified");
 								righeModificate++;
-								if(project.getAnnullato()==null){
 								// STORICIZZO
 								// aggiorno la data di fine validita sul record
 								// corrente
@@ -121,13 +120,6 @@ public class ProjectSgrCmFacade {
 								ProjectSgrCmDAO.insertProjectUpdate(
 										dataEsecuzione, project, true);
 								logger.debug("New Project inserted");
-								}
-								else
-								{
-									logger.debug("Project not modified");
-									ProjectSgrCmDAO.updateDmalmProject(project);
-									logger.debug("Project updated");
-								}
 							} else {
 								// Aggiorno lo stesso
 								logger.debug("Project not modified");
@@ -237,22 +229,15 @@ public class ProjectSgrCmFacade {
 								.get(proj.nomeCompletoProject));
 						bean.setDtCaricamento(dataEsecuzione);
 
-						if(bean.getAnnullato()==null)
-						{
 						// STORICIZZO
 						// aggiorno la data di fine validita sul record
-						// corrente 
+						// corrente
 						ProjectSgrCmDAO.updateDataFineValidita(dataEsecuzione,
-								bean); 
+								bean);
 
 						// inserisco un nuovo record
 						ProjectSgrCmDAO.insertProjectUpdate(dataEsecuzione,
 								bean, false);
-						}
-						else
-						{
-							ProjectSgrCmDAO.updateDmalmProject(bean);
-						}
 					}
 				}
 			}
