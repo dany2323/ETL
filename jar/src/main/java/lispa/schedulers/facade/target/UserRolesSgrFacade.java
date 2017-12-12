@@ -33,6 +33,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.svn.SIREUserRolesXML;
 import lispa.schedulers.utils.BeanUtils;
+import lispa.schedulers.utils.DateUtils;
 
 public class UserRolesSgrFacade {
 
@@ -100,26 +101,18 @@ public class UserRolesSgrFacade {
 
 			logger.debug("fillCurrentUserRoles - query project");
 
-			List<Tuple> locations = query
+			List<Tuple> dmalmProjects = query
 					.from(project)
+					.where(project.dtFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.where(project.annullato.isNull())
 					.orderBy(project.idProject.asc(), project.cRev.desc())
-					.list(project.pathProject, project.idProject, project.cRev,
+					.list(project.dmalmProjectPrimaryKey,project.pathProject, project.idProject, project.cRev,
 							project.cCreated,project.idRepository);
 
-			List<Tuple> distinctDmalmProjects = new ArrayList<Tuple>();
-			String compare = "";
-			for (Tuple l : locations) {
-				if (!compare.equals(l.get(project.idProject))) {
-					distinctDmalmProjects.add(l);
-					compare = l.get(project.idProject);
-				}
-
-			}
-
 			logger.debug("fillCurrentUserRoles - distinctDmalmProjects.size: "
-					+ distinctDmalmProjects.size());
+					+ dmalmProjects.size());
 			
-			for (Tuple prj : distinctDmalmProjects) {
+			for (Tuple prj : dmalmProjects) {
 				logger.info("fillCurrentUserRoles - Inizio gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
 				String projectSVNPath = SIREUserRolesXML.getProjectSVNPath(prj.get(project.pathProject));
 
@@ -152,8 +145,7 @@ public class UserRolesSgrFacade {
 					List<DmalmUserRolesSgr> listaVecchi = new ArrayList<DmalmUserRolesSgr>();
 				
 					for(DmalmUserRolesSgr projectUserRole: userRolesGroupedByProjID){											
-						int fkProject = getFkProject(prj, projectUserRole);
-						
+						int fkProject=prj.get(project.dmalmProjectPrimaryKey);
 						if (listaTarget.size() == 0) {
 							//inserisce tutti
 							logger.info("Inserisco record nuovi, il progetto non aveva nessun utente-ruolo associato");
@@ -170,7 +162,7 @@ public class UserRolesSgrFacade {
 					
 					// nuovi UserRoles
 					for(DmalmUserRolesSgr projectUserRole: listaNuovi){	
-						int fkProject = getFkProject(prj, projectUserRole);
+						int fkProject=prj.get(project.dmalmProjectPrimaryKey);
 						logger.info("Inserisco record nuovi");
 						UserRolesSgrDAO.insertUserRole(projectUserRole, fkProject, dataEsecuzione);
 						righeNuove += 1;						
@@ -182,7 +174,7 @@ public class UserRolesSgrFacade {
 					for(DmalmUserRolesSgr projectUserRole: listaVecchi){
 						Timestamp c_created = projectUserRole.getDtModifica();
 
-						int fkProject = getFkProject(prj, projectUserRole);
+						int fkProject=prj.get(project.dmalmProjectPrimaryKey);
 
 						if (BeanUtils.areDifferent(fkProject, listaTarget
 								.get(0).getDmalmProjectFk01())) {
@@ -259,17 +251,6 @@ public class UserRolesSgrFacade {
 			}
 		}
 	}
-	
-	private static int getFkProject(Tuple prj, DmalmUserRolesSgr projectUserRole) throws DAOException {
-		Timestamp c_created = projectUserRole.getDtModifica();
-		
-		//logger.info("START UserRolesSgrDAO.getFkProject");
-		int fkProject = UserRolesSgrDAO.getFkProject(prj.get(project.idProject),
-				prj.get(project.idRepository), c_created);
-		//logger.info("STOP UserRolesSgrDAO.getFkProject");
-		return fkProject;
-	}
-	
 	private static boolean presenteSuLista(DmalmUserRolesSgr utenteRuolo, List<DmalmUserRolesSgr> lista) {
 		boolean result = false;
 		
