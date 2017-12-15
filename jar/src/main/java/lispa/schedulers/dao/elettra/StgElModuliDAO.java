@@ -1,27 +1,12 @@
 package lispa.schedulers.dao.elettra;
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import lispa.schedulers.bean.fonte.elettra.ElettraModuli;
-import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.queryimplementation.fonte.elettra.QElettraModuli;
-import lispa.schedulers.queryimplementation.staging.elettra.QStgElModuli;
-import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -31,6 +16,14 @@ import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.template.StringTemplate;
+
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.queryimplementation.fonte.elettra.QElettraModuli;
+import lispa.schedulers.queryimplementation.staging.elettra.QStgElModuli;
+import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
 
 public class StgElModuliDAO {
 	private static Logger logger = Logger.getLogger(StgElModuliDAO.class);
@@ -88,7 +81,6 @@ public class StgElModuliDAO {
 
 			List<Tuple> moduli = query.from(qElettraModuli).list(
 					qElettraModuli.all());
-			List<ElettraModuli> emList = getModuliFromCSV();
 			for (Tuple row : moduli) {
 				righeInserite += new SQLInsertClause(connection, dialect,
 						qStgElModuli)
@@ -131,53 +123,7 @@ public class StgElModuliDAO {
 			logger.debug("StgElModuliDAO.fillStaging - righeInserite: "
 					+ righeInserite);
 			
-			righeInserite = 0;
-
-			if (emList.size() > 0) {
-				for (ElettraModuli em : emList) {
-					righeInserite += new SQLInsertClause(connection, dialect,
-							qStgElModuli)
-							.columns(qStgElModuli.moduloPk,
-									qStgElModuli.idModuloEdma,
-									qStgElModuli.idModuloEdmaPadre,
-									qStgElModuli.idModulo,
-									qStgElModuli.tipoOggetto,
-									qStgElModuli.siglaProdotto,
-									qStgElModuli.siglaSottosistema,
-									qStgElModuli.siglaModulo,
-									qStgElModuli.nome,
-									qStgElModuli.descrizioneModulo,
-									qStgElModuli.annullato,
-									qStgElModuli.dataAnnullamento,
-									qStgElModuli.responsabile,
-									qStgElModuli.sottosistema,
-									qStgElModuli.tecnologie,
-									qStgElModuli.tipoModulo,
-									qStgElModuli.dataCaricamento)
-							.values(StringTemplate
-									.create("STG_MODULI_SEQ.nextval"),
-									em.getIdEdmaModuloOreste(),
-									em.getIdEdmaPadreModuloOreste(),
-									em.getIdModuloOreste(),
-									em.getTipoModuloOreste(),
-									em.getSiglaProdottoModulo(),
-									em.getSiglaSottosistemaModulo(),
-									em.getSiglaModuloOreste(),
-									em.getNomeModuloOreste(),
-									em.getDescrizioneModuloOreste(),
-									em.getModuloOresteAnnullato(),
-									em.getDfvModuloOresteAnnullato(),
-									em.getResponsabileOreste(),
-									em.getSottosistema(),
-									em.getTecnologia(),
-									em.getTipoModulo(),
-									DataEsecuzione.getInstance()
-											.getDataEsecuzione()).execute();
-				}
-
-				logger.debug("StgElModuliDAO.fillStaging from CSV - righeInserite: "
-						+ righeInserite);
-			}
+			
 
 			connection.commit();
 
@@ -551,78 +497,6 @@ public class StgElModuliDAO {
 		}
 
 		return moduli;
-	}
-
-	public static List<ElettraModuli> getModuliFromCSV() throws NoSuchAlgorithmException, DAOException {
-		List<ElettraModuli> result = new ArrayList<ElettraModuli>();
-		String[] nextLine;
-		String[] rowToDB = null;
-		List<String[]> s = new ArrayList<String[]>();
-		FileInputStream fileInputStream = null;
-		InputStreamReader inputStreamReader = null;
-		CSVReader reader = null;
-
-		try {
-			// reader = new CSVReader(new InputStreamReader(new
-			// FileInputStream(DmAlmConstants.SFERA_CSV + "DM_ALM_MODULI" +
-			// DmAlmConstants.MPS_CSV_EXTENSION), "ISO-8859-1"), '\t');
-			fileInputStream = new FileInputStream(DmAlmConstants.SFERA_CSV
-					+ "DM_ALM_MODULI" + DmAlmConstants.MPS_CSV_EXTENSION);
-			inputStreamReader = new InputStreamReader(fileInputStream,
-					"ISO-8859-1");
-			reader = new CSVReader(inputStreamReader, '\t');
-
-			nextLine = reader.readNext();
-			nextLine = reader.readNext();// salto la riga dei nomi delle
-											// colonne, se il csv non ha questa
-											// riga, si può rimuovere
-			while (nextLine != null) {
-				s.add(nextLine);
-				nextLine = reader.readNext();
-			}
-
-			if (fileInputStream != null) {
-				fileInputStream.close();
-			}
-			if (inputStreamReader != null) {
-				inputStreamReader.close();
-			}
-			if (reader != null) {
-				reader.close();
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			logger.info("Errore gestito " + e.getMessage()
-					+ " Path o file csv non validi");
-		}
-
-		if (s.size() > 0) {
-			for (String[] string : s) {
-				for (String string2 : string) {
-					rowToDB = string2.split(";");
-					ElettraModuli em = new ElettraModuli();
-					em.setIdEdmaModuloOreste(rowToDB[0]);
-					em.setIdEdmaPadreModuloOreste(rowToDB[1]);
-					em.setIdModuloOreste(rowToDB[2]);
-					em.setTipoModuloOreste(rowToDB[3]);
-					em.setSiglaProdottoModulo(rowToDB[4]);
-					em.setSiglaSottosistemaModulo(rowToDB[5]);
-					em.setSiglaModuloOreste(rowToDB[6]);
-					em.setNomeModuloOreste(rowToDB[7]);
-					em.setDescrizioneModuloOreste(rowToDB[8]);
-					em.setModuloOresteAnnullato(rowToDB[9]);
-					em.setDfvModuloOresteAnnullato(rowToDB[10]);
-					em.setResponsabileOreste(StringUtils.getMaskedValue(rowToDB[11]));
-					em.setSottosistema(rowToDB[12]);
-					em.setTecnologia(rowToDB[13]);
-					em.setTipoModulo(rowToDB[14]);
-
-					result.add(em);
-				}
-			}
-		}
-
-		return result;
 	}
 
 	public static void recoverElModuli() throws Exception {

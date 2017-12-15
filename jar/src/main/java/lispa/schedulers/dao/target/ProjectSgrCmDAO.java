@@ -315,11 +315,7 @@ public class ProjectSgrCmDAO {
 
 		// Se il project non ha una eccezione
 		if (codiceAreaUO.equalsIgnoreCase("")) {
-			if (template == null) {
-				// Nessun Template
-				codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-			} else {
-				switch (template) {
+			switch (template) {
 				case DmAlmConstants.SVILUPPO:
 					// Template SVILUPPO
 					if (nomeProject == null) {
@@ -460,12 +456,12 @@ public class ProjectSgrCmDAO {
 						break;
 	
 					default:
-						// Template non gestito
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						if(codiceAreaUO.equals(""))
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 						break;
 					}
 				}
-			}
+			
 	
 			if (codiceAreaUO.equals(DmAlmConstants.NON_PRESENTE)) {
 				try {
