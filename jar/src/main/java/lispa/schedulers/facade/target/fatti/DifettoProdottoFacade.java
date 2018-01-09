@@ -123,6 +123,11 @@ public class DifettoProdottoFacade {
 											difetto.getAnnullato())) {
 								modificato = true;
 							}
+							if (!modificato
+									&& BeanUtils.areDifferent(row.get(dif.provenienzaDifetto),
+											difetto.getProvenienzaDifetto())) {
+								modificato = true;
+							}
 
 							if (modificato) {
 								righeModificate++;

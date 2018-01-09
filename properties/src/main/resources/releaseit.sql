@@ -12,9 +12,11 @@ SELECT 'SIRE' as ID_REPOSITORY,
 		hu.c_id as ID_AUTORE_RELEASEIT, 
 		hu.c_name as NOME_AUTORE_RELEASEIT,
 		hw.c_title as TITOLO_RELEASEIT,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY,
 		nvl(
 			hw.c_resolvedon
-			, {ts '9999-12-31 00:00:00'}
+			, TO_TIMESTAMP('31-12-9999 00:00:00','DD-MM-YYYY HH24:MI:SS')
 		) as DATA_RISOLUZIONE_RELIT,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_RELIT,
 		TO_CHAR(hw.c_description) as DESCRIPTION,
@@ -59,9 +61,11 @@ SELECT 'SISS' as ID_REPOSITORY,
 		hu.c_id as ID_AUTORE_RELEASEIT, 
 		hu.c_name as NOME_AUTORE_RELEASEIT,
 		hw.c_title as TITOLO_RELEASEIT,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY,
 		nvl(
 		hw.c_resolvedon
-		, {ts '9999-12-31 00:00:00'}
+			, TO_TIMESTAMP('31-12-9999 00:00:00','DD-MM-YYYY HH24:MI:SS')
 		) as DATA_RISOLUZIONE_RELIT,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_RELIT,
 		TO_CHAR(hw.c_description) as DESCRIPTION,

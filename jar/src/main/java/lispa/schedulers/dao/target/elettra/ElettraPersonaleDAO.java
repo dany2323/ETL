@@ -22,6 +22,7 @@ import com.mysema.query.sql.dml.SQLUpdateClause;
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
@@ -378,6 +379,69 @@ public class ElettraPersonaleDAO {
 		return strutture;
 	}
 	
+
+	public static Tuple findByName(String name, String surname)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> strutture;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			strutture = query
+					.from(qDmalmElPersonale)
+					.where(qDmalmElPersonale.nome.eq(name))
+					.where(qDmalmElPersonale.cognome.eq(surname))
+					.list(qDmalmElPersonale.all());
+			
+			if(strutture.isEmpty())
+				return null;
+			else
+				return strutture.get(0);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+	
+	public static boolean existsWithAnnullatoNull(Integer dmalm_personale_pk) throws DAOException
+	{
+		ConnectionManager cm = null;
+		Connection connection = null;
+		
+		boolean valToReturn = false;
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			
+			PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM DMALM_EL_PERSONALE WHERE DMALM_PERSONALE_PK = ? AND ANNULLATO IS NULL");
+			ps.setInt(1, dmalm_personale_pk);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+				valToReturn = rs.getInt(1) > 0;
+			
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+		
+		return valToReturn;
+	}
+	
 	public static ResultSet getAllPersonaleUnitaOrganizzativa() throws DAOException {	
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -399,7 +463,7 @@ public class ElettraPersonaleDAO {
 					+"AND p.DT_FINE_VALIDITA = TO_DATE('31/12/9999 00:00:00', 'dd/mm/yyyy hh24:mi:ss') "
 					+"AND uo.DT_FINE_VALIDITA = TO_DATE('31/12/9999 00:00:00', 'dd/mm/yyyy hh24:mi:ss') "
 					+"AND p.DMALM_PERSONALE_PK <> 0 "
-					+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK ";
+					+"AND (p.DMALM_UNITAORGANIZZATIVA_FK_01 IS NULL OR p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK)";
 			} else {
 				sql = "select p.CD_PERSONALE, uo.DMALM_UNITA_ORG_PK as UO_PK "
 						+"from DMALM_EL_PERSONALE p, DMALM_EL_UNITA_ORGANIZZATIVE uo "
@@ -407,7 +471,7 @@ public class ElettraPersonaleDAO {
 						+"AND p.DT_FINE_VALIDITA = TO_DATE('31/12/9999 00:00:00', 'dd/mm/yyyy hh24:mi:ss') "
 						+"AND uo.DT_FINE_VALIDITA = TO_DATE('31/12/9999 00:00:00', 'dd/mm/yyyy hh24:mi:ss') "
 						+"AND p.DMALM_PERSONALE_PK <> 0 "
-						+"AND p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK ";
+						+"AND (p.DMALM_UNITAORGANIZZATIVA_FK_01 IS NULL OR p.DMALM_UNITAORGANIZZATIVA_FK_01 <> uo.DMALM_UNITA_ORG_PK)";
 			}
 			
 			PreparedStatement ps = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -499,5 +563,93 @@ public class ElettraPersonaleDAO {
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
+	}
+	
+	public static Integer getPersonalePk() throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		Integer resPersonalePk = 0;
+		
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = QueryManager.getInstance().getQuery(
+					DmAlmConfigReaderProperties.PERSONALE_PK_MAXVAL);
+			ps = connection.prepareStatement(sql);
+
+			rs = ps.executeQuery();
+			rs.next();
+			resPersonalePk = rs.getInt("PERSONALE_PK")+1;
+			
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return resPersonalePk;
+	}
+	
+	public static Integer getPersonalePkByNomeCognome(String nome, String cognome) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		Integer resPersonalePk = 0;
+		
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = QueryManager.getInstance().getQuery(
+					DmAlmConfigReaderProperties.PERSONALE_PK_MAXVAL);
+			ps = connection.prepareStatement(sql);
+
+			ps.setString(1, nome);
+			ps.setString(2, cognome);
+			
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				resPersonalePk = rs.getInt("PERSONALE_PK");
+			}
+			
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return resPersonalePk;
 	}
 }

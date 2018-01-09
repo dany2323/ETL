@@ -64,3 +64,6 @@ set p.DMALM_UNITAORG_FLAT_FK_03 =
         and p.dt_inizio_validita between uo.DT_INIZIO_VALIDITA and uo.DT_FINE_VALIDITA) 
 where p.DMALM_UNITAORG_FLAT_FK_03 is null 
 and p.DMALM_UNITAORGANIZZATIVA_FK_01 is not null; 
+update DMALM_EL_PRODOTTI_ARCH p  
+set p.DMALM_UNITAORG_FLAT_FK_03 = '0'
+where p.DMALM_UNITAORGANIZZATIVA_FK_01 ='0';

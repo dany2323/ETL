@@ -120,7 +120,15 @@ public class DocumentoFacade {
 							{
 								modificato = true;
 							}
-
+							
+							// DM_ALM-320
+							if (!modificato && BeanUtils.areDifferent(row.get(doc.severity), documento.getSeverity())) {
+								modificato = true;
+							}
+							if (!modificato && BeanUtils.areDifferent(row.get(doc.priority), documento.getPriority())) {
+								modificato = true;
+							}
+								
 							if(modificato)
 							{
 								righeModificate++;

@@ -9,10 +9,12 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmProdottoDAO;
+import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.dao.target.ProdottoDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdotto;
 import lispa.schedulers.utils.DateUtils;
@@ -27,6 +29,7 @@ public class CheckLinkAsmSferaProdottoFacade {
 	private static QDmalmAsm dmalmAsm = QDmalmAsm.dmalmAsm;
 	private static QDmalmProdotto dmalmProdotto = QDmalmProdotto.dmalmProdotto;
 	private static QDmalmAsmProdotto dmalmAsmProdotto = QDmalmAsmProdotto.dmalmAsmProdotto;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
 	public static void execute(Timestamp dataEsecuzione, boolean check)
 			throws Exception, DAOException {
@@ -139,12 +142,14 @@ public class CheckLinkAsmSferaProdottoFacade {
 					multiAsm = applicazione.split("\\.\\.");
 
 					for (String asmName : multiAsm) {
+						List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(asmName);
+						if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){				
 						// toglie eventuali moduli dopo il nome Asm
 						if (asmName.contains(".")) {
 							asmName = asmName
 									.substring(0, asmName.indexOf("."));
 						}
-
+						}
 						// scarta nomi duplicati
 						if (!asmLinkedList.contains(asmName)) {
 							asmLinkedList.add(asmName);

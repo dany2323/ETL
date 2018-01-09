@@ -21,7 +21,6 @@ import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmStatoWorkitem;
 import lispa.schedulers.runnable.staging.sire.current.SireStatoWorkitemRunnable;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
-import lispa.schedulers.svn.SIREUserRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
@@ -50,18 +49,6 @@ import com.mysema.query.types.template.StringTemplate;
 public class TestXMLFile extends TestCase {
 
 	private static Logger logger = Logger.getLogger(TestXMLFile.class);
-
-	public void testFillSIREHistoryUserRoles() throws Exception {
-		Log4JConfiguration.inizialize();
-
-		logger.debug("START testFillSIREHistoryUserRoles");
-		DataEsecuzione.getInstance().setDataEsecuzione(
-				DateUtils.stringToTimestamp("2016-05-09 10:00:00",
-						"yyyy-MM-dd HH:mm:00"));
-		SIREUserRolesXML.fillSIREHistoryUserRoles();
-
-		logger.debug("STOP testFillSIREHistoryUserRoles");
-	}
 
 	public void testSireUserRoles() throws Exception {
 		Log4JConfiguration.inizialize();

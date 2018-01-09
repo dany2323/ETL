@@ -106,11 +106,10 @@ public class SissHistoryHyperlinkDAO {
 									
 							.values(
 									
-									vals[0],
-									vals[1],
-									vals[2],
-									vals[3],
-									
+									row.get(fonteHyperlink.cRole),
+									row.get(fonteHyperlink.cUrl),
+									row.get(fonteHyperlink.fkPWorkitem),
+									row.get(fonteHyperlink.fkUriPWorkitem),
 									DataEsecuzione.getInstance().getDataEsecuzione(),
 									StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 											

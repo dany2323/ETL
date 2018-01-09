@@ -61,6 +61,12 @@ private String cd_classificatore;
 	
 	private String uriClassficatore;
 
+	//DM_ALM-320
+	private String severity;
+		
+	private String priority;
+	
+	
 	public String getCd_classificatore() {
 		return cd_classificatore;
 	}
@@ -267,6 +273,22 @@ private String cd_classificatore;
 
 	public void setUriClassficatore(String uriClassficatore) {
 		this.uriClassficatore = uriClassficatore;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 	
 }

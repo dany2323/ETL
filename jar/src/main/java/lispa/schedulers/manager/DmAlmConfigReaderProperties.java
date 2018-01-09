@@ -6,7 +6,7 @@ public class DmAlmConfigReaderProperties
 	public static final String PROPERTIES_READER_FILE_NAME = "datamart.properties";
 	
 	//wi-191
-	public static final String VERSIONE_ETL = "4.8.00";
+	public static final String VERSIONE_ETL = "4.9.00";
 	
 	//QUERY FATTI
 	public static final String SQL_ANOMALIA					    = "anomalia.sql";
@@ -50,7 +50,6 @@ public class DmAlmConfigReaderProperties
 	
 	public static final String SQL_CLASSIFICATORI 				= "classificatori.sql";
 	public static final String SQL_PROJECTROLES 				= "projectroles.sql";
-	public static final String SQL_USERROLES 					= "userroles.sql";
 	public static final String SQL_PERSONALE 					= "personale.sql";
 	public static final String SQL_PRODOTTI 					= "prodotti.sql";
 	public static final String SQL_SOTTOSISTEMI 				= "sottosistemi.sql";
@@ -261,9 +260,11 @@ public class DmAlmConfigReaderProperties
 	public static final String MAIL_SERVER = "mail.server";
 	public static final String MAIL_LOG_PATH="mail.log.path";
 
-	//WORKITEM
-	public static final String WORKITEM_PK_NEXTVAL="dmalm_workitem_pk_nextval.sql";;
-	
+	//PK
+	public static final String WORKITEM_PK_NEXTVAL="dmalm_workitem_pk_nextval.sql";
+	public static final String PERSONALE_PK_MAXVAL="dmalm_personale_pk_maxval.sql";
+	public static final String USER_ROLES_SGR_PK_MAXVAL="dmalm_user_roles_sgr_pk_maxval.sql";
+
 	//SFERA
 	public static final String NOTLINKED_PROJSF_WORKITEM="notlinked_projsf_wi.sql";;
 	public static final String DMALM_SFERA_PATH="dmalm.sfera.path";

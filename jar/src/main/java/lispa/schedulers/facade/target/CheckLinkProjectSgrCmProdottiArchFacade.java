@@ -8,11 +8,13 @@ import lispa.schedulers.bean.target.DmalmProjectProdottiArchitetture;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.target.DmAlmProjectProdottiArchitettureDAO;
+import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdottiArchitetture;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
 
@@ -26,7 +28,7 @@ public class CheckLinkProjectSgrCmProdottiArchFacade {
 	private static QDmalmProject dmalmProject = QDmalmProject.dmalmProject;
 	private static QDmalmElProdottiArchitetture dmalmProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 	private static QDmalmProjectProdottiArchitetture dmalmProjectProdotto = QDmalmProjectProdottiArchitetture.qDmalmProjectProdottiArchitetture;
-
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 	public static void execute(Timestamp dataEsecuzione) throws Exception,
 			DAOException {
 		try {
@@ -115,12 +117,14 @@ public class CheckLinkProjectSgrCmProdottiArchFacade {
 					multiSiglaProject = siglaProject.split("\\.\\.");
 
 					for (String siglaPrj : multiSiglaProject) {
-						// toglie eventuali moduli dopo il nome Project
-						if (siglaPrj.contains(".")) {
-							siglaPrj = siglaPrj.substring(0,
-									siglaPrj.indexOf("."));
+						List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(siglaPrj);
+						if(!(dmAlmSourceElProdEccez!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
+								// toglie eventuali moduli dopo il nome Project
+							if (siglaPrj.contains(".")) {
+								siglaPrj = siglaPrj.substring(0,
+										siglaPrj.indexOf("."));
+							}
 						}
-
 						// scarta nomi duplicati
 						if (!prjLinkedList.contains(siglaPrj)) {
 							prjLinkedList.add(siglaPrj);

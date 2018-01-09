@@ -21,7 +21,9 @@
 		hw.c_resolution as MOTIVO_RISOLUZIONE_PROGETTOESE,
 		to_char(hw.c_description) as DESCRIZIONE_PROGETTO_ESE,
 		hw.codice as CODICE,
-		(select distinct hcf.c_date_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_sottomissione') as DATA_SOTTOMISSIONE
+		(select distinct hcf.c_date_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_sottomissione') as DATA_SOTTOMISSIONE,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -58,7 +60,9 @@ UNION ALL
 		hw.c_resolution as MOTIVO_RISOLUZIONE_PROGETTOESE,
 		to_char(hw.c_description) as DESCRIZIONE_PROGETTO_ESE,
 		hw.codice as CODICE,
-		(select distinct hcf.c_date_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_sottomissione') as DATA_SOTTOMISSIONE
+		(select distinct hcf.c_date_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_sottomissione') as DATA_SOTTOMISSIONE,
+		hw.c_severity as SEVERITY,
+		hw.c_priority as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 

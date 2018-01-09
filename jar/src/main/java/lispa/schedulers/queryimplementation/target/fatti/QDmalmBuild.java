@@ -79,6 +79,12 @@ public class QDmalmBuild extends com.mysema.query.sql.RelationalPathBase<DmalmBu
 
     public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
     
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmBuild(String variable) {
         super(DmalmBuild.class, forVariable(variable), "DMALM", "DMALM_BUILD");
     }

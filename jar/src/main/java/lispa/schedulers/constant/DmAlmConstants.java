@@ -20,7 +20,8 @@ public final class DmAlmConstants {
 	public static final String ASSISTENZA = "ASSISTENZA";
 	public static final String SERDEP = "SERDEP";
 	
-	public static final String NON_PRESENTE = "Non presente";
+	public static final String NON_PRESENTE = "Non presente";	
+	
 
 	public static final String CARICAMENTO_IN_ATTESA = "In attesa di caricamento";
 	public static final String CARICAMENTO_TERMINATO_CORRETTAMENTE = "Caricamento terminato correttamente";
@@ -147,7 +148,6 @@ public final class DmAlmConstants {
 	public static final String COUNT_ATTACHMENTS = "count_attachments.sql";
 	public static final String COUNT_HYPERLINKS = "count_hyperlinks.sql";
 	public static final String COUNT_LINKED_WORKITEMS = "count_linked_workitems.sql";
-	public static final String COUNT_USERROLES = "count_userroles.sql";
 	
 	
 	//cancellazione dei CF che non trovano corrispondenza in nessun workitem
@@ -189,6 +189,8 @@ public final class DmAlmConstants {
 	public static final String M_UPDATE_PERSONALE_UOFLATFK = "m_update_personale_uoflatfk.sql";
 	public static final String M_SEPARATOR = ";";
 	
+	//File .sql cancellazione associazioni non più valide tabella dmalm_user_roles_sgr
+	public static final String DELETE_OLD_USER_ROLES = "delete_old_user_roles.sql";
 	
 	public static final String ANNULLATO_LOGICAMENTE = "#ANNULLATO_LOGICAMENTE##";
 	public static final String ANNULLATO_FISICAMENTE = "#ANNULLATO_FISICAMENTE##";
@@ -279,6 +281,7 @@ public final class DmAlmConstants {
 	public static final String TARGET_PROJECTROLES = "DMALM_PROJECT_ROLES_SGR";
 	public static final String TARGET_USERROLES = "DMALM_USER_ROLES_SGR";
 	public static final String TARGET_USER = "DMALM_USER";
+	public static final String TARGET_USER_EL_PERSONALE = "DMALM_USER_EL_PERSONALE";
 	public static final String TARGET_SCHEDE_SERVIZIO = "DMALM_SCHEDE_SERVIZIO";
 
 	public static final String TARGET_SGR_SIRE_CURRENT_PROJECT = "DMALM_PROJECT";

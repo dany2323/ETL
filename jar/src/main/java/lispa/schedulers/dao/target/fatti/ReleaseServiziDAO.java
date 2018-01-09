@@ -95,6 +95,9 @@ public class ReleaseServiziDAO {
 						.getString("RICHIESTA_IMPATTI"));
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_RELEASESER_PK"));
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				releases.add(bean);
 			}
@@ -190,7 +193,8 @@ public class ReleaseServiziDAO {
 							releaseservizi.previstoFermoServizioRel,
 							releaseservizi.richiestaAnalisiImpattiRel,
 							releaseservizi.dmalmUserFk06, releaseservizi.uri,
-							releaseservizi.dtAnnullamento)
+							releaseservizi.dtAnnullamento,
+							releaseservizi.severity, releaseservizi.priority)
 					.values(release.getCdRelServizi(),
 							release.getDescrizioneRelServizi(),
 							release.getDmalmRelServiziPk(),
@@ -215,7 +219,8 @@ public class ReleaseServiziDAO {
 							release.getPrevistoFermoServizioRel(),
 							release.getRichiestaAnalisiImpattiRel(),
 							release.getDmalmUserFk06(), release.getUri(),
-							release.getDtAnnullamento()).execute();
+							release.getDtAnnullamento(),
+							release.getSeverity(), release.getPriority()).execute();
 
 			connection.commit();
 
@@ -297,7 +302,8 @@ public class ReleaseServiziDAO {
 							releaseservizi.richiestaAnalisiImpattiRel,
 							releaseservizi.dmalmUserFk06, releaseservizi.uri,
 							releaseservizi.dtAnnullamento,
-							releaseservizi.changed, releaseservizi.annullato)
+							releaseservizi.changed, releaseservizi.annullato,
+							releaseservizi.severity, releaseservizi.priority)
 					.values(release.getCdRelServizi(),
 							release.getDescrizioneRelServizi(),
 							pkValue == true ? release.getDmalmRelServiziPk()
@@ -326,7 +332,8 @@ public class ReleaseServiziDAO {
 							release.getRichiestaAnalisiImpattiRel(),
 							release.getDmalmUserFk06(), release.getUri(),
 							release.getDtAnnullamento(), release.getChanged(),
-							release.getAnnullato()).execute();
+							release.getAnnullato(),
+							release.getSeverity(), release.getPriority()).execute();
 
 			connection.commit();
 
@@ -399,7 +406,12 @@ public class ReleaseServiziDAO {
 							release.getRichiestaAnalisiImpattiRel())
 					.set(releaseservizi.dtAnnullamento,
 							release.getDtAnnullamento())
-					.set(releaseservizi.annullato, release.getAnnullato()).execute();
+					.set(releaseservizi.annullato, release.getAnnullato())
+					.set(releaseservizi.severity,
+							release.getSeverity())
+					.set(releaseservizi.priority,
+							release.getPriority())
+					.execute();
 			connection.commit();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -483,6 +495,9 @@ public class ReleaseServiziDAO {
 			r.setStgPk(t.get(releaseservizi.stgPk));
 			r.setTitoloRelServizi(t.get(releaseservizi.titoloRelServizi));
 			r.setUri(t.get(releaseservizi.uri));
+			//DM_ALM-320
+			r.setSeverity(t.get(releaseservizi.severity));
+			r.setPriority(t.get(releaseservizi.priority));
 
 			return r;
 

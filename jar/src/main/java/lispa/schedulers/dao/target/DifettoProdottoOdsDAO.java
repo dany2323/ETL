@@ -34,7 +34,7 @@ public class DifettoProdottoOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listDifettoPk= new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -43,6 +43,11 @@ public class DifettoProdottoOdsDAO {
 
 			for (DmalmDifettoProdotto difetto : difetti) {
 
+				if(listDifettoPk.contains(difetto.getDmalmDifettoProdottoPk()))
+						logger.info("Trovata DmalmDifettoProdottoPk DUPLICATA!!!"+difetto.getDmalmDifettoProdottoPk());
+				else{
+					listDifettoPk.add(difetto.getDmalmDifettoProdottoPk());
+				
 				connection.setAutoCommit(false);
 
 				new SQLInsertClause(connection, dialect, difettoODS)
@@ -77,7 +82,8 @@ public class DifettoProdottoOdsDAO {
 								difettoODS.naturaDifetto,
 								difettoODS.dmalmUserFk06, difettoODS.uri,
 								difettoODS.effortCostoSviluppo,
-								difettoODS.dtDisponibilita)
+								difettoODS.dtDisponibilita,
+								difettoODS.priority)
 						.values(difetto.getCdDifetto(),
 								difetto.getDmalmDifettoProdottoPk(),
 								difetto.getDmalmProjectFk02(),
@@ -108,9 +114,11 @@ public class DifettoProdottoOdsDAO {
 								difetto.getNaturaDifetto(),
 								difetto.getDmalmUserFk06(), difetto.getUri(),
 								difetto.getEffortCostoSviluppo(),
-								difetto.getDtDisponibilita()).execute();
+								difetto.getDtDisponibilita(),
+								//DM_ALM-320
+								difetto.getPriority()).execute();
+				}
 			}
-
 			connection.commit();
 
 		} catch (Exception e) {

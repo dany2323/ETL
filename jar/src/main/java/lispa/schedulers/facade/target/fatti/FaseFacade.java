@@ -116,6 +116,14 @@ private static Logger logger = Logger.getLogger(FaseFacade.class);
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(fs.severity), fase.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(fs.priority), fase.getPriority()))
+							{
+								modificato = true;
+							}
 
 							if(modificato)
 							{

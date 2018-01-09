@@ -89,6 +89,11 @@ public class QDmalmRichManutenzioneOds extends com.mysema.query.sql.RelationalPa
 
     public final com.mysema.query.sql.PrimaryKey<DmalmRichManutenzioneOds> sysC0023550 = createPrimaryKey(dmalmRichManutenzionePk);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
     public QDmalmRichManutenzioneOds(String variable) {
         super(DmalmRichManutenzioneOds.class, forVariable(variable), "DMALM", "DMALM_RICH_MANUTENZIONE_ODS");
     }

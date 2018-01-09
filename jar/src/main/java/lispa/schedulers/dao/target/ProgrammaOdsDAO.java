@@ -91,7 +91,8 @@ public class ProgrammaOdsDAO {
 								programmaODS.cfServiceManager,
 								programmaODS.cfTipologia, programmaODS.stgPk,
 								programmaODS.dmalmUserFk06, programmaODS.uri,
-								programmaODS.codice)
+								programmaODS.codice,
+								programmaODS.severity, programmaODS.priority)
 						.values(programma.getAssignee(),
 								programma.getCdProgramma(),
 								programma.getDescrizioneProgramma(),
@@ -120,7 +121,8 @@ public class ProgrammaOdsDAO {
 								programma.getCfTipologia(),
 								programma.getStgPk(),
 								programma.getDmalmUserFk06(),
-								programma.getUri(), programma.getCodice())
+								programma.getUri(), programma.getCodice(),
+								programma.getSeverity(), programma.getPriority())
 						.execute();
 
 				connection.commit();

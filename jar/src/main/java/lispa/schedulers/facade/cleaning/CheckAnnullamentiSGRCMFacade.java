@@ -195,6 +195,8 @@ public class CheckAnnullamentiSGRCMFacade {
 										.getDataEsecuzione())) {
 							// se già è stato storicizzato oggi -> update
 							// semplice
+							p.setAnnullato(DmAlmConstants.LOGICAMENTE);
+							p.setDtAnnullamento(DataEsecuzione.getInstance().getDataEsecuzione());
 							ProjectSgrCmDAO.updateDmalmProject(p);
 						} else {
 							ProjectSgrCmDAO.updateDataFineValiditaAnnullamento(
@@ -235,6 +237,8 @@ public class CheckAnnullamentiSGRCMFacade {
 										.getDataEsecuzione())) {
 							// se già è stato storicizzato oggi -> update
 							// semplice
+							p.setAnnullato(DmAlmConstants.LOGICAMENTE);
+							p.setDtAnnullamento(DataEsecuzione.getInstance().getDataEsecuzione());
 							ProjectSgrCmDAO.updateDmalmProject(p);
 						} else {
 							ProjectSgrCmDAO.updateDataFineValiditaAnnullamento(

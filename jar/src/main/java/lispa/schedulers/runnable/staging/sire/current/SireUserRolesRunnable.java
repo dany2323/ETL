@@ -22,7 +22,8 @@ public class SireUserRolesRunnable implements Runnable {
 
 		try {
 			logger.debug("START fillUserRoles SIRE "+ new Date());
-			SIREUserRolesXML.fillSIREHistoryUserRoles();
+			logger.debug("SIREUserRolesXML.fillSIREHistoryUserRoles commentata");
+			//SIREUserRolesXML.fillSIREHistoryUserRoles();
 			logger.debug("STOP fillUserRoles SIRE "+ new Date());
 		}
 		catch(Exception e)

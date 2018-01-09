@@ -107,6 +107,9 @@ public class DocumentoDAO {
 				bean.setVersione(rs.getString("VERSIONE"));
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_DOCUMENTO_PK"));
+				// DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
 
 				documenti.add(bean);
 			}
@@ -252,7 +255,8 @@ public class DocumentoDAO {
 							doc.motivoRisoluzioneDocumento, doc.numeroLinea,
 							doc.numeroTestata, doc.rankStatoDocumento,
 							doc.rankStatoDocumentoMese, doc.stgPk, doc.tipo,
-							doc.titoloDocumento, doc.uri)
+							doc.titoloDocumento, doc.uri,
+							doc.severity, doc.priority)
 					.values(documento.getAnnullato(),
 							documento.getAssigneesDocumento(),
 							documento.getCdDocumento(),
@@ -286,7 +290,9 @@ public class DocumentoDAO {
 							pkValue == true ? new Short("1")  : documento.getRankStatoDocumento(),
 							documento.getRankStatoDocumentoMese(),
 							documento.getStgPk(), documento.getTipo(),
-							documento.getTitoloDocumento(), documento.getUri())
+							documento.getTitoloDocumento(), documento.getUri(),
+							// DM_ALM-320
+							documento.getSeverity(), documento.getPriority())
 					.execute();
 
 			connection.commit();
@@ -360,6 +366,9 @@ public class DocumentoDAO {
 					.set(doc.uri, documento.getUri())
 					.set(doc.dtAnnullamento, documento.getDtAnnullamento())
 					.set(doc.annullato, documento.getAnnullato())
+					// DM_ALM-320
+					.set(doc.severity, documento.getSeverity())
+					.set(doc.priority, documento.getPriority())
 					.execute();
 
 			connection.commit();
@@ -438,7 +447,10 @@ public class DocumentoDAO {
 			d.setTitoloDocumento(t.get(doc.titoloDocumento));
 			d.setUri(t.get(doc.uri));
 			d.setVersione(t.get(doc.versione));
-
+			// DM_ALM-320
+			d.setSeverity(t.get(doc.severity));
+			d.setPriority(t.get(doc.priority));
+			
 			return d;
 		} else
 			return null;

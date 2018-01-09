@@ -875,8 +875,10 @@ public class DmAlmAsmDAO {
 					.where(asm.idAsm.gt(new Short("0")))
 					.where(asmProdottiArchitetture.dtFineValidita.eq(DateUtils
 							.setDtFineValidita9999()))
-					.where(asm.unitaOrganizzativaFk
+					.where((asm.unitaOrganizzativaFk.isNull()
+							.or(asm.unitaOrganizzativaFk
 							.ne(elettraProdotto.unitaOrganizzativaFk))
+							))
 					.distinct()
 					.list(asm.idAsm, elettraProdotto.unitaOrganizzativaFk);
 		} catch (Exception e) {

@@ -102,6 +102,12 @@ public class QDmalmProgettoDemandOds extends com.mysema.query.sql.RelationalPath
 
     public final com.mysema.query.sql.PrimaryKey<DmalmProgettoDemandOds> sysC0023174 = createPrimaryKey(dmalmProgettoDemandPk);
 
+  //DM_ALM-320
+    public final StringPath severity = createString("SEVERITY");
+        
+    public final StringPath priority = createString("PRIORITY");
+    
+    
     public QDmalmProgettoDemandOds(String variable) {
         super(DmalmProgettoDemandOds.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_DEMAND_ODS");
     }

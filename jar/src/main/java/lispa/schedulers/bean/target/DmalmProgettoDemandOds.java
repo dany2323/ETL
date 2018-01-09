@@ -86,6 +86,12 @@ public class DmalmProgettoDemandOds {
     
     private String cfClassificazione;
 
+  //DM_ALM-320
+    private String severity;
+    	
+    private String priority;
+    
+    
     public String getUri() {
 		return uri;
 	}
@@ -396,6 +402,22 @@ public class DmalmProgettoDemandOds {
 
 	public void setCfClassificazione(String cfClassificazione) {
 		this.cfClassificazione = cfClassificazione;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 
 }

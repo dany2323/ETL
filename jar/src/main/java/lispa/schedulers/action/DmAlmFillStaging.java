@@ -201,6 +201,14 @@ public class DmAlmFillStaging {
 				StgMisuraFacade.deleteStgMisura(logger, dataEsecuzioneDeleted);
 				StgMisuraFacade.FillStgMisura();
 			}
+			
+			// Aggiunto checkpoint di recovery in data 19/04/17
+			if (lispa.schedulers.manager.ErrorManager.getInstance()
+					.hasError()) {
+				logger.fatal("ERRORE: Inizio procedura di ripristino");
+				RecoverManager.getInstance().startRecoverStaging();
+				return;
+			}
 
 			// MPS
 			if (ExecutionManager.getInstance().isExecutionMps()) {

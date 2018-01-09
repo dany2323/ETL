@@ -19,6 +19,7 @@ import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.Projections;
+import com.mysema.query.types.path.StringPath;
 
 public class ProgettoSviluppoSviluppoOdsDAO {
 
@@ -103,7 +104,9 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 								progettoSvilSODS.stgPk,
 								progettoSvilSODS.titoloProgSvilS,
 								progettoSvilSODS.dmalmUserFk06,
-								progettoSvilSODS.uri)
+								progettoSvilSODS.uri,
+								progettoSvilSODS.severity,
+								progettoSvilSODS.priority)
 						.values(progetto.getCdProgSvilS(),
 								progetto.getCodice(),
 								progetto.getDataChiusuraProgSvilS(),
@@ -134,7 +137,10 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 								progetto.getNumeroTestata(),
 								progetto.getStgPk(),
 								progetto.getTitoloProgSvilS(),
-								progetto.getDmalmUserFk06(), progetto.getUri())
+								progetto.getDmalmUserFk06(), progetto.getUri(),
+								//DM_ALM-320
+							    progetto.getSeverity(),
+							    progetto.getPriority())
 						.execute();
 
 			}

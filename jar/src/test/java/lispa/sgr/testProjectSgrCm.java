@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+import lispa.schedulers.bean.target.DmalmProject;
+import lispa.schedulers.dao.target.ProjectSgrCmDAO;
+import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.cleaning.CheckAnnullamentiSGRCMFacade;
 import lispa.schedulers.facade.target.ProjectSgrCmFacade;
 import lispa.schedulers.manager.ConnectionManager;
@@ -82,5 +86,22 @@ public class testProjectSgrCm extends TestCase {
 
 		CheckAnnullamentiSGRCMFacade.execute();
 
+	}
+	
+	public void testGetProjectByPath() {
+		try {
+			Log4JConfiguration.inizialize();
+			ConnectionManager.getInstance().getConnectionOracle();
+			DmalmProject projectByPath = ProjectSgrCmDAO.getProjectByPath("default:/Sviluppo/SISS/A363.Area.Anagrafi.Regionali.e.Carte/Formazione.a.Distanza/FAD", "SISS");
+			
+			System.out.println(projectByPath.getNomeCompletoProject());
+			
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (PropertiesReaderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

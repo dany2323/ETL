@@ -88,6 +88,9 @@ public class DmalmDifettoProdotto {
 	//DM_ALM-223
 	private java.sql.Timestamp dtDisponibilita;
 	
+	//DM_ALM-320
+	private String priority;
+	
     public java.sql.Timestamp getDtDisponibilita() {
 		return dtDisponibilita;
 	}
@@ -309,10 +312,17 @@ public class DmalmDifettoProdotto {
     }
 
     public String getProvenienzaDifetto() {
-        return provenienzaDifetto;
+        return provenienzaDifetto; //DM_ALM-289 Aggiunto commento # 4
     }
 
     public void setProvenienzaDifetto(String provenienzaDifetto) {
+    	//DM_ALM-289 Aggiunto commento # 4
+    	if(provenienzaDifetto!=null)
+    	{
+    		provenienzaDifetto=provenienzaDifetto.split(" ")[0];
+	    	if(provenienzaDifetto.contains("SVI"))
+	    		provenienzaDifetto=provenienzaDifetto.replaceAll("SVI", "SV");
+    	}    	
         this.provenienzaDifetto = provenienzaDifetto;
     }
 
@@ -402,6 +412,14 @@ public class DmalmDifettoProdotto {
 
 	public void setAnnullato(String annullato) {
 		this.annullato = annullato;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 
 }

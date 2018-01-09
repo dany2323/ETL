@@ -35,6 +35,7 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 			SQLTemplates dialect = new HSQLDBTemplates();
 
 			new SQLDeleteClause(connection, dialect, qDmalmElUnitaOrganizzativeFlat)
+					.where(qDmalmElUnitaOrganizzativeFlat.idFlatPk.gt(0))  //Aggiunta per DM_ALM-313 il record tappo non lo cancello
 					.execute();
 
 			connection.commit();

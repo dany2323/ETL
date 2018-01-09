@@ -129,6 +129,9 @@ public class QDmalmAnomaliaProdottoOds extends
 	public final DateTimePath<java.sql.Timestamp> dtDisponibilita = createDateTime(
 			"DATA_DISPONIBILITA", java.sql.Timestamp.class);
 
+	//DMA_ALM-320
+	public final StringPath priority = createString("PRIORITY");
+	
 	public QDmalmAnomaliaProdottoOds(String variable) {
 		super(DmalmAnomaliaProdottoOds.class, forVariable(variable), "DMALM",
 				"DMALM_ANOMALIA_PRODOTTO_ODS");

@@ -37,14 +37,16 @@
 	cu.C_ID as USERID_AUTORE_DIFETTO,
 	cu.C_NAME as NOME_AUTORE_DIFETTO,
 	cw.C_RESOLUTION as MOTIVO_RISOLUZIONE,
-	cw.C_SEVERITY as SEVERITY_DIFETTO,
+	cw.C_SEVERITY as SEVERITY,
 	cw.C_TITLE as DESCRIZIONE_DIFETTO,
 	cw.cod_intervento as NUMERO_TESTATA_RDI,
 	cw.cod_intervento as NUMERO_LINEA_RDI,
 	cw.COSTO_SVILUPPO as EFFORT_COSTO_SVILUPPO,
 	(select distinct to_char(cf.c_string_value) from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'causa') as CAUSA,
 	(select distinct to_char(cf.c_string_value) from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'natura') as NATURA,
-	cw.data_disp as DATA_DISPONIBILITA
+	cw.data_disp as DATA_DISPONIBILITA,
+	(select distinct to_char(cf.c_string_value) from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'role') as PROVENIENZA_DIFETTO,
+	cw.C_PRIORITY as PRIORITY
 	FROM 
 					DMALM_SISS_HISTORY_WORKITEM cw 
 									left join DMALM_SISS_HISTORY_USER cu on  cw.FK_AUTHOR = cu.C_PK                              
@@ -97,14 +99,16 @@
 	cu.C_ID as USERID_AUTORE_DIFETTO,
 	cu.C_NAME as NOME_AUTORE_DIFETTO,
 	cw.C_RESOLUTION as MOTIVO_RISOLUZIONE,
-	cw.C_SEVERITY as SEVERITY_DIFETTO,
+	cw.C_SEVERITY as SEVERITY,
 	cw.C_TITLE as DESCRIZIONE_DIFETTO,
 	cw.cod_intervento as NUMERO_TESTATA_RDI,
 	cw.cod_intervento as NUMERO_LINEA_RDI,
 	cw.COSTO_SVILUPPO as EFFORT_COSTO_SVILUPPO,
 	(select distinct to_char(cf.c_string_value) from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'causa') as CAUSA,
 	(select distinct to_char(cf.c_string_value) from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'natura') as NATURA,
-	cw.data_disp as DATA_DISPONIBILITA 
+	cw.data_disp as DATA_DISPONIBILITA,
+	(select distinct to_char(cf.c_string_value) from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'role') as PROVENIENZA_DIFETTO,
+	cw.C_PRIORITY as PRIORITY
 	FROM 
 					DMALM_SIRE_HISTORY_WORKITEM cw 
 									left join DMALM_SIRE_HISTORY_USER cu on  cw.FK_AUTHOR = cu.C_PK

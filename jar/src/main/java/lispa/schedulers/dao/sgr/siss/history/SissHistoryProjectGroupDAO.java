@@ -86,15 +86,15 @@ public class SissHistoryProjectGroupDAO
 						stgProjectGroups.dmalmProjgroupPk
 						)
 						.values(								
-								val[0],
-								val[1],
-								val[2],
-								val[3],
-								val[4],
-								val[5],
-								val[6],
-								val[7],
-								val[8],
+								row.get(fonteProjectGroups.cLocation),
+								row.get(fonteProjectGroups.cIsLocal),
+								row.get(fonteProjectGroups.cPk),
+								row.get(fonteProjectGroups.fkUriParent),
+								row.get(fonteProjectGroups.fkParent),
+								row.get(fonteProjectGroups.cName),
+								row.get(fonteProjectGroups.cDeleted),
+								row.get(fonteProjectGroups.cRev),
+								row.get(fonteProjectGroups.cUri),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
 								)

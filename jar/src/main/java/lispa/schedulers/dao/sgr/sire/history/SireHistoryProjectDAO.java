@@ -223,7 +223,6 @@ public class SireHistoryProjectDAO {
 
 			projects = new ArrayList<Tuple>();
 
-			//todo
 			projects = query
 					.from(stgProjects)
 					.distinct()

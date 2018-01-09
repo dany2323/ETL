@@ -200,7 +200,7 @@ public class ClassificatoreDAO {
 						rsClass.getString("STG_PK"), rsClass.getString("ID_REPOSITORY"),
 						"area"));
 				
-				bean.setRmResponsabileProgetto(getCustomFieldInString(
+				bean.setRmResponsabiliProgetto(getCustomFieldInString(
 						rsClass.getString("STG_PK"), rsClass.getString("ID_REPOSITORY"),
 						"RMrespProgetto"));
 				bean.setProgettoInDeroga(getBooleanCustomFieldInString(
@@ -217,6 +217,10 @@ public class ClassificatoreDAO {
 						"codiceServizi"));
 
 				bean.setType(DmAlmConstants.WORKITEM_TYPE_CLASSIFICATORE);
+				//DM_ALM-320
+				bean.setSeverity(rsClass.getString("SEVERITY"));
+				bean.setPriority(rsClass.getString("PRIORITY"));
+				
 				classificatoriList.add(bean);
 			}
 
@@ -258,7 +262,7 @@ public class ClassificatoreDAO {
 		if (cfWorkitem != null && cfWorkitem.size() > 0) {
 			customFieldInString = "";
 
-			List<String> sortList = cfWorkitem.subList(1, cfWorkitem.size());
+			List<String> sortList = cfWorkitem.subList(0, cfWorkitem.size());
 			Collections.sort(sortList);
 
 			for (String row : sortList) {
@@ -367,7 +371,8 @@ public class ClassificatoreDAO {
 							qClassificatore.assigneeProgettoItInDeroga,
 							qClassificatore.locationSorgenti,
 							qClassificatore.type,
-							qClassificatore.codiceServizi)
+							qClassificatore.codiceServizi,
+							qClassificatore.severity, qClassificatore.priority)
 					.values(classificatore.getCd_classificatore(), classificatore.getCf_ambito(),
 							classificatore.getCf_area(), classificatore.getCf_riferimenti(),
 							classificatore.getCf_scheda_servizio(),
@@ -389,12 +394,14 @@ public class ClassificatoreDAO {
 							classificatore.getRankStatoClassifMese(), classificatore.getStgPk(),
 							classificatore.getTitoloClassificatore(),
 							classificatore.getUriClassficatore(),
-							classificatore.getRmResponsabileProgetto(),
+							classificatore.getRmResponsabiliProgetto(),
 							classificatore.isProgettoInDeroga(),
 							classificatore.getAssigneeProgettoItInDeroga(),
 							classificatore.getLocationSorgenti(),
 							classificatore.getType(),
-							classificatore.getCodiceServizi()).execute();
+							classificatore.getCodiceServizi(),
+							classificatore.getSeverity(),
+							classificatore.getPriority()).execute();
 
 			connection.commit();
 
@@ -478,7 +485,8 @@ public class ClassificatoreDAO {
 							qClassificatore.assigneeProgettoItInDeroga,
 							qClassificatore.locationSorgenti,
 							qClassificatore.type,
-							qClassificatore.codiceServizi)
+							qClassificatore.codiceServizi,
+							qClassificatore.severity, qClassificatore.priority)
 					.values(classificatore.getCd_classificatore(),
 							classificatore.getCf_ambito(),
 							classificatore.getCf_area(),
@@ -505,12 +513,14 @@ public class ClassificatoreDAO {
 							classificatore.getTitoloClassificatore(),
 							classificatore.getUriClassficatore(), classificatore.getChanged(),
 							classificatore.getAnnullato(),
-							classificatore.getRmResponsabileProgetto(),
+							classificatore.getRmResponsabiliProgetto(),
 							classificatore.isProgettoInDeroga(),
 							classificatore.getAssigneeProgettoItInDeroga(),
 							classificatore.getLocationSorgenti(),
 							classificatore.getType(),
-							classificatore.getCodiceServizi()).execute();
+							classificatore.getCodiceServizi(),
+							classificatore.getSeverity(),
+							classificatore.getPriority()).execute();
 
 			connection.commit();
 
@@ -578,12 +588,15 @@ public class ClassificatoreDAO {
 					.set(qClassificatore.titoloClassificatore,
 							classificatore.getTitoloClassificatore())
 					.set(qClassificatore.annullato, classificatore.getAnnullato())
-					.set(qClassificatore.rmResponsabiliProgetto, classificatore.getRmResponsabileProgetto())
+					.set(qClassificatore.rmResponsabiliProgetto, classificatore.getRmResponsabiliProgetto())
 					.set(qClassificatore.progettoInDeroga, classificatore.isProgettoInDeroga())
 					.set(qClassificatore.assigneeProgettoItInDeroga, classificatore.getAssigneeProgettoItInDeroga())
 					.set(qClassificatore.locationSorgenti, classificatore.getLocationSorgenti())
 					.set(qClassificatore.type, classificatore.getType())
 					.set(qClassificatore.codiceServizi,  classificatore.getCodiceServizi())
+					.set(qClassificatore.severity, classificatore.getSeverity())
+					.set(qClassificatore.priority,  classificatore.getPriority())
+					
 					.execute();
 
 			connection.commit();
@@ -657,12 +670,15 @@ public class ClassificatoreDAO {
 			c.setStgPk(t.get(qClassificatore.stgPk));
 			c.setTitoloClassificatore(t.get(qClassificatore.titoloClassificatore));
 			c.setUriClassficatore(t.get(qClassificatore.uriClassficatore));
-			c.setRmResponsabileProgetto(t.get(qClassificatore.rmResponsabiliProgetto));
+			c.setRmResponsabiliProgetto(t.get(qClassificatore.rmResponsabiliProgetto));
 			c.setProgettoInDeroga(t.get(qClassificatore.progettoInDeroga));
 			c.setAssigneeProgettoItInDeroga(t.get(qClassificatore.assigneeProgettoItInDeroga));
 			c.setLocationSorgenti(t.get(qClassificatore.locationSorgenti));
 			c.setType(t.get(qClassificatore.type));
 			c.setCodiceServizi(t.get(qClassificatore.codiceServizi));
+			//DM_ALM-320
+			c.setSeverity(t.get(qClassificatore.severity));
+			c.setPriority(t.get(qClassificatore.priority));
 			return c;
 
 		} else

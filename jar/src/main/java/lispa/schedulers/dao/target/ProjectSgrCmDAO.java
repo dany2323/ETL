@@ -3,6 +3,8 @@ package lispa.schedulers.dao.target;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_PROJECT;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -14,17 +16,44 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.log4j.Logger;
+import org.tmatesoft.svn.core.SVNNodeKind;
+import org.tmatesoft.svn.core.SVNProperties;
+import org.tmatesoft.svn.core.SVNProperty;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
+import org.tmatesoft.svn.core.io.SVNFileRevision;
+import org.tmatesoft.svn.core.io.SVNRepository;
+import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.OracleTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
+import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.template.StringTemplate;
+
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.bean.target.DmalmStrutturaOrganizzativa;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
-import lispa.schedulers.dao.UserRolesDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
@@ -36,25 +65,17 @@ import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistor
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
+import lispa.schedulers.svn.SIREUserRolesXML;
 import lispa.schedulers.utils.DateUtils;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLSubQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.sql.dml.SQLUpdateClause;
-import com.mysema.query.types.template.StringTemplate;
+import lispa.schedulers.utils.StringUtils;
 
 public class ProjectSgrCmDAO {
 
 	private static Logger logger = Logger.getLogger(ProjectSgrCmDAO.class);
 
-	private static SQLTemplates dialect = new HSQLDBTemplates();
+	private static OracleTemplates dialect = new OracleTemplates();
 
 	private static QDmalmProject proj = QDmalmProject.dmalmProject;
 	private static QSireCurrentProject currProjSire = QSireCurrentProject.sireCurrentProject;
@@ -64,6 +85,7 @@ public class ProjectSgrCmDAO {
 	private static QDmalmProdotto dmalmProdotto = QDmalmProdotto.dmalmProdotto;
 	private static QDmalmProjectProdotto projectProdotto = QDmalmProjectProdotto.dmalmProjectProdotto;
 	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
 	public static List<DmalmProject> getAllProject(Timestamp dataEsecuzione)
 			throws Exception {
@@ -75,6 +97,7 @@ public class ProjectSgrCmDAO {
 		DmalmProject bean = null;
 		List<DmalmProject> project = new LinkedList<DmalmProject>();
 		List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO = new LinkedList<DmalmProjectUnitaOrganizzativaEccezioni>();
+		
 
 		try {
 			// lista delle eccezioni Project/Unita organizzativa
@@ -153,11 +176,43 @@ public class ProjectSgrCmDAO {
 				bean.setPathProject(rs.getString("PATH_PROJECT"));
 
 				bean.setcCreated(rs.getTimestamp("C_CREATED"));
+				
+				String servMan = "";
+				if (rs.getString("ID_REPOSITORY").equals(DmAlmConstants.REPOSITORY_SIRE)) {
+					String urlSire = DmAlmConfigReader.getInstance().getProperty(
+							DmAlmConfigReaderProperties.SIRE_SVN_URL);
+					String nameSire = DmAlmConfigReader.getInstance().getProperty(
+							DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
+					String pswSire = DmAlmConfigReader.getInstance().getProperty(
+							DmAlmConfigReaderProperties.SIRE_SVN_PSW);
 
-				String servMan = UserRolesDAO.getServiceManager(
-						rs.getString("ID_PROJECT"),
-						rs.getString("ID_REPOSITORY"),
-						rs.getTimestamp("C_CREATED"));
+					SVNRepository repository = SVNRepositoryFactory.create(SVNURL
+							.parseURIEncoded(urlSire));
+					ISVNAuthenticationManager authManagerSire = SVNWCUtil.createDefaultAuthenticationManager(nameSire,
+							pswSire);
+					repository.setAuthenticationManager(authManagerSire);
+					
+					servMan = getServiceManager(rs.getString("ID_REPOSITORY"), rs.getString("ID_PROJECT"), 
+							SIREUserRolesXML.getProjectSVNPath(rs.getString("PATH_PROJECT")), -1, repository);
+				}
+				if (rs.getString("ID_REPOSITORY").equals(DmAlmConstants.REPOSITORY_SISS)) {
+					String urlSiss = DmAlmConfigReader.getInstance().getProperty(
+							DmAlmConfigReaderProperties.SISS_SVN_URL);
+					String nameSiss = DmAlmConfigReader.getInstance().getProperty(
+							DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
+					String pswSiss = DmAlmConfigReader.getInstance().getProperty(
+							DmAlmConfigReaderProperties.SISS_SVN_PSW);
+					
+					SVNRepository repository = SVNRepositoryFactory.create(SVNURL
+							.parseURIEncoded(urlSiss));
+					ISVNAuthenticationManager authManagerSiss = SVNWCUtil.createDefaultAuthenticationManager(nameSiss,
+							pswSiss);
+					repository.setAuthenticationManager(authManagerSiss);
+					
+					servMan = getServiceManager(rs.getString("ID_REPOSITORY"), rs.getString("ID_PROJECT"), 
+							SIREUserRolesXML.getProjectSVNPath(rs.getString("PATH_PROJECT")), -1, repository);
+				}
+				 
 				bean.setServiceManagers(servMan);
 
 				bean.setcTrackerprefix(rs.getString("C_TRACKERPREFIX"));
@@ -232,31 +287,35 @@ public class ProjectSgrCmDAO {
 	public static String gestioneCodiceAreaUO(
 			List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO,
 			String idProject, String idRepository, String nomeProject,
-			String template, String projectGroup, Timestamp dataEsecuzione, boolean isElettra) {
+			String template, String projectGroup, Timestamp dataEsecuzione, boolean isElettra
+			) throws Exception {
 		// Se trova l'eccezione riporta il codice area dell'eccezione altrimenti
 		// esegue l'algoritmo di calcolo della UO
 
 		String codiceAreaUO = "";
-
-		for (DmalmProjectUnitaOrganizzativaEccezioni eccezione : eccezioniProjectUO) {
-			if (eccezione.getIdRepository().equals(idRepository)
-					&& eccezione.getNomeCompletoProject().equals(nomeProject)
-					&& ((eccezione.getTemplate() == null && template == null) || (eccezione
-							.getTemplate() != null && eccezione.getTemplate()
-							.equals(template)))) {
-
-				codiceAreaUO = eccezione.getCodiceArea();
-				break;
+		
+		ConnectionManager cm = ConnectionManager.getInstance();
+		Connection con = null;
+		try {	
+			
+			con = cm.getConnectionOracle();
+			
+			for (DmalmProjectUnitaOrganizzativaEccezioni eccezione : eccezioniProjectUO) {
+				if (eccezione.getIdRepository().equals(idRepository)
+						&& eccezione.getNomeCompletoProject().equals(nomeProject)
+						&& ((eccezione.getTemplate() == null && template == null) || (eccezione
+								.getTemplate() != null && eccezione.getTemplate()
+								.equals(template)))) {
+	
+					codiceAreaUO = eccezione.getCodiceArea();
+					break;
+				}
 			}
-		}
+		
 
 		// Se il project non ha una eccezione
 		if (codiceAreaUO.equalsIgnoreCase("")) {
-			if (template == null) {
-				// Nessun Template
-				codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-			} else {
-				switch (template) {
+			switch (template) {
 				case DmAlmConstants.SVILUPPO:
 					// Template SVILUPPO
 					if (nomeProject == null) {
@@ -272,11 +331,15 @@ public class ProjectSgrCmDAO {
 								multiSiglaProject = siglaProject
 										.split("\\.\\.");
 								String codiceProdotto = multiSiglaProject[0];
-								if (codiceProdotto.contains(".")) {
-									codiceProdotto = codiceProdotto.substring(
-											0, codiceProdotto.indexOf("."));
+								
+								List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(codiceProdotto);
+								
+								if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
+									if (codiceProdotto.contains(".")) {
+										codiceProdotto = codiceProdotto.substring(
+												0, codiceProdotto.indexOf("."));
+									}
 								}
-
 								if(isElettra) {
 									// Elettra
 									 List<Tuple> productList = ElettraProdottiArchitettureDAO.getProductByAcronym(codiceProdotto);
@@ -291,117 +354,150 @@ public class ProjectSgrCmDAO {
 									 }
 								} else {
 									// Edma
-									List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
-									if (productList.size() == 0) {
-										codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-									} else {
-										List<DmalmStrutturaOrganizzativa> structureList = StrutturaOrganizzativaEdmaLispaDAO
-												.getStrutturaOrganizzativaByPrimaryKey(productList
-														.get(0)
-														.get(dmalmProdotto.dmalmUnitaOrganizzativaFk01));
-										if (structureList.size() == 0) {
+										List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
+										if (productList.size() == 0) {
 											codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 										} else {
-											codiceAreaUO = structureList.get(0)
-													.getCdArea();
+											List<DmalmStrutturaOrganizzativa> structureList = StrutturaOrganizzativaEdmaLispaDAO
+													.getStrutturaOrganizzativaByPrimaryKey(productList
+															.get(0)
+															.get(dmalmProdotto.dmalmUnitaOrganizzativaFk01));
+											if (structureList.size() == 0) {
+												codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+											} else {
+												codiceAreaUO = structureList.get(0)
+														.getCdArea();
+											}
 										}
 									}
+								} else {
+									codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 								}
+							} catch (Exception e) {
+								logger.error(e.getMessage(), e);
+								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+							}
+						} else if (nomeProject.contains("RichiesteSupporto")) {
+							try {
+								codiceAreaUO = "LI"
+										+ nomeProject.substring(nomeProject.indexOf(".")+1,
+												nomeProject.length());
+							} catch (Exception e) {
+								logger.error(e.getMessage(), e);
+								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+							}
+						} else {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						}
+						break;
+	
+					case DmAlmConstants.DEMAND:
+						// Template DEMAND e DEMAND2016
+						if (nomeProject.indexOf(".", 1) != -1) {
+							codiceAreaUO = "LI"
+									+ nomeProject.substring(0,
+											nomeProject.indexOf(".", 1));
+						} else {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						}
+						break;
+						
+					case DmAlmConstants.DEMAND2016:
+						if(isElettra)
+						{							
+							codiceAreaUO = "LIF800";
+						}
+						else
+						{
+							// Template DEMAND e DEMAND2016
+							if (nomeProject.indexOf(".", 1) != -1) {
+								codiceAreaUO = "LI"
+										+ nomeProject.substring(0,
+												nomeProject.indexOf(".", 1));
 							} else {
 								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 							}
-						} catch (Exception e) {
-							logger.error(e.getMessage(), e);
-							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 						}
-					} else if (nomeProject.startsWith("RichiesteSupporto.")) {
-						try {
+						break;
+	
+					case DmAlmConstants.ASSISTENZA:
+						// Template ASSISTENZA
+						if (nomeProject.startsWith("Assistenza.")) {
 							codiceAreaUO = "LI"
-									+ nomeProject.substring(18,
+									+ nomeProject.substring("Assistenza.".length(),
 											nomeProject.length());
-						} catch (Exception e) {
-							logger.error(e.getMessage(), e);
+						} else {
 							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 						}
-					} else {
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						break;
+	
+					case DmAlmConstants.IT:
+						if(isElettra)
+						{
+							codiceAreaUO = "LIW8B6";
+						}
+						else
+						{
+							codiceAreaUO = "LIA352";
+						}
+						
+						
+						break;
+	
+					case DmAlmConstants.SERDEP:
+						// Template SERDEP
+						if (nomeProject.indexOf(".", 1) != -1) {
+							codiceAreaUO = "LI"
+									+ nomeProject.substring(0,
+											nomeProject.indexOf(".", 1));
+						} else {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						}
+						break;
+	
+					default:
+						if(codiceAreaUO.equals(""))
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						break;
 					}
-					break;
-
-				case DmAlmConstants.DEMAND:
-				case DmAlmConstants.DEMAND2016:
-					// Template DEMAND e DEMAND2016
-					if (nomeProject.indexOf(".", 1) != -1) {
-						codiceAreaUO = "LI"
-								+ nomeProject.substring(0,
-										nomeProject.indexOf(".", 1));
+				}
+			
+	
+			if (codiceAreaUO.equals(DmAlmConstants.NON_PRESENTE)) {
+				try {
+					String tabellaFonte = "";
+					if (idRepository.equals(DmAlmConstants.REPOSITORY_SIRE)) {
+						tabellaFonte = DmAlmConstants.FONTE_SGR_SIRE_HISTORY_PROJECT;
 					} else {
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						tabellaFonte = DmAlmConstants.FONTE_SGR_SISS_HISTORY_PROJECT;
 					}
-					break;
-
-				case DmAlmConstants.ASSISTENZA:
-					// Template ASSISTENZA
-					if (nomeProject.startsWith("Assistenza.")) {
-						codiceAreaUO = "LI"
-								+ nomeProject.substring("Assistenza.".length(),
-										nomeProject.length());
-					} else {
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-					}
-					break;
-
-				case DmAlmConstants.IT:
-					// Template IT (sempre 'LIA352' - Area Integrazione
-					// Tecnica)
-					codiceAreaUO = "LIA352";
-					break;
-
-				case DmAlmConstants.SERDEP:
-					// Template SERDEP
-					if (nomeProject.indexOf(".", 1) != -1) {
-						codiceAreaUO = "LI"
-								+ nomeProject.substring(0,
-										nomeProject.indexOf(".", 1));
-					} else {
-						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-					}
-					break;
-
-				default:
-					// Template non gestito
-					codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-					break;
+	
+					String record = "";
+					record = "[ Id : " + idProject + "§ ";
+					record += "Name : " + nomeProject + "§ ";
+					record += "Template : " + template + "§ ";
+					record += "IdRepository : " + idRepository + "§ ";
+					record += "ProjectGroup : " + projectGroup + " ] ";
+	
+					ErroriCaricamentoDAO.insert(tabellaFonte,
+							DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT, record,
+							DmAlmConstants.WRONG_LINK_PROJECT_UNITAORGANIZZATIVA,
+							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+							dataEsecuzione);
+				} catch (Exception e) {
+					logger.error("Exception: " + e.getMessage());
 				}
 			}
 		}
-
-		if (codiceAreaUO.equals(DmAlmConstants.NON_PRESENTE)) {
-			try {
-				String tabellaFonte = "";
-				if (idRepository.equals(DmAlmConstants.REPOSITORY_SIRE)) {
-					tabellaFonte = DmAlmConstants.FONTE_SGR_SIRE_HISTORY_PROJECT;
-				} else {
-					tabellaFonte = DmAlmConstants.FONTE_SGR_SISS_HISTORY_PROJECT;
+		finally
+		{
+			if(con != null)
+				try {
+					cm.closeConnection(con);
+				} catch (DAOException e) {
+					e.printStackTrace();
 				}
-
-				String record = "";
-				record = "[ Id : " + idProject + "§ ";
-				record += "Name : " + nomeProject + "§ ";
-				record += "Template : " + template + "§ ";
-				record += "IdRepository : " + idRepository + "§ ";
-				record += "ProjectGroup : " + projectGroup + " ] ";
-
-				ErroriCaricamentoDAO.insert(tabellaFonte,
-						DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT, record,
-						DmAlmConstants.WRONG_LINK_PROJECT_UNITAORGANIZZATIVA,
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						dataEsecuzione);
-			} catch (Exception e) {
-				logger.error("Exception: " + e.getMessage());
-			}
 		}
-
 		return codiceAreaUO;
 	}
 
@@ -519,7 +615,8 @@ public class ProjectSgrCmDAO {
 							project.getcLockworkrecordsdate())
 					.set(proj.cRev, project.getcRev())
 					.set(proj.cDescription, project.getcDescription())
-					.set(proj.annullato, project.getAnnullato()).execute();
+					.set(proj.annullato, project.getAnnullato())
+					.set(proj.dtAnnullamento, project.getDtAnnullamento()).execute();
 
 			connection.commit();
 
@@ -1407,7 +1504,7 @@ public class ProjectSgrCmDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-		path = path + "%";
+		path = path + "/%";
 		List<Tuple> projects = new ArrayList<Tuple>();
 		DmalmProject ret = new DmalmProject();
 		try {
@@ -1890,6 +1987,118 @@ public class ProjectSgrCmDAO {
 		} else {
 			return null;
 		}
+	}
+	
+	public static String getServiceManager(String myrepo,
+			String projectId, String projectLocation, long c_rev, SVNRepository repository) throws Exception {
+		
+		List<String> serviceManagers = new ArrayList<String>();
+		
+		Connection connection = null;
+		ConnectionManager cm = null;
+
+		String filePath = "";
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			DAVRepositoryFactory.setup();
+
+			connection.setAutoCommit(false);
+			SVNURL root = repository.getRepositoryRoot(true);
+			String absolutepath = root + projectLocation;
+			projectLocation = SVNURLUtil.getRelativeURL(root,
+					SVNURL.parseURIEncoded(absolutepath), false);
+			if(myrepo.equals(DmAlmConstants.REPOSITORY_SIRE)) {
+				filePath = projectLocation
+					.concat(DmAlmConfigReader
+							.getInstance()
+							.getProperty(
+									DmAlmConfigReaderProperties.SIRE_SVN_USER_ROLES_FILE));
+			}
+			if (myrepo.equals(DmAlmConstants.REPOSITORY_SISS)) {
+				filePath = projectLocation
+						.concat(DmAlmConfigReader
+								.getInstance()
+								.getProperty(
+										DmAlmConfigReaderProperties.SISS_SVN_USER_ROLES_FILE));
+
+			}
+			SVNNodeKind nodeKind = repository.checkPath(filePath, c_rev);
+			SVNProperties fileProperties = null;
+			ByteArrayOutputStream baos = null;
+			fileProperties = new SVNProperties();
+
+			SVNFileRevision svnfr = new SVNFileRevision(filePath, c_rev, fileProperties, fileProperties);
+
+			baos = new ByteArrayOutputStream();
+			if(repository.checkPath(svnfr.getPath(), svnfr.getRevision()) == SVNNodeKind.NONE){
+				if(svnfr.getRevision() == -1)
+					logger.info("Il path SVN " + svnfr.getPath() + " non esiste alla revisione HEAD");
+				else	
+					logger.info("Il path SVN " + svnfr.getPath() + " non esiste alla revisione " + svnfr.getRevision());
+				return "";
+			}
+			
+			repository.getFile(svnfr.getPath(), svnfr.getRevision(),
+					fileProperties, baos);
+			String mimeType = fileProperties
+					.getStringValue(SVNProperty.MIME_TYPE);
+
+			boolean isTextType = SVNProperty.isTextMimeType(mimeType);
+			String xmlContent = "";
+			if (isTextType) {
+				xmlContent = baos.toString();
+			} else {
+				throw new Exception("");
+			}
+
+			if (nodeKind == SVNNodeKind.FILE) {
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+						.newInstance();
+				Document doc = dbFactory.newDocumentBuilder()
+						.parse(new ByteArrayInputStream(xmlContent
+								.getBytes()));
+				doc.getDocumentElement().normalize();
+
+				NodeList nList = doc.getElementsByTagName("user");
+
+				for (int temp = 0; temp < nList.getLength(); temp++) {
+					Node nNode = nList.item(temp);
+
+					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element eElement = (Element) nNode;
+
+						NodeList ruoli = eElement.getChildNodes();
+
+						for (int tempruolo = 0; tempruolo < ruoli
+								.getLength(); tempruolo++) {
+
+							Node ruolo = ruoli.item(tempruolo);
+
+							if (ruolo.getNodeType() == Node.ELEMENT_NODE) {
+
+								Element el = (Element) ruolo;
+
+								if (el.getAttribute("name").equals("SM")) {
+									serviceManagers.add(StringUtils.getMaskedValue(eElement.getAttribute("name")));
+								}
+							}
+						}
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+				
+		return StringUtils.ListToString(serviceManagers);
 	}
 
 }

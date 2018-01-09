@@ -115,6 +115,14 @@ public class RichiestaGestioneFacade {
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(rcgs.severity), richiesta.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(rcgs.priority), richiesta.getPriority()))
+							{
+								modificato = true;
+							}
 
 							if(modificato)
 							{

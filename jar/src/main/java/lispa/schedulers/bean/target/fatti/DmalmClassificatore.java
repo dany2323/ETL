@@ -69,7 +69,7 @@ public class DmalmClassificatore {
 	
 	private String uriClassficatore;
 	
-	private String rmResponsabileProgetto;
+	private String rmResponsabiliProgetto;
 	
 	private boolean progettoInDeroga;
 	
@@ -81,6 +81,12 @@ public class DmalmClassificatore {
 	
 	private String codiceServizi;
 
+	//DM_ALM-320
+	private String severity;
+		
+	private String priority;
+	
+	
 	public String getCodiceServizi() {
 		return codiceServizi;
 	}
@@ -89,12 +95,12 @@ public class DmalmClassificatore {
 		this.codiceServizi = codiceServizi;
 	}
 
-	public String getRmResponsabileProgetto() {
-		return rmResponsabileProgetto;
+	public String getRmResponsabiliProgetto() {
+		return rmResponsabiliProgetto;
 	}
 
-	public void setRmResponsabileProgetto(String rmResponsabileProgetto) {
-		this.rmResponsabileProgetto = rmResponsabileProgetto;
+	public void setRmResponsabiliProgetto(String rmResponsabiliProgetto) {
+		this.rmResponsabiliProgetto = rmResponsabiliProgetto;
 	}
 
 	public boolean isProgettoInDeroga() {
@@ -367,6 +373,22 @@ public class DmalmClassificatore {
 
 	public void setUriClassficatore(String uriClassficatore) {
 		this.uriClassficatore = uriClassficatore;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 	
 	

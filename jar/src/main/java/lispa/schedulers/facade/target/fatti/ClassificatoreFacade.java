@@ -106,7 +106,7 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 							{
 								modificato = true;
 							}
-							if(!modificato && BeanUtils.areDifferent(row.get(c.rmResponsabiliProgetto), classificatore.getRmResponsabileProgetto()))
+							if(!modificato && BeanUtils.areDifferent(row.get(c.rmResponsabiliProgetto), classificatore.getRmResponsabiliProgetto()))
 							{
 								modificato = true;
 							}
@@ -123,6 +123,14 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 								modificato = true;
 							}
 							if(!modificato && BeanUtils.areDifferent(row.get(c.codiceServizi), classificatore.getCodiceServizi()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(c.severity), classificatore.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(c.priority), classificatore.getPriority()))
 							{
 								modificato = true;
 							}

@@ -71,8 +71,29 @@ public class DmalmReleaseIt {
 	private java.sql.Timestamp dtAnnullamento;
 	
 	private String annullato;
+	
+	private String priority;
+	
+	private String severity;
     
-    public String getChanged() {
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getChanged() {
 		return changed;
 	}
 

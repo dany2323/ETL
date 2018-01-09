@@ -115,6 +115,14 @@ public class ReleaseServiziFacade {
 							{
 								modificato = true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(releaseservizi.severity), release.getSeverity()))
+							{
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.get(releaseservizi.priority), release.getPriority()))
+							{
+								modificato = true;
+							}
 														
 							if(modificato)
 							{

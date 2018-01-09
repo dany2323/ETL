@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -20,10 +24,6 @@ import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.LogUtils;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.Tuple;
 
 public class ProjectSgrCmFacade {
 
@@ -42,10 +42,12 @@ public class ProjectSgrCmFacade {
 		Date dtInizioCaricamento = new Date();
 		Date dtFineCaricamento = null;
 		DmalmProject project_tmp = null;
-
+		
 		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 
 		try {
+			// Import CSV con i progetti per cui si applica l'eccezione del legame con le UO
+			
 			staging_projects = ProjectSgrCmDAO.getAllProject(dataEsecuzione);
 
 			for (DmalmProject project : staging_projects) {
@@ -108,6 +110,7 @@ public class ProjectSgrCmFacade {
 							if (modificato) {
 								logger.debug("Project modified");
 								righeModificate++;
+								if(project.getAnnullato()==null){
 								// STORICIZZO
 								// aggiorno la data di fine validita sul record
 								// corrente
@@ -118,6 +121,13 @@ public class ProjectSgrCmFacade {
 								ProjectSgrCmDAO.insertProjectUpdate(
 										dataEsecuzione, project, true);
 								logger.debug("New Project inserted");
+								}
+								else
+								{
+									logger.debug("Project not modified");
+									ProjectSgrCmDAO.updateDmalmProject(project);
+									logger.debug("Project updated");
+								}
 							} else {
 								// Aggiorno lo stesso
 								logger.debug("Project not modified");
@@ -227,15 +237,22 @@ public class ProjectSgrCmFacade {
 								.get(proj.nomeCompletoProject));
 						bean.setDtCaricamento(dataEsecuzione);
 
+						if(bean.getAnnullato()==null)
+						{
 						// STORICIZZO
 						// aggiorno la data di fine validita sul record
-						// corrente
+						// corrente 
 						ProjectSgrCmDAO.updateDataFineValidita(dataEsecuzione,
-								bean);
+								bean); 
 
 						// inserisco un nuovo record
 						ProjectSgrCmDAO.insertProjectUpdate(dataEsecuzione,
 								bean, false);
+						}
+						else
+						{
+							ProjectSgrCmDAO.updateDmalmProject(bean);
+						}
 					}
 				}
 			}

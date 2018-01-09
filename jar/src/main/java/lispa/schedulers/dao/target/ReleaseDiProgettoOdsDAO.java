@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
@@ -60,7 +61,7 @@ public class ReleaseDiProgettoOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -69,6 +70,11 @@ public class ReleaseDiProgettoOdsDAO {
 
 			for (DmalmReleaseDiProgetto release : staging_releases) {
 
+				if(listPk.contains(release.getDmalmReleasediprogPk()))
+					logger.info("Trovata DmalmReleasediprogPk DUPLICATA!!!"+release.getDmalmReleasediprogPk());
+				else{
+					
+				listPk.add(release.getDmalmReleasediprogPk());
 				new SQLInsertClause(connection, dialect, releaseODS)
 						.columns(releaseODS.cdReleasediprog, releaseODS.codice,
 								releaseODS.dataDisponibilitaEff,
@@ -99,7 +105,8 @@ public class ReleaseDiProgettoOdsDAO {
 								releaseODS.dmalmAreaTematicaFk05,
 								releaseODS.dmalmUserFk06, releaseODS.uri,
 								releaseODS.dtInizioQF, releaseODS.dtFineQF,
-								releaseODS.numQuickFix)
+								releaseODS.numQuickFix,
+								releaseODS.severity, releaseODS.priority)
 						.values(release.getCdReleasediprog(),
 								release.getCodice(),
 								release.getDataDisponibilitaEff(),
@@ -129,8 +136,10 @@ public class ReleaseDiProgettoOdsDAO {
 								release.getDmalmAreaTematicaFk05(),
 								release.getDmalmUserFk06(), release.getUri(),
 								release.getDtInizioQF(), release.getDtFineQF(),
-								release.getNumQuickFix()).execute();
-
+								release.getNumQuickFix(),
+								//DM_ALM-320
+								release.getSeverity(), release.getPriority()).execute();
+				}
 			}
 
 			connection.commit();
