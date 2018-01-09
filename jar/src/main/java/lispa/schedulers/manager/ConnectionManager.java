@@ -534,4 +534,8 @@ public class ConnectionManager {
 
 	}
 
+	public static PropertiesReader GetPropertiesReader() {
+		return propertiesReader;
+	}
+
 }

@@ -410,10 +410,7 @@ public class SireHistoryWorkitemDAO {
 								hist.get(fonteHistoryWorkItems.fkTimepoint),
 								hist.get(fonteHistoryWorkItems.cInitialestimate),
 								hist.get(fonteHistoryWorkItems.fkUriTimepoint),
-								hist.get(fonteHistoryWorkItems.cPreviousstatus),*/
-								
-								
-								
+								hist.get(fonteHistoryWorkItems.cPreviousstatus),
 								dataEsecuzione,
 								StringTemplate
 										.create("HISTORY_WORKITEM_SEQ.nextval")
