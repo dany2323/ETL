@@ -40,9 +40,12 @@ public class DmAlmConstants {	//TODO: move to lispa.schedulers.constant.DmAlmCon
 		int index2 = url.lastIndexOf('/', index - 1);
 		String hostName = url.substring(index2 + 1, index);
 		
+		String port = hostName.split(":")[1];
+		hostName = hostName.split(":")[0];
+
 		String select =
 			"(select c_pk, c_id from dblink( " +
-			"'hostaddr=" + hostName + " dbname=" + dbName + " user=" + userName + " password=" + password + "', " +
+			"'hostaddr=" + hostName + " port="+ port + " dbname=" + dbName + " user=" + userName + " password=" + password + "', " +
 			"'select c_pk, c_id from polarion.subterra_uri_map') " +
 			"as t1( " +
 			"c_pk text, " +
