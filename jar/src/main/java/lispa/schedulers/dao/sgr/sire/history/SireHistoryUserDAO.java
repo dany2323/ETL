@@ -33,7 +33,6 @@ public class SireHistoryUserDAO
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
 
 	private static QSireHistoryUser   stgUsers  = QSireHistoryUser.sireHistoryUser;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 
 	public static void fillSireHistoryUser(long minRevision, long maxRevision) throws SQLException, DAOException {
 
@@ -96,17 +95,17 @@ public class SireHistoryUserDAO
 						stgUsers.dmalmHistoryUserPk
 						)
 						.values(								
-								row.get(fonteUsers.cAvatarfilename),
-								row.get(fonteUsers.cDeleted),
-								row.get(fonteUsers.cDisablednotifications),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cEmail)),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cId)),
-								row.get(fonteUsers.cInitials),
-								row.get(fonteUsers.cIsLocal),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cName)),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cPk)),
-								row.get(fonteUsers.cRev),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cUri)),
+								vals[0],
+								vals[1],
+								vals[2],
+								StringUtils.getMaskedValue((String)vals[3]),
+								StringUtils.getMaskedValue((String)vals[4]),
+								vals[5],
+								vals[6],
+								StringUtils.getMaskedValue((String)vals[7]),
+								StringUtils.getMaskedValue((String)vals[8]),
+								vals[9],
+								StringUtils.getMaskedValue((String)vals[10]),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_USER_SEQ.nextval")
 								)

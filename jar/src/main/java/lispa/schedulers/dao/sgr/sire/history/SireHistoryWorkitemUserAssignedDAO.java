@@ -32,7 +32,6 @@ public class SireHistoryWorkitemUserAssignedDAO
 	private static Logger logger = Logger.getLogger(SireHistoryWorkitemUserAssignedDAO.class);
 	
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee fonteWorkitemAssignees = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.relWorkitemUserAssignee;
 	
 	private static QSireHistoryRelWorkUserAss stgWorkitemUserAssignees = QSireHistoryRelWorkUserAss.sireHistoryRelWorkUserAss;
@@ -85,6 +84,8 @@ public class SireHistoryWorkitemUserAssignedDAO
 			int batchcounter = 0;
 			
 			for(Tuple row : workItemUserAssignees) {
+				Object[] vals = row.toArray();
+				
 				insert
 				.columns(
 						stgWorkitemUserAssignees.fkUser,
@@ -95,10 +96,10 @@ public class SireHistoryWorkitemUserAssignedDAO
 						stgWorkitemUserAssignees.workitemUserAssignedPK
 						)
 						.values(								
-								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUser)),
-								row.get(fonteWorkitemAssignees.fkUriWorkitem),
-								row.get(fonteWorkitemAssignees.fkWorkitem),
-								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUriUser)),
+								StringUtils.getMaskedValue((String)vals[0]),
+								vals[1],
+								vals[2],
+								StringUtils.getMaskedValue((String)vals[3]),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_WORKUSERASS_SEQ.nextval")
 								)

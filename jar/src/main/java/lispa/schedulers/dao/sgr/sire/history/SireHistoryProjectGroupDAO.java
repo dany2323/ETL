@@ -28,7 +28,6 @@ public class SireHistoryProjectGroupDAO
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup.projectgroup;
 	
 	private static QSireHistoryProjectgroup stgProjectGroups = QSireHistoryProjectgroup.sireHistoryProjectgroup;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static Logger logger = Logger.getLogger(SireHistoryProjectGroupDAO.class);
 
 	public static void fillSireHistoryProjectGroup() throws SQLException, DAOException {
@@ -86,15 +85,15 @@ public class SireHistoryProjectGroupDAO
 						stgProjectGroups.sireHistoryProjGroupPk
 						)
 						.values(								
-								row.get(fonteProjectGroups.cLocation),
-								row.get(fonteProjectGroups.cIsLocal),
-								row.get(fonteProjectGroups.cPk),
-								row.get(fonteProjectGroups.fkUriParent),
-								row.get(fonteProjectGroups.fkParent),
-								row.get(fonteProjectGroups.cName),
-								row.get(fonteProjectGroups.cDeleted),
-								row.get(fonteProjectGroups.cRev),
-								row.get(fonteProjectGroups.cUri),
+								val[0],
+								val[1],
+								val[2],
+								val[3],
+								val[4],
+								val[5],
+								val[6],
+								val[7],
+								val[8],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
 								)

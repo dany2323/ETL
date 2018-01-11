@@ -1,8 +1,6 @@
 package lispa.schedulers.dao.sgr.sire.current;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,7 +17,6 @@ import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.QTuple;
 import com.mysema.query.types.template.StringTemplate;
-import com.mysema.query.sql.postgres.*;
 
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;

@@ -35,7 +35,6 @@ public class SireHistoryCfWorkitemDAO {
 			.getLogger(SireHistoryCfWorkitemDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem fonteCFWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem.cfWorkitem;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static QSireHistoryCfWorkitem stgCFWorkItems = QSireHistoryCfWorkitem.sireHistoryCfWorkitem;
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
@@ -192,17 +191,18 @@ public class SireHistoryCfWorkitemDAO {
 								stgCFWorkItems.cCurrencyValue,
 								stgCFWorkItems.dataCaricamento,
 								stgCFWorkItems.dmalmHistoryCfWorkItemPk)
-								.values(row.get(fonteCFWorkItems.cDateonlyValue),
-										row.get(fonteCFWorkItems.cFloatValue),
-										row.get(fonteCFWorkItems.cStringValue),
-										row.get(fonteCFWorkItems.cDateValue),
-										row.get(fonteCFWorkItems.cBooleanValue),
-										row.get(fonteCFWorkItems.cName),
-										row.get(fonteCFWorkItems.fkUriWorkitem),
-										row.get(fonteCFWorkItems.fkWorkitem),
-										row.get(fonteCFWorkItems.cLongValue),
-										row.get(fonteCFWorkItems.cDurationtimeValue),
-										row.get(fonteCFWorkItems.cCurrencyValue),
+								.values(
+										val[0],
+										val[1],
+										val[2],
+										val[3],
+										val[4],
+										val[5],
+										val[6],
+										val[7],
+										val[8],
+										val[9],
+										val[10],
 										DataEsecuzione.getInstance()
 												.getDataEsecuzione(),
 										StringTemplate

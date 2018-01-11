@@ -34,7 +34,6 @@ public class SireHistoryRevisionDAO {
 	private static Logger logger = Logger.getLogger(SireHistoryRevisionDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static QSireHistoryRevision stgRevisions = QSireHistoryRevision.sireHistoryRevision;
 
 
@@ -169,9 +168,12 @@ public class SireHistoryRevisionDAO {
 			int batch_size_counter = 0;
 			for(Tuple row : revisions) {
 				batch_size_counter++;
+				
+				Object[] vals = row.toArray();
 
 				insert
-				.columns(stgRevisions.cPk,
+				.columns(
+						stgRevisions.cPk,
 						stgRevisions.cAuthor,
 						stgRevisions.cCreated,
 						stgRevisions.cDeleted,
@@ -186,19 +188,19 @@ public class SireHistoryRevisionDAO {
 						stgRevisions.dataCaricamento
 						)
 						.values(								
-								row.get(fonteRevisions.cPk),
-								StringUtils.getMaskedValue(row.get(fonteRevisions.cAuthor)),
-								row.get(fonteRevisions.cCreated),
-								row.get(fonteRevisions.cDeleted),
-								row.get(fonteRevisions.cInternalcommit),
-								row.get(fonteRevisions.cIsLocal),
-								row.get(fonteRevisions.cMessage) != null && row.get(fonteRevisions.cMessage).length() > 4000 ? row.get(fonteRevisions.cMessage).substring(0, 4000) : row.get(fonteRevisions.cMessage),
-										row.get(fonteRevisions.cName),
-										row.get(fonteRevisions.cRepositoryname),
-										row.get(fonteRevisions.cRev),
-										row.get(fonteRevisions.cUri),
-										StringTemplate.create("HISTORY_REVISION_SEQ.nextval"),
-										DataEsecuzione.getInstance().getDataEsecuzione()
+								vals[0],
+								StringUtils.getMaskedValue((String)vals[1]),
+								vals[2],
+								vals[3],
+								vals[4],
+								vals[5],
+								vals[6] != null && vals[6].toString().length() > 4000 ? vals[6].toString().substring(0, 4000) : vals[6],
+								vals[7],
+								vals[8],
+								vals[9],
+								vals[10],
+								StringTemplate.create("HISTORY_REVISION_SEQ.nextval"),
+								DataEsecuzione.getInstance().getDataEsecuzione()
 								);
 				insert.addBatch();
 				if(!revisions.isEmpty() && batch_size_counter == DmAlmConstants.BATCH_SIZE) {

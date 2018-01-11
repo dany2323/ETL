@@ -84,6 +84,8 @@ public class SissHistoryWorkitemUserAssignedDAO
 			int batchcounter = 0;
 			
 			for(Tuple row : workItemUserAssignees) {
+				Object[] vals = row.toArray();
+				
 				insert
 				.columns(
 						stgWorkitemUserAssignees.fkUser,
@@ -94,10 +96,10 @@ public class SissHistoryWorkitemUserAssignedDAO
 						stgWorkitemUserAssignees.dmalmWorkUserAssPk
 						)
 						.values(								
-								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUser)),
-								row.get(fonteWorkitemAssignees.fkUriWorkitem),
-								row.get(fonteWorkitemAssignees.fkWorkitem),
-								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUriUser)),
+								StringUtils.getMaskedValue((String)vals[0]),
+								vals[1],
+								vals[2],
+								StringUtils.getMaskedValue((String)vals[3]),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_WORKUSERASS_SEQ.nextval")
 								)

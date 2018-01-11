@@ -31,7 +31,6 @@ public class SireHistoryAttachmentDAO {
 			.getLogger(SireHistoryAttachmentDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryAttachment fonteAttachment = SireHistoryAttachment.attachment;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment stgAttachment = QSireHistoryAttachment.dmalmSireHistoryAttachment;
 
 	public static void fillSireHistoryAttachment(long minRevision, long maxRevision) throws SQLException, DAOException {
@@ -108,25 +107,24 @@ public class SireHistoryAttachmentDAO {
 						)
 								
 						.values(
-								
-								row.get(fonteAttachment.cDeleted),
-								row.get(fonteAttachment.cFilename),
-								row.get(fonteAttachment.cId),
-								row.get(fonteAttachment.cIsLocal),
-								row.get(fonteAttachment.cLength),
-								row.get(fonteAttachment.cPk),
-								row.get(fonteAttachment.cRev),
-								row.get(fonteAttachment.cTitle),
-								row.get(fonteAttachment.cUpdated),
-								row.get(fonteAttachment.cUri),
-								row.get(fonteAttachment.cUrl),
+								val[0],
+								val[1],
+								val[2],
+								val[3],
+								val[4],
+								val[5],
+								val[6],
+								val[7],
+								val[8],
+								val[9],
+								val[10],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
-								StringUtils.getMaskedValue(row.get(fonteAttachment.fkAuthor)),
-								row.get(fonteAttachment.fkProject),
-								StringUtils.getMaskedValue(row.get(fonteAttachment.fkUriAuthor)),
-								row.get(fonteAttachment.fkUriProject),
-								row.get(fonteAttachment.fkUriWorkitem),
-								row.get(fonteAttachment.fkWorkitem),
+								StringUtils.getMaskedValue((String)val[11]),
+								val[12],
+								StringUtils.getMaskedValue((String)val[13]),
+								val[14],
+								val[15],
+								val[16],
 								StringTemplate.create("HISTORY_ATTACHMENT_SEQ.nextval")
 										
 						)

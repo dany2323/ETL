@@ -32,12 +32,8 @@ public class SireHistoryHyperlinkDAO {
 			.getLogger(SireHistoryHyperlinkDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryHyperlink fonteHyperlink = SireHistoryHyperlink.structWorkitemHyperlinks;
-	
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryHyperlink stgHyperlink = QSireHistoryHyperlink.dmalmSireHistoryHyperlink;
-
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
-	
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	
 	public static void fillSireHistoryHyperlink(Map<Workitem_Type, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
 		
@@ -93,6 +89,8 @@ public class SireHistoryHyperlinkDAO {
 				
 				batchcounter++;
 				
+				Object[] val = row.toArray();
+				
 				insert
 						.columns(
 								
@@ -106,11 +104,7 @@ public class SireHistoryHyperlinkDAO {
 						)
 								
 						.values(
-								
-								row.get(fonteHyperlink.cRole),
-								row.get(fonteHyperlink.cUrl),
-								row.get(fonteHyperlink.fkPWorkitem),
-								row.get(fonteHyperlink.fkUriPWorkitem),
+								val[0],val[1],val[2],val[3],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 										

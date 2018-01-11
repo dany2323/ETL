@@ -30,9 +30,7 @@ public class SireHistoryWorkitemLinkedDAO
 
 	private static Logger logger = Logger.getLogger(SireHistoryWorkitemLinkedDAO.class); 
 	
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
-		
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;		
 	private static QSireHistoryWorkitemLinked stgLinkedWorkitems = QSireHistoryWorkitemLinked.sireHistoryWorkitemLinked;
 
 	public static void fillSireHistoryWorkitemLinked(Map<Workitem_Type, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
@@ -96,7 +94,17 @@ public class SireHistoryWorkitemLinkedDAO
         						stgLinkedWorkitems.sireHistoryWorkLinkedPk
 						)
 						.values
-						(								
+						(		
+								vals[0],
+								vals[1],
+								vals[2],
+								vals[3],
+								vals[4],
+								vals[5],
+								vals[6],
+								
+								
+								/*
 								row.get(fonteLinkedWorkitems.cRevision),
 								row.get(fonteLinkedWorkitems.cRole),
 								row.get(fonteLinkedWorkitems.fkPWorkitem),
@@ -104,6 +112,7 @@ public class SireHistoryWorkitemLinkedDAO
 								row.get(fonteLinkedWorkitems.fkUriWorkitem),
 								row.get(fonteLinkedWorkitems.fkWorkitem),
 								row.get(fonteLinkedWorkitems.cSuspect),
+								*/
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_WORK_LINKED_SEQ.nextval")
 						)
