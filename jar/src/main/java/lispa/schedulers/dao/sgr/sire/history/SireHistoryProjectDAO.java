@@ -36,8 +36,6 @@ public class SireHistoryProjectDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
-
 	private static QSireHistoryProject stgProjects = QSireHistoryProject.sireHistoryProject;
 
 	public static void fillSireHistoryProject(long minRevision, long maxRevision)
@@ -66,9 +64,7 @@ public class SireHistoryProjectDAO {
 			SQLQuery query = new SQLQuery(pgConnection, dialect);
 			
 			projects = query
-					.from(fonteProjects, fonteRevisions)
-					.where(fonteRevisions.cName.castToNum(Long.class).eq(
-							fonteProjects.cRev))
+					.from(fonteProjects)
 					.where(fonteProjects.cRev.gt(minRevision).and(fonteProjects.cRev.loe(maxRevision)))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
 					.where(fonteProjects.cId.notIn(new SQLSubQuery()
@@ -93,8 +89,7 @@ public class SireHistoryProjectDAO {
 							fonteProjects.cName, 
 							fonteProjects.cId,
 							fonteProjects.cRev, 
-//							fonteRevisions.cName, 
-							fonteRevisions.cCreated,
+							StringTemplate.create("(SELECT r.c_created FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentRevisionSire() + " r WHERE r.c_name = cast(project.c_rev as text)) as c_created"),
 							fonteProjects.cDescription
 							);
 
