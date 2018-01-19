@@ -105,6 +105,8 @@ public class QDmalmReleaseDiProgettoOds extends com.mysema.query.sql.RelationalP
     
     public final StringPath priority = createString("PRIORITY");
     
+    public final StringPath typeRelease = createString("TYPE_RELEASE");
+    
     
     public QDmalmReleaseDiProgettoOds(String variable) {
         super(DmalmReleaseDiProgettoOds.class, forVariable(variable), "DMALM", "DMALM_RELEASE_DI_PROGETTO_ODS");

@@ -84,6 +84,8 @@ public class QDmalmReleaseItOds extends com.mysema.query.sql.RelationalPathBase<
     
     public final StringPath priority = createString("PRIORITY");
     
+    public final StringPath typeRelease = createString("TYPE_RELEASE");
+    
     public final com.mysema.query.sql.PrimaryKey<DmalmReleaseItOds> sysC0023776 = createPrimaryKey(dmalmReleaseItPk);
 
     public QDmalmReleaseItOds(String variable) {

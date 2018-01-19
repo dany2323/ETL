@@ -87,6 +87,8 @@ public class QDmalmReleaseIt extends com.mysema.query.sql.RelationalPathBase<Dma
 
 
     public final StringPath titoloReleaseIt = createString("TITOLO_RELEASE_IT");
+    
+    public final StringPath typeRelease = createString("TYPE_RELEASE");
 
     public final com.mysema.query.sql.PrimaryKey<DmalmReleaseIt> sysC0022476 = createPrimaryKey(dmalmReleaseItPk);
     

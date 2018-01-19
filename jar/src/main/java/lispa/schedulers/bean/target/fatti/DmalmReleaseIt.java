@@ -76,7 +76,8 @@ public class DmalmReleaseIt {
 	
 	private String severity;
     
-
+	private String typeRelease;
+	
 	public String getPriority() {
 		return priority;
 	}
@@ -347,6 +348,14 @@ public class DmalmReleaseIt {
 
 	public void setAnnullato(String annullato) {
 		this.annullato = annullato;
+	}
+
+	public String getTypeRelease() {
+		return typeRelease;
+	}
+
+	public void setTypeRelease(String typeRelease) {
+		this.typeRelease = typeRelease;
 	}
 
 }

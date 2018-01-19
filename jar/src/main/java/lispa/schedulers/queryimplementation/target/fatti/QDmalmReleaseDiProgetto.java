@@ -130,6 +130,8 @@ public class QDmalmReleaseDiProgetto extends
 	
 	public final StringPath priority = createString("PRIORITY");
 	
+	public final StringPath typeRelease = createString("TYPE_RELEASE");
+	
 	
 	public QDmalmReleaseDiProgetto(String variable) {
 		super(DmalmReleaseDiProgetto.class, forVariable(variable), "DMALM",

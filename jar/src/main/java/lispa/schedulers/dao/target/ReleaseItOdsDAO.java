@@ -89,7 +89,8 @@ public class ReleaseItOdsDAO {
 								releaseItOds.dmalmUserFk06, 
 								releaseItOds.uri,
 								releaseItOds.severity,
-								releaseItOds.priority)
+								releaseItOds.priority,
+								releaseItOds.typeRelease)
 						.values(releaseIt.getCdReleaseIt(),
 								releaseIt.getDescrizioneReleaseIt(),
 								releaseIt.getDmalmReleaseItPk(),
@@ -118,7 +119,8 @@ public class ReleaseItOdsDAO {
 								releaseIt.getDmalmUserFk06(),
 								releaseIt.getUri(),
 								releaseIt.getSeverity(),
-								releaseIt.getPriority()).execute();
+								releaseIt.getPriority(),
+								releaseIt.getTypeRelease()).execute();
 								
 
 				connection.commit();

@@ -101,6 +101,7 @@ public class ReleaseItDAO {
 						.getTimestamp("DATA_RILASCIO_AD_ESERCIZIO"));
 				bean.setPriority(rs.getString("PRIORITY"));
 				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setTypeRelease(rs.getString("TYPE_RELEASE"));
 				releases.add(bean);
 			}
 
@@ -198,7 +199,8 @@ public class ReleaseItDAO {
 							releaseIt.uri, 
 							releaseIt.dtAnnullamento,
 							releaseIt.severity,
-							releaseIt.priority)
+							releaseIt.priority,
+							releaseIt.typeRelease)
 					.values(release.getCdReleaseIt(),
 							release.getDescrizioneReleaseIt(),
 							release.getDmalmReleaseItPk(),
@@ -226,7 +228,8 @@ public class ReleaseItDAO {
 							release.getDmalmUserFk06(), release.getUri(),
 							release.getDtAnnullamento(),
 							release.getSeverity(),
-							release.getPriority()).execute();
+							release.getPriority(),
+							release.getTypeRelease()).execute();
 
 			connection.commit();
 
@@ -312,7 +315,8 @@ public class ReleaseItDAO {
 							releaseIt.changed, 
 							releaseIt.annullato,
 							releaseIt.severity,
-							releaseIt.priority)
+							releaseIt.priority,
+							releaseIt.typeRelease)
 					.values(release.getCdReleaseIt(),
 							release.getDescrizioneReleaseIt(),
 							pkValue == true ? release.getDmalmReleaseItPk() : StringTemplate
@@ -344,7 +348,8 @@ public class ReleaseItDAO {
 							release.getChanged(),
 							release.getAnnullato(),
 							release.getSeverity(),
-							release.getPriority()).execute();
+							release.getPriority(),
+							release.getTypeRelease()).execute();
 
 			connection.commit();
 
@@ -420,6 +425,7 @@ public class ReleaseItDAO {
 					.set(releaseIt.annullato, release.getAnnullato())
 					.set(releaseIt.severity, release.getSeverity())
 					.set(releaseIt.priority,release.getPriority())
+					.set(releaseIt.typeRelease, release.getTypeRelease())
 					.execute();
 
 			connection.commit();
@@ -493,6 +499,7 @@ public class ReleaseItDAO {
 			r.setStgPk(t.get(releaseIt.stgPk));
 			r.setTitoloReleaseIt(t.get(releaseIt.titoloReleaseIt));
 			r.setUri(t.get(releaseIt.uri));
+			r.setTypeRelease(t.get(releaseIt.typeRelease));
 			
 			return r;
 			
