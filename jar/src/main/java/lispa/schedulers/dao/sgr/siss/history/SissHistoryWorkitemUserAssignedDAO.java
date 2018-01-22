@@ -20,6 +20,7 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
@@ -65,19 +66,246 @@ public class SissHistoryWorkitemUserAssignedDAO
 			
 			SQLQuery query 		 = new SQLQuery(pgConnection, dialect); 
 			
-			workItemUserAssignees = query.from(fonteHistoryWorkItems)
-					.join(fonteWorkitemAssignees).on(fonteHistoryWorkItems.cPk.eq(fonteWorkitemAssignees.fkWorkitem))
-					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
-					.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
-					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-					.list(
-							//fonteWorkitemAssignees.all()
-							
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteWorkitemAssignees.fkUriUser + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".t_user where t_user.c_pk = fk_user) as fk_user"),
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") as fk_uri_workitem"),
-							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " c WHERE c.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
-							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " d WHERE d.c_id = " + fonteWorkitemAssignees.fkUriUser + ") as fk_uri_user")
-							);
+//			Query 1
+//			workItemUserAssignees = query.from(fonteHistoryWorkItems)
+//			.join(fonteWorkitemAssignees).on(fonteHistoryWorkItems.cPk.eq(fonteWorkitemAssignees.fkWorkitem))
+//			.where(fonteHistoryWorkItems.cType.eq(type.toString()))
+//			.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
+//			.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
+//			.list(
+//					//fonteWorkitemAssignees.all()
+//					
+//					StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteWorkitemAssignees.fkUriUser + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".t_user where t_user.c_pk = fk_user) as fk_user"),
+//					StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") as fk_uri_workitem"),
+//					StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " c WHERE c.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
+//					StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " d WHERE d.c_id = " + fonteWorkitemAssignees.fkUriUser + ") as fk_uri_user")
+//					);
+			
+//			Query 2			
+			workItemUserAssignees = query.from(fonteWorkitemAssignees)
+			.where(fonteWorkitemAssignees.fkWorkitem
+					.in(
+						new SQLSubQuery().from(fonteHistoryWorkItems)
+						.where(fonteHistoryWorkItems.cRev.loe(10000))
+						.where(fonteHistoryWorkItems.cType.eq(type.toString()).and(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type))))						
+						.list(fonteHistoryWorkItems.cPk)
+					)
+				)
+				.list(
+						StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteWorkitemAssignees.fkUriUser + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".t_user where t_user.c_pk = fk_user) as fk_user"),
+						StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") as fk_uri_workitem"),
+						StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " c WHERE c.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
+						StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " d WHERE d.c_id = " + fonteWorkitemAssignees.fkUriUser + ") as fk_uri_user")
+				);
+			
+//			Query 3
+//			workItemUserAssignees = query.from(fonteWorkitemAssignees)
+//					.where(fonteWorkitemAssignees.fkWorkitem
+//						.in(
+//							new SQLSubQuery().from(fonteHistoryWorkItems)
+//							.where(fonteHistoryWorkItems.cRev.loe(10000))
+//							.where(
+//								(fonteHistoryWorkItems.cType.eq("documento")
+//								.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//									.from(fonteHistoryWorkItems)
+//									.where(fonteHistoryWorkItems.cType.eq("documento"))
+//									.list(fonteHistoryWorkItems.cRev.min()))
+//								))
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("testcase")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("testcase"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("pei")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("pei"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("build")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("build"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("progettoese")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("progettoese"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("fase")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("fase"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("defect")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("defect"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("release")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("release"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("sottoprogramma")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("sottoprogramma"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("programma")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("programma"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("taskit")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("taskit"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("anomalia")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("anomalia"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("anomalia_assistenza")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("anomalia_assistenza"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("release_it")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("release_it"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("sman")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("sman"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("release_ser")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("release_ser"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("drqs")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("drqs"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("dman")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("dman"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("rqd")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("rqd"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("richiesta_gestione")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("richiesta_gestione"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("srqs")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("srqs"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("task")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("task"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("classificatore_demand")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("classificatore_demand"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//								.or(
+//									(fonteHistoryWorkItems.cType.eq("classificatore")
+//									.and(fonteHistoryWorkItems.cRev.gtAll(new SQLSubQuery()
+//										.from(fonteHistoryWorkItems)
+//										.where(fonteHistoryWorkItems.cType.eq("classificatore"))
+//										.list(fonteHistoryWorkItems.cRev.min()))
+//									))
+//								)
+//							)
+//							
+//							.list(fonteHistoryWorkItems.cPk)
+//						)
+//					)
+//					.list(
+//							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteWorkitemAssignees.fkUriUser + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".t_user where t_user.c_pk = fk_user) as fk_user"),
+//							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") as fk_uri_workitem"),
+//							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " c WHERE c.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
+//							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " d WHERE d.c_id = " + fonteWorkitemAssignees.fkUriUser + ") as fk_uri_user")
+//					);
 			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgWorkitemUserAssignees);
 			
