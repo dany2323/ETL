@@ -115,7 +115,7 @@ public class SissHistoryAttachmentDAO {
 								vals[5],
 								vals[6],
 								vals[7],
-								vals[8],
+								StringTemplate.create("to_timestamp('"+vals[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
 								vals[9],
 								vals[10],
 								DataEsecuzione.getInstance().getDataEsecuzione(),

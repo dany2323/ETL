@@ -34,12 +34,7 @@ public class SissHistoryProjectDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject.project;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject.project;
-	
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
-
 	private static QSissHistoryProject stgProjects = QSissHistoryProject.sissHistoryProject;
-
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision.revision;
 
 	public static void fillSissHistoryProject(long minRevision, long maxRevision)
 			throws Exception {
@@ -69,9 +64,7 @@ public class SissHistoryProjectDAO {
 			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			projects = query
-					.from(fonteProjects, fonteRevisions)
-					.where(fonteRevisions.cName.castToNum(Long.class).eq(
-							fonteProjects.cRev))
+					.from(fonteProjects)
 					.where(fonteProjects.cRev.gt(minRevision))
 					.where(fonteProjects.cRev.loe(maxRevision))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
@@ -97,10 +90,8 @@ public class SissHistoryProjectDAO {
 							fonteProjects.cName, 
 							fonteProjects.cId,
 							fonteProjects.cRev,
-							fonteRevisions.cCreated,
+							StringTemplate.create("(SELECT r.c_created FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentRevisionSiss() + " r WHERE r.c_name = cast(project.c_rev as text)) as c_created"),
 							fonteProjects.cDescription
-							//fonteRevisions.cName, 
-							
 							);
 			
 			logger.debug("SissHistoryProjectDAO.fillSissHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
@@ -154,9 +145,9 @@ public class SissHistoryProjectDAO {
 										.getDataEsecuzione(),
 								StringTemplate
 										.create("HISTORY_PROJECT_SEQ.nextval"),
-										vals[16],
-										vals[17],
-										vals[18]
+								vals[16],
+								StringTemplate.create("to_timestamp('"+vals[17]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
+								vals[18]
 								
 								/*
 								row.get(fonteProjects.cTrackerprefix),

@@ -191,7 +191,7 @@ public class SissHistoryRevisionDAO {
 							).values(								
 							vals[0],
 							StringUtils.getMaskedValue((String)vals[1]),
-							vals[2],
+							StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
 							vals[3],
 							vals[4],
 							vals[5],

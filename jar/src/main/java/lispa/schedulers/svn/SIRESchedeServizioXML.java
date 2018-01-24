@@ -174,7 +174,7 @@ public class SIRESchedeServizioXML {
 			connection = cm.getConnectionOracle();
 			SQLQuery query = new SQLQuery(connection, dialect);
 			check = query.from(ss).where(ss.id.eq(id)).where(ss.name.eq(name))
-					.where(ss.sorter.eq(Integer.parseInt(sort))).list(ss.all());
+					.where(ss.sorter.eq(Integer.parseInt(sort))).list(ss.dmalm_schedeServizio_Pk, ss.id);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {

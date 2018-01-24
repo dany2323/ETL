@@ -28,6 +28,7 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.expr.StringExpression;
 import com.mysema.query.types.template.StringTemplate;
 
 public class SireHistoryCfWorkitemDAO {
@@ -175,8 +176,17 @@ public class SireHistoryCfWorkitemDAO {
 					for (Tuple row : cfWorkitem) {
 
 						count_batch++;
-						
 						Object[] val = row.toArray();
+						
+						//Applico il cast a timespent solo se esistono dei valori data 
+						StringExpression dateOnlyValue = null;
+						if(val[0] != null) {
+							dateOnlyValue = StringTemplate.create("to_timestamp('"+val[0]+"', 'YYYY-MM-DD')");
+						}
+						StringExpression dateValue = null;
+						if(val[3] != null) {
+							dateValue = StringTemplate.create("to_timestamp('"+val[3]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
+						}
 
 						insert.columns(
 								stgCFWorkItems.cDateonlyValue,
@@ -192,10 +202,10 @@ public class SireHistoryCfWorkitemDAO {
 								stgCFWorkItems.dataCaricamento,
 								stgCFWorkItems.dmalmHistoryCfWorkItemPk)
 								.values(
-										val[0],
+										dateOnlyValue,
 										val[1],
 										val[2],
-										val[3],
+										dateValue,
 										val[4],
 										val[5],
 										val[6],
