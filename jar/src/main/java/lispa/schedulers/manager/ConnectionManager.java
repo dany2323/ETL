@@ -425,18 +425,18 @@ public class ConnectionManager {
 				// Elimino tutto cio' che nell'URL della connessione viene dopo
 				// il carattere ';'
 				else if (URL.equals(propertiesReader.getProperty(
-						SIRE_CURRENT_URL).split(";")[0])) {
-					connectionSireCurrentPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
-						SIRE_HISTORY_URL).split(";")[0])) {
-					connectionSireHistoryPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
 						SISS_CURRENT_URL).split(";")[0])) {
 					connectionSissCurrentPool.add(conn);
 				} else if (URL.equals(propertiesReader.getProperty(
 						SISS_HISTORY_URL).split(";")[0])) {
 					connectionSissHistoryPool.add(conn);
-				}
+				} else if (URL.equals(propertiesReader.getProperty(
+						SIRE_CURRENT_URL).split(";")[0])) {
+					connectionSireCurrentPool.add(conn);
+				} else if (URL.equals(propertiesReader.getProperty(
+						SIRE_HISTORY_URL).split(";")[0])) {
+					connectionSireHistoryPool.add(conn);
+				} 
 			} else {
 
 			}

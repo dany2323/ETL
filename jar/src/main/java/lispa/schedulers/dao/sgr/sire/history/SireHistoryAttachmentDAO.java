@@ -115,7 +115,7 @@ public class SireHistoryAttachmentDAO {
 								val[5],
 								val[6],
 								val[7],
-								val[8],
+								StringTemplate.create("to_timestamp('"+val[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
 								val[9],
 								val[10],
 								DataEsecuzione.getInstance().getDataEsecuzione(),

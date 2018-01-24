@@ -143,9 +143,9 @@ public class SireHistoryProjectDAO {
 										.getDataEsecuzione(),
 								StringTemplate
 										.create("HISTORY_PROJECT_SEQ.nextval"),
-										vals[16],
-										vals[17],
-										vals[18]
+								vals[16],
+								StringTemplate.create("to_timestamp('"+vals[17]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
+								vals[18]
 								).execute();
 			}
 
