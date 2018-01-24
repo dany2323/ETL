@@ -91,6 +91,8 @@ public class DmalmReleaseDiProgetto {
 	
 	private String priority;
 	
+	private String typeRelease;
+	
 	
     public String getChanged() {
 		return changed;
@@ -419,6 +421,14 @@ public class DmalmReleaseDiProgetto {
 
 	public void setPriority(String priority) {
 		this.priority = priority;
+	}
+
+	public String getTypeRelease() {
+		return typeRelease;
+	}
+
+	public void setTypeRelease(String typeRelease) {
+		this.typeRelease = typeRelease;
 	}
 
 

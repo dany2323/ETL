@@ -14,6 +14,6 @@ public class TestReleaseIt extends TestCase {
 		logger.debug("testfillreleaseItTarget");
 
 		ReleaseItFacade.execute(DateUtils.stringToTimestamp(
-				"2014-05-30 17:33:00.0", "yyyy-MM-dd HH:mm:00"));
+				"2018-01-09 12:16:00.0", "yyyy-MM-dd HH:mm:00"));
 	}
 }

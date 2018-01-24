@@ -132,6 +132,11 @@ public class ReleaseDiProgettoFacade {
 								modificato = true;
 							}
 							
+							if(!modificato && BeanUtils.areDifferent(row.get(rel.typeRelease), release.getTypeRelease()))
+							{
+								modificato=true;
+							}
+							
 							if(modificato)
 							{
 								righeModificate++;

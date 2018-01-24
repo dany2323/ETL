@@ -127,6 +127,10 @@ public class ReleaseItFacade {
 							{
 								modificato=true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(rel_it.typeRelease),release.getTypeRelease()))
+							{
+								modificato=true;
+							}
 							if(modificato)
 							{
 								righeModificate++;
