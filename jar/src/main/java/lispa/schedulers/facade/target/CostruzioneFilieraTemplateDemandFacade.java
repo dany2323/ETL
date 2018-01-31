@@ -74,6 +74,21 @@ public class CostruzioneFilieraTemplateDemandFacade {
 						insertedWorkitemsList);
 			}
 
+			// INIZIO DM_ALM-352
+			// aggiunta dei WI Build alla tabella DMALM_TEMPLATE_INT_TECNICA
+			List<DmalmLinkedWorkitems> insertedWorkitemsListBuild = new LinkedList<DmalmLinkedWorkitems>();
+			
+			List<DmalmLinkedWorkitems> startWorkitemsListBuild = LinkedWorkitemsDAO
+					.getStartWorkitemsAddBuildTemplate(dataInizioFiliera);
+			logger.debug("CostruzioneFilieraTemplateDemandFacade - Aggiunta WI Build - lista.size: "
+					+ startWorkitemsListBuild.size());
+
+			if (startWorkitemsListBuild.size() > 0) {
+				idFiliera = gestisciListaAddWiBuild(idFiliera, startWorkitemsListBuild,
+						insertedWorkitemsListBuild);
+			}
+			// FINE DM_ALM-352
+			
 			logger.info("STOP CostruzioneFilieraTemplateDemandFacade.execute()");
 		} catch (DAOException de) {
 			logger.error(de.getMessage(), de);
@@ -98,6 +113,43 @@ public class CostruzioneFilieraTemplateDemandFacade {
 			if (!figlioPresente(insertedWorkitemsList, linkedWorkitem)) {
 				nextWorkitemsList = LinkedWorkitemsDAO
 						.getNextWorkitemsTemplateDemand(linkedWorkitem);
+			}
+
+			if (nextWorkitemsList.size() > 0) {
+				// se ho dei figli salvo il wi nella lista degli inseriti e
+				// continuo il ciclo
+				insertedWorkitemsList.add(linkedWorkitem);
+
+				idFiliera = gestisciLista(idFiliera, nextWorkitemsList,
+						insertedWorkitemsList);
+
+				// tolgo l'item dalla lista per non averlo in un ramo diverso
+				// dal suo
+				insertedWorkitemsList.remove(linkedWorkitem);
+			} else {
+				// altrimenti se non ho figli inserisco la lista e il wi corrente
+				// senza salvarlo nella lista in una nuova filiera
+				idFiliera++;
+				inserisciLista(idFiliera, insertedWorkitemsList,
+						linkedWorkitem);
+			}
+		}
+
+		return idFiliera;
+	}
+	
+	private static Integer gestisciListaAddWiBuild(Integer idFiliera,
+			List<DmalmLinkedWorkitems> linkedWorkitems,
+			List<DmalmLinkedWorkitems> insertedWorkitemsList) throws Exception {
+
+		for (DmalmLinkedWorkitems linkedWorkitem : linkedWorkitems) {
+			List<DmalmLinkedWorkitems> nextWorkitemsList = new LinkedList<DmalmLinkedWorkitems>();
+
+			// se il figlio è già presente nella catena non cerco ulteriori
+			// figli per evitare cicli infiniti
+			if (!figlioPresente(insertedWorkitemsList, linkedWorkitem)) {
+				nextWorkitemsList = LinkedWorkitemsDAO
+						.getNextWorkitemsAddBuildTemplate(linkedWorkitem);
 			}
 
 			if (nextWorkitemsList.size() > 0) {
