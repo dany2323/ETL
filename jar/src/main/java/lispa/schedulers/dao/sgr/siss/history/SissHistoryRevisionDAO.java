@@ -6,17 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.exception.PropertiesReaderException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryRevision;
-import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
@@ -29,13 +18,23 @@ import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.expr.StringExpression;
 import com.mysema.query.types.template.StringTemplate;
 
+import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryRevision;
+import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.StringUtils;
+
 
 public class SissHistoryRevisionDAO {
 
 	private static Logger logger = Logger.getLogger(SissHistoryRevisionDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision.revision;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static QSissHistoryRevision stgRevisions = QSissHistoryRevision.sissHistoryRevision;
 
 
@@ -173,6 +172,12 @@ public class SissHistoryRevisionDAO {
 
 					Object[] vals = row.toArray();
 					
+					//Applico il cast a timespent solo se esistono dei valori data 
+					StringExpression dateValue = null;
+					if(vals[2] != null) {
+						dateValue = StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
+					}
+					
 					size_counter++;
 					insert.columns(
 							stgRevisions.cPk,
@@ -191,7 +196,7 @@ public class SissHistoryRevisionDAO {
 							).values(								
 							vals[0],
 							StringUtils.getMaskedValue((String)vals[1]),
-							StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
+							dateValue,
 							vals[3],
 							vals[4],
 							vals[5],

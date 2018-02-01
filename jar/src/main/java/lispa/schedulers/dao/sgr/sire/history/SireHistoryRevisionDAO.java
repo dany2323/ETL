@@ -26,6 +26,7 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.expr.StringExpression;
 import com.mysema.query.types.template.StringTemplate;
 
 
@@ -170,6 +171,12 @@ public class SireHistoryRevisionDAO {
 				batch_size_counter++;
 				
 				Object[] vals = row.toArray();
+				
+				//Applico il cast a timespent solo se esistono dei valori data 
+				StringExpression dateValue = null;
+				if(vals[2] != null) {
+					dateValue = StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
+				}
 
 				insert
 				.columns(
@@ -190,7 +197,7 @@ public class SireHistoryRevisionDAO {
 						.values(								
 								vals[0],
 								StringUtils.getMaskedValue((String)vals[1]),
-								StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
+								dateValue,
 								vals[3],
 								vals[4],
 								vals[5],

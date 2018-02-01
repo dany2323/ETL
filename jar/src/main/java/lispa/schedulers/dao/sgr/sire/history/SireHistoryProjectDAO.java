@@ -27,6 +27,7 @@ import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.expr.StringExpression;
 import com.mysema.query.types.template.StringTemplate;
 
 public class SireHistoryProjectDAO {
@@ -98,6 +99,12 @@ public class SireHistoryProjectDAO {
 			for (Tuple row : projects) {
 				Object[] vals = row.toArray();
 				
+				//Applico il cast a timespent solo se esistono dei valori data 
+				StringExpression dateValue = null;
+				if(vals[17] != null) {
+					dateValue = StringTemplate.create("to_timestamp('"+vals[17]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
+				}
+				
 				new SQLInsertClause(connOracle, dialect, stgProjects)
 						.columns(
 								stgProjects.cTrackerprefix,
@@ -144,7 +151,7 @@ public class SireHistoryProjectDAO {
 								StringTemplate
 										.create("HISTORY_PROJECT_SEQ.nextval"),
 								vals[16],
-								StringTemplate.create("to_timestamp('"+vals[17]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
+								dateValue,
 								vals[18]
 								).execute();
 			}
