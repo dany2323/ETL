@@ -5,14 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryAttachment;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryAttachment;
-import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
@@ -22,7 +14,16 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.expr.StringExpression;
 import com.mysema.query.types.template.StringTemplate;
+
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryAttachment;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryAttachment;
+import lispa.schedulers.utils.StringUtils;
 
 public class SissHistoryAttachmentDAO {
 
@@ -30,7 +31,6 @@ public class SissHistoryAttachmentDAO {
 			.getLogger(SissHistoryAttachmentDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryAttachment fonteAttachment = SissHistoryAttachment.attachment;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryAttachment stgAttachment = QSissHistoryAttachment.dmalmSissHistoryAttachment;
 
 	public static void fillSissHistoryAttachment(long minRevision, long maxRevision) throws SQLException, DAOException {
@@ -82,6 +82,12 @@ public class SissHistoryAttachmentDAO {
 			for (Tuple row : attachments) {
 				Object[] vals = row.toArray();
 				
+				//Applico il cast a timespent solo se esistono dei valori data 
+				StringExpression dateValue = null;
+				if(vals[8] != null) {
+					dateValue = StringTemplate.create("to_timestamp('"+vals[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
+				}
+
 				new SQLInsertClause(connOracle, dialect, stgAttachment)
 						.columns(
 								stgAttachment.cDeleted,
@@ -104,9 +110,7 @@ public class SissHistoryAttachmentDAO {
 								stgAttachment.fkWorkitem,
 								stgAttachment.sissHistoryAttachmentPk
 						)
-								
 						.values(
-								
 								vals[0],
 								vals[1],
 								vals[2],
@@ -115,7 +119,7 @@ public class SissHistoryAttachmentDAO {
 								vals[5],
 								vals[6],
 								vals[7],
-								StringTemplate.create("to_timestamp('"+vals[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
+								dateValue,
 								vals[9],
 								vals[10],
 								DataEsecuzione.getInstance().getDataEsecuzione(),

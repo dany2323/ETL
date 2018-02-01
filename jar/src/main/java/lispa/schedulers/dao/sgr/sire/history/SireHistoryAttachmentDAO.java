@@ -23,6 +23,7 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.expr.StringExpression;
 import com.mysema.query.types.template.StringTemplate;
 
 public class SireHistoryAttachmentDAO {
@@ -83,6 +84,12 @@ public class SireHistoryAttachmentDAO {
 			for (Tuple row : attachments) {
 				Object[] val = row.toArray();
 				
+				//Applico il cast a timespent solo se esistono dei valori data 
+				StringExpression dateValue = null;
+				if(val[8] != null) {
+					dateValue = StringTemplate.create("to_timestamp('"+val[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
+				}
+				
 				new SQLInsertClause(connOracle, dialect, stgAttachment)
 						.columns(
 								stgAttachment.cDeleted,
@@ -115,7 +122,7 @@ public class SireHistoryAttachmentDAO {
 								val[5],
 								val[6],
 								val[7],
-								StringTemplate.create("to_timestamp('"+val[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')"),
+								dateValue,
 								val[9],
 								val[10],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
