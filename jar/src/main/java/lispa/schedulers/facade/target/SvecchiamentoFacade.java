@@ -226,6 +226,8 @@ public class SvecchiamentoFacade {
 				Timestamp a = DateUtils.dateToTimestamp(t.get(pde.dtA));
 				// essendo timestamp, c'è bisogno dell'orario: viene
 				// impostato alle 23:59:59
+				logger.info("Cancello record compresi fra "+DateUtils.formatDataEsecuzione(da)+ "e "+DateUtils.formatDataEsecuzione(a));
+
 				a.setTime(a.getTime() + (((1440 * 60) - 1) * 1000));
 				String target = t.get(pde.entitaTarget);
 

@@ -521,6 +521,8 @@ public final class DmAlmConstants {
 	public static final String WRONG_SVI_MSR_ORDER = "MISURA ST3 SPAIATA NON PRECEDUTA DA ST1 e/o ST2 o PRECEDUTA DA NOMI DI MISURA CON FORMATO ERRATO";
 	public static final String BASELINE = "Baseline";
 	public static final String PATR = "PATR";
+	public static final String ERRORE_SPAZI_NOME_ASM = "NOME ASM SFERA CONTENENTE SPAZI";
+	public static final String ERRORE_SPAZI_PROGETTO_ASM = "PROGETTO SFERA CONTENENTE SPAZI";
 
 	public static String getProperty(String property) {
 
