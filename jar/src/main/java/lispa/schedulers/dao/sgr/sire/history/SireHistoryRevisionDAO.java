@@ -35,6 +35,7 @@ public class SireHistoryRevisionDAO {
 	private static Logger logger = Logger.getLogger(SireHistoryRevisionDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static QSireHistoryRevision stgRevisions = QSireHistoryRevision.sireHistoryRevision;
 
 
@@ -132,7 +133,7 @@ public class SireHistoryRevisionDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			pgConnection = cm.getConnectionSIREHistory();
+			pgConnection = cm.getConnectionSIRECurrent();
 			revisions = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
@@ -147,12 +148,12 @@ public class SireHistoryRevisionDAO {
 			SQLQuery query 		 = new SQLQuery(pgConnection, dialect); 
 
 			revisions = query.from(fonteRevisions)
+					.join(fonteSubterraUriMap)
+					.on(fonteRevisions.cUri.eq(fonteSubterraUriMap.cId.toString()))
 					.where(fonteRevisions.cCreated.gt(minRevision))
 					.where(fonteRevisions.cName.castToNum(Long.class).loe(maxRevision))
 					.list(
-							//fonteRevisions.all()
-							
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteRevisions.cUri + ") as c_pk"),
+							fonteSubterraUriMap.cPk,
 							fonteRevisions.cAuthor,
 							fonteRevisions.cCreated,
 							fonteRevisions.cDeleted,
@@ -162,7 +163,7 @@ public class SireHistoryRevisionDAO {
 							fonteRevisions.cName,
 							fonteRevisions.cRepositoryname,
 							fonteRevisions.cRev,
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " +  fonteRevisions.cUri + ") as c_uri")
+							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
 							);
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 

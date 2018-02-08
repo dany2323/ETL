@@ -27,7 +27,7 @@ public class SissHistoryProjectGroupDAO
 	private static Logger logger = Logger.getLogger(SissHistoryProjectGroupDAO.class); 
 	
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProjectgroup.projectgroup;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
 	private static QSissHistoryProjectgroup stgProjectGroups = QSissHistoryProjectgroup.sissHistoryProjectgroup;
 	
 	
@@ -41,7 +41,7 @@ public class SissHistoryProjectGroupDAO
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			pgConnection = cm.getConnectionSISSHistory();
+			pgConnection = cm.getConnectionSISSCurrent();
 			projectgroups = new ArrayList<Tuple>();
 			
 			connOracle.setAutoCommit(false);
@@ -54,18 +54,18 @@ public class SissHistoryProjectGroupDAO
 			SQLQuery query 		 = new SQLQuery(pgConnection, dialect); 
 			
 			projectgroups = query.from(fonteProjectGroups)
+					.join(fonteSubterraUriMap)
+					.on(fonteProjectGroups.cUri.eq(fonteSubterraUriMap.cId.toString()))
 					.list(
-//fonteProjectGroups.all()
-							
 							fonteProjectGroups.cLocation,
 							StringTemplate.create("0 as c_is_local"),
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteProjectGroups.cUri + ") as c_pk"),
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteProjectGroups.fkUriParent + ") as fk_uri_parent"),
-							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " c WHERE c.c_id = " + fonteProjectGroups.fkUriParent + ") as fk_parent"),
+							fonteSubterraUriMap.cPk,
+							StringTemplate.create("(SELECT b.c_pk FROM subterra_uri_map b WHERE b.c_id = " + fonteProjectGroups.fkUriParent +" as fk_uri_parent"),
+							StringTemplate.create("(SELECT c.c_pk FROM subterra_uri_map c WHERE c.c_id = " + fonteProjectGroups.fkUriParent + ") as fk_parent"),
 							fonteProjectGroups.cName,
 							fonteProjectGroups.cDeleted,
 							fonteProjectGroups.cRev,
-							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " d WHERE d.c_id = " + fonteProjectGroups.cUri + ") as c_uri")
+							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
 							);
 			
 			for(Tuple row : projectgroups) {

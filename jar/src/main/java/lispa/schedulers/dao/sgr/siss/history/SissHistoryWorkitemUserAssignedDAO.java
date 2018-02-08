@@ -86,8 +86,8 @@ public class SissHistoryWorkitemUserAssignedDAO
 			.where(fonteWorkitemAssignees.fkWorkitem
 					.in(
 						new SQLSubQuery().from(fonteHistoryWorkItems)
-						.where(fonteHistoryWorkItems.cRev.loe(10000))
-						.where(fonteHistoryWorkItems.cType.eq(type.toString()).and(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type))))						
+						.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
+						.where(fonteHistoryWorkItems.cType.eq(type.toString()).and(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type))))		
 						.list(fonteHistoryWorkItems.cPk)
 					)
 				)
