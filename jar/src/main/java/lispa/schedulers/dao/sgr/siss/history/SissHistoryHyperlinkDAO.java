@@ -65,7 +65,8 @@ public class SissHistoryHyperlinkDAO {
 					if(cm != null) cm.closeConnection(pgConnection);
 					pgConnection = cm.getConnectionSISSHistory();
 				}
-			
+				logger.info("Lettura hyperlink dei Work Item di tipo "+type.toString());
+				
 				SQLQuery query = new SQLQuery(pgConnection, dialect);
 	
 				hyperlinks = query.from(fonteHyperlink)
@@ -119,6 +120,7 @@ public class SissHistoryHyperlinkDAO {
 					
 					if(batchcounter % DmAlmConstants.BATCH_SIZE == 0 && !insert.isEmpty()) {
 						insert.execute();
+						logger.info("Hyperlink dei Work Item di tipo "+type.toString()+" importati con successo.");
 						insert  = new SQLInsertClause(connOracle, dialect, stgHyperlink);
 					}
 					
@@ -126,9 +128,11 @@ public class SissHistoryHyperlinkDAO {
 				
 				if(!insert.isEmpty()) {
 					insert.execute();
+					logger.info("Hyperlink dei Work Item di tipo "+type.toString()+" importati con successo.");
 				}
 				
 				connOracle.commit();
+				
 			}
 			
 		} catch (Exception e) {

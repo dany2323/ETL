@@ -135,6 +135,8 @@ public class SissHistoryCfWorkitemDAO {
 					connOracle.setAutoCommit(true);
 
 					SQLQuery query = new SQLQuery(pgConnection, dialect);
+					
+					logger.info("Leggo il custom field '"+c_name+"' dai Work Item di tipo "+w_type.toString());
 
 					cfWorkitem = query
 							.from(fonteHistoryWorkItems)
@@ -234,6 +236,7 @@ public class SissHistoryCfWorkitemDAO {
 						if (!insert.isEmpty()
 								&& count_batch % DmAlmConstants.BATCH_SIZE == 0) {
 							insert.execute();
+							logger.info("Custom field '"+c_name+"' dei Work Item di tipo "+w_type.toString()+" importati con successo.");
 							insert = new SQLInsertClause(connOracle, dialect,
 									stgCFWorkItems);
 						}
@@ -242,6 +245,7 @@ public class SissHistoryCfWorkitemDAO {
 
 					if (!insert.isEmpty()) {
 						insert.execute();
+						logger.info("Custom field '"+c_name+"' dei Work Item di tipo "+w_type.toString()+" importati con successo.");
 					}
 
 					if (cm != null) {
