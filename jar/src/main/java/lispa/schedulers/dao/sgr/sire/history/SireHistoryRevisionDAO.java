@@ -149,7 +149,7 @@ public class SireHistoryRevisionDAO {
 
 			revisions = query.from(fonteRevisions)
 					.join(fonteSubterraUriMap)
-					.on(fonteRevisions.cUri.eq(fonteSubterraUriMap.cId.toString()))
+					.on(fonteRevisions.cUri.castToNum(Long.class).eq(fonteSubterraUriMap.cId))
 					.where(fonteRevisions.cCreated.gt(minRevision))
 					.where(fonteRevisions.cName.castToNum(Long.class).loe(maxRevision))
 					.list(

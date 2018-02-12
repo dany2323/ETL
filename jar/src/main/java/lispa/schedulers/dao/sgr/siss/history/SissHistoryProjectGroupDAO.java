@@ -55,12 +55,12 @@ public class SissHistoryProjectGroupDAO
 			
 			projectgroups = query.from(fonteProjectGroups)
 					.join(fonteSubterraUriMap)
-					.on(fonteProjectGroups.cUri.eq(fonteSubterraUriMap.cId.toString()))
+					.on(fonteProjectGroups.cUri.castToNum(Long.class).eq(fonteSubterraUriMap.cId))
 					.list(
 							fonteProjectGroups.cLocation,
 							StringTemplate.create("0 as c_is_local"),
 							fonteSubterraUriMap.cPk,
-							StringTemplate.create("(SELECT b.c_pk FROM subterra_uri_map b WHERE b.c_id = " + fonteProjectGroups.fkUriParent +" as fk_uri_parent"),
+							StringTemplate.create("(SELECT b.c_pk FROM subterra_uri_map b WHERE b.c_id = " + fonteProjectGroups.fkUriParent +") as fk_uri_parent"),
 							StringTemplate.create("(SELECT c.c_pk FROM subterra_uri_map c WHERE c.c_id = " + fonteProjectGroups.fkUriParent + ") as fk_parent"),
 							fonteProjectGroups.cName,
 							fonteProjectGroups.cDeleted,
