@@ -263,6 +263,7 @@ public class DmAlmConfigReaderProperties
 	//PK
 	public static final String WORKITEM_PK_NEXTVAL="dmalm_workitem_pk_nextval.sql";
 	public static final String PERSONALE_PK_MAXVAL="dmalm_personale_pk_maxval.sql";
+	public static final String PERSONALE_PK_MAXVAL_BY_NOME_COGNOME="dmalm_personale_pk_maxval_by_nome_cognome.sql";
 	public static final String USER_ROLES_SGR_PK_MAXVAL="dmalm_user_roles_sgr_pk_maxval.sql";
 
 	//SFERA

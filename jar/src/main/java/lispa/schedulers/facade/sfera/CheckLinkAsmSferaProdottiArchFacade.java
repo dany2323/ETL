@@ -196,7 +196,7 @@ public class CheckLinkAsmSferaProdottiArchFacade {
 									ErroriCaricamentoDAO
 											.insert(DmAlmConstants.FONTE_MISURA,
 													DmAlmConstants.TARGET_ASM_PRODOTTIARCHITETTURE,
-													"COD_ASM non presente in  oreste :  "
+													DmAlmConstants.COD_ASM_NON_PRESENTE_ORESTE
 															+ asmName
 															+ "§ APPLICAZIONE: "
 															+ asmRow.get(dmalmAsm.applicazione),

@@ -7,6 +7,7 @@ public enum CF_release {
 	fornitura,
 	cod_intervento,
 	version,
-	registry
+	registry,
+	tipo_release
 
 }

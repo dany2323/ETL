@@ -484,7 +484,7 @@ public final class DmAlmConstants {
 	public static final String TARGET_MPS_BO_VERBALI = "MPS_BO_VERBALI";
 
 	//CONTROLLI ERRATI
-	public static final String PROJECT_NAME_MALFORMED = "NOME DEL PROGETTO SFERA NON RISPETTA IL PATTERN PREDEFINITO";
+	public static final String PROJECT_NAME_MALFORMED = "ESF011 - NOME DEL PROGETTO SFERA NON RISPETTA IL PATTERN PREDEFINITO";
 	public static final String WRONG_PROJECT_TYPE = "TIPO DELLA MPP DIVERSA DA BASELINE";
 	public static final String WRONG_MISURE_TYPE = "TIPO DELLA MISURA NON È ASSOCIATO AL METODO CORRETTO";
 	public static final String MISURE_NAME_MALFORMED = "NOME DELLA MISURA SFERA NON RISPETTA IL PATTERN PREDEFINITO";
@@ -515,13 +515,37 @@ public final class DmAlmConstants {
 	public static final String FELICITA = "E' UN ETL CHE RUNNA";
 	public static final String TRISTEZZA = "E' UN ETL CON ESITO NEGATIVO";
 	//MESSAGGI DI WARNING
-	public static final String WRONG_CODASM = "FORMATTAZIONE DEL PATTERN DI COD_ASM ERRATO O COD_ASM NON PRESENTE IN ORESTE";
+	public static final String WRONG_CODASM = "ESF005 - FORMATTAZIONE DEL PATTERN DI COD_ASM ERRATO O COD_ASM NON PRESENTE IN ORESTE";
 	public static final String WRONG_LIST = "LISTA DELLE MISURE ERRATE";
 	public static final String RIGHT_LIST = "LISTA MISURE CORRETTE";
-	public static final String WRONG_SVI_MSR_ORDER = "MISURA ST3 SPAIATA NON PRECEDUTA DA ST1 e/o ST2 o PRECEDUTA DA NOMI DI MISURA CON FORMATO ERRATO";
+	public static final String WRONG_SVI_MSR_ORDER = "ESF014 - MISURA ST3 SPAIATA NON PRECEDUTA DA ST1 e/o ST2 o PRECEDUTA DA NOMI DI MISURA CON FORMATO ERRATO";
 	public static final String BASELINE = "Baseline";
 	public static final String PATR = "PATR";
-
+	public static final String ERRORE_SPAZI_NOME_ASM = "ESF007 - NOME ASM SFERA CONTENENTE SPAZI";
+	public static final String ERRORE_SPAZI_PROGETTO_ASM = "PROGETTO SFERA CONTENENTE SPAZI";
+	public static String IDAPP_OBBLIGATORIO="ESF001 - IdApp e' obbligatorio";
+	public static String IDPRJ_OBBLIGATORIO="ESF002 - IdPrj e' obbligatorio ";
+	public static String IDMEA_OBBLIGATORIO="ESF003 - IdMea e' obbligatorio ";
+	public static String APPLICAZIONE_OBBLIGATORIO="ESF004 - Applicazione e' obbligatorio ";
+	public static String COD_ASM_NON_PRESENTE_ORESTE="ESF006 - COD_ASM non presente in  oreste :  ";
+	public static String VAF_PREDEFINITO_OBBLIGATORIO="ESF008 - VAF predefinito e' obbligatorio ";
+	public static String VAF_PREDEFINITO_NON_PERMESSO="ESF009 - VAF Predefinito valore non permesso : ";
+	public static String PROGETTO_OBBLIGATORIO="ESF010 - Progetto e' obbligatorio ";
+	public static String DATA_SFERA_FORMATO_NON_CORRETTO="ESF012 - Progetto - la data del progetto PATR-  sfera non rispetta il formato predefinito aaaammgg : ";
+	public static String MISURA_OBBLIGATORIA="ESF013 - Misura e' obbligatorio ";
+	public static String APPROCIO_OBBLIGATORIO="ESF015 - Approccio e' obbligatorio ";
+	public static String APPROCIO_VALORE_NON_PERMESSO="ESF016 - Approccio - Valore non permesso : ";
+	public static String METODO_OBBLIGATORIO="ESF017 - METODO E' OBBLIGATORIO";
+	public static String METODO_VALORE_NON_PERMESSO="ESF018 - : Metodo - Valore non permesso : ";
+	public static String STATO_MISURA_OBBLOGATORIO="ESF019 - Stato Misura e' obbligatorio ";
+	public static String FP_PESATI_MIN_OBBLIGATORIO="ESF020 - FP pesati (MIN) e' obbligatorio ";
+	public static String FP_PESATI_UFP_OBBLIGATORIO="ESF021 - FP pesati (UFP) e' obbligatorio ";
+	public static String FP_PESATI_MAX_OBBLIGATORIO="ESF022 - FP pesati (MAX) e' obbligatorio ";
+	public static String FP_NON_PESATI_MIN_OBBLIGATORIO="ESF023 - FP non pesati (MIN) e' obbligatorio ";
+	public static String FP_NON_PESATI_UFP_OBBLIGATORIO="ESF024 - FP non pesati (UFP) e' obbligatorio ";
+	public static String FP_NON_PESATI_MAX_E_OBBLIGATORIO="ESF025 - FP non pesati (MAX) e' obbligatorio";
+	public static String UTENTE_MISURATORE_OBBLIGATORIO="ESF026 - ";
+    
 	public static String getProperty(String property) {
 
 		String props = "";

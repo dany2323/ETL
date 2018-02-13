@@ -1512,6 +1512,85 @@ public class LinkedWorkitemsDAO {
 		return resultList;
 	}
 	
+	public static List<DmalmLinkedWorkitems> getStartWorkitemsAddBuildTemplate(
+			Timestamp dataInizioFiliera) throws DAOException, SQLException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			resultList = query
+					.from(link)
+					.join(build)
+					.on(build.cdBuild.eq(link.codiceWiPadre)
+						.and(build.idRepository.eq(link.idRepositoryPadre)))
+					.where(link.tipoWiPadre.eq("build"))
+					.where(link.ruolo.isNotNull())
+					.where(build.rankStatoBuild.eq(new Double("1")))
+					.where(build.dtCreazioneBuild.goe(dataInizioFiliera))
+					.orderBy(link.idRepositoryPadre.asc())
+					.orderBy(link.fkWiPadre.asc())
+					.orderBy(link.fkWiFiglio.asc())
+					.list(Projections.bean(DmalmLinkedWorkitems.class, link.all()));
+			
+			connection.commit();
+		} catch (Exception e) {
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return resultList;
+	}
+	
+	public static List<DmalmLinkedWorkitems> getNextWorkitemsAddBuildTemplate(
+			DmalmLinkedWorkitems linkedWorkitem) throws DAOException,
+			SQLException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			resultList = query
+					.from(link)
+					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
+					/*.where(link.tipoWiPadre.in("release_it", "taskit")
+					.and(link.tipoWiFiglio.in("taskit", "defect")))*/
+					.where(link.ruolo.isNotNull())
+					.orderBy(link.fkWiFiglio.asc())
+					.list(Projections.bean(DmalmLinkedWorkitems.class,
+							link.all()));
+
+			connection.commit();
+		} catch (Exception e) {
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return resultList;
+	}
+	
 	public static List<DmalmLinkedWorkitems> getStartWorkitemsTemplateAssFunzionale(
 			Timestamp dataInizioFiliera) throws DAOException, SQLException {
 		ConnectionManager cm = null;

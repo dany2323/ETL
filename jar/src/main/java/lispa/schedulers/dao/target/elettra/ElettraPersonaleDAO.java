@@ -620,7 +620,7 @@ public class ElettraPersonaleDAO {
 			connection = cm.getConnectionOracle();
 
 			String sql = QueryManager.getInstance().getQuery(
-					DmAlmConfigReaderProperties.PERSONALE_PK_MAXVAL);
+					DmAlmConfigReaderProperties.PERSONALE_PK_MAXVAL_BY_NOME_COGNOME);
 			ps = connection.prepareStatement(sql);
 
 			ps.setString(1, nome);

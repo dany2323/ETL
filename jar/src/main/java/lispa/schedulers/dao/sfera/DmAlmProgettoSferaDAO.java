@@ -695,6 +695,8 @@ public class DmAlmProgettoSferaDAO {
 		return projects;
 	}
 
+	
+	
 	// 16-10-2015 LEGAME DIRETTO WI PROGETTO SFERA NON PIU RICHIESTO
 	// public static void linkProgeSferaWi(Timestamp dataEsecuzione)
 	// throws DAOException {

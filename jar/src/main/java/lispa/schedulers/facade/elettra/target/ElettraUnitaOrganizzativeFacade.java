@@ -296,7 +296,11 @@ public class ElettraUnitaOrganizzativeFacade {
 			}
 			unitaOrganizzativeFlat+=lastUnitaOrganizzativa.getCodiceArea();
 			
-			throw new Exception("Superato il limite di 8 Unita Organizzative Flat: " + unitaOrganizzativeFlat);
+			Exception e= new Exception("Superato il limite di 8 Unita Organizzative Flat: " + unitaOrganizzativeFlat);
+			
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			
+			throw new Exception (e);
 		}
 		
 		int contatore = 0;

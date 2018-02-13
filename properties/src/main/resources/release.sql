@@ -37,7 +37,8 @@
 		hw.cod_intervento as CODICE_INTERVENTO,
 		(select distinct to_char(cf.c_string_value) from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = hw.C_PK and cf.c_name = 'registry') as REGISTRY,
 		hw.C_SEVERITY as SEVERITY,
-		hw.C_PRIORITY as PRIORITY
+		hw.C_PRIORITY as PRIORITY,
+		(select distinct to_char(cf.c_string_value) from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = hw.C_PK and cf.c_name = 'tipo_release') as TYPE_RELEASE 
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -90,7 +91,8 @@ UNION  ALL
 		hw.cod_intervento as CODICE_INTERVENTO,
 		(select distinct to_char(cf.c_string_value) from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = hw.C_PK and cf.c_name = 'registry') as REGISTRY,
 		hw.C_SEVERITY as SEVERITY,
-		hw.C_PRIORITY as PRIORITY
+		hw.C_PRIORITY as PRIORITY,
+		(select distinct to_char(cf.c_string_value) from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = hw.C_PK and cf.c_name = 'tipo_release') as TYPE_RELEASE 
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 

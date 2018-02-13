@@ -339,7 +339,7 @@ public class DmAlmAsmDAO {
 							applicazioni.getProprietaLegale(),
 							applicazioni.getUtilizzata(),
 							applicazioni.getVafPredefinito(),
-							DateUtils.setDtInizioValidita1900(),
+							dataEsecuzione,
 							DateUtils.setDtFineValidita9999(),
 							applicazioni.getAnnullato(),
 							applicazioni.getStrutturaOrganizzativaFk(),
