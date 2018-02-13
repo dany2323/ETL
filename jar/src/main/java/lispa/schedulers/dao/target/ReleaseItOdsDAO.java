@@ -90,7 +90,10 @@ public class ReleaseItOdsDAO {
 								releaseItOds.uri,
 								releaseItOds.severity,
 								releaseItOds.priority,
-								releaseItOds.typeRelease)
+								releaseItOds.typeRelease,
+								releaseItOds.motivoSospensione,
+								releaseItOds.counterQf,
+								releaseItOds.giorniQf)
 						.values(releaseIt.getCdReleaseIt(),
 								releaseIt.getDescrizioneReleaseIt(),
 								releaseIt.getDmalmReleaseItPk(),
@@ -120,7 +123,10 @@ public class ReleaseItOdsDAO {
 								releaseIt.getUri(),
 								releaseIt.getSeverity(),
 								releaseIt.getPriority(),
-								releaseIt.getTypeRelease()).execute();
+								releaseIt.getTypeRelease(),
+								releaseIt.getMotivoSospensione(),
+								releaseIt.getCounterQf(),
+								releaseIt.getGiorniQf()).execute();
 								
 
 				connection.commit();
