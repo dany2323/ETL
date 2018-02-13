@@ -157,7 +157,7 @@ public class CostruzioneFilieraTemplateDemandFacade {
 				// continuo il ciclo
 				insertedWorkitemsList.add(linkedWorkitem);
 
-				idFiliera = gestisciLista(idFiliera, nextWorkitemsList,
+				idFiliera = gestisciListaAddWiBuild(idFiliera, nextWorkitemsList,
 						insertedWorkitemsList);
 
 				// tolgo l'item dalla lista per non averlo in un ramo diverso

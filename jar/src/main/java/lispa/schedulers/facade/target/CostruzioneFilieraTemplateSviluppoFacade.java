@@ -130,9 +130,6 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 						insertedWorkitemsList);
 			}
 			
-			//Gestisci i Work Item orfani
-			getWorkItemSviluppoFuoriFiliera(dataInizioFiliera);
-			
 			// INIZIO DM_ALM-352
 			// aggiunta dei WI Build alla tabella DMALM_TEMPLATE_INT_TECNICA
 			List<DmalmLinkedWorkitems> insertedWorkitemsListBuild = new LinkedList<DmalmLinkedWorkitems>();
@@ -148,6 +145,9 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			}
 			// FINE DM_ALM-352
 
+			//Gestisci i Work Item orfani
+			getWorkItemSviluppoFuoriFiliera(dataInizioFiliera);
+			
 			logger.info("STOP CostruzioneFilieraTemplateSviluppoFacade.execute()");
 		} catch (DAOException de) {
 			logger.error(de.getMessage(), de);
@@ -630,7 +630,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				// continuo il ciclo
 				insertedWorkitemsList.add(linkedWorkitem);
 
-				idFiliera = gestisciLista(idFiliera, nextWorkitemsList,
+				idFiliera = gestisciListaAddWiBuild(idFiliera, nextWorkitemsList,
 						insertedWorkitemsList);
 
 				// tolgo l'item dalla lista per non averlo in un ramo diverso
