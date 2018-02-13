@@ -289,37 +289,7 @@ public class AsmFacade {
 				
 			}
 		}
-		cm = ConnectionManager.getInstance();
-		Connection connection = cm.getConnectionOracle();
-		String nomeApplicazione;
 		
-		SQLQuery query = new SQLQuery(connection, dialect);
-		List<Tuple> projects = query
-				 .from(prog)
-				 .where(prog.dmalmProgettoSferaPk.gt(new Integer(0)))
-				 .where(prog.tipoProgetto.equalsIgnoreCase(
-				 DmAlmConstants.SVI).or(
-				 prog.tipoProgetto
-				 .equalsIgnoreCase(DmAlmConstants.MEV)))
-				 .where(prog.dataFineValidita.eq(DateUtils
-				 .setDtFineValidita9999()))
-				 .orderBy(prog.nomeProgetto.asc(),
-				 prog.dmalmProgettoSferaPk.asc()).list(prog.all());
-				 for (Tuple progetto : projects) {
-				 String nomeProgetto=progetto.get(prog.nomeProgetto);
-				 if (nomeProgetto.contains("#")) {
-					 nomeProgetto = nomeProgetto.substring(0,
-					 progetto.get(prog.nomeProgetto).indexOf("#"));
-				 }
-				 if(nomeProgetto.endsWith(" "))
-				 {
-					 ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-							 DmAlmConstants.TARGET_PROGETTO_SFERA,
-							 "E009 - Possibile presenza spazi in PROGETTO SFERA PK:"+ progetto.get(prog.dmalmProgettoSferaPk)+" PROGETTO SFERA NAME: "+nomeProgetto,
-							 DmAlmConstants.ERRORE_SPAZI_PROGETTO_ASM,
-							 DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, dataEsecuzione);
-				 }
-				 }
 	}
 
 	public static void recalculateUoFkFlat() throws PropertiesReaderException, DAOException, Exception {
