@@ -156,7 +156,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				if (row.get(stgMisura.nomeProgetto) != null
 						&& !row.get(stgMisura.nomeProgetto).isEmpty()
 						&& row.get(stgMisura.nomeProgetto).startsWith(
-								"#UFFICIOSO")) {
+								"UFFICIOSO-")) {
 					controlloPrj = "1";
 				}
 
@@ -210,7 +210,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				if (row.get(stgMisura.nomeMisura) != null
 						&& !row.get(stgMisura.nomeMisura).isEmpty()
 						&& row.get(stgMisura.nomeMisura).startsWith(
-								"#UFFICIOSO")) {
+								"UFFICIOSO-")) {
 					controlloMea = "1";
 				}
 
