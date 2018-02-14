@@ -544,7 +544,26 @@ public final class DmAlmConstants {
 	public static String FP_NON_PESATI_MIN_OBBLIGATORIO="ESF023 - FP non pesati (MIN) e' obbligatorio ";
 	public static String FP_NON_PESATI_UFP_OBBLIGATORIO="ESF024 - FP non pesati (UFP) e' obbligatorio ";
 	public static String FP_NON_PESATI_MAX_E_OBBLIGATORIO="ESF025 - FP non pesati (MAX) e' obbligatorio";
-	public static String UTENTE_MISURATORE_OBBLIGATORIO="ESF026 - ";
+	public static String DENOMINAZIONE_ASM_OBBLIGATORIO="ESF026 - APP-ATT:DENOMINAZIONE_ASM E' OBBLIGATORIO.";
+	public static String DATA_ULTIMO_AGGIORN_OBBLIGATORIO="ESF027 - APP-ATT:DATA_ULTIMO_AGGIORN e' obbligatorio ";
+	public static String DATA_ULTIMO_AGGIORN_FORMATO="ESF028 - APP-ATT:DATA_ULTIMO_AGGIORN la data deve avere il formato gg/mm/aaaa ";
+	public static String DATA_ULTIMO_AGGIORN_SUP_CORRENTE="ESF029 - APP-ATT:DATA_ULTIMO_AGGIORN la data non deve essere superiore alla data corrente ";
+	public static String ACCOUNT_AUTORE_ULTIMO_AGGIORN="ESF030 - APP-ATT:ACCOUNT_AUTORE_ULTIMO_AGGIORN e' obbligatorio ";
+	public static String NOME_AUTORE_ULTIMO_AGGIORN_OBBLIGATORIO="ESF031 - APP-ATT:NOME_AUTORE_ULTIMO_AGGIORN e' obbligatorio";
+	public static String DATA_INIIZIO_VALIDITA_ASM="ESF032 - APP-ATT:DATA_INIZIO_VALIDITA_ASM e' obbligatorio";
+	public static String DATA_INIIZIO_VALIDITA_ASM_FORMATO="ESF033 - APP-ATT:DATA_INIZIO_VALIDITA_ASM la data deve avere il formato gg/mm/aaaa ";
+	public static String DATA_FINE_VALIDITA_ASM_FORMATO="ESF034 - APP-ATT:DATA_FINE_VALIDITA_ASM la data deve avere il formato gg/mm/aaaa";
+	public static String DATA_FINE_VALIDITA_ASM_MINORE_INIZIO="ESF035 - APP-ATT:DATA_FINE_VALIDITA_ASM minore della data inizio validita' asm ";
+	public static String DENOM_UTENTI_FINALI_ASM_OBBLIGATORIO="ESF036 - APP-ATT:DENOM_UTENTI_FINALI_ASM e' obbligatorio";
+	public static String DENOM_UTENTI_FINALI_ASM_PATTERN="ESF037 - ATT:DENOM_UTENTI_ FINALI_ASM non rispetta il pattern predefinito : ";
+	public static String COD_ASM_CONFINANTI_PATTERN="ESF038 - APP-ATT: COD_ASM_CONFINANTI  non rispetta il pattern predefinito : ";
+	public static String COD_ASM_CONFINANTI_NON_PRESENTI="ESF039 - Il COD_ASM confinanti non e' presente / attivo nell'insieme generale dei COD_ASM: ";
+	public static String DENOM_SIST_TERZEPARTI_CONFINANTI="ESF040 - DENOM_SIST_TERZEPARTI_CONFINANTI non rispetta il pattern predefinito : ";
+	public static String DENOM_SIST_TERZEPARTI_CONFINANTI_CODICE_ASM_VALIDE="ESF041 - APP-ATT: DENOM_SIST_TERZEPARTI_CONFINANTI non deve avere codici di ASM valide: ";
+	public static String COD_FLUSS_IO_ASM="ESF042 - APP-ATT: COD_FLUSSI_IO_ASM non rispetta il pattern predefinito: ";
+	public static String COD_FLUSSI_IO_ASM="ESF043 - COD_FLUSSI_IO_ASM non coincide con l'insieme unione DENOM_SIST_TERZEPARTI_CONFINANTI + COD_ASM CONFINANTI: ";
+	public static String FLAG_ASM_SERVIZIO="ESF044 - APP-ATT:FLAG_ASM_SERVIZIO_COMUNE e' obbligatorio ";
+	public static String FLAG_ASM_SERVIZIO_COMUNE="ESF045 - APP-ATT:FLAG_ASM_SERVIZIO_COMUNE - Valore non permesso :";
     
 	public static String getProperty(String property) {
 
