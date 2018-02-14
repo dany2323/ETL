@@ -54,140 +54,142 @@ public class CheckLinkSferaSgrCmFacade {
 					.checkLinkProgeSferaWi(dataEsecuzione);
 
 			for (Tuple progetto : projects) {
-				statoMan = "";
-				statoSvi = "";
-				WI_modified = progetto.get(prog.nomeProgetto).trim();
-				if (progetto.get(prog.nomeProgetto).contains("#")) {
-					WI_modified = WI_modified.substring(0,
-							progetto.get(prog.nomeProgetto).indexOf("#"));
-				}
-
-				try {
-					multiWI = WI_modified.split("\\*\\*");
-					nomeWI = multiWI[0].split("-")[0];
-					multiWI[0] = multiWI[0].split("-")[1];
-				} catch (Exception e) {
-					// gestione errore split per nomenclatura del nome errata
-					multiWI = new String[0];
-
-					ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-							DmAlmConstants.TARGET_PROGETTO_SFERA,
-							MisuraUtils.ProgettoSferaToString(progetto),
-							"Progetto nome errato impossibile cercare link Sfera/Wi: "
-									+ WI_modified,
-							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							dataEsecuzione);
-				}
-
-				for (String wi : multiWI) {
-					wi.trim();
-					nomeprog = nomeWI + "-" + wi;
-
-					// cerco la pk del workintem di sviluppo
-					sviWiTupla = DmAlmProgettoSferaDAO.getPkWorkitemSviluppo(
-							progetto.get(prog.dmalmAsmFk), nomeprog);
-
-					// cerco la pk del workintem di manutenzione
-					manWiTupla = DmAlmProgettoSferaDAO
-							.getPkWorkitemManutenzione(
-									progetto.get(prog.dmalmAsmFk), nomeprog);
-
-					if (sviWiTupla.size() == 0 && manWiTupla.size() == 0) {
-						ErroriCaricamentoDAO.insert(
-								DmAlmConstants.FONTE_MISURA,
+				if(!progetto.get(prog.nomeProgetto).startsWith("UFFICIOSO-"))
+				{
+					statoMan = "";
+					statoSvi = "";
+					WI_modified = progetto.get(prog.nomeProgetto).trim();
+					if (progetto.get(prog.nomeProgetto).contains("#")) {
+						WI_modified = WI_modified.substring(0,
+								progetto.get(prog.nomeProgetto).indexOf("#"));
+					}
+	
+					try {
+						multiWI = WI_modified.split("\\*\\*");
+						nomeWI = multiWI[0].split("-")[0];
+						multiWI[0] = multiWI[0].split("-")[1];
+					} catch (Exception e) {
+						// gestione errore split per nomenclatura del nome errata
+						multiWI = new String[0];
+	
+						ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_PROGETTO_SFERA,
 								MisuraUtils.ProgettoSferaToString(progetto),
-								"Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM "
-								//		+ nomeprog,
-										+ MisuraUtils.ProgettoSferaToString(progetto),
+								"Progetto nome errato impossibile cercare link Sfera/Wi: "
+										+ WI_modified,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
-					} else {
-						if (sviWiTupla.size() != 0) {
-							for (Tuple sviWI : sviWiTupla) {
-								if (sviWI.get(statoWorkitem.cdStato).equals(
-										"in_esercizio")
-										|| sviWI.get(statoWorkitem.cdStato)
-												.equals("chiuso")) {
-									statoSvi = statoSvi + "S";
-									datiWIsvi.add(sviWI);
-								} else {
-									statoSvi = statoSvi + "N";
+					}
+	
+					for (String wi : multiWI) {
+						wi.trim();
+						nomeprog = nomeWI + "-" + wi;
+	
+						// cerco la pk del workintem di sviluppo
+						sviWiTupla = DmAlmProgettoSferaDAO.getPkWorkitemSviluppo(
+								progetto.get(prog.dmalmAsmFk), nomeprog);
+	
+						// cerco la pk del workintem di manutenzione
+						manWiTupla = DmAlmProgettoSferaDAO
+								.getPkWorkitemManutenzione(
+										progetto.get(prog.dmalmAsmFk), nomeprog);
+	
+						if (sviWiTupla.size() == 0 && manWiTupla.size() == 0) {
+							ErroriCaricamentoDAO.insert(
+									DmAlmConstants.FONTE_MISURA,
+									DmAlmConstants.TARGET_PROGETTO_SFERA,
+									MisuraUtils.ProgettoSferaToString(progetto),
+									"Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM "
+									//		+ nomeprog,
+											+ MisuraUtils.ProgettoSferaToString(progetto),
+									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+									dataEsecuzione);
+						} else {
+							if (sviWiTupla.size() != 0) {
+								for (Tuple sviWI : sviWiTupla) {
+									if (sviWI.get(statoWorkitem.cdStato).equals(
+											"in_esercizio")
+											|| sviWI.get(statoWorkitem.cdStato)
+													.equals("chiuso")) {
+										statoSvi = statoSvi + "S";
+										datiWIsvi.add(sviWI);
+									} else {
+										statoSvi = statoSvi + "N";
+									}
 								}
 							}
-						}
-
-						if (manWiTupla.size() != 0) {
-							for (Tuple manWI : manWiTupla) {
-								if (manWI.get(statoWorkitem.cdStato).equals(
-										"in_esercizio")
-										|| manWI.get(statoWorkitem.cdStato)
-												.equals("chiuso")) {
-									statoMan = statoMan + "S";
-									datiWIman.add(manWI);
-								} else {
-									statoMan = statoMan + "N";
+	
+							if (manWiTupla.size() != 0) {
+								for (Tuple manWI : manWiTupla) {
+									if (manWI.get(statoWorkitem.cdStato).equals(
+											"in_esercizio")
+											|| manWI.get(statoWorkitem.cdStato)
+													.equals("chiuso")) {
+										statoMan = statoMan + "S";
+										datiWIman.add(manWI);
+									} else {
+										statoMan = statoMan + "N";
+									}
 								}
 							}
 						}
 					}
-				}
-
-				// Per tutti i WI corrispondenti ad un PROGETTO SFERA
-				// che hanno lo Stato in “chiuso” oppure “in_esercizio”
-				// lo Stato di tutte le MISURE SFERA di tutti i PROGETTI
-				// SFERA corrispondenti deve essere “consolidata” oppure
-				// “sospesa”.
-				// Se non trovo nemmeno una "N" negli stati dei wi significa
-				// che i wi collegati al progetto sfera sono tutti chiusi
-				// quindi il controllo va fatto e devo leggere le misure
-
-				if ((!statoSvi.equalsIgnoreCase("") && statoSvi.indexOf("N") == -1)
-						|| (!statoMan.equalsIgnoreCase("") && statoMan
-								.indexOf("N") == -1)) {
-					// estrarre tutte le misure da dmalm_misura
-					statiMisura = DmAlmMisuraDAO
-							.checkLinkMisureSferaWi(progetto
-									.get(prog.idProgetto));
-
-					if (statiMisura.size() != 0) {
-						if (datiWIsvi.size() != 0) {
-							for (Tuple errSvi : datiWIsvi) {
-								ErroriCaricamentoDAO
-										.insert(DmAlmConstants.FONTE_MISURA,
-												DmAlmConstants.TARGET_MISURA,
-												MisuraUtils
-														.ProgettoSferaToString(progetto),
-												"Mancata corrispondenza tra lo STATO dei WI "
-														+ errSvi.get(progSv.cdProgSvilS)
-														+ " resolved ("
-														+ progSv.dtRisoluzioneProgSvilS
-														+ ")  e lo stato della MISURA SFERA",
-												DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-												dataEsecuzione);
+	
+					// Per tutti i WI corrispondenti ad un PROGETTO SFERA
+					// che hanno lo Stato in “chiuso” oppure “in_esercizio”
+					// lo Stato di tutte le MISURE SFERA di tutti i PROGETTI
+					// SFERA corrispondenti deve essere “consolidata” oppure
+					// “sospesa”.
+					// Se non trovo nemmeno una "N" negli stati dei wi significa
+					// che i wi collegati al progetto sfera sono tutti chiusi
+					// quindi il controllo va fatto e devo leggere le misure
+	
+					if ((!statoSvi.equalsIgnoreCase("") && statoSvi.indexOf("N") == -1)
+							|| (!statoMan.equalsIgnoreCase("") && statoMan
+									.indexOf("N") == -1)) {
+						// estrarre tutte le misure da dmalm_misura
+						statiMisura = DmAlmMisuraDAO
+								.checkLinkMisureSferaWi(progetto
+										.get(prog.idProgetto));
+	
+						if (statiMisura.size() != 0) {
+							if (datiWIsvi.size() != 0) {
+								for (Tuple errSvi : datiWIsvi) {
+									ErroriCaricamentoDAO
+											.insert(DmAlmConstants.FONTE_MISURA,
+													DmAlmConstants.TARGET_MISURA,
+													MisuraUtils
+															.ProgettoSferaToString(progetto),
+													"Mancata corrispondenza tra lo STATO dei WI "
+															+ errSvi.get(progSv.cdProgSvilS)
+															+ " resolved ("
+															+ progSv.dtRisoluzioneProgSvilS
+															+ ")  e lo stato della MISURA SFERA",
+													DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+													dataEsecuzione);
+								}
 							}
-						}
-
-						if (datiWIman.size() != 0) {
-							for (Tuple errMan : datiWIman) {
-								ErroriCaricamentoDAO
-										.insert(DmAlmConstants.FONTE_MISURA,
-												DmAlmConstants.TARGET_MISURA,
-												MisuraUtils
-														.ProgettoSferaToString(progetto),
-												"Mancata corrispondenza tra lo STATO dei WI "
-														+ errMan.get(man.cdManutenzione)
-														+ " resolved ("
-														+ errMan.get(man.dtRisoluzioneManutenzione)
-														+ ")  e lo stato della MISURA SFERA",
-												DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-												dataEsecuzione);
+	
+							if (datiWIman.size() != 0) {
+								for (Tuple errMan : datiWIman) {
+									ErroriCaricamentoDAO
+											.insert(DmAlmConstants.FONTE_MISURA,
+													DmAlmConstants.TARGET_MISURA,
+													MisuraUtils
+															.ProgettoSferaToString(progetto),
+													"Mancata corrispondenza tra lo STATO dei WI "
+															+ errMan.get(man.cdManutenzione)
+															+ " resolved ("
+															+ errMan.get(man.dtRisoluzioneManutenzione)
+															+ ")  e lo stato della MISURA SFERA",
+													DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+													dataEsecuzione);
+								}
 							}
 						}
 					}
 				}
 			}
-
 			logger.debug("STOP CheckLinkSferaSgrCmFacade");
 		} catch (DAOException e) {
 			//ErrorManager.getInstance().exceptionOccurred(true, e);

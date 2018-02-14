@@ -314,7 +314,7 @@ public class ProjectSgrCmDAO {
 		
 
 		// Se il project non ha una eccezione
-		if (codiceAreaUO.equalsIgnoreCase("")) {
+		if (codiceAreaUO.equalsIgnoreCase("") && template !=null) {
 			switch (template) {
 				case DmAlmConstants.SVILUPPO:
 					// Template SVILUPPO

@@ -156,7 +156,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				if (row.get(stgMisura.nomeProgetto) != null
 						&& !row.get(stgMisura.nomeProgetto).isEmpty()
 						&& row.get(stgMisura.nomeProgetto).startsWith(
-								"#UFFICIOSO")) {
+								"UFFICIOSO-")) {
 					controlloPrj = "1";
 				}
 
@@ -210,7 +210,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				if (row.get(stgMisura.nomeMisura) != null
 						&& !row.get(stgMisura.nomeMisura).isEmpty()
 						&& row.get(stgMisura.nomeMisura).startsWith(
-								"#UFFICIOSO")) {
+								"UFFICIOSO-")) {
 					controlloMea = "1";
 				}
 
@@ -304,7 +304,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:DENOMINAZIONE_ASM e' obbligatorio ",
+						DmAlmConstants.DENOMINAZIONE_ASM_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -338,7 +338,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:DATA_ULTIMO_AGGIORN e' obbligatorio ",
+						DmAlmConstants.DATA_ULTIMO_AGGIORN_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -349,7 +349,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:NOME_AUTORE_ULTIMO_AGGIORN e' obbligatorio ",
+						DmAlmConstants.NOME_AUTORE_ULTIMO_AGGIORN_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -360,7 +360,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:DATA_INIZIO_VALIDITA_ASM e' obbligatorio",
+						DmAlmConstants.DATA_INIIZIO_VALIDITA_ASM,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -389,7 +389,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:DENOM_UTENTI_FINALI_ASM e' obbligatorio",
+						DmAlmConstants.DENOM_UTENTI_FINALI_ASM_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -410,7 +410,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"ATT:DENOM_UTENTI_ FINALI_ASM non rispetta il pattern predefinito : "
+						DmAlmConstants.DENOM_UTENTI_FINALI_ASM_PATTERN
 								+ row.get(stgMisura.pAppDenomUtentiFinaliAsm),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -458,7 +458,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:FLAG_ASM_SERVIZIO_COMUNE e' obbligatorio ",
+						DmAlmConstants.FLAG_ASM_SERVIZIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			} else {
@@ -470,7 +470,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:FLAG_ASM_SERVIZIO_COMUNE - Valore non permesso :"
+									DmAlmConstants.FLAG_ASM_SERVIZIO_COMUNE
 											+ row.get(stgMisura.pAppFlagServizioComune),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
@@ -577,7 +577,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_ASM,
 								MisuraUtils.MisuraToString(row),
-								"APP-ATT:ACCOUNT_AUTORE_ULTIMO_AGGIORN e' obbligatorio ",
+								DmAlmConstants.ACCOUNT_AUTORE_ULTIMO_AGGIORN,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
 			}
@@ -636,7 +636,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:DATA_ULTIMO_AGGIORN la data deve avere il formato gg/mm/aaaa ",
+									DmAlmConstants.DATA_ULTIMO_AGGIORN_FORMATO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
 				}
@@ -653,7 +653,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:DATA_INIZIO_VALIDITA_ASM la data deve avere il formato gg/mm/aaaa ",
+									DmAlmConstants.DATA_INIIZIO_VALIDITA_ASM_FORMATO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
 				}
@@ -670,7 +670,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:DATA_FINE_VALIDITA_ASM la data deve avere il formato gg/mm/aaaa ",
+									DmAlmConstants.DATA_FINE_VALIDITA_ASM_FORMATO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
 				}
@@ -683,7 +683,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:DATA_FINE_VALIDITA_ASM minore della data inizio validita' asm ",
+									DmAlmConstants.DATA_FINE_VALIDITA_ASM_MINORE_INIZIO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
 				}
@@ -699,7 +699,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								.insert(DmAlmConstants.FONTE_MISURA,
 										DmAlmConstants.TARGET_ASM,
 										MisuraUtils.MisuraToString(row),
-										"APP-ATT:DATA_ULTIMO_AGGIORN la data non deve essere superiore alla data corrente ",
+										DmAlmConstants.DATA_ULTIMO_AGGIORN_SUP_CORRENTE,
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 										dataEsecuzione);
 					}
@@ -1980,7 +1980,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT: COD_ASM_CONFINANTI  non rispetta il pattern predefinito : "
+						DmAlmConstants.COD_ASM_CONFINANTI_PATTERN
 								+ datoInput,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -2007,7 +2007,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										.insert(DmAlmConstants.FONTE_MISURA,
 												DmAlmConstants.TARGET_ASM,
 												MisuraUtils.MisuraToString(row),
-												"Il COD_ASM confinanti non e' presente / attivo nell'insieme generale dei COD_ASM: "
+												DmAlmConstants.COD_ASM_CONFINANTI_NON_PRESENTI
 														+ asm,
 												DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 												dataEsecuzione);
@@ -2110,7 +2110,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"DENOM_SIST_TERZEPARTI_CONFINANTI non rispetta il pattern predefinito : "
+						DmAlmConstants.DENOM_SIST_TERZEPARTI_CONFINANTI
 								+ datoInput,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -2128,7 +2128,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									.insert(DmAlmConstants.FONTE_MISURA,
 											DmAlmConstants.TARGET_ASM,
 											MisuraUtils.MisuraToString(row),
-											"APP-ATT: DENOM_SIST_TERZEPARTI_CONFINANTI non deve avere codici di ASM valide: "
+											DmAlmConstants.DENOM_SIST_TERZEPARTI_CONFINANTI_CODICE_ASM_VALIDE
 													+ asm,
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 											dataEsecuzione);
@@ -2158,7 +2158,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT: COD_FLUSSI_IO_ASM non rispetta il pattern predefinito: "
+						DmAlmConstants.COD_FLUSS_IO_ASM
 								+ datoInput,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -2234,7 +2234,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"COD_FLUSSI_IO_ASM non coincide con l'insieme unione DENOM_SIST_TERZEPARTI_CONFINANTI + COD_ASM CONFINANTI: "
+									DmAlmConstants.COD_FLUSSI_IO_ASM
 											+ erroreDenom,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
