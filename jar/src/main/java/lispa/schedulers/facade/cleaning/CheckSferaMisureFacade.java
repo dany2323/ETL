@@ -255,7 +255,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"IdApp e' obbligatorio ",
+						DmAlmConstants.IDAPP_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -266,7 +266,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"Applicazione e' obbligatorio ",
+						DmAlmConstants.APPLICAZIONE_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -315,7 +315,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"VAF predefinito e' obbligatorio ",
+						DmAlmConstants.VAF_PREDEFINITO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			} else {
@@ -325,7 +325,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							DmAlmConstants.FONTE_MISURA,
 							DmAlmConstants.TARGET_ASM,
 							MisuraUtils.MisuraToString(row),
-							"vafPredefinito valore non permesso : "
+							DmAlmConstants.VAF_PREDEFINITO_NON_PERMESSO
 									+ row.get(stgMisura.vafPredefinito),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
@@ -732,7 +732,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"IdPrj e' obbligatorio ",
+						DmAlmConstants.IDPRJ_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -742,7 +742,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"IdMea e' obbligatorio ",
+						DmAlmConstants.IDMEA_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -753,7 +753,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"Progetto e' obbligatorio ",
+						DmAlmConstants.PROGETTO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1260,7 +1260,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
 									MisuraUtils.MisuraToString(row),
-									"Progetto - la data del progetto PATR-  sfera non rispetta il formato predefinito aaaammgg : "
+									DmAlmConstants.DATA_SFERA_FORMATO_NON_CORRETTO
 											+ row.get(stgMisura.nomeProgetto),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
@@ -1307,7 +1307,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						" Progetto e' obbligatorio ",
+						DmAlmConstants.PROGETTO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1318,7 +1318,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"Misura e' obbligatorio ",
+						DmAlmConstants.MISURA_OBBLIGATORIA,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1329,7 +1329,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"Approccio e' obbligatorio ",
+						DmAlmConstants.APPROCIO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			} else {
@@ -1340,7 +1340,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							DmAlmConstants.FONTE_MISURA,
 							DmAlmConstants.TARGET_MISURA,
 							MisuraUtils.MisuraToString(row),
-							"Approccio - Valore non permesso : "
+							DmAlmConstants.APPROCIO_VALORE_NON_PERMESSO
 									+ row.get(stgMisura.approccio),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
@@ -1353,7 +1353,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"Metodo e' obbligatorio ",
+						DmAlmConstants.METODO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			} else {
@@ -1364,7 +1364,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							DmAlmConstants.FONTE_MISURA,
 							DmAlmConstants.TARGET_MISURA,
 							MisuraUtils.MisuraToString(row),
-							"Metodo - Valore non permesso : "
+							DmAlmConstants.METODO_VALORE_NON_PERMESSO
 									+ row.get(stgMisura.metodo),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 							dataEsecuzione);
@@ -1377,7 +1377,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"Stato Misura e' obbligatorio ",
+						DmAlmConstants.STATO_MISURA_OBBLOGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1388,7 +1388,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"FP pesati (MIN) e' obbligatorio ",
+						DmAlmConstants.FP_PESATI_MIN_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1399,7 +1399,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"FP pesati (UFP) e' obbligatorio ",
+						DmAlmConstants.FP_PESATI_UFP_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1410,7 +1410,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"FP pesati (MAX) e' obbligatorio ",
+						DmAlmConstants.FP_PESATI_MAX_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1421,7 +1421,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"FP non pesati (MIN) e' obbligatorio ",
+						DmAlmConstants.FP_NON_PESATI_MIN_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1432,7 +1432,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"FP non pesati (UFP) e' obbligatorio ",
+						DmAlmConstants.FP_NON_PESATI_UFP_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -1443,7 +1443,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"FP non pesati (MAX) e' obbligatorio ",
+						DmAlmConstants.FP_NON_PESATI_MAX_E_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}

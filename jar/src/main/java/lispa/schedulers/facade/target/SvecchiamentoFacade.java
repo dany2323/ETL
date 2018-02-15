@@ -226,6 +226,8 @@ public class SvecchiamentoFacade {
 				Timestamp a = DateUtils.dateToTimestamp(t.get(pde.dtA));
 				// essendo timestamp, c'è bisogno dell'orario: viene
 				// impostato alle 23:59:59
+				logger.info("Cancello record compresi fra "+DateUtils.formatDataEsecuzione(da)+ "e "+DateUtils.formatDataEsecuzione(a));
+
 				a.setTime(a.getTime() + (((1440 * 60) - 1) * 1000));
 				String target = t.get(pde.entitaTarget);
 
@@ -293,12 +295,71 @@ public class SvecchiamentoFacade {
 										.set(pde.dtEsecEffettiva,
 												dataEsecuzione).execute();
 							}
+						} else if (t.get(pde.entitaTarget) != null
+								&& t.get(pde.entitaSorgente) == null) {
+							
+							if (t.get(pde.entitaTarget).equals("ALL")) {
+
+								// cancello tutti i record a prescindere da
+								// target
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a))
+										.execute();
+								logger.info("Caso Target ALL - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
+							} else {
+								// cancello tutti i record a in base al target
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a))
+										.where(err.entitaTarget.eq(target))
+										.execute();
+								logger.info("Caso Target "+ target +" - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
+							}
+						} else if (t.get(pde.entitaTarget) == null
+								&& t.get(pde.entitaSorgente) != null) {
+							
+							if (t.get(pde.entitaSorgente).equals("ALL")) {
+
+								// cancello tutti i record a prescindere da
+								// sorgente
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a))
+										.execute();
+								logger.info("Caso Target ALL - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
+							} else {
+								// cancello tutti i record a in base al sorgente
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a))
+										.where(err.entitaSorgente.eq(sorgente))
+										.execute();
+								logger.info("Caso Sorgente "+ sorgente +" - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
+							}
+							
 						} else {
 							// Do nothing
 							new SQLUpdateClause(connection, dialect, pde)
 									.where(pde.id.eq(t.get(pde.id)))
 									.set(pde.dtEsecEffettiva, dt1990).execute();
-							logger.info("EntitaTarget o EntitaSorgente non permettono di eseguire la cencellazione del record");
+							logger.info("EntitaTarget o EntitaSorgente non permettono di eseguire la cancellazione del record");
 							if (target == null)
 								target = "Target non presente";
 							if (sorgente == null)
@@ -362,7 +423,76 @@ public class SvecchiamentoFacade {
 										.where(pde.id.eq(t.get(pde.id)))
 										.set(pde.dtEsecEffettiva,
 												dataEsecuzione).execute();
+							} else {
+								// sono entrambi ALL
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a)).execute();
+								logger.info("Caso entrambi ALL - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
 							}
+						} else if (t.get(pde.entitaTarget) != null
+								&& t.get(pde.entitaSorgente) == null) {
+							
+							if (t.get(pde.entitaTarget).equals("ALL")) {
+
+								// cancello tutti i record a prescindere da
+								// target
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a))
+										.execute();
+								logger.info("Caso Target ALL - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
+							} else {
+								// cancello tutti i record a in base al target
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a))
+										.where(err.entitaTarget.eq(target))
+										.execute();
+								logger.info("Caso Target "+ target +" - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
+							}
+						} else if (t.get(pde.entitaTarget) == null
+								&& t.get(pde.entitaSorgente) != null) {
+							
+							if (t.get(pde.entitaSorgente).equals("ALL")) {
+
+								// cancello tutti i record a prescindere da
+								// sorgente
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a))
+										.execute();
+								logger.info("Caso Target ALL - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
+							} else {
+								// cancello tutti i record a in base al sorgente
+								new SQLDeleteClause(connection, dialect, err)
+										.where(err.dataCaricamento.between(da,
+												a))
+										.where(err.entitaSorgente.eq(sorgente))
+										.execute();
+								logger.info("Caso Sorgente "+ sorgente +" - Cancellazione DMALM_ERRORI_CARICAMENTO effettuata");
+								new SQLUpdateClause(connection, dialect, pde)
+										.where(pde.id.eq(t.get(pde.id)))
+										.set(pde.dtEsecEffettiva,
+												dataEsecuzione).execute();
+							}
+							
 						} else {
 							// Do nothing
 							new SQLUpdateClause(connection, dialect, pde)

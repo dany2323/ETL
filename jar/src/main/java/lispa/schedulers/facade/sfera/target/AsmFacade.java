@@ -1,20 +1,26 @@
 package lispa.schedulers.facade.sfera.target;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
+import lispa.schedulers.queryimplementation.target.sfera.QDmalmProgettoSfera;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
@@ -22,9 +28,14 @@ import lispa.schedulers.utils.LogUtils;
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
 
 public class AsmFacade {
 	private static Logger logger = Logger.getLogger(AsmFacade.class);
+	private static QDmalmProgettoSfera prog = QDmalmProgettoSfera.dmalmProgettoSfera;
+	private static SQLTemplates dialect = new HSQLDBTemplates();
 
 	public static void execute(Timestamp dataEsecuzione) throws Exception,
 			DAOException {
@@ -83,7 +94,7 @@ public class AsmFacade {
 						}
 					}
 				}
-
+				
 				// se non trovo almento un record, inserisco la nuova struttura
 				// organizzativa nel target
 				if (target.size() == 0) {
@@ -226,6 +237,7 @@ public class AsmFacade {
 			//ricarica il valore della Fk ad ogni esecuzione
 			
 			recalculateUoFkFlat();
+			checkIfAsmContainsBlank(dataEsecuzione);
 
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -257,6 +269,27 @@ public class AsmFacade {
 
 			logger.info("STOP AsmFacade.execute");
 		}
+	}
+
+	private static void checkIfAsmContainsBlank(Timestamp dataEsecuzione) throws Exception {
+		ConnectionManager cm = null;
+		List<DmalmAsm> asmList = new LinkedList<DmalmAsm>();
+		DmAlmAsmDAO.getAllAsm(dataEsecuzione);
+		for(DmalmAsm asm:asmList){
+			
+			if(asm.getApplicazione().contains("#"))
+				asm.setApplicazione(asm.getApplicazione().substring(0,asm.getApplicazione().indexOf("#")));
+			if(asm.getApplicazione().endsWith(" ")){
+			
+				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+						 DmAlmConstants.TARGET_PROGETTO_SFERA,
+						 "E010 - Possibile presenza spazi in ASM PK:"+ asm.getDmalmAsmPk()+" ASM NAME: "+asm.getApplicazione(),
+						 DmAlmConstants.ERRORE_SPAZI_NOME_ASM,
+						 DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, dataEsecuzione);
+				
+			}
+		}
+		
 	}
 
 	public static void recalculateUoFkFlat() throws PropertiesReaderException, DAOException, Exception {
