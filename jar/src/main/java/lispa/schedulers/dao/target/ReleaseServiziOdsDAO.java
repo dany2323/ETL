@@ -3,8 +3,10 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
+import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
@@ -13,6 +15,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmReleaseServiziOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -135,8 +138,9 @@ public class ReleaseServiziOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmReleaseServizi> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmReleaseServizi> resultList = new LinkedList<DmalmReleaseServizi>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -149,9 +153,42 @@ public class ReleaseServiziOdsDAO {
 					.from(releaseserviziODS)
 					.orderBy(releaseserviziODS.cdRelServizi.asc())
 					.orderBy(releaseserviziODS.dtModificaRelServizi.asc())
-					.list(Projections.bean(DmalmReleaseServizi.class,
-							releaseserviziODS.all()));
+					.list(releaseserviziODS.all());
 
+			for (Tuple t : list) {
+				DmalmReleaseServizi relSer = new DmalmReleaseServizi();
+			
+				relSer.setUri(t.get(releaseserviziODS.uri));
+				relSer.setCdRelServizi(t.get(releaseserviziODS.cdRelServizi));
+				relSer.setDescrizioneRelServizi(t.get(releaseserviziODS.descrizioneRelServizi));
+				relSer.setDmalmProjectFk02(t.get(releaseserviziODS.dmalmProjectFk02));
+				relSer.setDmalmRelServiziPk(t.get(releaseserviziODS.dmalmRelServiziPk));
+				relSer.setDmalmStatoWorkitemFk03(t.get(releaseserviziODS.dmalmStatoWorkitemFk03));
+				relSer.setDmalmStrutturaOrgFk01(t.get(releaseserviziODS.dmalmStrutturaOrgFk01));
+				relSer.setDmalmTempoFk04(t.get(releaseserviziODS.dmalmTempoFk04));
+				relSer.setDsAutoreRelServizi(t.get(releaseserviziODS.dsAutoreRelServizi));
+				relSer.setDtCambioStatoRelServizi(t.get(releaseserviziODS.dtCambioStatoRelServizi));
+				relSer.setDtCaricamentoRelServizi(t.get(releaseserviziODS.dtCaricamentoRelServizi));
+				relSer.setDtCreazioneRelServizi(t.get(releaseserviziODS.dtCreazioneRelServizi));
+				relSer.setDtModificaRelServizi(t.get(releaseserviziODS.dtModificaRelServizi));
+				relSer.setDtRisoluzioneRelServizi(t.get(releaseserviziODS.dtRisoluzioneRelServizi));
+				relSer.setDtScadenzaRelServizi(t.get(releaseserviziODS.dtScadenzaRelServizi));
+				relSer.setDtStoricizzazione(t.get(releaseserviziODS.dtStoricizzazione));
+				relSer.setIdAutoreRelServizi(t.get(releaseserviziODS.idAutoreRelServizi));
+				relSer.setIdRepository(t.get(releaseserviziODS.idRepository));
+				relSer.setMotivoRisoluzioneRelServizi(t.get(releaseserviziODS.motivoRisoluzioneRelServizi));
+				relSer.setMotivoSospensioneReleaseSer(t.get(releaseserviziODS.motivoSospensioneReleaseSer));
+				relSer.setPrevistoFermoServizioRel(t.get(releaseserviziODS.previstoFermoServizioRel));
+				relSer.setRankStatoRelServizi(t.get(releaseserviziODS.rankStatoRelServizi));
+				relSer.setRankStatoRelServiziMese(t.get(releaseserviziODS.rankStatoRelServiziMese));
+				relSer.setRichiestaAnalisiImpattiRel(t.get(releaseserviziODS.richiestaAnalisiImpattiRel));
+				relSer.setStgPk(t.get(releaseserviziODS.stgPk));
+				relSer.setTitoloRelServizi(t.get(releaseserviziODS.titoloRelServizi));
+				relSer.setDmalmUserFk06(t.get(releaseserviziODS.dmalmUserFk06));
+				relSer.setSeverity(t.get(releaseserviziODS.severity));
+				relSer.setPriority(t.get(releaseserviziODS.priority));
+				resultList.add(relSer);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -163,7 +200,7 @@ public class ReleaseServiziOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 
 	}
 

@@ -2,6 +2,7 @@ package lispa.schedulers.dao.target;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
@@ -11,6 +12,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmProjectUnitaOrganizzati
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -27,8 +29,8 @@ public class ProjectUnitaOrganizzativaEccezioniDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO = new ArrayList<DmalmProjectUnitaOrganizzativaEccezioni>();
-
+		List<Tuple> eccezioniProjectUO = new ArrayList<Tuple>();
+		List<DmalmProjectUnitaOrganizzativaEccezioni> resultList = new LinkedList<DmalmProjectUnitaOrganizzativaEccezioni>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -36,10 +38,17 @@ public class ProjectUnitaOrganizzativaEccezioniDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			eccezioniProjectUO = query.from(projectUnitaOrganizzativaEccezioni)
-					.list(Projections.bean(
-							DmalmProjectUnitaOrganizzativaEccezioni.class,
-							projectUnitaOrganizzativaEccezioni.all()));
+					.list(projectUnitaOrganizzativaEccezioni.all());
 			
+			for (Tuple t : eccezioniProjectUO) {
+				DmalmProjectUnitaOrganizzativaEccezioni uoEcc = new DmalmProjectUnitaOrganizzativaEccezioni();
+				
+				uoEcc.setIdRepository(t.get(projectUnitaOrganizzativaEccezioni.idRepository));
+				uoEcc.setNomeCompletoProject(t.get(projectUnitaOrganizzativaEccezioni.nomeCompletoProject));
+				uoEcc.setTemplate(t.get(projectUnitaOrganizzativaEccezioni.template));
+				uoEcc.setCodiceArea(t.get(projectUnitaOrganizzativaEccezioni.codiceArea)); 
+				resultList.add(uoEcc);
+			}
 			logger.debug("ProjectUnitaOrganizzativaEccezioniDAO - eccezioniProjectUO.size: " + eccezioniProjectUO.size());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -49,6 +58,6 @@ public class ProjectUnitaOrganizzativaEccezioniDAO {
 				cm.closeConnection(connection);
 		}
 
-		return eccezioniProjectUO;
+		return resultList;
 	}
 }

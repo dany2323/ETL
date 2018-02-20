@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmReleaseItOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -141,8 +143,9 @@ public class ReleaseItOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmReleaseIt> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmReleaseIt> resultList = new LinkedList<DmalmReleaseIt>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -155,9 +158,45 @@ public class ReleaseItOdsDAO {
 					.from(releaseItOds)
 					.orderBy(releaseItOds.cdReleaseIt.asc())
 					.orderBy(releaseItOds.dtModificaReleaseIt.asc())
-					.list(Projections.bean(DmalmReleaseIt.class,
-							releaseItOds.all()));
+					.list(releaseItOds.all());
 
+			for (Tuple t : list) {
+				DmalmReleaseIt relIt = new DmalmReleaseIt();
+				
+				relIt.setPriority(t.get(releaseItOds.priority));
+				relIt.setSeverity(t.get(releaseItOds.severity));
+				relIt.setUri(t.get(releaseItOds.uri));
+				relIt.setCdReleaseIt(t.get(releaseItOds.cdReleaseIt));
+				relIt.setDescrizioneReleaseIt(t.get(releaseItOds.descrizioneReleaseIt));
+				relIt.setDmalmProjectFk02(t.get(releaseItOds.dmalmProjectFk02));
+				relIt.setDmalmReleaseItPk(t.get(releaseItOds.dmalmReleaseItPk));
+				relIt.setDmalmStatoWorkitemFk03(t.get(releaseItOds.dmalmStatoWorkitemFk03));
+				relIt.setDmalmStrutturaOrgFk01(t.get(releaseItOds.dmalmStrutturaOrgFk01));
+				relIt.setDmalmTempoFk04(t.get(releaseItOds.dmalmTempoFk04));
+				relIt.setDsAutoreReleaseIt(t.get(releaseItOds.dsAutoreReleaseIt));
+				relIt.setDtCambioStatoReleaseIt(t.get(releaseItOds.dtCambioStatoReleaseIt));
+				relIt.setDtCaricamentoReleaseIt(t.get(releaseItOds.dtCaricamentoReleaseIt));
+				relIt.setDtCreazioneReleaseIt(t.get(releaseItOds.dtCreazioneReleaseIt));
+				relIt.setDtDisponibilitaEffRelease(t.get(releaseItOds.dtDisponibilitaEffRelease));
+				relIt.setDtFineRelease(t.get(releaseItOds.dtFineRelease));
+				relIt.setDtInizioRelease(t.get(releaseItOds.dtInizioRelease));
+				relIt.setDtModificaReleaseIt(t.get(releaseItOds.dtModificaReleaseIt));
+				relIt.setDtRilascioRelease(t.get(releaseItOds.dtRilascioRelease));
+				relIt.setDtRisoluzioneReleaseIt(t.get(releaseItOds.dtRisoluzioneReleaseIt));
+				relIt.setDtScadenzaReleaseIt(t.get(releaseItOds.dtScadenzaReleaseIt));
+				relIt.setDtStoricizzazione(t.get(releaseItOds.dtStoricizzazione));
+				relIt.setDurataEffRelease(t.get(releaseItOds.durataEffRelease));
+				relIt.setIdAutoreReleaseIt(t.get(releaseItOds.idAutoreReleaseIt));
+				relIt.setIdRepository(t.get(releaseItOds.idRepository));
+				relIt.setMotivoRisoluzioneReleaseIt(t.get(releaseItOds.motivoRisoluzioneReleaseIt));
+				relIt.setRankStatoReleaseIt(t.get(releaseItOds.rankStatoReleaseIt));
+				relIt.setRankStatoReleaseItMese(t.get(releaseItOds.rankStatoReleaseItMese));
+				relIt.setStgPk(t.get(releaseItOds.stgPk));
+				relIt.setTitoloReleaseIt(t.get(releaseItOds.titoloReleaseIt));
+				relIt.setDmalmUserFk06(t.get(releaseItOds.dmalmUserFk06));
+				relIt.setTypeRelease(t.get(releaseItOds.typeRelease));
+				resultList.add(relIt);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -169,7 +208,7 @@ public class ReleaseItOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 	}
 
 }

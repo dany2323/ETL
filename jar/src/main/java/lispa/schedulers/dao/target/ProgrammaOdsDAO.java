@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmProgramma;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmProgrammaOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -144,8 +146,9 @@ public class ProgrammaOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmProgramma> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmProgramma> resultList = new LinkedList<DmalmProgramma>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -158,9 +161,47 @@ public class ProgrammaOdsDAO {
 					.from(programmaODS)
 					.orderBy(programmaODS.cdProgramma.asc())
 					.orderBy(programmaODS.dtModificaProgramma.asc())
-					.list(Projections.bean(DmalmProgramma.class,
-							programmaODS.all()));
+					.list(programmaODS.all());
 
+			for(Tuple t : list) {
+				DmalmProgramma prog = new DmalmProgramma();
+				
+				prog.setUri(t.get(programmaODS.uri));
+				prog.setCodice(t.get(programmaODS.codice));
+				prog.setCfTipologia(t.get(programmaODS.cfTipologia));
+				prog.setCfServiceManager(t.get(programmaODS.cfServiceManager));
+				prog.setCfReferenteRegionale(t.get(programmaODS.cfReferenteRegionale));
+				prog.setCfContratto(t.get(programmaODS.cfContratto));
+				prog.setStgPk(t.get(programmaODS.stgPk));
+				prog.setAssignee(t.get(programmaODS.assignee));
+				prog.setCdProgramma(t.get(programmaODS.cdProgramma));
+				prog.setDescrizioneProgramma(t.get(programmaODS.descrizioneProgramma));
+				prog.setDmalmProgrammaPk(t.get(programmaODS.dmalmProgrammaPk));
+				prog.setDmalmProjectFk02(t.get(programmaODS.dmalmProjectFk02));
+				prog.setDmalmStatoWorkitemFk03(t.get(programmaODS.dmalmStatoWorkitemFk03));
+				prog.setDmalmStrutturaOrgFk01(t.get(programmaODS.dmalmStrutturaOrgFk01));
+				prog.setDmalmTempoFk04(t.get(programmaODS.dmalmTempoFk04));
+				prog.setDsAutoreProgramma(t.get(programmaODS.dsAutoreProgramma));
+				prog.setDtCambioStatoProgramma(t.get(programmaODS.dtCambioStatoProgramma));
+				prog.setDtCaricamentoProgramma(t.get(programmaODS.dtCaricamentoProgramma));
+				prog.setDtCreazioneProgramma(t.get(programmaODS.dtCreazioneProgramma));
+				prog.setDtModificaProgramma(t.get(programmaODS.dtModificaProgramma));
+				prog.setDtRisoluzioneProgramma(t.get(programmaODS.dtRisoluzioneProgramma));
+				prog.setDtScadenzaProgramma(t.get(programmaODS.dtScadenzaProgramma));
+				prog.setDtStoricizzazione(t.get(programmaODS.dtStoricizzazione));
+				prog.setIdAutoreProgramma(t.get(programmaODS.idAutoreProgramma));
+				prog.setIdRepository(t.get(programmaODS.idRepository));
+				prog.setMotivoRisoluzioneProgramma(t.get(programmaODS.motivoRisoluzioneProgramma));
+				prog.setNumeroLinea(t.get(programmaODS.numeroLinea));
+				prog.setNumeroTestata(t.get(programmaODS.numeroTestata));
+				prog.setRankStatoProgramma(t.get(programmaODS.rankStatoProgramma));
+				prog.setRankStatoProgrammaMese(t.get(programmaODS.rankStatoProgrammaMese));
+				prog.setTitoloProgramma(t.get(programmaODS.titoloProgramma));
+				prog.setDmalmUserFk06(t.get(programmaODS.dmalmUserFk06));
+				prog.setSeverity(t.get(programmaODS.severity));
+				prog.setPriority(t.get(programmaODS.priority)); 
+				resultList.add(prog);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -172,7 +213,7 @@ public class ProgrammaOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 	}
 
 }

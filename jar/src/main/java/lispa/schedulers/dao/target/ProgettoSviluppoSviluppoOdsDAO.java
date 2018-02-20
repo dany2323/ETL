@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoSvil;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmProgettoSviluppoSOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -165,8 +167,9 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmProgettoSviluppoSvil> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmProgettoSviluppoSvil> resultList = new LinkedList<DmalmProgettoSviluppoSvil>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -179,8 +182,51 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 					.from(progettoSvilSODS)
 					.orderBy(progettoSvilSODS.cdProgSvilS.asc())
 					.orderBy(progettoSvilSODS.dtModificaProgSvilS.asc())
-					.list(Projections.bean(DmalmProgettoSviluppoSvil.class,
-							progettoSvilSODS.all()));
+					.list(progettoSvilSODS.all());
+			
+			for (Tuple t : list) {
+				DmalmProgettoSviluppoSvil pSvil = new DmalmProgettoSviluppoSvil();
+				
+				pSvil.setUri(t.get(progettoSvilSODS.uri));
+				pSvil.setCdProgSvilS(t.get(progettoSvilSODS.cdProgSvilS));
+				pSvil.setCodice(t.get(progettoSvilSODS.codice));
+				pSvil.setDataChiusuraProgSvilS(t.get(progettoSvilSODS.dataChiusuraProgSvilS));
+				pSvil.setDataDisponibilitaEffettiva(t.get(progettoSvilSODS.dataDisponibilitaEffettiva));
+				pSvil.setDataDisponibilitaPianificata(t.get(progettoSvilSODS.dataDisponibilitaPianificata));
+				pSvil.setDataInizio(t.get(progettoSvilSODS.dataInizio));
+				pSvil.setDataInizioEff(t.get(progettoSvilSODS.dataInizioEff));
+				pSvil.setDescrizioneProgSvilS(t.get(progettoSvilSODS.descrizioneProgSvilS));
+				pSvil.setDmalmAreaTematicaFk05(t.get(progettoSvilSODS.dmalmAreaTematicaFk05));
+				pSvil.setDmalmProgSvilSPk(t.get(progettoSvilSODS.dmalmProgSvilSPk));
+				pSvil.setDmalmProjectFk02(t.get(progettoSvilSODS.dmalmProjectFk02));
+				pSvil.setDmalmStatoWorkitemFk03(t.get(progettoSvilSODS.dmalmStatoWorkitemFk03));
+				pSvil.setDmalmStrutturaOrgFk01(t.get(progettoSvilSODS.dmalmStrutturaOrgFk01));
+				pSvil.setDmalmTempoFk04(t.get(progettoSvilSODS.dmalmTempoFk04));
+				pSvil.setDsAutoreProgSvilS(t.get(progettoSvilSODS.dsAutoreProgSvilS));
+				pSvil.setDtCambioStatoProgSvilS(t.get(progettoSvilSODS.dtCambioStatoProgSvilS));
+				pSvil.setDtCaricamentoProgSvilS(t.get(progettoSvilSODS.dtCaricamentoProgSvilS));
+				pSvil.setDtCreazioneProgSvilS(t.get(progettoSvilSODS.dtCreazioneProgSvilS));
+				pSvil.setDtModificaProgSvilS(t.get(progettoSvilSODS.dtModificaProgSvilS));
+				pSvil.setDtRisoluzioneProgSvilS(t.get(progettoSvilSODS.dtRisoluzioneProgSvilS));
+				pSvil.setDtScadenzaProgSvilS(t.get(progettoSvilSODS.dtScadenzaProgSvilS));
+				pSvil.setDtStoricizzazione(t.get(progettoSvilSODS.dtStoricizzazione));
+				pSvil.setDurataEffettivaProgSvilS(t.get(progettoSvilSODS.durataEffettivaProgSvilS));
+				pSvil.setFornitura(t.get(progettoSvilSODS.fornitura));
+				pSvil.setIdAutoreProgSvilS(t.get(progettoSvilSODS.idAutoreProgSvilS));
+				pSvil.setIdRepository(t.get(progettoSvilSODS.idRepository));
+				pSvil.setMotivoRisoluzioneProgSvilS(t.get(progettoSvilSODS.motivoRisoluzioneProgSvilS));
+				pSvil.setNumeroLinea(t.get(progettoSvilSODS.numeroLinea));
+				pSvil.setNumeroTestata(t.get(progettoSvilSODS.numeroTestata));
+				pSvil.setRankStatoProgSvilS(t.get(progettoSvilSODS.rankStatoProgSvilS));
+				pSvil.setRankStatoProgSvilSMese(t.get(progettoSvilSODS.rankStatoProgSvilSMese));
+				pSvil.setTitoloProgSvilS(t.get(progettoSvilSODS.titoloProgSvilS));
+				pSvil.setStgPk(t.get(progettoSvilSODS.stgPk));
+				pSvil.setDmalmUserFk06(t.get(progettoSvilSODS.dmalmUserFk06));
+				pSvil.setSeverity(t.get(progettoSvilSODS.severity));
+				pSvil.setPriority(t.get(progettoSvilSODS.priority));
+
+				resultList.add(pSvil);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -192,7 +238,7 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 
 	}
 

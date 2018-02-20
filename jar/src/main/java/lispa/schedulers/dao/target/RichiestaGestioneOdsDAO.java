@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmRichiestaGestioneOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -144,8 +146,8 @@ public class RichiestaGestioneOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmRichiestaGestione> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmRichiestaGestione> resultList = new LinkedList<DmalmRichiestaGestione>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -158,9 +160,43 @@ public class RichiestaGestioneOdsDAO {
 					.from(richiestaODS)
 					.orderBy(richiestaODS.cdRichiestaGest.asc())
 					.orderBy(richiestaODS.dtModificaRichiestaGest.asc())
-					.list(Projections.bean(DmalmRichiestaGestione.class,
-							richiestaODS.all()));
+					.list(richiestaODS.all());
 
+			for(Tuple t : list) {
+				DmalmRichiestaGestione richGest = new DmalmRichiestaGestione();
+				
+				richGest.setUri(t.get(richiestaODS.uri));
+				richGest.setCategoria(t.get(richiestaODS.categoria));
+				richGest.setCdRichiestaGest(t.get(richiestaODS.cdRichiestaGest));
+				richGest.setDataChiusura(t.get(richiestaODS.dataChiusura));
+				richGest.setDataDisponibilita(t.get(richiestaODS.dataDisponibilita));
+				richGest.setDescrizioneRichiestaGest(t.get(richiestaODS.descrizioneRichiestaGest));
+				richGest.setDmalmProjectFk02(t.get(richiestaODS.dmalmProjectFk02));
+				richGest.setDmalmRichiestaGestPk(t.get(richiestaODS.dmalmRichiestaGestPk));
+				richGest.setDmalmStatoWorkitemFk03(t.get(richiestaODS.dmalmStatoWorkitemFk03));
+				richGest.setDmalmStrutturaOrgFk01(t.get(richiestaODS.dmalmStrutturaOrgFk01));
+				richGest.setDmalmTempoFk04(t.get(richiestaODS.dmalmTempoFk04));
+				richGest.setDsAutoreRichiestaGest(t.get(richiestaODS.dsAutoreRichiestaGest));
+				richGest.setDtCambioStatoRichiestaGest(t.get(richiestaODS.dtCambioStatoRichiestaGest));
+				richGest.setDtCaricamentoRichiestaGest(t.get(richiestaODS.dtCaricamentoRichiestaGest));
+				richGest.setDtCreazioneRichiestaGest(t.get(richiestaODS.dtCreazioneRichiestaGest));
+				richGest.setDtModificaRichiestaGest(t.get(richiestaODS.dtModificaRichiestaGest));
+				richGest.setDtRisoluzioneRichiestaGest(t.get(richiestaODS.dtRisoluzioneRichiestaGest));
+				richGest.setDtScadenzaRichiestaGest(t.get(richiestaODS.dtScadenzaRichiestaGest));
+				richGest.setDtStoricizzazione(t.get(richiestaODS.dtStoricizzazione));
+				richGest.setIdAutoreRichiestaGest(t.get(richiestaODS.idAutoreRichiestaGest));
+				richGest.setIdRepository(t.get(richiestaODS.idRepository));
+				richGest.setMotivoRisoluzioneRichGest(t.get(richiestaODS.motivoRisoluzioneRichGest));
+				richGest.setRankStatoRichiestaGest(t.get(richiestaODS.rankStatoRichiestaGest));
+				richGest.setRankStatoRichiestaGestMese(t.get(richiestaODS.rankStatoRichiestaGestMese));
+				richGest.setStgPk(t.get(richiestaODS.stgPk));
+				richGest.setTicketid(t.get(richiestaODS.ticketid));
+				richGest.setTitoloRichiestaGest(t.get(richiestaODS.titoloRichiestaGest));
+				richGest.setDmalmUserFk06(t.get(richiestaODS.dmalmUserFk06));
+				richGest.setSeverity(t.get(richiestaODS.severity));
+				richGest.setPriority(t.get(richiestaODS.priority));
+				resultList.add(richGest);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -172,7 +208,7 @@ public class RichiestaGestioneOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 
 	}
 

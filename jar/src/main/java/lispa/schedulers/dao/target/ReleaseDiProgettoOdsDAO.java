@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
@@ -14,6 +15,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmReleaseDiProgettoOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -163,8 +165,9 @@ public class ReleaseDiProgettoOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmReleaseDiProgetto> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmReleaseDiProgetto> resultList = new LinkedList<DmalmReleaseDiProgetto>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -177,9 +180,53 @@ public class ReleaseDiProgettoOdsDAO {
 					.from(releaseODS)
 					.orderBy(releaseODS.cdReleasediprog.asc())
 					.orderBy(releaseODS.dtModificaReleasediprog.asc())
-					.list(Projections.bean(DmalmReleaseDiProgetto.class,
-							releaseODS.all()));
+					.list(releaseODS.all());
 
+			for (Tuple t : list) {
+				DmalmReleaseDiProgetto relProg = new DmalmReleaseDiProgetto();
+				
+				relProg.setUri(t.get(releaseODS.uri));
+				relProg.setCdReleasediprog(t.get(releaseODS.cdReleasediprog));
+				relProg.setCodice(t.get(releaseODS.codice));
+				relProg.setDataDisponibilitaEff(t.get(releaseODS.dataDisponibilitaEff));
+				relProg.setDataPassaggioInEsercizio(t.get(releaseODS.dataPassaggioInEsercizio));
+				relProg.setDescrizioneReleasediprog(t.get(releaseODS.descrizioneReleasediprog));
+				relProg.setDmalmProjectFk02(t.get(releaseODS.dmalmProjectFk02));
+				relProg.setDmalmReleasediprogPk(t.get(releaseODS.dmalmReleasediprogPk));
+				relProg.setDmalmStatoWorkitemFk03(t.get(releaseODS.dmalmStatoWorkitemFk03));
+				relProg.setDmalmStrutturaOrgFk01(t.get(releaseODS.dmalmStrutturaOrgFk01));
+				relProg.setDmalmTempoFk04(t.get(releaseODS.dmalmTempoFk04));
+				relProg.setDsAutoreReleasediprog(t.get(releaseODS.dsAutoreReleasediprog));
+				relProg.setDtCambioStatoReleasediprog(t.get(releaseODS.dtCambioStatoReleasediprog));
+				relProg.setDtCaricamentoReleasediprog(t.get(releaseODS.dtCaricamentoReleasediprog));
+				relProg.setDtCreazioneReleasediprog(t.get(releaseODS.dtCreazioneReleasediprog));
+				relProg.setDtModificaReleasediprog(t.get(releaseODS.dtModificaReleasediprog));
+				relProg.setDtRisoluzioneReleasediprog(t.get(releaseODS.dtRisoluzioneReleasediprog));
+				relProg.setDtScadenzaReleasediprog(t.get(releaseODS.dtScadenzaReleasediprog));
+				relProg.setDtStoricizzazione(t.get(releaseODS.dtStoricizzazione));
+				relProg.setFornitura(t.get(releaseODS.fornitura));
+				relProg.setFr(t.get(releaseODS.fr));
+				relProg.setIdAutoreReleasediprog(t.get(releaseODS.idAutoreReleasediprog));
+				relProg.setIdRepository(t.get(releaseODS.idRepository));
+				relProg.setMotivoRisoluzioneRelProg(t.get(releaseODS.motivoRisoluzioneRelProg));
+				relProg.setNumeroLinea(t.get(releaseODS.numeroLinea));
+				relProg.setNumeroTestata(t.get(releaseODS.numeroTestata));
+				relProg.setRankStatoReleasediprog(t.get(releaseODS.rankStatoReleasediprog));
+				relProg.setRankStatoReleasediprogMese(t.get(releaseODS.rankStatoReleasediprogMese));
+				relProg.setTitoloReleasediprog(t.get(releaseODS.titoloReleasediprog));
+				relProg.setVersione(t.get(releaseODS.versione));
+				relProg.setStgPk(t.get(releaseODS.stgPk));
+				relProg.setDmalmAreaTematicaFk05(t.get(releaseODS.dmalmAreaTematicaFk05));
+				relProg.setDmalmUserFk06(t.get(releaseODS.dmalmUserFk06));
+				relProg.setDtInizioQF(t.get(releaseODS.dtInizioQF));
+				relProg.setDtFineQF(t.get(releaseODS.dtFineQF));
+				relProg.setNumQuickFix(t.get(releaseODS.numQuickFix));
+				relProg.setSeverity(t.get(releaseODS.severity));
+				relProg.setPriority(t.get(releaseODS.priority));
+				relProg.setTypeRelease(t.get(releaseODS.typeRelease));
+
+				resultList.add(relProg);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -191,7 +238,7 @@ public class ReleaseDiProgettoOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 
 	}
 
