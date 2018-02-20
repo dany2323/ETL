@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
@@ -11,6 +12,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmClassificatoreOds;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -147,7 +149,8 @@ public class ClassificatoreOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmClassificatore> list = null;
+		List<Tuple> list = null;
+		List<DmalmClassificatore> resultListEl = new LinkedList<DmalmClassificatore>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -161,7 +164,46 @@ public class ClassificatoreOdsDAO {
 					.from(ods)
 					.orderBy(ods.cd_classificatore.asc())
 					.orderBy(ods.dtModificaClassif.asc())
-					.list(Projections.bean(DmalmClassificatore.class,	ods.all()));
+					.list(ods.all());
+			
+			for (Tuple result : list) {
+				DmalmClassificatore resultEl = new DmalmClassificatore();
+				resultEl.setCd_classificatore(result.get(ods.cd_classificatore));
+				resultEl.setCf_ambito(result.get(ods.cf_ambito));
+				resultEl.setCf_area(result.get(ods.cf_area));
+				resultEl.setCf_riferimenti(result.get(ods.cf_riferimenti));
+				resultEl.setCf_scheda_servizio(result.get(ods.cf_scheda_servizio));
+				resultEl.setDmalmClassificatorePk(result.get(ods.dmalmClassificatorePk));
+				resultEl.setDmalmProjectFk02(result.get(ods.dmalmProjectFk02));
+				resultEl.setDmalmStatoWorkitemFk03(result.get(ods.dmalmStatoWorkitemFk03));
+				resultEl.setDmalmStrutturaOrgFk01(result.get(ods.dmalmStrutturaOrgFk01));
+				resultEl.setDmalmTempoFk04(result.get(ods.dmalmTempoFk04));
+				resultEl.setDmalmUserFk06(result.get(ods.dmalmUserFk06));
+				resultEl.setDsAutoreClassificatore(result.get(ods.dsAutoreClassificatore));
+				resultEl.setDtCambioStatoClassif(result.get(ods.dtCambioStatoClassif));
+				resultEl.setDtCaricamentoClassif(result.get(ods.dtCaricamentoClassif));
+				resultEl.setDtCreazioneClassif(result.get(ods.dtCreazioneClassif));
+				resultEl.setDtModificaClassif(result.get(ods.dtModificaClassif));
+				resultEl.setDtRisoluzioneClassif(result.get(ods.dtRisoluzioneClassif));
+				resultEl.setDtScadenzaProgSvil(result.get(ods.dtScadenzaProgSvil));
+				resultEl.setDtStoricizzazione(result.get(ods.dtStoricizzazione));
+				resultEl.setIdAutoreClassificatore(result.get(ods.idAutoreClassificatore));
+				resultEl.setIdRepository(result.get(ods.idRepository));
+				resultEl.setRankStatoClassifMese(result.get(ods.rankStatoClassifMese));
+				resultEl.setRankStatoClassificatore(result.get(ods.rankStatoClassificatore));
+				resultEl.setStgPk(result.get(ods.stgPk));
+				resultEl.setTitoloClassificatore(result.get(ods.titoloClassificatore));
+				resultEl.setUriClassficatore(result.get(ods.uriClassficatore));
+				resultEl.setRmResponsabiliProgetto(result.get(ods.rmResponsabiliProgetto));
+				resultEl.setProgettoInDeroga(result.get(ods.progettoInDeroga));
+				resultEl.setAssigneeProgettoItInDeroga(result.get(ods.assigneeProgettoItInDeroga));
+				resultEl.setLocationSorgenti(result.get(ods.locationSorgenti));
+				resultEl.setType(result.get(ods.type));
+				resultEl.setCodiceServizi(result.get(ods.codiceServizi));
+				resultEl.setSeverity(result.get(ods.severity));
+				resultEl.setPriority(result.get(ods.priority));
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -175,7 +217,7 @@ public class ClassificatoreOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 
 	}
 

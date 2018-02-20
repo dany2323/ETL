@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import lispa.schedulers.bean.target.DmalmFilieraProduttiva;
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoDemand;
 import lispa.schedulers.exception.DAOException;
@@ -520,7 +522,8 @@ public class ProgettoDemandDAO {
 		Connection connection = null;
 
 		QDmalmFilieraProduttiva filieraProduttiva = QDmalmFilieraProduttiva.dmalmFilieraProduttiva;
-		List<DmalmProgettoDemand> progetti = null;
+		List<Tuple> progetti = null;
+		List<DmalmProgettoDemand> resultListEl = new LinkedList<DmalmProgettoDemand>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -547,9 +550,17 @@ public class ProgettoDemandDAO {
 					.orderBy(progettoDemand.idRepository.asc())
 					.orderBy(progettoDemand.cdProgettoDemand.asc())
 					.distinct()
-					.list(Projections.bean(DmalmProgettoDemand.class,
-							progettoDemand.cdProgettoDemand,
-							progettoDemand.idRepository));
+					.list(progettoDemand.cdProgettoDemand,
+							progettoDemand.idRepository);
+			
+			for (Tuple result : progetti) {
+				DmalmProgettoDemand resultEl = new DmalmProgettoDemand();
+				resultEl.setCdProgettoDemand(result.get(progettoDemand.cdProgettoDemand));
+				resultEl.setIdRepository(result.get(progettoDemand.idRepository));
+				resultListEl.add(resultEl);
+			}
+			
+			
 		} catch (Exception e) {
 			throw new DAOException(e);
 
@@ -558,7 +569,7 @@ public class ProgettoDemandDAO {
 				cm.closeConnection(connection);
 		}
 
-		return progetti;
+		return resultListEl;
 	}
 
 	public static DmalmProgettoDemand getProgettoDemand(Integer pk)

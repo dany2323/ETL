@@ -3,22 +3,23 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmAnomaliaAssistenzaOds;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.Projections;
 
 public class AnomaliaAssistenzaOdsDAO {
 
@@ -145,7 +146,9 @@ public class AnomaliaAssistenzaOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmAnomaliaAssistenza> list = null;
+		List<Tuple> list = null;
+		List<DmalmAnomaliaAssistenza> resultListEl = new LinkedList<DmalmAnomaliaAssistenza>();
+
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -159,8 +162,48 @@ public class AnomaliaAssistenzaOdsDAO {
 					.from(anomaliaODS)
 					.orderBy(anomaliaODS.cdAnomaliaAss.asc())
 					.orderBy(anomaliaODS.dtModificaAnomaliaAss.asc())
-					.list(Projections.bean(DmalmAnomaliaAssistenza.class,
-							anomaliaODS.all()));
+					.list(anomaliaODS.all());
+			
+			for (Tuple result : list) {
+				DmalmAnomaliaAssistenza resultEl = new DmalmAnomaliaAssistenza();
+				resultEl.setAoid(result.get(anomaliaODS.aoid));
+				resultEl.setCa(result.get(anomaliaODS.ca));
+				resultEl.setCdAnomaliaAss(result.get(anomaliaODS.cdAnomaliaAss));
+				resultEl.setDmalmUserFk06(result.get(anomaliaODS.dmalmUserFk06));
+				resultEl.setCs(result.get(anomaliaODS.cs));
+				resultEl.setDescrizioneAnomaliaAss(result.get(anomaliaODS.descrizioneAnomaliaAss));
+				resultEl.setDmalmProjectFk02(result.get(anomaliaODS.dmalmProjectFk02));
+				resultEl.setDmalmStatoWorkitemFk03(result.get(anomaliaODS.dmalmStatoWorkitemFk03));
+				resultEl.setDmalmStrutturaOrgFk01(result.get(anomaliaODS.dmalmStrutturaOrgFk01));
+				resultEl.setDmalmTempoFk04(result.get(anomaliaODS.dmalmTempoFk04));
+				resultEl.setDsAutoreAnomaliaAss(result.get(anomaliaODS.dsAutoreAnomaliaAss));
+				resultEl.setDtCambioStatoAnomaliaAss(result.get(anomaliaODS.dtCambioStatoAnomaliaAss));
+				resultEl.setDtCaricamentoAnomaliaAss(result.get(anomaliaODS.dtCaricamentoAnomaliaAss));
+				resultEl.setDtCreazioneAnomaliaAss(result.get(anomaliaODS.dtCreazioneAnomaliaAss));
+				resultEl.setDtModificaAnomaliaAss(result.get(anomaliaODS.dtModificaAnomaliaAss));
+				resultEl.setDtRisoluzioneAnomaliaAss(result.get(anomaliaODS.dtRisoluzioneAnomaliaAss));
+				resultEl.setDtScadenzaAnomaliaAss(result.get(anomaliaODS.dtScadenzaAnomaliaAss));
+				resultEl.setDtStoricizzazione(result.get(anomaliaODS.dtStoricizzazione));
+				resultEl.setFrequenza(result.get(anomaliaODS.frequenza));
+				resultEl.setIdAutoreAnomaliaAss(result.get(anomaliaODS.idAutoreAnomaliaAss));
+				resultEl.setIdRepository(result.get(anomaliaODS.idRepository));
+				resultEl.setMotivoRisoluzioneAnomaliaAs(result.get(anomaliaODS.motivoRisoluzioneAnomaliaAs));
+				resultEl.setPlatform(result.get(anomaliaODS.platform));
+				resultEl.setProdCod(result.get(anomaliaODS.prodCod));
+				resultEl.setRankStatoAnomaliaAss(result.get(anomaliaODS.rankStatoAnomaliaAss));
+				resultEl.setRankStatoAnomaliaAssMese(result.get(anomaliaODS.rankStatoAnomaliaAssMese));
+				resultEl.setSegnalazioni(result.get(anomaliaODS.segnalazioni));
+				resultEl.setSo(result.get(anomaliaODS.so));
+				resultEl.setStChiuso(result.get(anomaliaODS.stChiuso));
+				resultEl.setStgPk(result.get(anomaliaODS.stgPk));
+				resultEl.setUri(result.get(anomaliaODS.uri));
+				resultEl.setTempoTotaleRisoluzione(result.get(anomaliaODS.tempoTotaleRisoluzione));
+				resultEl.setTicketid(result.get(anomaliaODS.ticketid));
+				resultEl.setTitoloAnomaliaAss(result.get(anomaliaODS.titoloAnomaliaAss));
+				resultEl.setSeverity(result.get(anomaliaODS.severity));
+				resultEl.setPriority(result.get(anomaliaODS.priority));
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -173,7 +216,7 @@ public class AnomaliaAssistenzaOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 
 	}
 

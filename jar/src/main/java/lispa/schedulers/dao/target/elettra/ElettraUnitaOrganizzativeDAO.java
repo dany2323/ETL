@@ -18,7 +18,6 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
-import com.mysema.query.types.Projections;
 
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzative;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -403,7 +402,8 @@ public class ElettraUnitaOrganizzativeDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<DmalmElUnitaOrganizzative>();
+		List<Tuple> resultList = new LinkedList<Tuple>();
+		List<DmalmElUnitaOrganizzative> resultListEl = new LinkedList<DmalmElUnitaOrganizzative>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -417,9 +417,37 @@ public class ElettraUnitaOrganizzativeDAO {
 					.from(qDmalmElUnitaOrganizzative)
 					.where(qDmalmElUnitaOrganizzative.codiceArea.eq(DmAlmConstants.ROOT_UO))
 					.orderBy(qDmalmElUnitaOrganizzative.dataInizioValidita.asc())
-					.list(Projections.bean(DmalmElUnitaOrganizzative.class,
-							qDmalmElUnitaOrganizzative.all()));
+					.list(qDmalmElUnitaOrganizzative.all());
 
+			for (Tuple result : resultList) {
+				DmalmElUnitaOrganizzative resultEl = new DmalmElUnitaOrganizzative();
+				resultEl.setUnitaOrganizzativaPk(result.get(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk));
+				resultEl.setIdEdma(result.get(qDmalmElUnitaOrganizzative.idEdma));
+				resultEl.setCodiceArea(result.get(qDmalmElUnitaOrganizzative.codiceArea));
+				resultEl.setDataInizioValiditaEdma(result.get(qDmalmElUnitaOrganizzative.dataInizioValiditaEdma));
+				resultEl.setDataFineValiditaEdma(result.get(qDmalmElUnitaOrganizzative.dataFineValiditaEdma));
+				resultEl.setDescrizioneArea(result.get(qDmalmElUnitaOrganizzative.descrizioneArea));
+				resultEl.setDataAttivazione(result.get(qDmalmElUnitaOrganizzative.dataAttivazione));
+				resultEl.setDataDisattivazione(result.get(qDmalmElUnitaOrganizzative.dataDisattivazione));
+				resultEl.setNote(result.get(qDmalmElUnitaOrganizzative.note));
+				resultEl.setInterno(result.get(qDmalmElUnitaOrganizzative.interno));
+				resultEl.setCodiceResponsabile(result.get(qDmalmElUnitaOrganizzative.codiceResponsabile));
+				resultEl.setIndirizzoEmail(result.get(qDmalmElUnitaOrganizzative.indirizzoEmail));
+				resultEl.setIdTipologiaUfficio(result.get(qDmalmElUnitaOrganizzative.idTipologiaUfficio));
+				resultEl.setIdGradoUfficio(result.get(qDmalmElUnitaOrganizzative.idGradoUfficio));
+				resultEl.setIdSede(result.get(qDmalmElUnitaOrganizzative.idSede));
+				resultEl.setCodiceUOSuperiore(result.get(qDmalmElUnitaOrganizzative.codiceUOSuperiore));
+				resultEl.setDescrizioneUOSuperiore(result.get(qDmalmElUnitaOrganizzative.descrizioneUOSuperiore));
+				resultEl.setCodiceEnte(result.get(qDmalmElUnitaOrganizzative.codiceEnte));
+				resultEl.setCodiceVisibilita(result.get(qDmalmElUnitaOrganizzative.codiceVisibilita));
+				resultEl.setDataCaricamento(result.get(qDmalmElUnitaOrganizzative.dataCaricamento));
+				resultEl.setDataInizioValidita(result.get(qDmalmElUnitaOrganizzative.dataInizioValidita));
+				resultEl.setDataFineValidita(result.get(qDmalmElUnitaOrganizzative.dataFineValidita));
+				resultEl.setAnnullato(result.get(qDmalmElUnitaOrganizzative.annullato));
+				resultEl.setDataAnnullamento(result.get(qDmalmElUnitaOrganizzative.dataAnnullamento));
+				resultListEl.add(resultEl);
+			}
+			
 		} catch (Exception e) {
 
 			throw new DAOException(e);
@@ -428,7 +456,7 @@ public class ElettraUnitaOrganizzativeDAO {
 				cm.closeConnection(connection);
 		}
 
-		return resultList;
+		return resultListEl;
 	}
 	
 	public static List<DmalmElUnitaOrganizzative> getNextUnitaOrganizzativeFlat(
@@ -437,7 +465,8 @@ public class ElettraUnitaOrganizzativeDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<DmalmElUnitaOrganizzative>();
+		List<Tuple> resultList = new LinkedList<Tuple>();
+		List<DmalmElUnitaOrganizzative> resultListEl = new LinkedList<DmalmElUnitaOrganizzative>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -452,8 +481,37 @@ public class ElettraUnitaOrganizzativeDAO {
 					.where(qDmalmElUnitaOrganizzative.codiceUOSuperiore.eq(unitaOrganizzativa.getCodiceArea()))
 					.where(qDmalmElUnitaOrganizzative.codiceArea.ne(unitaOrganizzativa.getCodiceArea()))
 					.orderBy(qDmalmElUnitaOrganizzative.codiceArea.asc(), qDmalmElUnitaOrganizzative.dataInizioValidita.asc())
-					.list(Projections.bean(DmalmElUnitaOrganizzative.class,
-							qDmalmElUnitaOrganizzative.all()));
+					.list(qDmalmElUnitaOrganizzative.all());
+			
+
+			for (Tuple result : resultList) {
+				DmalmElUnitaOrganizzative resultEl = new DmalmElUnitaOrganizzative();
+				resultEl.setUnitaOrganizzativaPk(result.get(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk));
+				resultEl.setIdEdma(result.get(qDmalmElUnitaOrganizzative.idEdma));
+				resultEl.setCodiceArea(result.get(qDmalmElUnitaOrganizzative.codiceArea));
+				resultEl.setDataInizioValiditaEdma(result.get(qDmalmElUnitaOrganizzative.dataInizioValiditaEdma));
+				resultEl.setDataFineValiditaEdma(result.get(qDmalmElUnitaOrganizzative.dataFineValiditaEdma));
+				resultEl.setDescrizioneArea(result.get(qDmalmElUnitaOrganizzative.descrizioneArea));
+				resultEl.setDataAttivazione(result.get(qDmalmElUnitaOrganizzative.dataAttivazione));
+				resultEl.setDataDisattivazione(result.get(qDmalmElUnitaOrganizzative.dataDisattivazione));
+				resultEl.setNote(result.get(qDmalmElUnitaOrganizzative.note));
+				resultEl.setInterno(result.get(qDmalmElUnitaOrganizzative.interno));
+				resultEl.setCodiceResponsabile(result.get(qDmalmElUnitaOrganizzative.codiceResponsabile));
+				resultEl.setIndirizzoEmail(result.get(qDmalmElUnitaOrganizzative.indirizzoEmail));
+				resultEl.setIdTipologiaUfficio(result.get(qDmalmElUnitaOrganizzative.idTipologiaUfficio));
+				resultEl.setIdGradoUfficio(result.get(qDmalmElUnitaOrganizzative.idGradoUfficio));
+				resultEl.setIdSede(result.get(qDmalmElUnitaOrganizzative.idSede));
+				resultEl.setCodiceUOSuperiore(result.get(qDmalmElUnitaOrganizzative.codiceUOSuperiore));
+				resultEl.setDescrizioneUOSuperiore(result.get(qDmalmElUnitaOrganizzative.descrizioneUOSuperiore));
+				resultEl.setCodiceEnte(result.get(qDmalmElUnitaOrganizzative.codiceEnte));
+				resultEl.setCodiceVisibilita(result.get(qDmalmElUnitaOrganizzative.codiceVisibilita));
+				resultEl.setDataCaricamento(result.get(qDmalmElUnitaOrganizzative.dataCaricamento));
+				resultEl.setDataInizioValidita(result.get(qDmalmElUnitaOrganizzative.dataInizioValidita));
+				resultEl.setDataFineValidita(result.get(qDmalmElUnitaOrganizzative.dataFineValidita));
+				resultEl.setAnnullato(result.get(qDmalmElUnitaOrganizzative.annullato));
+				resultEl.setDataAnnullamento(result.get(qDmalmElUnitaOrganizzative.dataAnnullamento));
+				resultListEl.add(resultEl);
+			}
 
 		} catch (Exception e) {
 
@@ -463,7 +521,7 @@ public class ElettraUnitaOrganizzativeDAO {
 				cm.closeConnection(connection);
 		}
 
-		return resultList;
+		return resultListEl;
 	}
 
 	public static List<DmalmElUnitaOrganizzative> getUnitaOrganizzativaTappo() throws DAOException,
@@ -471,7 +529,8 @@ public class ElettraUnitaOrganizzativeDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<DmalmElUnitaOrganizzative>();
+		List<Tuple> resultList = new LinkedList<Tuple>();
+		List<DmalmElUnitaOrganizzative> resultListEl = new LinkedList<DmalmElUnitaOrganizzative>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -484,8 +543,36 @@ public class ElettraUnitaOrganizzativeDAO {
 			resultList = query
 					.from(qDmalmElUnitaOrganizzative)
 					.where(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk.eq(0))
-					.list(Projections.bean(DmalmElUnitaOrganizzative.class,
-							qDmalmElUnitaOrganizzative.all()));
+					.list(qDmalmElUnitaOrganizzative.all());
+			
+			for (Tuple result : resultList) {
+				DmalmElUnitaOrganizzative resultEl = new DmalmElUnitaOrganizzative();
+				resultEl.setUnitaOrganizzativaPk(result.get(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk));
+				resultEl.setIdEdma(result.get(qDmalmElUnitaOrganizzative.idEdma));
+				resultEl.setCodiceArea(result.get(qDmalmElUnitaOrganizzative.codiceArea));
+				resultEl.setDataInizioValiditaEdma(result.get(qDmalmElUnitaOrganizzative.dataInizioValiditaEdma));
+				resultEl.setDataFineValiditaEdma(result.get(qDmalmElUnitaOrganizzative.dataFineValiditaEdma));
+				resultEl.setDescrizioneArea(result.get(qDmalmElUnitaOrganizzative.descrizioneArea));
+				resultEl.setDataAttivazione(result.get(qDmalmElUnitaOrganizzative.dataAttivazione));
+				resultEl.setDataDisattivazione(result.get(qDmalmElUnitaOrganizzative.dataDisattivazione));
+				resultEl.setNote(result.get(qDmalmElUnitaOrganizzative.note));
+				resultEl.setInterno(result.get(qDmalmElUnitaOrganizzative.interno));
+				resultEl.setCodiceResponsabile(result.get(qDmalmElUnitaOrganizzative.codiceResponsabile));
+				resultEl.setIndirizzoEmail(result.get(qDmalmElUnitaOrganizzative.indirizzoEmail));
+				resultEl.setIdTipologiaUfficio(result.get(qDmalmElUnitaOrganizzative.idTipologiaUfficio));
+				resultEl.setIdGradoUfficio(result.get(qDmalmElUnitaOrganizzative.idGradoUfficio));
+				resultEl.setIdSede(result.get(qDmalmElUnitaOrganizzative.idSede));
+				resultEl.setCodiceUOSuperiore(result.get(qDmalmElUnitaOrganizzative.codiceUOSuperiore));
+				resultEl.setDescrizioneUOSuperiore(result.get(qDmalmElUnitaOrganizzative.descrizioneUOSuperiore));
+				resultEl.setCodiceEnte(result.get(qDmalmElUnitaOrganizzative.codiceEnte));
+				resultEl.setCodiceVisibilita(result.get(qDmalmElUnitaOrganizzative.codiceVisibilita));
+				resultEl.setDataCaricamento(result.get(qDmalmElUnitaOrganizzative.dataCaricamento));
+				resultEl.setDataInizioValidita(result.get(qDmalmElUnitaOrganizzative.dataInizioValidita));
+				resultEl.setDataFineValidita(result.get(qDmalmElUnitaOrganizzative.dataFineValidita));
+				resultEl.setAnnullato(result.get(qDmalmElUnitaOrganizzative.annullato));
+				resultEl.setDataAnnullamento(result.get(qDmalmElUnitaOrganizzative.dataAnnullamento));
+				resultListEl.add(resultEl);
+			}
 
 		} catch (Exception e) {
 
@@ -495,7 +582,7 @@ public class ElettraUnitaOrganizzativeDAO {
 				cm.closeConnection(connection);
 		}
 
-		return resultList;
+		return resultListEl;
 	}
 
 }

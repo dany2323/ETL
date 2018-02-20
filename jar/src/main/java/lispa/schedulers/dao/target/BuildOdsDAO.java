@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmBuild;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmBuildOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -125,7 +127,9 @@ public class BuildOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmBuild> list = null;
+		List<Tuple> list = null;
+		List<DmalmBuild> resultListEl = new LinkedList<DmalmBuild>();
+
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -137,7 +141,38 @@ public class BuildOdsDAO {
 
 			list = query.from(buildODS).orderBy(buildODS.cdBuild.asc())
 					.orderBy(buildODS.dtModificaBuild.asc())
-					.list(Projections.bean(DmalmBuild.class, buildODS.all()));
+					.list(buildODS.all());
+			
+			for (Tuple result : list) {
+				DmalmBuild resultEl = new DmalmBuild();
+				resultEl.setCdBuild(result.get(buildODS.cdBuild));
+				resultEl.setCodice(result.get(buildODS.codice));
+				resultEl.setDescrizioneBuild(result.get(buildODS.descrizioneBuild));
+				resultEl.setDmalmUserFk06(result.get(buildODS.dmalmUserFk06));
+				resultEl.setDmalmProjectFk02(result.get(buildODS.dmalmProjectFk02));
+				resultEl.setDmalmStatoWorkitemFk03(result.get(buildODS.dmalmStatoWorkitemFk03));
+				resultEl.setDmalmStrutturaOrgFk01(result.get(buildODS.dmalmStrutturaOrgFk01));
+				resultEl.setDmalmTempoFk04(result.get(buildODS.dmalmTempoFk04));
+				resultEl.setDsAutoreBuild(result.get(buildODS.dsAutoreBuild));
+				resultEl.setDtCambioStatoBuild(result.get(buildODS.dtCambioStatoBuild));
+				resultEl.setDtCaricamentoBuild(result.get(buildODS.dtCaricamentoBuild));
+				resultEl.setDtCreazioneBuild(result.get(buildODS.dtCreazioneBuild));
+				resultEl.setDtModificaBuild(result.get(buildODS.dtModificaBuild));
+				resultEl.setDtRisoluzioneBuild(result.get(buildODS.dtRisoluzioneBuild));
+				resultEl.setDtScadenzaBuild(result.get(buildODS.dtScadenzaBuild));
+				resultEl.setDtStoricizzazione(result.get(buildODS.dtStoricizzazione));
+				resultEl.setIdAutoreBuild(result.get(buildODS.idAutoreBuild));
+				resultEl.setIdRepository(result.get(buildODS.idRepository));
+				resultEl.setMotivoRisoluzioneBuild(result.get(buildODS.motivoRisoluzioneBuild));
+				resultEl.setRankStatoBuild(result.get(buildODS.rankStatoBuild));
+				resultEl.setRankStatoBuildMese(result.get(buildODS.rankStatoBuildMese));
+				resultEl.setStgPk(result.get(buildODS.stgPk));
+				resultEl.setTitoloBuild(result.get(buildODS.titoloBuild));
+				resultEl.setUri(result.get(buildODS.uri));
+				resultEl.setSeverity(result.get(buildODS.severity));
+				resultEl.setPriority(result.get(buildODS.priority));
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -150,7 +185,7 @@ public class BuildOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 	}
 
 }

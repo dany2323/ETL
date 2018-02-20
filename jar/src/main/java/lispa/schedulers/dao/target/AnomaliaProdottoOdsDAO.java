@@ -4,22 +4,23 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaProdotto;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmAnomaliaProdottoOds;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.Projections;
 
 public class AnomaliaProdottoOdsDAO {
 
@@ -170,7 +171,9 @@ public class AnomaliaProdottoOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmAnomaliaProdotto> list = null;
+		List<Tuple> list = null;
+		List<DmalmAnomaliaProdotto> resultListEl = new LinkedList<DmalmAnomaliaProdotto>();
+
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -184,8 +187,53 @@ public class AnomaliaProdottoOdsDAO {
 					.from(anomaliaODS)
 					.orderBy(anomaliaODS.cdAnomalia.asc())
 					.orderBy(anomaliaODS.dtModificaRecordAnomalia.asc())
-					.list(Projections.bean(DmalmAnomaliaProdotto.class,
-							anomaliaODS.all()));
+					.list(anomaliaODS.all());
+			
+			for (Tuple result : list) {
+				DmalmAnomaliaProdotto resultEl = new DmalmAnomaliaProdotto();
+				resultEl.setCdAnomalia(result.get(anomaliaODS.cdAnomalia));
+				resultEl.setDescrizioneAnomalia(result.get(anomaliaODS.descrizioneAnomalia));
+				resultEl.setDmalmAnomaliaProdottoPk(result.get(anomaliaODS.dmalmAnomaliaProdottoPk));
+				resultEl.setDmalmUserFk06(result.get(anomaliaODS.dmalmUserFk06));
+				resultEl.setDmalmAreaTematicaFk05(result.get(anomaliaODS.dmalmAreaTematicaFk05));
+				resultEl.setDmalmProjectFk02(result.get(anomaliaODS.dmalmProjectFk02));
+				resultEl.setDmalmStatoWorkitemFk03(result.get(anomaliaODS.dmalmStatoWorkitemFk03));
+				resultEl.setDmalmStrutturaOrgFk01(result.get(anomaliaODS.dmalmStrutturaOrgFk01));
+				resultEl.setDmalmTempoFk04(result.get(anomaliaODS.dmalmTempoFk04));
+				resultEl.setDsAnomalia(result.get(anomaliaODS.dsAnomalia));
+				resultEl.setDsAutoreAnomalia(result.get(anomaliaODS.dsAutoreAnomalia));
+				resultEl.setDtAperturaTicket(result.get(anomaliaODS.dtAperturaTicket));
+				resultEl.setDtCambioStatoAnomalia(result.get(anomaliaODS.dtCambioStatoAnomalia));
+				resultEl.setDtCaricamentoRecordAnomalia(result.get(anomaliaODS.dtCaricamentoRecordAnomalia));
+				resultEl.setDtChiusuraAnomalia(result.get(anomaliaODS.dtChiusuraAnomalia));
+				resultEl.setDtChiusuraTicket(result.get(anomaliaODS.dtChiusuraTicket));
+				resultEl.setDtCreazioneAnomalia(result.get(anomaliaODS.dtCreazioneAnomalia));
+				resultEl.setDtModificaRecordAnomalia(result.get(anomaliaODS.dtModificaRecordAnomalia));
+				resultEl.setDtRisoluzioneAnomalia(result.get(anomaliaODS.dtRisoluzioneAnomalia));
+				resultEl.setDtStoricizzazione(result.get(anomaliaODS.dtStoricizzazione));
+				resultEl.setEffortAnalisi(result.get(anomaliaODS.effortAnalisi));
+				resultEl.setEffortCostoSviluppo(result.get(anomaliaODS.effortCostoSviluppo));
+				resultEl.setIdAnomaliaAssistenza(result.get(anomaliaODS.idAnomaliaAssistenza));
+				resultEl.setIdAutoreAnomalia(result.get(anomaliaODS.idAutoreAnomalia));
+				resultEl.setIdRepository(result.get(anomaliaODS.idRepository));
+				resultEl.setMotivoRisoluzioneAnomalia(result.get(anomaliaODS.motivoRisoluzioneAnomalia));
+				resultEl.setNrGiorniFestivi(result.get(anomaliaODS.nrGiorniFestivi));
+				resultEl.setNumeroLineaAnomalia(result.get(anomaliaODS.numeroLineaAnomalia));
+				resultEl.setNumeroTestataAnomalia(result.get(anomaliaODS.numeroTestataAnomalia));
+				resultEl.setRankStatoAnomalia(result.get(anomaliaODS.rankStatoAnomalia));
+				resultEl.setRankStatoAnomaliaMese(result.get(anomaliaODS.rankStatoAnomaliaMese));
+				resultEl.setSeverity(result.get(anomaliaODS.severity));
+				resultEl.setStgPk(result.get(anomaliaODS.stgPk));
+				resultEl.setUri(result.get(anomaliaODS.uri));
+				resultEl.setTempoTotRisoluzioneAnomalia(result.get(anomaliaODS.tempoTotRisoluzioneAnomalia));
+				resultEl.setTicketSiebelAnomaliaAss(result.get(anomaliaODS.ticketSiebelAnomaliaAss));
+				resultEl.setFlagUltimaSituazione(result.get(anomaliaODS.flagUltimaSituazione));
+				resultEl.setContestazione(result.get(anomaliaODS.contestazione));
+				resultEl.setNoteContestazione(result.get(anomaliaODS.noteContestazione));
+				resultEl.setDtDisponibilita(result.get(anomaliaODS.dtDisponibilita));
+				resultEl.setPriority(result.get(anomaliaODS.priority));
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -198,7 +246,7 @@ public class AnomaliaProdottoOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 
 	}
 

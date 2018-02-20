@@ -3,22 +3,23 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmDocumentoOds;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.Projections;
 
 public class DocumentoOdsDAO {
 
@@ -94,7 +95,8 @@ public class DocumentoOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmDocumento> list = null;
+		List<Tuple> list = null;
+		List<DmalmDocumento> resultListEl = new LinkedList<DmalmDocumento>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -108,8 +110,46 @@ public class DocumentoOdsDAO {
 					.from(documentoODS)
 					.orderBy(documentoODS.cdDocumento.asc())
 					.orderBy(documentoODS.dtModificaDocumento.asc())
-					.list(Projections.bean(DmalmDocumento.class,
-							documentoODS.all()));
+					.list(documentoODS.all());
+			
+			for (Tuple result : list) {
+				DmalmDocumento resultEl = new DmalmDocumento();
+				resultEl.setAssigneesDocumento(result.get(documentoODS.assigneesDocumento));
+				resultEl.setCdDocumento(result.get(documentoODS.cdDocumento));
+				resultEl.setClassificazione(result.get(documentoODS.classificazione));
+				resultEl.setDmalmUserFk06(result.get(documentoODS.dmalmUserFk06));
+				resultEl.setCodice(result.get(documentoODS.codice));
+				resultEl.setDescrizioneDocumento(result.get(documentoODS.descrizioneDocumento));
+				resultEl.setDmalmAreaTematicaFk05(result.get(documentoODS.dmalmAreaTematicaFk05));
+				resultEl.setDmalmDocumentoPk(result.get(documentoODS.dmalmDocumentoPk));
+				resultEl.setDmalmProjectFk02(result.get(documentoODS.dmalmProjectFk02));
+				resultEl.setDmalmStatoWorkitemFk03(result.get(documentoODS.dmalmStatoWorkitemFk03));
+				resultEl.setDmalmStrutturaOrgFk01(result.get(documentoODS.dmalmStrutturaOrgFk01));
+				resultEl.setDmalmTempoFk04(result.get(documentoODS.dmalmTempoFk04));
+				resultEl.setDsAutoreDocumento(result.get(documentoODS.dsAutoreDocumento));
+				resultEl.setDtCambioStatoDocumento(result.get(documentoODS.dtCambioStatoDocumento));
+				resultEl.setDtCaricamentoDocumento(result.get(documentoODS.dtCaricamentoDocumento));
+				resultEl.setDtCreazioneDocumento(result.get(documentoODS.dtCreazioneDocumento));
+				resultEl.setDtModificaDocumento(result.get(documentoODS.dtModificaDocumento));
+				resultEl.setDtRisoluzioneDocumento(result.get(documentoODS.dtRisoluzioneDocumento));
+				resultEl.setDtScadenzaDocumento(result.get(documentoODS.dtScadenzaDocumento));
+				resultEl.setDtStoricizzazione(result.get(documentoODS.dtStoricizzazione));
+				resultEl.setIdAutoreDocumento(result.get(documentoODS.idAutoreDocumento));
+				resultEl.setIdRepository(result.get(documentoODS.idRepository));
+				resultEl.setMotivoRisoluzioneDocumento(result.get(documentoODS.motivoRisoluzioneDocumento));
+				resultEl.setNumeroLinea(result.get(documentoODS.numeroLinea));
+				resultEl.setNumeroTestata(result.get(documentoODS.numeroTestata));
+				resultEl.setRankStatoDocumento(result.get(documentoODS.rankStatoDocumento));
+				resultEl.setRankStatoDocumentoMese(result.get(documentoODS.rankStatoDocumentoMese));
+				resultEl.setStgPk(result.get(documentoODS.stgPk));
+				resultEl.setUri(result.get(documentoODS.uri));
+				resultEl.setTipo(result.get(documentoODS.tipo));
+				resultEl.setTitoloDocumento(result.get(documentoODS.titoloDocumento));
+				resultEl.setVersione(result.get(documentoODS.versione));
+				resultEl.setSeverity(result.get(documentoODS.severity));
+				resultEl.setPriority(result.get(documentoODS.priority));
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -122,7 +162,7 @@ public class DocumentoOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 
 	}
 
