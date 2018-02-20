@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmProgettoEse;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmProgettoEseOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -130,7 +132,8 @@ public class ProgettoEseOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmProgettoEse> list = null;
+		List<Tuple> list = null;
+		List<DmalmProgettoEse> resultList = new LinkedList<DmalmProgettoEse>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -144,9 +147,42 @@ public class ProgettoEseOdsDAO {
 					.from(progettoEseOds)
 					.orderBy(progettoEseOds.cdProgettoEse.asc())
 					.orderBy(progettoEseOds.dtModificaProgettoEse.asc())
-					.list(Projections.bean(DmalmProgettoEse.class,
-							progettoEseOds.all()));
-
+					.list(progettoEseOds.all());
+			
+			for (Tuple t : list) {
+				DmalmProgettoEse pEse = new DmalmProgettoEse();
+				
+				pEse.setUri(t.get(progettoEseOds.uri));
+				pEse.setStgPk(t.get(progettoEseOds.stgPk));
+				pEse.setCdProgettoEse(t.get(progettoEseOds.cdProgettoEse));
+				pEse.setCfCodice(t.get(progettoEseOds.cfCodice));
+				pEse.setCfDtUltimaSottomissione(t.get(progettoEseOds.cfDtUltimaSottomissione));
+				pEse.setDescrizioneProgettoEse(t.get(progettoEseOds.descrizioneProgettoEse));
+				pEse.setDmalmProgettoEsePk(t.get(progettoEseOds.dmalmProgettoEsePk));
+				pEse.setDmalmProjectFk02(t.get(progettoEseOds.dmalmProjectFk02));
+				pEse.setDmalmStatoWorkitemFk03(t.get(progettoEseOds.dmalmStatoWorkitemFk03));
+				pEse.setDmalmStrutturaOrgFk01(t.get(progettoEseOds.dmalmStrutturaOrgFk01));
+				pEse.setDmalmTempoFk04(t.get(progettoEseOds.dmalmTempoFk04));
+				pEse.setDsAutoreProgettoEse(t.get(progettoEseOds.dsAutoreProgettoEse));
+				pEse.setDtCambioStatoProgettoEse(t.get(progettoEseOds.dtCambioStatoProgettoEse));
+				pEse.setDtCaricamentoProgettoEse(t.get(progettoEseOds.dtCaricamentoProgettoEse));
+				pEse.setDtCreazioneProgettoEse(t.get(progettoEseOds.dtCreazioneProgettoEse));
+				pEse.setDtModificaProgettoEse(t.get(progettoEseOds.dtModificaProgettoEse));
+				pEse.setDtRisoluzioneProgettoEse(t.get(progettoEseOds.dtRisoluzioneProgettoEse));
+				pEse.setDtScadenzaProgettoEse(t.get(progettoEseOds.dtScadenzaProgettoEse));
+				pEse.setDtStoricizzazione(t.get(progettoEseOds.dtStoricizzazione));
+				pEse.setIdAutoreProgettoEse(t.get(progettoEseOds.idAutoreProgettoEse));
+				pEse.setIdRepository(t.get(progettoEseOds.idRepository));
+				pEse.setMotivoRisoluzioneProgEse(t.get(progettoEseOds.motivoRisoluzioneProgEse));
+				pEse.setRankStatoProgettoEse(t.get(progettoEseOds.rankStatoProgettoEse));
+				pEse.setRankStatoProgettoEseMese(t.get(progettoEseOds.rankStatoProgettoEseMese));
+				pEse.setTitoloProgettoEse(t.get(progettoEseOds.titoloProgettoEse));
+				pEse.setDmalmUserFk06(t.get(progettoEseOds.dmalmUserFk06));
+				pEse.setSeverity(t.get(progettoEseOds.severity));
+				pEse.setPriority(t.get(progettoEseOds.priority));
+				
+				resultList.add(pEse);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -158,7 +194,7 @@ public class ProgettoEseOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 
 	}
 

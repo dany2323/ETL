@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmPei;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmPeiOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -129,8 +131,9 @@ public class PeiOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmPei> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmPei> resultList = new LinkedList<DmalmPei>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -141,8 +144,42 @@ public class PeiOdsDAO {
 
 			list = query.from(peiODS).orderBy(peiODS.cdPei.asc())
 					.orderBy(peiODS.dtModificaPei.asc())
-					.list(Projections.bean(DmalmPei.class, peiODS.all()));
+					.list(peiODS.all());
 
+			for (Tuple t : list) {
+				DmalmPei pei = new DmalmPei();
+				pei.setUri(t.get(peiODS.uri));
+				pei.setCdPei(t.get(peiODS.cdPei));
+				pei.setCodice(t.get(peiODS.codice));
+				pei.setDescrizionePei(t.get(peiODS.descrizionePei));
+				pei.setDmalmPeiPk(t.get(peiODS.dmalmPeiPk));
+				pei.setDmalmProjectFk02(t.get(peiODS.dmalmProjectFk02));
+				pei.setDmalmStatoWorkitemFk03(t.get(peiODS.dmalmStatoWorkitemFk03));
+				pei.setDmalmStrutturaOrgFk01(t.get(peiODS.dmalmStrutturaOrgFk01));
+				pei.setDmalmTempoFk04(t.get(peiODS.dmalmTempoFk04));
+				pei.setDsAutorePei(t.get(peiODS.dsAutorePei));
+				pei.setDtCambioStatoPei(t.get(peiODS.dtCambioStatoPei));
+				pei.setDtCaricamentoPei(t.get(peiODS.dtCaricamentoPei));
+				pei.setDtCreazionePei(t.get(peiODS.dtCreazionePei));
+				pei.setDtModificaPei(t.get(peiODS.dtModificaPei)); 
+				pei.setDtPrevistaComplReq(t.get(peiODS.dtPrevistaComplReq));
+				pei.setDtPrevistaPassInEs(t.get(peiODS.dtPrevistaPassInEs));
+				pei.setDtRisoluzionePei(t.get(peiODS.dtRisoluzionePei)); 
+				pei.setDtScadenzaPei(t.get(peiODS.dtScadenzaPei));
+				pei.setDtStoricizzazione(t.get(peiODS.dtStoricizzazione));
+				pei.setIdAutorePei(t.get(peiODS.idAutorePei));
+				pei.setIdRepository(t.get(peiODS.idRepository)); 
+				pei.setMotivoRisoluzionePei(t.get(peiODS.motivoRisoluzionePei));
+				pei.setRankStatoPei(t.get(peiODS.rankStatoPei)); 
+				pei.setRankStatoPeiMese(t.get(peiODS.rankStatoPeiMese));
+				pei.setTitoloPei(t.get(peiODS.titoloPei));
+				pei.setStgPk(t.get(peiODS.stgPk));
+				pei.setDmalmUserFk06(t.get(peiODS.dmalmUserFk06));
+				pei.setSeverity(t.get(peiODS.severity));
+				pei.setPriority(t.get(peiODS.priority)); 
+				
+				resultList.add(pei);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -155,7 +192,7 @@ public class PeiOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 
 	}
 

@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmProgettoDemand;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmProgettoDemandOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -164,8 +166,8 @@ public class ProgettoDemandOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmProgettoDemand> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmProgettoDemand> resultList = new LinkedList<DmalmProgettoDemand>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -178,9 +180,54 @@ public class ProgettoDemandOdsDAO {
 					.from(progettoDemandODS)
 					.orderBy(progettoDemandODS.cdProgettoDemand.asc())
 					.orderBy(progettoDemandODS.dtModificaProgettoDemand.asc())
-					.list(Projections.bean(DmalmProgettoDemand.class,
-							progettoDemandODS.all()));
+					.list(progettoDemandODS.all());
 
+			for ( Tuple t : list) {
+				DmalmProgettoDemand pDemand = new DmalmProgettoDemand();
+				pDemand.setCodObiettivoAziendale(t.get(progettoDemandODS.codObiettivoAziendale));
+				pDemand.setCodObiettivoUtente(t.get(progettoDemandODS.codObiettivoUtente));
+				pDemand.setUri(t.get(progettoDemandODS.uri));
+				pDemand.setStgPk(t.get(progettoDemandODS.stgPk));
+				pDemand.setAoid(t.get(progettoDemandODS.aoid));
+				pDemand.setCdProgettoDemand(t.get(progettoDemandODS.cdProgettoDemand));
+				pDemand.setCfDtDisponibilita(t.get(progettoDemandODS.cfDtDisponibilita));
+				pDemand.setCfDtDisponibilitaEff(t.get(progettoDemandODS.cfDtDisponibilitaEff));
+				pDemand.setCfDtEnunciazione(t.get(progettoDemandODS.cfDtEnunciazione));
+				pDemand.setCfDtValidazione(t.get(progettoDemandODS.cfDtValidazione));
+				pDemand.setCfOwnerDemand(t.get(progettoDemandODS.cfOwnerDemand));
+				pDemand.setCfReferenteEsercizio(t.get(progettoDemandODS.cfReferenteEsercizio));
+				pDemand.setCfReferenteSviluppo(t.get(progettoDemandODS.cfReferenteSviluppo));
+				pDemand.setCodice(t.get(progettoDemandODS.codice));
+				pDemand.setDescrizioneProgettoDemand(t.get(progettoDemandODS.descrizioneProgettoDemand));
+				pDemand.setDmalmProgettoDemandPk(t.get(progettoDemandODS.dmalmProgettoDemandPk));
+				pDemand.setDmalmProjectFk02(t.get(progettoDemandODS.dmalmProjectFk02));
+				pDemand.setDmalmStatoWorkitemFk03(t.get(progettoDemandODS.dmalmStatoWorkitemFk03));
+				pDemand.setDmalmStrutturaOrgFk01(t.get(progettoDemandODS.dmalmStrutturaOrgFk01));
+				pDemand.setDmalmTempoFk04(t.get(progettoDemandODS.dmalmTempoFk04));
+				pDemand.setDsAutoreProgettoDemand(t.get(progettoDemandODS.dsAutoreProgettoDemand));
+				pDemand.setDtCambioStatoProgettoDem(t.get(progettoDemandODS.dtCambioStatoProgettoDem));
+				pDemand.setDtCaricamentoProgettoDemand(t.get(progettoDemandODS.dtCaricamentoProgettoDemand));
+				pDemand.setDtChiusuraProgettoDemand(t.get(progettoDemandODS.dtChiusuraProgettoDemand));
+				pDemand.setDtCreazioneProgettoDemand(t.get(progettoDemandODS.dtCreazioneProgettoDemand));
+				pDemand.setDtModificaProgettoDemand(t.get(progettoDemandODS.dtModificaProgettoDemand));
+				pDemand.setDtRisoluzioneProgettoDemand(t.get(progettoDemandODS.dtRisoluzioneProgettoDemand));
+				pDemand.setDtScadenzaProgettoDemand(t.get(progettoDemandODS.dtScadenzaProgettoDemand));
+				pDemand.setDtStoricizzazione(t.get(progettoDemandODS.dtStoricizzazione));
+				pDemand.setFornitura(t.get(progettoDemandODS.fornitura));
+				pDemand.setIdAutoreProgettoDemand(t.get(progettoDemandODS.idAutoreProgettoDemand));
+				pDemand.setIdRepository(t.get(progettoDemandODS.idRepository));
+				pDemand.setMotivoRisoluzioneProgDem(t.get(progettoDemandODS.motivoRisoluzioneProgDem));
+				pDemand.setRankStatoProgettoDemMese(t.get(progettoDemandODS.rankStatoProgettoDemMese));
+				pDemand.setRankStatoProgettoDemand(t.get(progettoDemandODS.rankStatoProgettoDemand));
+				pDemand.setTempoTotaleRisoluzione(t.get(progettoDemandODS.tempoTotaleRisoluzione));
+				pDemand.setTitoloProgettoDemand(t.get(progettoDemandODS.titoloProgettoDemand));
+				pDemand.setDmalmUserFk06(t.get(progettoDemandODS.dmalmUserFk06));
+				pDemand.setCfClassificazione(t.get(progettoDemandODS.cfClassificazione));
+				pDemand.setSeverity(t.get(progettoDemandODS.severity));
+				pDemand.setPriority(t.get(progettoDemandODS.priority));
+				
+				resultList.add(pDemand);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -192,6 +239,6 @@ public class ProgettoDemandOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 	}
 }

@@ -335,7 +335,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmLinkedWorkitems> list = null;
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -361,12 +361,30 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
 			connection.commit();
 
-			for (DmalmLinkedWorkitems linkedWorkitem : list) {
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  linkedWorkitem = new DmalmLinkedWorkitems();
+				linkedWorkitem.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				linkedWorkitem.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				linkedWorkitem.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				linkedWorkitem.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				linkedWorkitem.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				linkedWorkitem.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				linkedWorkitem.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				linkedWorkitem.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				linkedWorkitem.setRuolo(linkWI.get(link.ruolo));
+				linkedWorkitem.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				linkedWorkitem.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				linkedWorkitem.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				linkedWorkitem.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				linkedWorkitem.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				linkedWorkitem.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				linkedWorkitem.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				linkedWorkitem.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
 				// Progetto Demand può essere legato direttamente ad un
 				// Programma bypassando il Sottoprogramma, solo se il
 				// sottoprogramma non esiste
@@ -497,7 +515,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmLinkedWorkitems> list = null;
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -515,12 +533,29 @@ public class LinkedWorkitemsDAO {
 							"sman"))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
 			connection.commit();
 
-			for (DmalmLinkedWorkitems lw : list) {
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
 				// Combinazioni ammesse
 				// Solo Progetto Demand può essere legato direttamente ad un wi
 				// dello stesso tipo
@@ -782,7 +817,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmLinkedWorkitems> list = null;
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 		List<DmalmLinkedWorkitems> reverseList = new LinkedList<DmalmLinkedWorkitems>();
 
@@ -802,12 +837,29 @@ public class LinkedWorkitemsDAO {
 					.where(link.ruolo.in("rilasciato_in", "incluso_in",
 							"relates_to"))
 					.orderBy(link.fkWiPadre.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
 			connection.commit();
-
-			for (DmalmLinkedWorkitems lw : list) {
+			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
 				// Combinazioni ammesse
 				// ruolo relates_to solo per release/srqs
 				if (lw.getRuolo().equalsIgnoreCase("relates_to")) {
@@ -871,7 +923,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmLinkedWorkitems> list = null;
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 		List<DmalmLinkedWorkitems> reverseList = new LinkedList<DmalmLinkedWorkitems>();
 
@@ -890,12 +942,29 @@ public class LinkedWorkitemsDAO {
 					.where(link.ruolo.in("rilasciato", "rilasciato_in",
 							"incluso_in"))
 					.orderBy(link.fkWiPadre.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
 			connection.commit();
 
-			for (DmalmLinkedWorkitems lw : list) {
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
 				// Combinazioni ammesse
 				if ((lw.getTipoWiPadre().equalsIgnoreCase("release_it") && lw
 						.getTipoWiFiglio().equalsIgnoreCase("release"))
@@ -925,7 +994,8 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmLinkedWorkitems> list = null;
+		List<Tuple> list = null;
+		List<DmalmLinkedWorkitems> returnList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -954,11 +1024,33 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.distinct()
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.codiceWiPadre, link.tipoWiPadre,
+					.list(link.codiceWiPadre, link.tipoWiPadre,
 							link.fkWiPadre, link.uriWiFiglio,
-							link.idRepositoryPadre, link.codiceProjectPadre));
-
+							link.idRepositoryPadre, link.codiceProjectPadre);
+			
+					for (Tuple linkWI : list) {	
+						DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+						lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+						lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+						lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+						lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+						lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+						lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+						lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+						lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+						lw.setRuolo(linkWI.get(link.ruolo));
+						lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+						lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+						lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+						lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+						lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+						lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+						lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+						lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+						
+						returnList.add(lw);
+					}
+					
 			connection.commit();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -969,7 +1061,7 @@ public class LinkedWorkitemsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return returnList;
 	}
 
 	public static List<DmalmLinkedWorkitems> getStartWorkitemsAnomalie(
@@ -977,6 +1069,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -987,7 +1080,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.join(anomaliaAssistenza)
 					.on(anomaliaAssistenza.cdAnomaliaAss.eq(link.codiceWiPadre)
@@ -1002,8 +1095,31 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
+			
+			
+			for (Tuple linkWI : list ) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 
 			connection.commit();
 		} catch (Exception e) {
@@ -1022,6 +1138,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1032,7 +1149,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.join(anomalia)
 					.on(anomalia.cdAnomalia.eq(link.codiceWiPadre)
@@ -1048,8 +1165,30 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
+			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 
 			connection.commit();
 		} catch (Exception e) {
@@ -1069,6 +1208,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1079,15 +1219,37 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
 					.where(link.tipoWiPadre.in("anomalia_assistenza", "anomalia").and(link.tipoWiFiglio.in("anomalia", "srqs", "sman")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
-
+					.list(link.all());
+			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
+			
 			connection.commit();
 		} catch (Exception e) {
 
@@ -1106,7 +1268,8 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmLinkedWorkitems> list = null;
+		List<Tuple> list = null;
+		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 		List<DmalmLinkedWorkitems> reverseList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1126,13 +1289,35 @@ public class LinkedWorkitemsDAO {
 							.in("follow_up", "refines", "rilasciato_in",
 									"rilevato", "parent", "relates_to"))
 					.orderBy(link.fkWiPadre.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
+			
 			connection.commit();
 
 			// inverte padre/figlio
-			reverseList = swapList(list);
+			reverseList = swapList(resultList);
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
@@ -1198,6 +1383,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1208,7 +1394,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.join(programma)
 					.on(programma.cdProgramma.eq(link.codiceWiPadre)
@@ -1221,8 +1407,30 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class, link.all()));
+					.list(link.all());
 			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 			connection.commit();
 		} catch (Exception e) {
 
@@ -1241,6 +1449,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1251,16 +1460,37 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
 					.where(link.tipoWiPadre.in("sottoprogramma", "rqd", "dman", "progettoese", "drqs", "pei")
 					.and(link.tipoWiFiglio.in("rqd", "dman", "progettoese", "drqs", "pei", "fase")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 			connection.commit();
 		} catch (Exception e) {
 
@@ -1278,6 +1508,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1288,7 +1519,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.join(progettoSviluppoSvil)
 					.on(progettoSviluppoSvil.cdProgSvilS.eq(link.codiceWiPadre)
@@ -1301,8 +1532,30 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class, link.all()));
+					.list(link.all());
 			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 			connection.commit();
 		} catch (Exception e) {
 
@@ -1321,6 +1574,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1331,16 +1585,37 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.where(link.fkWiPadre.eq(fkWiFiglio))
 					.where(link.tipoWiPadre.in("release", "testcase", "task", "anomalia")
 					.and(link.tipoWiFiglio.in("testcase", "task", "anomalia", "defect")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 			connection.commit();
 		} catch (Exception e) {
 
@@ -1358,6 +1633,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1368,7 +1644,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.join(releaseIT)
 					.on(releaseIT.cdReleaseIt.eq(link.codiceWiPadre)
@@ -1381,7 +1657,30 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class, link.all()));
+					.list(link.all());
+			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 			
 			connection.commit();
 		} catch (Exception e) {
@@ -1401,6 +1700,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1411,16 +1711,38 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
 					.where(link.tipoWiPadre.in("build", "taskit")
 					.and(link.tipoWiFiglio.in("taskit", "defect")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
+			
 			connection.commit();
 		} catch (Exception e) {
 
@@ -1438,6 +1760,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1448,7 +1771,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.join(releaseServizi)
 					.on(releaseServizi.cdRelServizi.eq(link.codiceWiPadre)
@@ -1461,7 +1784,30 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class, link.all()));
+					.list(link.all());
+			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 			
 			connection.commit();
 		} catch (Exception e) {
@@ -1481,6 +1827,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1491,15 +1838,37 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
 					.where(link.tipoWiPadre.in("task"))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
+			
 			connection.commit();
 		} catch (Exception e) {
 
@@ -1517,6 +1886,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1527,7 +1897,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.join(build)
 					.on(build.cdBuild.eq(link.codiceWiPadre)
@@ -1539,7 +1909,30 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class, link.all()));
+					.list(link.all());
+			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 			
 			connection.commit();
 		} catch (Exception e) {
@@ -1559,6 +1952,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1569,16 +1963,38 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
 					/*.where(link.tipoWiPadre.in("release_it", "taskit")
 					.and(link.tipoWiFiglio.in("taskit", "defect")))*/
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
+			
 			connection.commit();
 		} catch (Exception e) {
 
@@ -1596,6 +2012,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1606,7 +2023,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.join(anomaliaAssistenza)
 					.on(anomaliaAssistenza.cdAnomaliaAss.eq(link.codiceWiPadre)
@@ -1619,7 +2036,30 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class, link.all()));
+					.list(link.all());
+			
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
 			
 			connection.commit();
 		} catch (Exception e) {
@@ -1639,6 +2079,7 @@ public class LinkedWorkitemsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
+		List<Tuple> list = null;
 		List<DmalmLinkedWorkitems> resultList = new LinkedList<DmalmLinkedWorkitems>();
 
 		try {
@@ -1649,15 +2090,37 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			resultList = query
+			list = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
 					.where(link.tipoWiPadre.in("richiesta_gestione"))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
-					.list(Projections.bean(DmalmLinkedWorkitems.class,
-							link.all()));
+					.list(link.all());
 
+			for (Tuple linkWI : list) {
+				DmalmLinkedWorkitems  lw = new DmalmLinkedWorkitems();
+				lw.setUriWiPadre(linkWI.get(link.uriWiPadre));
+				lw.setUriWiFiglio(linkWI.get(link.uriWiFiglio)); 
+				lw.setTitoloWiPadre(linkWI.get(link.titoloWiPadre)); 
+				lw.setTitoloWiFiglio(linkWI.get(link.titoloWiFiglio)); 
+				lw.setCodiceWiFiglio(linkWI.get(link.codiceWiFiglio)); 
+				lw.setCodiceWiPadre(linkWI.get(link.codiceWiPadre)); 
+				lw.setFkWiFiglio(linkWI.get(link.fkWiFiglio)); 
+				lw.setFkWiPadre(linkWI.get(link.fkWiPadre)); 
+				lw.setRuolo(linkWI.get(link.ruolo));
+				lw.setTipoWiFiglio(linkWI.get(link.tipoWiFiglio)); 
+				lw.setTipoWiPadre(linkWI.get(link.tipoWiPadre)); 
+				lw.setDtCaricamento(linkWI.get(link.dtCaricamento)); 
+				lw.setLinkedWorkitemsPk(linkWI.get(link.linkedWorkitemsPk)); 
+				lw.setIdRepositoryFiglio(linkWI.get(link.idRepositoryFiglio)); 
+				lw.setIdRepositoryPadre(linkWI.get(link.idRepositoryPadre));
+				lw.setCodiceProjectFiglio(linkWI.get(link.codiceProjectFiglio));
+				lw.setCodiceProjectPadre(linkWI.get(link.codiceProjectPadre));
+				
+				resultList.add(lw);
+			}
+			
 			connection.commit();
 		} catch (Exception e) {
 

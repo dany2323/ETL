@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoDem;
@@ -13,6 +14,7 @@ import lispa.schedulers.queryimplementation.target.QDmalmProgettoSviluppoDOds;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -155,8 +157,8 @@ public class ProgettoSviluppoDemandOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmProgettoSviluppoDem> list = null;
-
+		List<Tuple> list = null;
+		List<DmalmProgettoSviluppoDem> resultList = new LinkedList<DmalmProgettoSviluppoDem>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -169,8 +171,49 @@ public class ProgettoSviluppoDemandOdsDAO {
 					.from(progettoSvilDODS)
 					.orderBy(progettoSvilDODS.cdProgSvilD.asc())
 					.orderBy(progettoSvilDODS.dtModificaProgSvilD.asc())
-					.list(Projections.bean(DmalmProgettoSviluppoDem.class,
-							progettoSvilDODS.all()));
+					.list(progettoSvilDODS.all());
+			
+			for (Tuple t : list) {
+				DmalmProgettoSviluppoDem pSvilDem = new DmalmProgettoSviluppoDem();
+				
+				pSvilDem.setUri(t.get(progettoSvilDODS.uri));
+				pSvilDem.setStgPk(t.get(progettoSvilDODS.stgPk));
+				pSvilDem.setAssignee(t.get(progettoSvilDODS.assignee));
+				pSvilDem.setCdProgSvilD(t.get(progettoSvilDODS.cdProgSvilD));
+				pSvilDem.setCfCodice(t.get(progettoSvilDODS.cfCodice));
+				pSvilDem.setCfDataDispEffettiva(t.get(progettoSvilDODS.cfDataDispEffettiva));
+				pSvilDem.setCfDataDispPianificata(t.get(progettoSvilDODS.cfDataDispPianificata));
+				pSvilDem.setCfDataInizio(t.get(progettoSvilDODS.cfDataInizio));
+				pSvilDem.setCfDataInizioEff(t.get(progettoSvilDODS.cfDataInizioEff));
+				pSvilDem.setCfFornitura(t.get(progettoSvilDODS.cfFornitura));
+				pSvilDem.setDescrizioneProgSvilD(t.get(progettoSvilDODS.descrizioneProgSvilD));
+				pSvilDem.setDmalmProgSvilDPk(t.get(progettoSvilDODS.dmalmProgSvilDPk));
+				pSvilDem.setDmalmProjectFk02(t.get(progettoSvilDODS.dmalmProjectFk02));
+				pSvilDem.setDmalmStatoWorkitemFk03(t.get(progettoSvilDODS.dmalmStatoWorkitemFk03));
+				pSvilDem.setDmalmStrutturaOrgFk01(t.get(progettoSvilDODS.dmalmStrutturaOrgFk01));
+				pSvilDem.setDmalmTempoFk04(t.get(progettoSvilDODS.dmalmTempoFk04));
+				pSvilDem.setDsAutoreProgSvilD(t.get(progettoSvilDODS.dsAutoreProgSvilD));
+				pSvilDem.setDtCambioStatoProgSvilD(t.get(progettoSvilDODS.dtCambioStatoProgSvilD));
+				pSvilDem.setDtCaricamentoProgSvilD(t.get(progettoSvilDODS.dtCaricamentoProgSvilD));
+				pSvilDem.setDtCreazioneProgSvilD(t.get(progettoSvilDODS.dtCreazioneProgSvilD));
+				pSvilDem.setDtModificaProgSvilD(t.get(progettoSvilDODS.dtModificaProgSvilD));
+				pSvilDem.setDtPassaggioEsercizio(t.get(progettoSvilDODS.dtPassaggioEsercizio));
+				pSvilDem.setDtRisoluzioneProgSvilD(t.get(progettoSvilDODS.dtRisoluzioneProgSvilD));
+				pSvilDem.setDtScadenzaProgSvilD(t.get(progettoSvilDODS.dtScadenzaProgSvilD));
+				pSvilDem.setDtStoricizzazione(t.get(progettoSvilDODS.dtStoricizzazione));
+				pSvilDem.setIdAutoreProgSvilD(t.get(progettoSvilDODS.idAutoreProgSvilD));
+				pSvilDem.setIdRepository(t.get(progettoSvilDODS.idRepository));
+				pSvilDem.setMotivoRisoluzioneProgSvilD(t.get(progettoSvilDODS.motivoRisoluzioneProgSvilD));
+				pSvilDem.setPriorityProgettoSvilDemand(t.get(progettoSvilDODS.priorityProgettoSvilDemand));
+				pSvilDem.setRankStatoProgSvilD(t.get(progettoSvilDODS.rankStatoProgSvilD));
+				pSvilDem.setRankStatoProgSvilDMese(t.get(progettoSvilDODS.rankStatoProgSvilDMese));
+				pSvilDem.setSeverityProgettoSvilDemand(t.get(progettoSvilDODS.severityProgettoSvilDemand));
+				pSvilDem.setTempoTotaleRisoluzione(t.get(progettoSvilDODS.tempoTotaleRisoluzione));
+				pSvilDem.setTitoloProgSvilD(t.get(progettoSvilDODS.titoloProgSvilD));
+				pSvilDem.setDmalmUserFk06(t.get(progettoSvilDODS.dmalmUserFk06));
+				pSvilDem.setDtScadenza(t.get(progettoSvilDODS.dtScadenzaProgSvilD));
+				resultList.add(pSvilDem);
+			}
 			connection.commit();
 
 		} catch (Exception e) {
@@ -182,7 +225,7 @@ public class ProgettoSviluppoDemandOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultList;
 
 	}
 }
