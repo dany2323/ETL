@@ -3,22 +3,23 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmRichManutenzioneOds;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.Projections;
 
 public class RichiestaManutenzioneOdsDAO {
 
@@ -156,7 +157,8 @@ public class RichiestaManutenzioneOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmRichiestaManutenzione> list = null;
+		List<Tuple> list = null;
+		List<DmalmRichiestaManutenzione> resultListEl = new LinkedList<DmalmRichiestaManutenzione>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -170,8 +172,46 @@ public class RichiestaManutenzioneOdsDAO {
 					.from(richiestaODS)
 					.orderBy(richiestaODS.cdRichiestaManutenzione.asc())
 					.orderBy(richiestaODS.dtModificaRichManutenzione.asc())
-					.list(Projections.bean(DmalmRichiestaManutenzione.class,
-							richiestaODS.all()));
+					.list(richiestaODS.all());
+			
+			for (Tuple result : list) {
+				DmalmRichiestaManutenzione resultEl = new DmalmRichiestaManutenzione();
+				resultEl.setCdRichiestaManutenzione(result.get(richiestaODS.cdRichiestaManutenzione));
+				resultEl.setClasseDiFornitura(result.get(richiestaODS.classeDiFornitura));
+				resultEl.setCodice(result.get(richiestaODS.codice));
+				resultEl.setDmalmUserFk06(result.get(richiestaODS.dmalmUserFk06));
+				resultEl.setDataChiusuraRichManut(result.get(richiestaODS.dataChiusuraRichManut));
+				resultEl.setDataDispEffettiva(result.get(richiestaODS.dataDispEffettiva));
+				resultEl.setDataDispPianificata(result.get(richiestaODS.dataDispPianificata));
+				resultEl.setDataInizioEffettivo(result.get(richiestaODS.dataInizioEffettivo));
+				resultEl.setDataInizioPianificato(result.get(richiestaODS.dataInizioPianificato));
+				resultEl.setDescrizioneRichManutenzione(result.get(richiestaODS.descrizioneRichManutenzione));
+				resultEl.setDmalmProjectFk02(result.get(richiestaODS.dmalmProjectFk02));
+				resultEl.setDmalmRichManutenzionePk(result.get(richiestaODS.dmalmRichManutenzionePk));
+				resultEl.setDmalmStatoWorkitemFk03(result.get(richiestaODS.dmalmStatoWorkitemFk03));
+				resultEl.setDmalmStrutturaOrgFk01(result.get(richiestaODS.dmalmStrutturaOrgFk01));
+				resultEl.setDmalmTempoFk04(result.get(richiestaODS.dmalmTempoFk04));
+				resultEl.setDsAutoreRichManutenzione(result.get(richiestaODS.dsAutoreRichManutenzione));
+				resultEl.setDtCambioStatoRichManut(result.get(richiestaODS.dtCambioStatoRichManut));
+				resultEl.setDtCaricamentoRichManut(result.get(richiestaODS.dtCaricamentoRichManut));
+				resultEl.setDtCreazioneRichManutenzione(result.get(richiestaODS.dtCreazioneRichManutenzione));
+				resultEl.setDtModificaRichManutenzione(result.get(richiestaODS.dtModificaRichManutenzione));
+				resultEl.setDtRisoluzioneRichManut(result.get(richiestaODS.dtRisoluzioneRichManut));
+				resultEl.setDtScadenzaRichManutenzione(result.get(richiestaODS.dtScadenzaRichManutenzione));
+				resultEl.setDtStoricizzazione(result.get(richiestaODS.dtStoricizzazione));
+				resultEl.setDurataEffettivaRichMan(result.get(richiestaODS.durataEffettivaRichMan));
+				resultEl.setIdAutoreRichManutenzione(result.get(richiestaODS.idAutoreRichManutenzione));
+				resultEl.setIdRepository(result.get(richiestaODS.idRepository));
+				resultEl.setMotivoRisoluzioneRichManut(result.get(richiestaODS.motivoRisoluzioneRichManut));
+				resultEl.setRankStatoRichManutenzione(result.get(richiestaODS.rankStatoRichManutenzione));
+				resultEl.setRankStatoRichManutMese(result.get(richiestaODS.rankStatoRichManutMese));
+				resultEl.setStgPk(result.get(richiestaODS.stgPk));
+				resultEl.setUri(result.get(richiestaODS.uri));
+				resultEl.setTitoloRichiestaManutenzione(result.get(richiestaODS.titoloRichiestaManutenzione));
+				resultEl.setSeverity(result.get(richiestaODS.severity));
+				resultEl.setPriority(result.get(richiestaODS.priority));
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -184,7 +224,7 @@ public class RichiestaManutenzioneOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 
 	}
 

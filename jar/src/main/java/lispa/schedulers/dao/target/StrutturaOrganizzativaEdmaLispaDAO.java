@@ -7,17 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-
-import lispa.schedulers.bean.target.DmalmStrutturaOrganizzativa;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.target.QDmalmStrutturaOrganizzativa;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
-import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.LogUtils;
 
 import org.apache.log4j.Logger;
 
@@ -28,7 +19,16 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
-import com.mysema.query.types.Projections;
+
+import lispa.schedulers.bean.target.DmalmStrutturaOrganizzativa;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.QDmalmStrutturaOrganizzativa;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
+import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.LogUtils;
 
 public class StrutturaOrganizzativaEdmaLispaDAO {
 
@@ -525,7 +525,8 @@ public class StrutturaOrganizzativaEdmaLispaDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmStrutturaOrganizzativa> list = new ArrayList<DmalmStrutturaOrganizzativa>();
+		List<Tuple> list = new ArrayList<Tuple>();
+		List<DmalmStrutturaOrganizzativa> resultListEl = new LinkedList<DmalmStrutturaOrganizzativa>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -539,8 +540,37 @@ public class StrutturaOrganizzativaEdmaLispaDAO {
 			list = query
 					.from(struttura)
 					.where(struttura.dmalmStrutturaOrgPk.eq(primaryKey))
-					.list(Projections.bean(DmalmStrutturaOrganizzativa.class,
-							struttura.all()));
+					.list(struttura.all());
+			
+			for (Tuple result : list) {
+				DmalmStrutturaOrganizzativa resultEl = new DmalmStrutturaOrganizzativa();
+				resultEl.setCdArea(result.get(struttura.cdArea));
+				resultEl.setCdEnte(result.get(struttura.cdEnte));
+				resultEl.setCdResponsabileArea(result.get(struttura.cdResponsabileArea));
+				resultEl.setCdUoSuperiore(result.get(struttura.cdUoSuperiore));
+				resultEl.setCdVisibilita(result.get(struttura.cdVisibilita));
+				resultEl.setDmalmStrutturaOrgPk(result.get(struttura.dmalmStrutturaOrgPk));
+				resultEl.setDnResponsabileArea(result.get(struttura.dnResponsabileArea));
+				resultEl.setDsAreaEdma(result.get(struttura.dsAreaEdma));
+				resultEl.setEmail(result.get(struttura.email));
+				resultEl.setDsUoSuperiore(result.get(struttura.dsUoSuperiore));
+				resultEl.setDtAttivazione(result.get(struttura.dtAttivazione));
+				resultEl.setDtCaricamento(result.get(struttura.dtCaricamento));
+				resultEl.setDtDisattivazione(result.get(struttura.dtDisattivazione));
+				resultEl.setDtFineValidita(result.get(struttura.dtFineValidita));
+				resultEl.setDtInizioValidita(result.get(struttura.dtInizioValidita));
+				resultEl.setDtFineValiditaEdma(result.get(struttura.dtFineValiditaEdma));
+				resultEl.setDtInizioValiditaEdma(result.get(struttura.dtInizioValiditaEdma));
+				resultEl.setIdEdma(result.get(struttura.idEdma));
+				resultEl.setInterno(result.get(struttura.interno));
+				resultEl.setIdGradoUfficio(result.get(struttura.idGradoUfficio));
+				resultEl.setIdSede(result.get(struttura.idSede));
+				resultEl.setIdTipologiaUfficio(result.get(struttura.idTipologiaUfficio));
+				resultEl.setNote(result.get(struttura.note));
+				resultEl.setAnnullato(result.get(struttura.annullato));
+				resultListEl.add(resultEl);
+			}
+			
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
@@ -550,6 +580,6 @@ public class StrutturaOrganizzativaEdmaLispaDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 	}
 }

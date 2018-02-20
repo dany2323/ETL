@@ -3,22 +3,23 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 import lispa.schedulers.bean.target.fatti.DmalmTestcase;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmTestcaseOds;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.Projections;
 
 public class TestCaseOdsDAO {
 
@@ -145,7 +146,8 @@ public class TestCaseOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmTestcase> list = null;
+		List<Tuple> list = null;
+		List<DmalmTestcase> resultListEl = new LinkedList<DmalmTestcase>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -159,8 +161,43 @@ public class TestCaseOdsDAO {
 					.from(testCaseODS)
 					.orderBy(testCaseODS.cdTestcase.asc())
 					.orderBy(testCaseODS.dtModificaTestcase.asc())
-					.list(Projections.bean(DmalmTestcase.class,
-							testCaseODS.all()));
+					.list(testCaseODS.all());
+			
+			for (Tuple result : list) {
+				DmalmTestcase resultEl = new DmalmTestcase();
+				resultEl.setCdTestcase(result.get(testCaseODS.cdTestcase));
+				resultEl.setCodice(result.get(testCaseODS.codice));
+				resultEl.setDataEsecuzioneTestcase(result.get(testCaseODS.dataEsecuzioneTestcase));
+				resultEl.setDescrizioneTestcase(result.get(testCaseODS.descrizioneTestcase));
+				resultEl.setDmalmAreaTematicaFk05(result.get(testCaseODS.dmalmAreaTematicaFk05));
+				resultEl.setDmalmProjectFk02(result.get(testCaseODS.dmalmProjectFk02));
+				resultEl.setDmalmUserFk06(result.get(testCaseODS.dmalmUserFk06));
+				resultEl.setDmalmStatoWorkitemFk03(result.get(testCaseODS.dmalmStatoWorkitemFk03));
+				resultEl.setDmalmStrutturaOrgFk01(result.get(testCaseODS.dmalmStrutturaOrgFk01));
+				resultEl.setDmalmTempoFk04(result.get(testCaseODS.dmalmTempoFk04));
+				resultEl.setDmalmTestcasePk(result.get(testCaseODS.dmalmTestcasePk));
+				resultEl.setDsAutoreTestcase(result.get(testCaseODS.dsAutoreTestcase));
+				resultEl.setDtCambioStatoTestcase(result.get(testCaseODS.dtCambioStatoTestcase));
+				resultEl.setDtCaricamentoTestcase(result.get(testCaseODS.dtCaricamentoTestcase));
+				resultEl.setDtCreazioneTestcase(result.get(testCaseODS.dtCreazioneTestcase));
+				resultEl.setDtModificaTestcase(result.get(testCaseODS.dtModificaTestcase));
+				resultEl.setDtRisoluzioneTestcase(result.get(testCaseODS.dtRisoluzioneTestcase));
+				resultEl.setDtScadenzaTestcase(result.get(testCaseODS.dtScadenzaTestcase));
+				resultEl.setDtStoricizzazione(result.get(testCaseODS.dtStoricizzazione));
+				resultEl.setIdAutoreTestcase(result.get(testCaseODS.idAutoreTestcase));
+				resultEl.setIdRepository(result.get(testCaseODS.idRepository));
+				resultEl.setMotivoRisoluzioneTestcase(result.get(testCaseODS.motivoRisoluzioneTestcase));
+				resultEl.setNumeroLinea(result.get(testCaseODS.numeroLinea));
+				resultEl.setNumeroTestata(result.get(testCaseODS.numeroTestata));
+				resultEl.setRankStatoTestcase(result.get(testCaseODS.rankStatoTestcase));
+				resultEl.setRankStatoTestcaseMese(result.get(testCaseODS.rankStatoTestcaseMese));
+				resultEl.setStgPk(result.get(testCaseODS.stgPk));
+				resultEl.setUri(result.get(testCaseODS.uri));
+				resultEl.setTitoloTestcase(result.get(testCaseODS.titoloTestcase));
+				resultEl.setSeverity(result.get(testCaseODS.severity));
+				resultEl.setPriority(result.get(testCaseODS.priority));
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -173,7 +210,7 @@ public class TestCaseOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 
 	}
 

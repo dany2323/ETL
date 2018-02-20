@@ -3,22 +3,23 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 import lispa.schedulers.bean.target.fatti.DmalmTask;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmTaskOds;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.Projections;
 
 public class TaskOdsDAO {
 
@@ -151,7 +152,8 @@ public class TaskOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmTask> list = null;
+		List<Tuple> list = null;
+		List<DmalmTask> resultListEl = new LinkedList<DmalmTask>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -163,8 +165,50 @@ public class TaskOdsDAO {
 
 			list = query.from(taskODS).orderBy(taskODS.cdTask.asc())
 					.orderBy(taskODS.dtModificaTask.asc())
-					.list(Projections.bean(DmalmTask.class, taskODS.all()));
+					.list(taskODS.all());
 
+			for (Tuple result : list) {
+				DmalmTask resultEl = new DmalmTask();
+                resultEl.setDmalmUserFk06(result.get(taskODS.dmalmUserFk06));
+				resultEl.setCdTask(result.get(taskODS.cdTask));
+                resultEl.setCodice(result.get(taskODS.codice));
+                resultEl.setDataChiusuraTask(result.get(taskODS.dataChiusuraTask));
+                resultEl.setDataFineEffettiva(result.get(taskODS.dataFineEffettiva));
+                resultEl.setDataFinePianificata(result.get(taskODS.dataFinePianificata));
+                resultEl.setDataInizioEffettivo(result.get(taskODS.dataInizioEffettivo));
+                resultEl.setDataInizioPianificato(result.get(taskODS.dataInizioPianificato));
+                resultEl.setDescrizioneTask(result.get(taskODS.descrizioneTask));
+                resultEl.setDmalmAreaTematicaFk05(result.get(taskODS.dmalmAreaTematicaFk05));
+                resultEl.setDmalmProjectFk02(result.get(taskODS.dmalmProjectFk02));
+                resultEl.setDmalmStatoWorkitemFk03(result.get(taskODS.dmalmStatoWorkitemFk03));
+                resultEl.setDmalmStrutturaOrgFk01(result.get(taskODS.dmalmStrutturaOrgFk01));
+                resultEl.setDmalmTempoFk04(result.get(taskODS.dmalmTempoFk04));
+                resultEl.setDsAutoreTask(result.get(taskODS.dsAutoreTask));
+                resultEl.setDtCambioStatoTask(result.get(taskODS.dtCambioStatoTask));
+                resultEl.setDtCaricamentoTask(result.get(taskODS.dtCaricamentoTask));
+                resultEl.setDtCreazioneTask(result.get(taskODS.dtCreazioneTask));
+                resultEl.setDtModificaTask(result.get(taskODS.dtModificaTask));
+                resultEl.setDtRisoluzioneTask(result.get(taskODS.dtRisoluzioneTask));
+                resultEl.setDtScadenzaTask(result.get(taskODS.dtScadenzaTask));
+                resultEl.setDtStoricizzazione(result.get(taskODS.dtStoricizzazione));
+                resultEl.setIdAutoreTask(result.get(taskODS.idAutoreTask));
+                resultEl.setIdRepository(result.get(taskODS.idRepository));
+                resultEl.setInitialCost(result.get(taskODS.initialCost));
+                resultEl.setMotivoRisoluzioneTask(result.get(taskODS.motivoRisoluzioneTask));
+                resultEl.setNumeroLinea(result.get(taskODS.numeroLinea));
+                resultEl.setNumeroTestata(result.get(taskODS.numeroTestata));
+                resultEl.setPriorityTask(result.get(taskODS.priorityTask));				
+                resultEl.setRankStatoTask(result.get(taskODS.rankStatoTask));
+                resultEl.setRankStatoTaskMese(result.get(taskODS.rankStatoTaskMese));
+                resultEl.setSeverityTask(result.get(taskODS.severityTask));
+                resultEl.setStgPk(result.get(taskODS.stgPk));
+                resultEl.setUri(result.get(taskODS.uri));
+                resultEl.setTaskType(result.get(taskODS.taskType));
+                resultEl.setTempoTotaleRisoluzione(result.get(taskODS.tempoTotaleRisoluzione));
+                resultEl.setTitoloTask(result.get(taskODS.titoloTask));
+				resultListEl.add(resultEl);
+			}
+			
 			connection.commit();
 
 		} catch (Exception e) {
@@ -176,7 +220,7 @@ public class TaskOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 
 	}
 

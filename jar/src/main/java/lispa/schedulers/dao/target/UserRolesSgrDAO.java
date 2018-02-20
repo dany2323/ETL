@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,13 +29,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
-import com.mysema.query.types.Projections;
 
 import lispa.schedulers.bean.target.DmalmUserRolesSgr;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -66,7 +67,8 @@ public class UserRolesSgrDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-		List<DmalmUserRolesSgr> userRoles = new ArrayList<DmalmUserRolesSgr>();
+		List<Tuple> userRoles = new ArrayList<Tuple>();
+		List<DmalmUserRolesSgr> resultListEl = new LinkedList<DmalmUserRolesSgr>();
 
 		try {
 
@@ -80,8 +82,21 @@ public class UserRolesSgrDAO {
 					.where(dmalmUserRoles.dtFineValidita.in(new SQLSubQuery()
 							.from(dmalmUserRoles2).list(
 									dmalmUserRoles2.dtFineValidita.max())))
-					.list(Projections.bean(DmalmUserRolesSgr.class,
-							dmalmUserRoles.all()));
+					.list(dmalmUserRoles.all());
+			
+			for (Tuple result : userRoles) {
+				DmalmUserRolesSgr resultEl = new DmalmUserRolesSgr();
+				resultEl.setDmalmUserRolesPk(result.get(dmalmUserRoles.dmalmUserRolesPk));
+				resultEl.setDmalmProjectFk01(result.get(dmalmUserRoles.dmalmProjectFk01));
+				resultEl.setDtCaricamento(result.get(dmalmUserRoles.dtCaricamento));
+				resultEl.setDtFineValidita(result.get(dmalmUserRoles.dtFineValidita));
+				resultEl.setDtInizioValidita(result.get(dmalmUserRoles.dtInizioValidita));
+				resultEl.setOrigine(result.get(dmalmUserRoles.origine));
+				resultEl.setRuolo(result.get(dmalmUserRoles.ruolo));
+				resultEl.setUserid(result.get(dmalmUserRoles.userid));
+				resultEl.setRepository(result.get(dmalmUserRoles.repository));				
+				resultListEl.add(resultEl);
+			}
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -91,7 +106,7 @@ public class UserRolesSgrDAO {
 				cm.closeConnection(connection);
 		}
 
-		return userRoles;
+		return resultListEl;
 
 	}
 

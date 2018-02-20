@@ -3,7 +3,17 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
 import lispa.schedulers.dao.target.fatti.SottoprogrammaDAO;
@@ -11,15 +21,6 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmSottoprogrammaOds;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.Projections;
 
 public class SottoprogrammaOdsDAO {
 
@@ -138,7 +139,9 @@ public class SottoprogrammaOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmSottoprogramma> list = null;
+		List<Tuple> list = null;
+		List<DmalmSottoprogramma> resultListEl = new LinkedList<DmalmSottoprogramma>();
+
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -152,8 +155,42 @@ public class SottoprogrammaOdsDAO {
 					.from(sottoprogrammaODS)
 					.orderBy(sottoprogrammaODS.cdSottoprogramma.asc())
 					.orderBy(sottoprogrammaODS.dtModificaSottoprogramma.asc())
-					.list(Projections.bean(DmalmSottoprogramma.class,
-							sottoprogrammaODS.all()));
+					.list(sottoprogrammaODS.all());
+			
+			for (Tuple result : list) {
+				DmalmSottoprogramma resultEl = new DmalmSottoprogramma();
+				resultEl.setCdSottoprogramma(result.get(sottoprogrammaODS.cdSottoprogramma));
+				resultEl.setCodice(result.get(sottoprogrammaODS.codice));
+				resultEl.setNumeroLinea(result.get(sottoprogrammaODS.numeroLinea));
+				resultEl.setNumeroTestata(result.get(sottoprogrammaODS.numeroTestata));
+				resultEl.setDmalmUserFk06(result.get(sottoprogrammaODS.dmalmUserFk06));
+				resultEl.setDescrizioneSottoprogramma(result.get(sottoprogrammaODS.descrizioneSottoprogramma));
+				resultEl.setDmalmProjectFk02(result.get(sottoprogrammaODS.dmalmProjectFk02));
+				resultEl.setDmalmSottoprogrammaPk(result.get(sottoprogrammaODS.dmalmSottoprogrammaPk));
+				resultEl.setDmalmStatoWorkitemFk03(result.get(sottoprogrammaODS.dmalmStatoWorkitemFk03));
+				resultEl.setDmalmStrutturaOrgFk01(result.get(sottoprogrammaODS.dmalmStrutturaOrgFk01));
+				resultEl.setDmalmTempoFk04(result.get(sottoprogrammaODS.dmalmTempoFk04));
+				resultEl.setDsAutoreSottoprogramma(result.get(sottoprogrammaODS.dsAutoreSottoprogramma));
+				resultEl.setDtCambioStatoSottoprogramma(result.get(sottoprogrammaODS.dtCambioStatoSottoprogramma));
+				resultEl.setDtCaricamentoSottoprogramma(result.get(sottoprogrammaODS.dtCaricamentoSottoprogramma));
+				resultEl.setDtCompletamento(result.get(sottoprogrammaODS.dtCompletamento));
+				resultEl.setDtCreazioneSottoprogramma(result.get(sottoprogrammaODS.dtCreazioneSottoprogramma));
+				resultEl.setDtModificaSottoprogramma(result.get(sottoprogrammaODS.dtModificaSottoprogramma));
+				resultEl.setDtRisoluzioneSottoprogramma(result.get(sottoprogrammaODS.dtRisoluzioneSottoprogramma));
+				resultEl.setDtScadenzaSottoprogramma(result.get(sottoprogrammaODS.dtScadenzaSottoprogramma));
+				resultEl.setDtStoricizzazione(result.get(sottoprogrammaODS.dtStoricizzazione));
+				resultEl.setIdAutoreSottoprogramma(result.get(sottoprogrammaODS.idAutoreSottoprogramma));
+				resultEl.setIdRepository(result.get(sottoprogrammaODS.idRepository));
+				resultEl.setMotivoRisoluzioneSottoprogr(result.get(sottoprogrammaODS.motivoRisoluzioneSottoprogr));
+				resultEl.setRankStatoSottoprogramma((result.get(sottoprogrammaODS.rankStatoSottoprogramma) != null && result.get(sottoprogrammaODS.rankStatoSottoprogramma).equals(true))?new Double(1):new Double(0));
+				resultEl.setRankStatoSottoprogrammaMese(result.get(sottoprogrammaODS.rankStatoSottoprogrammaMese));
+				resultEl.setStgPk(result.get(sottoprogrammaODS.stgPk));
+				resultEl.setUri(result.get(sottoprogrammaODS.uri));
+				resultEl.setTitoloSottoprogramma(result.get(sottoprogrammaODS.titoloSottoprogramma));
+				resultEl.setSeverity(result.get(sottoprogrammaODS.severity));
+				resultEl.setPriority(result.get(sottoprogrammaODS.priority));
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -166,7 +203,7 @@ public class SottoprogrammaOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 
 	}
 }

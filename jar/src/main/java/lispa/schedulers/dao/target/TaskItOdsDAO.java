@@ -3,22 +3,23 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmTaskItOds;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.Projections;
 
 public class TaskItOdsDAO {
 
@@ -139,7 +140,9 @@ public class TaskItOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmTaskIt> list = null;
+		List<Tuple> list = null;
+		List<DmalmTaskIt> resultListEl = new LinkedList<DmalmTaskIt>();
+
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -151,7 +154,45 @@ public class TaskItOdsDAO {
 
 			list = query.from(taskItOds).orderBy(taskItOds.cdTaskIt.asc())
 					.orderBy(taskItOds.dtModificaTaskIt.asc())
-					.list(Projections.bean(DmalmTaskIt.class, taskItOds.all()));
+					.list(taskItOds.all());
+			
+			for (Tuple result : list) {
+				DmalmTaskIt resultEl = new DmalmTaskIt();
+				resultEl.setAvanzamento(result.get(taskItOds.avanzamento));
+				resultEl.setDmalmUserFk06(result.get(taskItOds.dmalmUserFk06));
+                resultEl.setCdTaskIt(result.get(taskItOds.cdTaskIt));
+                resultEl.setCodice(result.get(taskItOds.codice));
+                resultEl.setDescrizioneTaskIt(result.get(taskItOds.descrizioneTaskIt));
+                resultEl.setDmalmProjectFk02(result.get(taskItOds.dmalmProjectFk02));
+                resultEl.setDmalmStatoWorkitemFk03(result.get(taskItOds.dmalmStatoWorkitemFk03));
+                resultEl.setDmalmStrutturaOrgFk01(result.get(taskItOds.dmalmStrutturaOrgFk01));
+                resultEl.setDmalmTempoFk04(result.get(taskItOds.dmalmTempoFk04));
+                resultEl.setDsAutoreTaskIt(result.get(taskItOds.dsAutoreTaskIt));
+                resultEl.setDtCambioStatoTaskIt(result.get(taskItOds.dtCambioStatoTaskIt));
+                resultEl.setDtCaricamentoTaskIt(result.get(taskItOds.dtCaricamentoTaskIt));
+                resultEl.setDtCreazioneTaskIt(result.get(taskItOds.dtCreazioneTaskIt));
+                resultEl.setDtFineEffettiva(result.get(taskItOds.dtFineEffettiva));
+                resultEl.setDtFinePianificata(result.get(taskItOds.dtFinePianificata));
+                resultEl.setDtInizioEffettivo(result.get(taskItOds.dtInizioEffettivo));
+                resultEl.setDtInizioPianificato(result.get(taskItOds.dtInizioPianificato));
+                resultEl.setDtModificaTaskIt(result.get(taskItOds.dtModificaTaskIt));
+                resultEl.setDtRisoluzioneTaskIt(result.get(taskItOds.dtRisoluzioneTaskIt));
+                resultEl.setDtScadenzaTaskIt(result.get(taskItOds.dtScadenzaTaskIt));
+                resultEl.setDtStoricizzazione(result.get(taskItOds.dtStoricizzazione));
+                resultEl.setDurataEffettiva(result.get(taskItOds.durataEffettiva));
+                resultEl.setIdRepository(result.get(taskItOds.idRepository));
+                resultEl.setIdAutoreTaskIt(result.get(taskItOds.idAutoreTaskIt));
+                resultEl.setMotivoRisoluzioneTaskIt(result.get(taskItOds.motivoRisoluzioneTaskIt));
+                resultEl.setPriorityTaskIt(result.get(taskItOds.priorityTaskIt));             
+                resultEl.setRankStatoTaskIt(result.get(taskItOds.rankStatoTaskIt));
+                resultEl.setRankStatoTaskItMese(result.get(taskItOds.rankStatoTaskItMese));
+                resultEl.setSeverityTaskIt(result.get(taskItOds.severityTaskIt));
+                resultEl.setStgPk(result.get(taskItOds.stgPk));
+                resultEl.setUri(result.get(taskItOds.uri));
+                resultEl.setTipoTask(result.get(taskItOds.tipoTask));
+                resultEl.setTitoloTaskIt(result.get(taskItOds.titoloTaskIt));				
+				resultListEl.add(resultEl);
+			}
 
 			connection.commit();
 
@@ -164,7 +205,7 @@ public class TaskItOdsDAO {
 				cm.closeConnection(connection);
 		}
 
-		return list;
+		return resultListEl;
 	}
 
 }
