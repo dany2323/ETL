@@ -8,10 +8,12 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 
@@ -155,36 +157,51 @@ public class QueryManager {
 		}
 	}
 	
-	public synchronized void executeMultipleStatementsFromFile(String file,
+	public synchronized boolean executeMultipleStatementsFromFile(String file,
 			String separatorTable, String separatorLine) throws Exception {
 
 		List<String> records = getQueryList(file, separatorLine);
 
 		for (String record : records) {
 			String[] splitRecord = record.split(":");
-			executeProcedure(splitRecord[0], splitRecord[1]);
+			boolean flag = executeProcedure(splitRecord[0], splitRecord[1]);
+			if (!flag) {
+				return flag;
+			}
 		}
+		return true;
 	}
 	
-	public synchronized void executeProcedure(String backupTable, String targetTable)
+	public synchronized boolean executeProcedure(String backupTable, String targetTable)
 			throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection conn = null;
 		CallableStatement cstmt = null;
+		boolean flag = false;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			
-			cstmt = conn.prepareCall("{call BACKUP_TARGET(?, ?)}");
-			cstmt.setString(1, backupTable);
-			cstmt.setString(2, targetTable);
+			cstmt = conn.prepareCall("{? = call BACKUP_TARGET(?, ?, ?)}");
+			cstmt.registerOutParameter(1, Types.VARCHAR);
+			cstmt.setString(2, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
+			cstmt.setString(3, backupTable);
+			cstmt.setString(4, targetTable);
 			cstmt.executeUpdate();
 			
+			String stringFlag = cstmt.getString(1);
+			if(stringFlag.equals("TRUE")) {
+				flag = true;
+			} else {
+				flag = false;
+			}
 			conn.commit();
-			
 			logger.info("ESEGUITA PROCEDURE PER LE TABELLE: " + backupTable + " e " + targetTable);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			
@@ -196,5 +213,6 @@ public class QueryManager {
 				cm.closeConnection(conn);
 			}
 		}
+		return flag;
 	}
 }

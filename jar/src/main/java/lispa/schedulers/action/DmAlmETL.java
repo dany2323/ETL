@@ -56,7 +56,7 @@ public class DmAlmETL {
 				+ ExecutionManager.getInstance().isExecutionMps());
 
 		logger.info("START DmAlmFillStaging.doWork()");
-		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
+//		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
 		logger.info("STOP DmAlmFillStaging.doWork()");
 
 		if (!RecoverManager.getInstance().isRecovered()) {
@@ -67,7 +67,7 @@ public class DmAlmETL {
 			}
 
 			logger.info("START DmAlmCleaning.doWork()");
-			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
+//			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
 			logger.info("STOP DmAlmCleaning.doWork()");
 
 			try {
