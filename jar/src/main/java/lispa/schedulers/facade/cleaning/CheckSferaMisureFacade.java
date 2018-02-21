@@ -8,6 +8,7 @@ import java.util.List;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
+import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.queryimplementation.staging.sfera.QDmalmStgMisura;
 import lispa.schedulers.utils.DateUtils;
@@ -484,7 +485,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_ASM,
 								MisuraUtils.MisuraToString(row),
-								"APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP e' obbligatorio ",
+								DmAlmConstants.FLAG_ASM_DA_MISURARE_OBBLIGATORIO_FP,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
 			} else {
@@ -496,7 +497,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP - Valore non permesso : "
+									DmAlmConstants.FLAG_ASM_DA_MISURARE_VALORE_NON_PERMESSO
 											+ row.get(stgMisura.pAppFlagMisurareSvimevFp),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
@@ -510,7 +511,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_ASM,
 								MisuraUtils.MisuraToString(row),
-								"APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP e' obbligatorio ",
+								DmAlmConstants.FLAG_ASM_DA_MISURARE_IN_FP_OBBLIGATORIO,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
 			} else {
@@ -522,7 +523,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP - Valore non permesso : "
+									DmAlmConstants.FLAG_ASM_DA_MISURARE_IN_FP_NO_PERMESSO
 											+ row.get(stgMisura.pAppFlagDamisurarePatrFp),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
@@ -536,7 +537,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:FLAG_ASM_IN_MANUTENZIONE e' obbligatorio ",
+						DmAlmConstants.FLAG_ASM_IN_MANUTENZIONE_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			} else {
@@ -552,7 +553,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:FLAG_ASM_IN_MANUTENZIONE - Valore non permesso : "
+									DmAlmConstants.FLAG_ASM_IN_MANUTENZIONE_NON_PERMESSO
 											+ row.get(stgMisura.pAppFlagInManutenzione),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
@@ -2045,7 +2046,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_ASM,
 								MisuraUtils.MisuraToString(row),
-								"ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI non rispetta il pattern predefinito : "
+								DmAlmConstants.COD_ALTRE_ASM_NO_PATTERN
 										+ datoInput,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
@@ -2063,7 +2064,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									.insert(DmAlmConstants.FONTE_MISURA,
 											DmAlmConstants.TARGET_ASM,
 											MisuraUtils.MisuraToString(row),
-											"ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI  non e' presente / attivo / servizio comune nell'insieme generale dei COD_ASM : "
+											DmAlmConstants.COD_ALTRE_ASM_NON_PRESENTE
 													+ asm,
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 											dataEsecuzione);
@@ -2077,7 +2078,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									.insert(DmAlmConstants.FONTE_MISURA,
 											DmAlmConstants.TARGET_ASM,
 											MisuraUtils.MisuraToString(row),
-											"ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI non sono un sottoinsieme delle COD_ASM CONFINANTI : "
+											DmAlmConstants.COD_ALTRE_ASM_NO_CONFINANTI
 													+ asm,
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 											dataEsecuzione);

@@ -564,6 +564,15 @@ public final class DmAlmConstants {
 	public static String COD_FLUSSI_IO_ASM="ESF043 - COD_FLUSSI_IO_ASM non coincide con l'insieme unione DENOM_SIST_TERZEPARTI_CONFINANTI + COD_ASM CONFINANTI: ";
 	public static String FLAG_ASM_SERVIZIO="ESF044 - APP-ATT:FLAG_ASM_SERVIZIO_COMUNE e' obbligatorio ";
 	public static String FLAG_ASM_SERVIZIO_COMUNE="ESF045 - APP-ATT:FLAG_ASM_SERVIZIO_COMUNE - Valore non permesso :";
+	public static String COD_ALTRE_ASM_NO_CONFINANTI="ESF046 - ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI non sono un sottoinsieme delle COD_ASM CONFINANTI : ";
+	public static String COD_ALTRE_ASM_NO_PATTERN="ESF047 - ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI non rispetta il pattern predefinito : ";
+	public static String COD_ALTRE_ASM_NON_PRESENTE="ESF048 - ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI  non e' presente / attivo / servizio comune nell'insieme generale dei COD_ASM : ";
+	public static String FLAG_ASM_DA_MISURARE_OBBLIGATORIO_FP="ESF049 - APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP e' obbligatorio ";
+	public static String FLAG_ASM_DA_MISURARE_VALORE_NON_PERMESSO="ESF050 - APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP - Valore non permesso : ";
+	public static String FLAG_ASM_DA_MISURARE_IN_FP_OBBLIGATORIO="ESF051 - APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP e' obbligatorio ";
+	public static String FLAG_ASM_DA_MISURARE_IN_FP_NO_PERMESSO="ESF052 - APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP - Valore non permesso : ";
+	public static String FLAG_ASM_IN_MANUTENZIONE_OBBLIGATORIO="ESF053 - APP-ATT:FLAG_ASM_IN_MANUTENZIONE e' obbligatorio ";
+	public static String FLAG_ASM_IN_MANUTENZIONE_NON_PERMESSO="ESF054 - APP-ATT:FLAG_ASM_IN_MANUTENZIONE - Valore non permesso : ";
     
 	public static String getProperty(String property) {
 
