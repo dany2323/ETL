@@ -573,6 +573,33 @@ public final class DmAlmConstants {
 	public static String FLAG_ASM_DA_MISURARE_IN_FP_NO_PERMESSO="ESF052 - APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP - Valore non permesso : ";
 	public static String FLAG_ASM_IN_MANUTENZIONE_OBBLIGATORIO="ESF053 - APP-ATT:FLAG_ASM_IN_MANUTENZIONE e' obbligatorio ";
 	public static String FLAG_ASM_IN_MANUTENZIONE_NON_PERMESSO="ESF054 - APP-ATT:FLAG_ASM_IN_MANUTENZIONE - Valore non permesso : ";
+	public static String COD_DIREZIONE_DEMAND_OBBLIGATORIO="ESF055 - APP-ATT:COD_DIREZIONE_DEMAND e' obbligatorio ";
+	public static String FORNITORE_MPP_NON_VALORIZZATO_SVILUPPO="ESF056 - PRJ-ATT:FORNITORE_MPP non e' valorizzabile per progetti di tipo 'Sviluppo' oppure 'Manutenzione evolutiva'";
+	public static String FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE="ESF0058 - PRJ-ATT:FORNITORE_SVILUPPO_MEV non e' valorizzabile per progetti di tipo 'Baseline'";
+	public static String COD_RDI_NO_PATTERN="ESF059 - PRJ-ATT: COD_ RDI non rispetta il pattern predefinito ";
+	public static String MP_PERCENT_CICLO_DI_VITA="ESF061 - PRJ-ATT:MP_PERCENT_CICLO_DI_VITA non e' valorizzabile per progetti di tipo 'Baseline'";
+	public static String MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO="ESF062 - PRJ-ATT:MP_PERCENT_CICLO_DI_VITA - Valore non permesso : ";
+	public static String FCC_FATT_CORREZZ_COMPLESSIVO_NO_BASELINE="ESF064 - PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO non e' valorizzabile per progetti di tipo 'Baseline' ";
+	public static String FCC_FATT_CORREZZ_COMPLESSIVO_NO_VALIDO="ESF065 - PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO - Valore non permesso : ";
+	public static String AUDIT_MONITORE_NO_VAL_IN_BASELINE="ESF066 - PRJ-ATT:AUDIT_MONITORE non e’ valorizzabile per progetti di tipo ‘Baseline’ ";
+	public static String AUDIT_INDICE_VERIFICABILITA_NO_VAL_BASELINE="ESF067 - PRJ-ATT:AUDIT_INDICE_VERIFICABILITA non e' valorizzabile per progetti di tipo 'Baseline'";
+	public static String UTENTE_MISURATORE_OBBLIGATORIO="ESF068 - Utente misuratore e' obbligatorio e deve assumere valore diverso da 'Admin': ";
+	public static String UTILIZZATA_NON_PERMESSO="ESF069 - UTILIZZATA - Valore non permesso : ";
+	public static String PROPRIETA_LEGALE_NON_PERMESSO="ESF070 - Proprietà legale - Valore non permesso : ";
+	public static String INCLUDE_DB_NON_PERMESSO="ESF071 - Includi nel database di patrimonio - Valore non permesso : ";
+	public static String FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO="ESF072 - PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_- DWH - Valore non permesso :";
+	public static String FLAG_APPLICABILITA_LG_FP_GIS_NO_PERMESSO="ESF073 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_GIS - Valore non permesso : ";
+	public static String FLAG_APPLICATIBILITA_LG_FP_EDMA_NON_PERMESSO="ESF074 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_EDMA - Valore non permesso : ";
+	public static String FLAG_APPLICABILITA_LG_FP_MWARE_NO_PERMESSO="ESF075 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_MWARE - Valore non permesso : ";
+	public static String FLAG_APPLICABILITA_LG_FP_SITIWEB="ESF076 - PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_SITIWEB - Valore non permesso : ";
+	public static String FLAG_APPLICABILITA_LG_FP_NON_PERMESSO="ESF077 - PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_futuro-01 - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP_NON_PERMESSO="ESF079 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_GIS_VALORE_NON_PERMESSO="ESF080 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ GIS - Valore non permesso :";
+	public static String FLAG_AMBITO_TECNOLOGICO_PORTALI_NON_PERMESSO="ESF081 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_PORTALI - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_PIAT_SPEC_ENT_NON_PERMESSO="ESF082 - PRJ-ATT:FLAG_ AMBITO_TECNOLOGICO_ PIATTAF_ SPECIAL_ ENTERPRISE - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_FUTURO_NON_PERMESSO="ESF083 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-01 - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO="ESF084 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-02 - Valore non permesso : ";
+	public static String MANCATA_CORRISPONDENZA_SFERA_WI="ESF087 - Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM ";
     
 	public static String getProperty(String property) {
 

@@ -99,7 +99,7 @@ public class CheckLinkSferaSgrCmFacade {
 									DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
 									MisuraUtils.ProgettoSferaToString(progetto),
-									"Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM "
+									DmAlmConstants.MANCATA_CORRISPONDENZA_SFERA_WI
 									//		+ nomeprog,
 											+ MisuraUtils.ProgettoSferaToString(progetto),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
