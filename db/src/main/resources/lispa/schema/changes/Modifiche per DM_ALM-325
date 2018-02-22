@@ -1,0 +1,63 @@
+CREATE OR REPLACE FUNCTION BACKUP_TARGET (TARGET_SCHEMA VARCHAR2, BACKUP_TABLE VARCHAR2, TARGET_TABLE VARCHAR2) RETURN VARCHAR2 
+IS v_boolean_count VARCHAR2(10);
+    
+    v_query_count_column VARCHAR2(1000);
+    v_query_truncate VARCHAR2(1000);
+    v_query_count_column_backup INTEGER;
+    v_query_column_backup VARCHAR2(1000);
+    v_cur_column_backup SYS_REFCURSOR;
+    v_column_name_backup VARCHAR2(50);
+    v_query_count_column_target INTEGER;
+    v_query_column_target VARCHAR2(1000);
+    v_cur_column_target SYS_REFCURSOR;
+    v_column_name_target VARCHAR2(50);
+    v_query_insert_backup_target VARCHAR2(1000);
+BEGIN  
+    EXECUTE IMMEDIATE 'SELECT COUNT(column_name) from dba_tab_columns where TABLE_NAME = :BACKUP_TABLE and OWNER = :TARGET_SCHEMA'
+    INTO v_query_count_column_backup
+    USING BACKUP_TABLE, TARGET_SCHEMA;
+    EXECUTE IMMEDIATE 'SELECT COUNT(column_name) from dba_tab_columns where TABLE_NAME = :TARGET_TABLE and OWNER = :TARGET_SCHEMA'
+    INTO v_query_count_column_target 
+    USING TARGET_TABLE, TARGET_SCHEMA;
+    -- verifico che le due tabella abbiamo la stessa cardinalita
+    if (v_query_count_column_backup = v_query_count_column_target and v_query_count_column_backup <> 0) then
+      -- le tabelle hanno la stessa cardinalita procedo con la verifica dei campi
+      v_query_column_backup := 'select column_name from dba_tab_columns where TABLE_NAME = '''||BACKUP_TABLE||''' and OWNER = '''||TARGET_SCHEMA||'''';
+      v_query_column_target := 'select column_name from dba_tab_columns where TABLE_NAME = '''||TARGET_TABLE||''' and OWNER = '''||TARGET_SCHEMA||'''';
+      OPEN v_cur_column_backup FOR v_query_column_backup;
+      LOOP 
+        FETCH v_cur_column_backup INTO v_column_name_backup;
+        EXIT WHEN v_cur_column_backup%NOTFOUND;
+        v_boolean_count := 'FALSE';
+        OPEN v_cur_column_target FOR v_query_column_target;
+        LOOP 
+            FETCH v_cur_column_target INTO v_column_name_target;
+            EXIT WHEN v_cur_column_target%NOTFOUND;
+            if v_column_name_backup = v_column_name_target THEN
+                v_boolean_count := 'TRUE';
+            end if;
+        END LOOP;
+      END LOOP;
+      if v_boolean_count = 'TRUE' THEN
+        v_query_truncate := 'TRUNCATE TABLE '|| BACKUP_TABLE;
+            EXECUTE IMMEDIATE v_query_truncate;
+        v_query_insert_backup_target := 'insert into '||BACKUP_TABLE||'( select * from '||TARGET_TABLE||' )';
+            EXECUTE IMMEDIATE v_query_insert_backup_target;
+        return v_boolean_count;
+      else
+        INSERT INTO DMALM_ESITI_CARICAMENTI (DATA_CARICAMENTO, DT_FINE_CARICAMENTO, DT_INIZIO_CARICAMENTO, ENTITA_TARGET, RIGHE_CARICATE, RIGHE_ERRATE, RIGHE_MODIFICATE, RIGHE_SCARTATE, STATO_ESECUZIONE)
+            VALUES(sysdate, sysdate, sysdate, BACKUP_TABLE, 0, 0, 0, 0, 'ERR_BACKUP_RECOVERY');
+        INSERT INTO DMALM_ERRORI_CARICAMENTO (DATA_CARICAMENTO, ENTITA_SORGENTE, ENTITA_TARGET, ERRORE_PK, FLAG_ERRORE, MOTIVO_ERRORE, RECORD_ERRORE)
+            VALUES(sysdate, TARGET_TABLE, BACKUP_TABLE, ERRORI_SEQ.nextval, 'SI', 'ERR_BACKUP_RECOVERY', v_column_name_backup||': campo non presente nella tabella target');
+        return v_boolean_count;
+        end if;
+    else
+        --le tabelle hanno cardinalita differente procedo con la tracciataura dell errore
+        v_boolean_count := 'FALSE';
+        INSERT INTO DMALM_ESITI_CARICAMENTI (DATA_CARICAMENTO, DT_FINE_CARICAMENTO, DT_INIZIO_CARICAMENTO, ENTITA_TARGET, RIGHE_CARICATE, RIGHE_ERRATE, RIGHE_MODIFICATE, RIGHE_SCARTATE, STATO_ESECUZIONE)
+            VALUES(sysdate, sysdate, sysdate, BACKUP_TABLE, 0, 0, 0, 0, 'ERR_BACKUP_RECOVERY');
+        INSERT INTO DMALM_ERRORI_CARICAMENTO (DATA_CARICAMENTO, ENTITA_SORGENTE, ENTITA_TARGET, ERRORE_PK, FLAG_ERRORE, MOTIVO_ERRORE, RECORD_ERRORE)
+            VALUES(sysdate, TARGET_TABLE, BACKUP_TABLE, ERRORI_SEQ.nextval, 'SI', 'ERR_BACKUP_RECOVERY', 'cardinalita dei campi differente tra le due tabelle');
+        return v_boolean_count;
+    end if;
+END BACKUP_TARGET;
