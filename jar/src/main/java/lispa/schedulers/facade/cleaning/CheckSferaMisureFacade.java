@@ -8,6 +8,7 @@ import java.util.List;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
+import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.queryimplementation.staging.sfera.QDmalmStgMisura;
 import lispa.schedulers.utils.DateUtils;
@@ -484,7 +485,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_ASM,
 								MisuraUtils.MisuraToString(row),
-								"APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP e' obbligatorio ",
+								DmAlmConstants.FLAG_ASM_DA_MISURARE_OBBLIGATORIO_FP,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
 			} else {
@@ -496,7 +497,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP - Valore non permesso : "
+									DmAlmConstants.FLAG_ASM_DA_MISURARE_VALORE_NON_PERMESSO
 											+ row.get(stgMisura.pAppFlagMisurareSvimevFp),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
@@ -510,7 +511,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_ASM,
 								MisuraUtils.MisuraToString(row),
-								"APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP e' obbligatorio ",
+								DmAlmConstants.FLAG_ASM_DA_MISURARE_IN_FP_OBBLIGATORIO,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
 			} else {
@@ -522,7 +523,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP - Valore non permesso : "
+									DmAlmConstants.FLAG_ASM_DA_MISURARE_IN_FP_NO_PERMESSO
 											+ row.get(stgMisura.pAppFlagDamisurarePatrFp),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
@@ -536,7 +537,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:FLAG_ASM_IN_MANUTENZIONE e' obbligatorio ",
+						DmAlmConstants.FLAG_ASM_IN_MANUTENZIONE_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			} else {
@@ -552,7 +553,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_ASM,
 									MisuraUtils.MisuraToString(row),
-									"APP-ATT:FLAG_ASM_IN_MANUTENZIONE - Valore non permesso : "
+									DmAlmConstants.FLAG_ASM_IN_MANUTENZIONE_NON_PERMESSO
 											+ row.get(stgMisura.pAppFlagInManutenzione),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
@@ -565,7 +566,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"APP-ATT:COD_DIREZIONE_DEMAND e' obbligatorio ",
+						DmAlmConstants.COD_DIREZIONE_DEMAND_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}
@@ -590,7 +591,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"UTILIZZATA - Valore non permesso : "
+						DmAlmConstants.UTILIZZATA_NON_PERMESSO
 								+ row.get(stgMisura.utilizzata),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -605,7 +606,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"Proprietà legale - Valore non permesso : "
+						DmAlmConstants.PROPRIETA_LEGALE_NON_PERMESSO
 								+ row.get(stgMisura.proprietaLegale),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -620,7 +621,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"Includi nel database di patrimonio - Valore non permesso : "
+						DmAlmConstants.INCLUDE_DB_NON_PERMESSO
 								+ row.get(stgMisura.includiInDbPatrimonio),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -768,7 +769,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_PROGETTO_SFERA,
 								MisuraUtils.MisuraToString(row),
-								"PRJ-ATT:AUDIT_MONITORE non e’ valorizzabile per progetti di tipo ‘Baseline’ ",
+								DmAlmConstants.AUDIT_MONITORE_NO_VAL_IN_BASELINE,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
 			}
@@ -783,7 +784,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_PROGETTO_SFERA,
 								MisuraUtils.MisuraToString(row),
-								"PRJ-ATT:AUDIT_INDICE_VERIFICABILITA non e' valorizzabile per progetti di tipo 'Baseline'",
+								DmAlmConstants.AUDIT_INDICE_VERIFICABILITA_NO_VAL_BASELINE,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
 			}
@@ -798,7 +799,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_PROGETTO_SFERA,
 								MisuraUtils.MisuraToString(row),
-								"PRJ-ATT: COD_ RDI non rispetta il pattern predefinito ",
+								DmAlmConstants.COD_RDI_NO_PATTERN,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
 			}
@@ -814,7 +815,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
 									MisuraUtils.MisuraToString(row),
-									"PRJ-ATT:FORNITORE_MPP non e' valorizzabile per progetti di tipo 'Sviluppo' oppure 'Manutenzione evolutiva'",
+									DmAlmConstants.FORNITORE_MPP_NON_VALORIZZATO_SVILUPPO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
 				}
@@ -870,7 +871,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
 									MisuraUtils.MisuraToString(row),
-									"PRJ-ATT:FORNITORE_SVILUPPO_MEV non e' valorizzabile per progetti di tipo 'Baseline'",
+									DmAlmConstants.FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
 				}
@@ -905,7 +906,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
 									MisuraUtils.MisuraToString(row),
-									"PRJ-ATT:MP_PERCENT_CICLO_DI_VITA non e' valorizzabile per progetti di tipo 'Baseline'",
+									DmAlmConstants.MP_PERCENT_CICLO_DI_VITA,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
 				}
@@ -935,7 +936,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									.insert(DmAlmConstants.FONTE_MISURA,
 											DmAlmConstants.TARGET_PROGETTO_SFERA,
 											MisuraUtils.MisuraToString(row),
-											"PRJ-ATT:MP_PERCENT_CICLO_DI_VITA - Valore non permesso : "
+											DmAlmConstants.MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO
 													+ row.get(stgMisura.pPrjMpPercentCicloDiVita),
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 											dataEsecuzione);
@@ -946,7 +947,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								.insert(DmAlmConstants.FONTE_MISURA,
 										DmAlmConstants.TARGET_PROGETTO_SFERA,
 										MisuraUtils.MisuraToString(row),
-										"PRJ-ATT:MP_PERCENT_CICLO_DI_VITA - Valore non permesso : "
+										DmAlmConstants.MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO
 												+ row.get(stgMisura.pPrjMpPercentCicloDiVita),
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 										dataEsecuzione);
@@ -964,7 +965,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							.insert(DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
 									MisuraUtils.MisuraToString(row),
-									"PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO non e' valorizzabile per progetti di tipo 'Baseline' ",
+									DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_BASELINE,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 									dataEsecuzione);
 				}
@@ -990,7 +991,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									.insert(DmAlmConstants.FONTE_MISURA,
 											DmAlmConstants.TARGET_PROGETTO_SFERA,
 											MisuraUtils.MisuraToString(row),
-											"PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO - Valore non permesso : "
+											DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_VALIDO
 													+ row.get(stgMisura.pPrjFccFattCorrezTotal),
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 											dataEsecuzione);
@@ -1001,7 +1002,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								.insert(DmAlmConstants.FONTE_MISURA,
 										DmAlmConstants.TARGET_PROGETTO_SFERA,
 										MisuraUtils.MisuraToString(row),
-										"PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO - Valore non permesso : "
+										DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_VALIDO
 												+ row.get(stgMisura.pPrjFccFattCorrezTotal),
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 										dataEsecuzione);
@@ -1034,7 +1035,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_- DWH - Valore non permesso : "
+						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlApplicLgFpDwh),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1048,7 +1049,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_APPLICABILITA_LG_FP_GIS - Valore non permesso : "
+						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_GIS_NO_PERMESSO
 								+ row.get(stgMisura.pPrjFlagApplLgFpGis),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1062,7 +1063,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_APPLICABILITA_LG_FP_EDMA - Valore non permesso : "
+						DmAlmConstants.FLAG_APPLICATIBILITA_LG_FP_EDMA_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlApplLgFpEdma),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1076,7 +1077,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_APPLICABILITA_LG_FP_MWARE - Valore non permesso : "
+						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_MWARE_NO_PERMESSO
 								+ row.get(stgMisura.pPrjFlagApplLgFpMware),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1090,7 +1091,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_SITIWEB - Valore non permesso : "
+						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_SITIWEB
 								+ row.get(stgMisura.pPrjFlApplLgFpWeb),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1105,7 +1106,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_futuro-01 - Valore non permesso : "
+						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo01),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1120,7 +1121,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_futuro-02 - Valore non permesso : "
+						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo02),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1135,7 +1136,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP - Valore non permesso : "
+						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlAmbTecTransBatRep),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1149,7 +1150,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ GIS - Valore non permesso :"
+						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_GIS_VALORE_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlagAmbTecnGis),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1163,7 +1164,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_PORTALI - Valore non permesso : "
+						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PORTALI_NON_PERMESSO
 								+ row.get(stgMisura.pPrjAmbTecnPortali),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1179,7 +1180,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_PROGETTO_SFERA,
 								MisuraUtils.MisuraToString(row),
-								"PRJ-ATT:FLAG_ AMBITO_TECNOLOGICO_ PIATTAF_ SPECIAL_ ENTERPRISE - Valore non permesso : "
+								DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PIAT_SPEC_ENT_NON_PERMESSO
 										+ row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr),
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
@@ -1194,7 +1195,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-01 - Valore non permesso : "
+						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo01),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1209,7 +1210,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_PROGETTO_SFERA,
 						MisuraUtils.MisuraToString(row),
-						"PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-02 - Valore non permesso : "
+						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo02),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -1455,7 +1456,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_MISURA,
 						MisuraUtils.MisuraToString(row),
-						"Utente misuratore e' obbligatorio e deve assumere valore diverso da 'Admin': "
+						DmAlmConstants.UTENTE_MISURATORE_OBBLIGATORIO
 								+ row.get(stgMisura.utenteMisuratore),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
@@ -2045,7 +2046,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						.insert(DmAlmConstants.FONTE_MISURA,
 								DmAlmConstants.TARGET_ASM,
 								MisuraUtils.MisuraToString(row),
-								"ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI non rispetta il pattern predefinito : "
+								DmAlmConstants.COD_ALTRE_ASM_NO_PATTERN
 										+ datoInput,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 								dataEsecuzione);
@@ -2063,7 +2064,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									.insert(DmAlmConstants.FONTE_MISURA,
 											DmAlmConstants.TARGET_ASM,
 											MisuraUtils.MisuraToString(row),
-											"ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI  non e' presente / attivo / servizio comune nell'insieme generale dei COD_ASM : "
+											DmAlmConstants.COD_ALTRE_ASM_NON_PRESENTE
 													+ asm,
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 											dataEsecuzione);
@@ -2077,7 +2078,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									.insert(DmAlmConstants.FONTE_MISURA,
 											DmAlmConstants.TARGET_ASM,
 											MisuraUtils.MisuraToString(row),
-											"ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI non sono un sottoinsieme delle COD_ASM CONFINANTI : "
+											DmAlmConstants.COD_ALTRE_ASM_NO_CONFINANTI
 													+ asm,
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 											dataEsecuzione);

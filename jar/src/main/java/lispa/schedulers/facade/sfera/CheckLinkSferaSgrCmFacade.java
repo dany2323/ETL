@@ -99,7 +99,7 @@ public class CheckLinkSferaSgrCmFacade {
 									DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
 									MisuraUtils.ProgettoSferaToString(progetto),
-									"Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM "
+									DmAlmConstants.MANCATA_CORRISPONDENZA_SFERA_WI
 									//		+ nomeprog,
 											+ MisuraUtils.ProgettoSferaToString(progetto),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
@@ -158,13 +158,9 @@ public class CheckLinkSferaSgrCmFacade {
 									ErroriCaricamentoDAO
 											.insert(DmAlmConstants.FONTE_MISURA,
 													DmAlmConstants.TARGET_MISURA,
-													MisuraUtils
-															.ProgettoSferaToString(progetto),
-													"Mancata corrispondenza tra lo STATO dei WI "
-															+ errSvi.get(progSv.cdProgSvilS)
-															+ " resolved ("
-															+ progSv.dtRisoluzioneProgSvilS
-															+ ")  e lo stato della MISURA SFERA",
+													"Progetto Sfera :"+MisuraUtils
+															.ProgettoSferaToString(progetto)+ " stato WI:"+ errSvi.get(progSv.cdProgSvilS)+" resolved ("+progSv.dtRisoluzioneProgSvilS+")",
+													DmAlmConstants.NO_CORR_STATO_WI_MISURA,
 													DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 													dataEsecuzione);
 								}
