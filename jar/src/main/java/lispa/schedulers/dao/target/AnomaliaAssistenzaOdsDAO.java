@@ -166,6 +166,7 @@ public class AnomaliaAssistenzaOdsDAO {
 			
 			for (Tuple result : list) {
 				DmalmAnomaliaAssistenza resultEl = new DmalmAnomaliaAssistenza();
+				resultEl.setDmalmAnomaliaAssPk(result.get(anomaliaODS.dmalmAnomaliaAssPk));
 				resultEl.setAoid(result.get(anomaliaODS.aoid));
 				resultEl.setCa(result.get(anomaliaODS.ca));
 				resultEl.setCdAnomaliaAss(result.get(anomaliaODS.cdAnomaliaAss));

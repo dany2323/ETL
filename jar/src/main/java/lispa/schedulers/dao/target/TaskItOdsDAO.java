@@ -158,6 +158,7 @@ public class TaskItOdsDAO {
 			
 			for (Tuple result : list) {
 				DmalmTaskIt resultEl = new DmalmTaskIt();
+				resultEl.setDmalmTaskItPk(result.get(taskItOds.dmalmTaskItPk));
 				resultEl.setAvanzamento(result.get(taskItOds.avanzamento));
 				resultEl.setDmalmUserFk06(result.get(taskItOds.dmalmUserFk06));
                 resultEl.setCdTaskIt(result.get(taskItOds.cdTaskIt));

@@ -169,6 +169,7 @@ public class TaskOdsDAO {
 
 			for (Tuple result : list) {
 				DmalmTask resultEl = new DmalmTask();
+				resultEl.setDmalmTaskPk(result.get(taskODS.dmalmTaskPk));
                 resultEl.setDmalmUserFk06(result.get(taskODS.dmalmUserFk06));
 				resultEl.setCdTask(result.get(taskODS.cdTask));
                 resultEl.setCodice(result.get(taskODS.codice));
