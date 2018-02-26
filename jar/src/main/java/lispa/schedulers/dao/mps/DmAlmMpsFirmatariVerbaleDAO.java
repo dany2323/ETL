@@ -165,7 +165,22 @@ public class DmAlmMpsFirmatariVerbaleDAO {
 
 			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
 					mpsFirmatariVerbale);
-			insert.populate(mpsFirmatariVerbalee).execute();
+			insert.columns(mpsFirmatariVerbale.idVerbaleValidazione,
+					mpsFirmatariVerbale.idUtente,
+					mpsFirmatariVerbale.firmatarioVerbale,
+					mpsFirmatariVerbale.tipologiaResponsabile,
+					mpsFirmatariVerbale.ordineFirma,
+					mpsFirmatariVerbale.firmato,
+					mpsFirmatariVerbale.dataFirma,
+					mpsFirmatariVerbale.idEnte)
+			.values(mpsFirmatariVerbalee.getIdVerbaleValidazione(),
+					mpsFirmatariVerbalee.getIdUtente(),
+					mpsFirmatariVerbalee.getFirmatarioVerbale(),
+					mpsFirmatariVerbalee.getTipologiaResponsabile(),
+					mpsFirmatariVerbalee.getOrdineFirma(),
+					mpsFirmatariVerbalee.getOrdineFirma(),
+					mpsFirmatariVerbalee.getDataFirma(),
+					mpsFirmatariVerbalee.getIdEnte()).execute();
 
 			connection.commit();
 

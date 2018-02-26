@@ -36,11 +36,11 @@ public class MpsAttivitaFacade {
 		try {
 			mpsAttivitaeStg = DmAlmMpsAttivitaDAO.getAllMpsAttivitae(dataEsecuzione);
 
-			for (DmalmMpsAttivita mpsAttivitae : mpsAttivitaeStg) {
-				mpsAttivitaTmp = mpsAttivitae;
+			for (DmalmMpsAttivita mpsAttivita : mpsAttivitaeStg) {
+				mpsAttivitaTmp = mpsAttivita;
 				righeNuove++;
 
-				DmAlmMpsAttivitaDAO.insertMpsAttivitae(dataEsecuzione, mpsAttivitae);
+				DmAlmMpsAttivitaDAO.insertMpsAttivita(dataEsecuzione, mpsAttivita);
 			}
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

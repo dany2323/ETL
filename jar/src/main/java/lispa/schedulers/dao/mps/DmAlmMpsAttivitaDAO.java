@@ -31,7 +31,7 @@ public class DmAlmMpsAttivitaDAO {
 
 	private static Logger logger = Logger.getLogger(PeiOdsDAO.class);
 
-	private static QDmalmMpsAttivita mpsAttivita = QDmalmMpsAttivita.dmalmMpsAttivita;
+	private static QDmalmMpsAttivita qMpsAttivita = QDmalmMpsAttivita.dmalmMpsAttivita;
 
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
@@ -46,7 +46,7 @@ public class DmAlmMpsAttivitaDAO {
 
 			connection.setAutoCommit(false);
 
-			new SQLDeleteClause(connection, dialect, mpsAttivita).execute();
+			new SQLDeleteClause(connection, dialect, qMpsAttivita).execute();
 
 			connection.commit();
 
@@ -145,7 +145,7 @@ public class DmAlmMpsAttivitaDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			mpsAttivitaes = query.from(mpsAttivita).list(mpsAttivita.all());
+			mpsAttivitaes = query.from(qMpsAttivita).list(qMpsAttivita.all());
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
@@ -159,8 +159,8 @@ public class DmAlmMpsAttivitaDAO {
 		return mpsAttivitaes;
 	}
 
-	public static void insertMpsAttivitae(Timestamp dataEsecuzione,
-			DmalmMpsAttivita mpsAttivitae) throws DAOException {
+	public static void insertMpsAttivita(Timestamp dataEsecuzione,
+			DmalmMpsAttivita mpsAttivita) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -171,9 +171,42 @@ public class DmAlmMpsAttivitaDAO {
 			connection.setAutoCommit(false);
 
 			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
-					mpsAttivita);
-			insert.populate(mpsAttivitae).execute();
-
+					qMpsAttivita);
+			insert.columns(qMpsAttivita.idAttivitaPadre,
+					qMpsAttivita.idAttivita,
+					qMpsAttivita.idContratto,
+					qMpsAttivita.codAttivita,
+					qMpsAttivita.titolo,
+					qMpsAttivita.desAttivita,
+					qMpsAttivita.dataInizio,
+					qMpsAttivita.dataFine,
+					qMpsAttivita.avanzamento,
+					qMpsAttivita.dataUltimoAvanzamento,
+					qMpsAttivita.tipoAttivita,
+					qMpsAttivita.stato,
+					qMpsAttivita.inseritoDa,
+					qMpsAttivita.inseritoIl,
+					qMpsAttivita.modificatoDa,
+					qMpsAttivita.modificatoIl,
+					qMpsAttivita.recordStatus)
+			.values(mpsAttivita.getIdAttivitaPadre(),
+					mpsAttivita.getIdAttivita(),
+					mpsAttivita.getIdContratto(),
+					mpsAttivita.getCodAttivita(),
+					mpsAttivita.getTitolo(),
+					mpsAttivita.getDesAttivita(),
+					mpsAttivita.getDataInizio(),
+					mpsAttivita.getDataFine(),
+					mpsAttivita.getAvanzamento(),
+					mpsAttivita.getDataUltimoAvanzamento(),
+					mpsAttivita.getTipoAttivita(),
+					mpsAttivita.getStato(),
+					mpsAttivita.getInseritoDa(),
+					mpsAttivita.getInseritoIl(),
+					mpsAttivita.getModificatoDa(),
+					mpsAttivita.getModificatoIl(),
+					mpsAttivita.getRecordStatus()).execute();
+			
 			connection.commit();
 
 		} catch (Exception e) {

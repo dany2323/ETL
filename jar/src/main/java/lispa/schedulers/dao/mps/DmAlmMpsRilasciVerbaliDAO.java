@@ -160,7 +160,15 @@ public class DmAlmMpsRilasciVerbaliDAO {
 
 			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
 					mpsRilasciVerbali);
-			insert.populate(mpsRilasciVerbalie).execute();
+			
+			insert.columns(mpsRilasciVerbali.codVerbale,
+					mpsRilasciVerbali.idVerbaleValidazione,
+					mpsRilasciVerbali.idRilascio,
+					mpsRilasciVerbali.importo)
+			.values(mpsRilasciVerbalie.getCodVerbale(),
+					mpsRilasciVerbalie.getIdVerbaleValidazione(),
+					mpsRilasciVerbalie.getIdRilascio(),
+					mpsRilasciVerbalie.getImporto()).execute();
 
 			connection.commit();
 

@@ -171,7 +171,27 @@ public class DmAlmMpsResponsabiliContrattoDAO {
 
 			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
 					mpsResponsabiliContratto);
-			insert.populate(mpsResponsabiliContrattoe).execute();
+			
+			insert.columns(mpsResponsabiliContratto.idContratto,
+					mpsResponsabiliContratto.idUtente,
+					mpsResponsabiliContratto.responsabile,
+					mpsResponsabiliContratto.desTipologiaResponsabile,
+					mpsResponsabiliContratto.firmatario,
+					mpsResponsabiliContratto.ordineFirma,
+					mpsResponsabiliContratto.firmato,
+					mpsResponsabiliContratto.dataFirma,
+					mpsResponsabiliContratto.idEnte,
+					mpsResponsabiliContratto.ente)
+			.values(mpsResponsabiliContrattoe.getIdContratto(),
+					mpsResponsabiliContrattoe.getIdUtente(),
+					mpsResponsabiliContrattoe.getResponsabile(),
+					mpsResponsabiliContrattoe.getDesTipologiaResponsabile(),
+					mpsResponsabiliContrattoe.getFirmatario(),
+					mpsResponsabiliContrattoe.getOrdineFirma(),
+					mpsResponsabiliContrattoe.getFirmato(),
+					mpsResponsabiliContrattoe.getDataFirma(),
+					mpsResponsabiliContrattoe.getIdEnte(),
+					mpsResponsabiliContrattoe.getEnte()).execute();
 
 			connection.commit();
 

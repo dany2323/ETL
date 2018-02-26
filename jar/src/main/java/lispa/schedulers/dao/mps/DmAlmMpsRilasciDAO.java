@@ -176,8 +176,49 @@ public class DmAlmMpsRilasciDAO {
 
 			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
 					mpsRilasci);
-			insert.populate(mpsRilascie).execute();
-
+			insert.columns(mpsRilasci.idRilascio,
+					mpsRilasci.idContratto,
+					mpsRilasci.codRilascio,
+					mpsRilasci.tipoRilascio,
+					mpsRilasci.sottoTipoRilascio,
+					mpsRilasci.titoloRilascio,
+					mpsRilasci.desAttivita,
+					mpsRilasci.dataInizio,
+					mpsRilasci.dataRilascio,
+					mpsRilasci.dataValidazione,
+					mpsRilasci.statoFatturazione,
+					mpsRilasci.statoFinanziamento,
+					mpsRilasci.importoRilascio,
+					mpsRilasci.totaleSpalmato,
+					mpsRilasci.totaleVerbalizzato,
+					mpsRilasci.totaleRichiesta,
+					mpsRilasci.totaleFatturato,
+					mpsRilasci.totaleFatturabile,
+					mpsRilasci.dataRilascioEffettivo,
+					mpsRilasci.varianteMigliorativa,
+					mpsRilasci.statoVerbalizzazione)
+			.values(mpsRilascie.getIdRilascio(),
+					mpsRilascie.getIdContratto(),
+					mpsRilascie.getCodRilascio(),
+					mpsRilascie.getTipoRilascio(),
+					mpsRilascie.getSottoTipoRilascio(),
+					mpsRilascie.getTitoloRilascio(),
+					mpsRilascie.getDesAttivita(),
+					mpsRilascie.getDataInizio(),
+					mpsRilascie.getDataRilascio(),
+					mpsRilascie.getDataValidazione(),
+					mpsRilascie.getStatoFatturazione(),
+					mpsRilascie.getStatoFinanziamento(),
+					mpsRilascie.getImportoRilascio(),
+					mpsRilascie.getTotaleSpalmato(),
+					mpsRilascie.getTotaleVerbalizzato(),
+					mpsRilascie.getTotaleRichiesta(),
+					mpsRilascie.getTotaleFatturato(),
+					mpsRilascie.getTotaleFatturabile(),
+					mpsRilascie.getDataRilascioEffettivo(),
+					mpsRilascie.getVarianteMigliorativa(),
+					mpsRilascie.getStatoVerbalizzazione()).execute();
+			
 			connection.commit();
 
 		} catch (Exception e) {
