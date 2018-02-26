@@ -66,8 +66,12 @@ public class CheckLinkSferaSgrCmFacade {
 	
 					try {
 						multiWI = WI_modified.split("\\*\\*");
-						nomeWI = multiWI[0].split("-")[0];
-						multiWI[0] = multiWI[0].split("-")[1];
+						nomeWI= multiWI[0].substring(0, multiWI[0].lastIndexOf("-"));
+						for(int i=1;i<multiWI.length;i++)
+						{
+							multiWI[i]=multiWI[0]+"-"+multiWI[i];
+						}
+						
 					} catch (Exception e) {
 						// gestione errore split per nomenclatura del nome errata
 						multiWI = new String[0];
@@ -82,9 +86,9 @@ public class CheckLinkSferaSgrCmFacade {
 					}
 	
 					for (String wi : multiWI) {
-						wi.trim();
-						nomeprog = nomeWI + "-" + wi;
-	
+						wi=wi.trim();
+						//nomeprog = nomeWI + "-" + wi;
+						nomeprog=wi;
 						// cerco la pk del workintem di sviluppo
 						sviWiTupla = DmAlmProgettoSferaDAO.getPkWorkitemSviluppo(
 								progetto.get(prog.dmalmAsmFk), nomeprog);
