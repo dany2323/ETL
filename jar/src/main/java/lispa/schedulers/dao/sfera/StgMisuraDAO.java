@@ -509,7 +509,7 @@ public class StgMisuraDAO {
 											.create("DM_ALM_STG_MISURA_SEQ.nextval"),
 									(StringUtils.hasText(row.get(mapping
 											.get("APP-ATT:DATA_PREVISTA_CONSEGNA_PROSSIMA_MPP_ASM"))) ? DateUtils.stringToTimestamp(row.get(mapping
-											.get("APP-ATT:DATA_PREVISTA_CONSEGNA_PROSSIMA_MPP_ASM")))
+											.get("APP-ATT:DATA_PREVISTA_CONSEGNA_PROSSIMA_MPP_ASM")),"dd/MM/yyyy")
 											: null),
 									(StringUtils.hasText(row.get(mapping
 											.get("APP-ATT:FIP01_ANNO_INIZIO_ESERCIZIO_ASM"))) ? DateUtils.stringToTimestamp(
