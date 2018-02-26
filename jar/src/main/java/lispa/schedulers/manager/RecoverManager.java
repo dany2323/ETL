@@ -202,33 +202,46 @@ public class RecoverManager {
 
 	}
 
-	public synchronized void prepareTargetForRecover() {
+	public synchronized boolean prepareTargetForRecover() {
 
 		logger.info("START PREPARE TARGET FOR RECOVER");
 
+		boolean flag = false;
 		QueryManager qm = null;
 
 		try {
 
 			qm = QueryManager.getInstance();
 
-			String separator = ";";
+//			String separator = ";";
 
 			// cancella tutto il contenuto delle tabelle di backup
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.TRUNCATE_BACKUP_TABLES, separator);
+//			qm.executeMultipleStatementsFromFile(
+//					DmAlmConstants.TRUNCATE_BACKUP_TABLES, separator);
 
 			// inserisce il contenuto delle tabelle di target nelle tabelle di
 			// backup
-			qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET,
-					separator);
-
+//			qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET,
+//					separator);
+			
+			// DM_ALM-325
+			// cancella tutto il contenuto delle tabelle di backup e
+			// inserisce il contenuto delle tabelle di target nelle tabelle di
+			// backup
+			String separatorTable = ":";
+			String separatorLine = ";";
+			flag = qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET_WITH_PROCEDURE,
+					separatorTable, separatorLine);
+			if(!flag) {
+				setRecovered(true);
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 
 		logger.info("STOP PREPARE TARGET FOR RECOVER");
-
+		
+		return flag;
 	}
 
 	// MPS
