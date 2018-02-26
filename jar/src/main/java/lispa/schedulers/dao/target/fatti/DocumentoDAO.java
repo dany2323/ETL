@@ -179,9 +179,62 @@ public class DocumentoDAO {
 
 			connection.setAutoCommit(false);
 
-			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
-					doc);
-			insert.populate(documento).execute();
+			new SQLInsertClause(connection, dialect, doc)
+			.columns(doc.annullato, doc.assigneesDocumento,
+					doc.cdDocumento, doc.changed, doc.classificazione,
+					doc.codice, doc.descrizioneDocumento,
+					doc.dmalmAreaTematicaFk05, doc.dmalmDocumentoPk,
+					doc.dmalmProjectFk02, doc.dmalmStatoWorkitemFk03,
+					doc.dmalmStrutturaOrgFk01, doc.dmalmTempoFk04,
+					doc.dmalmUserFk06, doc.dsAutoreDocumento,
+					doc.dtAnnullamento, doc.dtCambioStatoDocumento,
+					doc.dtCaricamentoDocumento,
+					doc.dtCreazioneDocumento, doc.dtModificaDocumento,
+					doc.dtRisoluzioneDocumento,
+					doc.dtScadenzaDocumento, doc.dtStoricizzazione,
+					doc.idAutoreDocumento, doc.idRepository,
+					doc.motivoRisoluzioneDocumento, doc.numeroLinea,
+					doc.numeroTestata, doc.rankStatoDocumento,
+					doc.rankStatoDocumentoMese, doc.stgPk, doc.tipo,
+					doc.titoloDocumento, doc.uri,
+					doc.severity, doc.priority)
+			.values(documento.getAnnullato(),
+					documento.getAssigneesDocumento(),
+					documento.getCdDocumento(),
+					documento.getChanged(),
+					documento.getClassificazione(),
+					documento.getCodice(),
+					documento.getDescrizioneDocumento(),
+					documento.getDmalmAreaTematicaFk05(),
+					documento.getDmalmDocumentoPk(),
+					documento.getDmalmProjectFk02(),
+					documento.getDmalmStatoWorkitemFk03(),
+					documento.getDmalmStrutturaOrgFk01(),
+					documento.getDmalmTempoFk04(),
+					documento.getDmalmUserFk06(),
+					documento.getDsAutoreDocumento(),
+					documento.getDtAnnullamento(),
+					documento.getDtCambioStatoDocumento(),
+					documento.getDtCaricamentoDocumento(),
+					documento.getDtCreazioneDocumento(),
+					documento.getDtModificaDocumento(),
+					documento.getDtRisoluzioneDocumento(),
+					documento.getDtScadenzaDocumento(),
+					documento.getDtStoricizzazione(),
+					documento.getIdAutoreDocumento(),
+					documento.getIdRepository(),
+					documento.getMotivoRisoluzioneDocumento(),
+					documento.getNumeroLinea(),
+					documento.getNumeroTestata(),
+					documento.getRankStatoDocumento(),
+					documento.getRankStatoDocumentoMese(),
+					documento.getStgPk(), documento.getTipo(),
+					documento.getTitoloDocumento(), documento.getUri(),
+					documento.getSeverity(), documento.getPriority())
+			.execute();
+			
+			// modifica al codice per cambio libreria mysema
+//			insert.populate(documento).execute();
 
 			connection.commit();
 

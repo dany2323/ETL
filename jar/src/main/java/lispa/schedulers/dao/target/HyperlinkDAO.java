@@ -196,8 +196,19 @@ public class HyperlinkDAO {
 					hyp);
 			int i = 0;
 			for (DmalmHyperlink bean : staging_hyperlinks) {
-				insert.populate(bean, DefaultMapper.WITH_NULL_BINDINGS)
-						.addBatch();
+				
+				long pk = LinkedWorkitemsDAO.getFactPkByType(
+						bean.getDmalmWorkitemType(), bean.getStgPk());
+				insert.columns(hyp.dmalmWorkitemType, hyp.dtCaricamento,
+						hyp.ruolo, hyp.uri, hyp.dmalmFkWorkitem01)
+				.values(bean.getDmalmWorkitemType(),
+						bean.getDtCaricamento(), bean.getRuolo(),
+						bean.getUri(), pk)
+				.addBatch();
+				
+				// modifica al codice per cambio di libreria mysema
+//				insert.populate(bean, DefaultMapper.WITH_NULL_BINDINGS)
+//						.addBatch();
 				i++;
 				if (i % DmAlmConstants.BATCH_SIZE == 0) {
 					insert.execute();

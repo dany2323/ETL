@@ -165,7 +165,34 @@ public class DmAlmMpsVerbaliDAO {
 
 			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
 					mpsVerbali);
-			insert.populate(mpsVerbalie).execute();
+			insert.columns(mpsVerbali.codVerbale,
+					mpsVerbali.dataVerbale,
+					mpsVerbali.dataFirma,
+					mpsVerbali.note,
+					mpsVerbali.conforme,
+					mpsVerbali.tipoVerbale,
+					mpsVerbali.statoVerbale,
+					mpsVerbali.totaleVerbale,
+					mpsVerbali.fatturatoVerbale,
+					mpsVerbali.prossimoFirmatario,
+					mpsVerbali.firmaDigitale,
+					mpsVerbali.idVerbaleValidazione)
+			.values(mpsVerbalie.getCodVerbale(),
+					mpsVerbalie.getDataVerbale(),
+					mpsVerbalie.getDataFirma(),
+					mpsVerbalie.getNote(),
+					mpsVerbalie.getConforme(),
+					mpsVerbalie.getTipoVerbale(),
+					mpsVerbalie.getStatoVerbale(),
+					mpsVerbalie.getTotaleVerbale(),
+					mpsVerbalie.getFatturatoVerbale(),
+					mpsVerbalie.getProssimoFirmatario(),
+					mpsVerbalie.getFirmaDigitale(),
+					mpsVerbalie.getIdVerbaleValidazione())
+			.execute();
+			
+			// modifica al codice per cambio di libreria mysema
+//			insert.populate(mpsVerbalie).execute();
 
 			connection.commit();
 

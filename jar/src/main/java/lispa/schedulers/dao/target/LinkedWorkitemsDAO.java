@@ -265,8 +265,45 @@ public class LinkedWorkitemsDAO {
 					link);
 			int i = 0;
 			for (DmalmLinkedWorkitems bean : staging_linkedWorkitems) {
-				insert.populate(bean, DefaultMapper.WITH_NULL_BINDINGS)
-						.addBatch();
+				insert.columns(link.uriWiPadre,
+						link.uriWiFiglio, 
+						link.titoloWiPadre, 
+						link.titoloWiFiglio, 
+						link.codiceWiFiglio, 
+						link.codiceWiPadre, 
+						link.fkWiFiglio, 
+						link.fkWiPadre, 
+						link.ruolo,
+						link.tipoWiFiglio, 
+						link.tipoWiPadre, 
+						link.dtCaricamento, 
+						link.linkedWorkitemsPk, 
+						link.idRepositoryFiglio, 
+						link.idRepositoryPadre,
+						link.codiceProjectFiglio,
+						link.codiceProjectPadre)
+				.values(bean.getUriWiPadre(),
+						bean.getUriWiFiglio(), 
+						bean.getTitoloWiPadre(), 
+						bean.getTitoloWiFiglio(), 
+						bean.getCodiceWiFiglio(), 
+						bean.getCodiceWiPadre(), 
+						bean.getFkWiFiglio(), 
+						bean.getFkWiPadre(), 
+						bean.getRuolo(),
+						bean.getTipoWiFiglio(), 
+						bean.getTipoWiPadre(), 
+						bean.getDtCaricamento(), 
+						bean.getLinkedWorkitemsPk(), 
+						bean.getIdRepositoryFiglio(), 
+						bean.getIdRepositoryPadre(),
+						bean.getCodiceProjectFiglio(),
+						bean.getCodiceProjectPadre())
+				.addBatch();
+				
+				// modifica al codice per cambio di libreria mysema
+//				insert.populate(bean, DefaultMapper.WITH_NULL_BINDINGS)
+//						.addBatch();
 				i++;
 				if (i % DmAlmConstants.BATCH_SIZE == 0) {
 					insert.execute();
