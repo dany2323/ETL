@@ -69,9 +69,81 @@ public class DocumentoOdsDAO {
 
 			for (DmalmDocumento documento : staging_documenti) {
 
-				SQLInsertClause insert = new SQLInsertClause(connection,
-						dialect, documentoODS);
-				insert.populate(documento).execute();
+				new SQLInsertClause(connection, dialect, documentoODS)
+					.columns(documentoODS.assigneesDocumento,
+							documentoODS.cdDocumento,
+							documentoODS.classificazione,
+							documentoODS.dmalmUserFk06,
+							documentoODS.codice,
+							documentoODS.descrizioneDocumento,
+							documentoODS.dmalmAreaTematicaFk05,
+							documentoODS.dmalmDocumentoPk,
+							documentoODS.dmalmProjectFk02,
+							documentoODS.dmalmStatoWorkitemFk03,
+							documentoODS.dmalmStrutturaOrgFk01,
+							documentoODS.dmalmTempoFk04,
+							documentoODS.dsAutoreDocumento,
+							documentoODS.dtCambioStatoDocumento,
+							documentoODS.dtCaricamentoDocumento,
+							documentoODS.dtCreazioneDocumento,
+							documentoODS.dtModificaDocumento,
+							documentoODS.dtRisoluzioneDocumento,
+							documentoODS.dtScadenzaDocumento,
+							documentoODS.dtStoricizzazione,
+							documentoODS.idAutoreDocumento,
+							documentoODS.idRepository,
+							documentoODS.motivoRisoluzioneDocumento,
+							documentoODS.numeroLinea,
+							documentoODS.numeroTestata,
+							documentoODS.rankStatoDocumento,
+							documentoODS.rankStatoDocumentoMese,
+							documentoODS.stgPk,
+							documentoODS.uri,
+							documentoODS.tipo,
+							documentoODS.titoloDocumento,
+							documentoODS.versione,
+							documentoODS.severity,
+							documentoODS.priority)
+					.values(documento.getAssigneesDocumento(),
+							documento.getCdDocumento(),
+							documento.getClassificazione(),
+							documento.getDmalmUserFk06(),
+							documento.getCodice(),
+							documento.getDescrizioneDocumento(),
+							documento.getDmalmAreaTematicaFk05(),
+							documento.getDmalmDocumentoPk(),
+							documento.getDmalmProjectFk02(),
+							documento.getDmalmStatoWorkitemFk03(),
+							documento.getDmalmStrutturaOrgFk01(),
+							documento.getDmalmTempoFk04(),
+							documento.getDsAutoreDocumento(),
+							documento.getDtCambioStatoDocumento(),
+							documento.getDtCaricamentoDocumento(),
+							documento.getDtCreazioneDocumento(),
+							documento.getDtModificaDocumento(),
+							documento.getDtRisoluzioneDocumento(),
+							documento.getDtScadenzaDocumento(),
+							documento.getDtStoricizzazione(),
+							documento.getIdAutoreDocumento(),
+							documento.getIdRepository(),
+							documento.getMotivoRisoluzioneDocumento(),
+							documento.getNumeroLinea(),
+							documento.getNumeroTestata(),
+							documento.getRankStatoDocumento(),
+							documento.getRankStatoDocumentoMese(),
+							documento.getStgPk(),
+							documento.getUri(),
+							documento.getTipo(),
+							documento.getTitoloDocumento(),
+							documento.getVersione(),
+							documento.getSeverity(),
+							documento.getPriority())
+					.execute();
+				
+				// con il cambio di libreria mysema 
+				// è stato modificato anche il modo
+				// in cui vengono inseriti i dati a db
+//				insert.populate(documento).execute();
 
 			}
 
