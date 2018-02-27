@@ -8,6 +8,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -158,13 +159,13 @@ public class QueryManager {
 	}
 	
 	public synchronized boolean executeMultipleStatementsFromFile(String file,
-			String separatorTable, String separatorLine) throws Exception {
+			String separatorTable, String separatorLine, Timestamp dataEsecuzione) throws Exception {
 
 		List<String> records = getQueryList(file, separatorLine);
 
 		for (String record : records) {
 			String[] splitRecord = record.split(":");
-			boolean flag = executeProcedure(splitRecord[0], splitRecord[1]);
+			boolean flag = executeProcedure(splitRecord[0], splitRecord[1], dataEsecuzione);
 			if (!flag) {
 				return flag;
 			}
@@ -172,8 +173,8 @@ public class QueryManager {
 		return true;
 	}
 	
-	public synchronized boolean executeProcedure(String backupTable, String targetTable)
-			throws DAOException, SQLException {
+	public synchronized boolean executeProcedure(String backupTable, String targetTable, 
+			Timestamp dataEsecuzione) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection conn = null;
@@ -184,11 +185,12 @@ public class QueryManager {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			
-			cstmt = conn.prepareCall("{? = call BACKUP_TARGET(?, ?, ?)}");
+			cstmt = conn.prepareCall("{? = call BACKUP_TARGET(?, ?, ?, ?)}");
 			cstmt.registerOutParameter(1, Types.VARCHAR);
 			cstmt.setString(2, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
 			cstmt.setString(3, backupTable.trim());
 			cstmt.setString(4, targetTable.trim());
+			cstmt.setTimestamp(5, dataEsecuzione);
 			cstmt.executeUpdate();
 			
 			String stringFlag = cstmt.getString(1);

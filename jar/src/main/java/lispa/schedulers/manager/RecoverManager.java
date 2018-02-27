@@ -56,6 +56,8 @@ import lispa.schedulers.svn.SISSSchedeServizioXML;
 import lispa.schedulers.svn.SISSUserRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
 
+import java.sql.Timestamp;
+
 import org.apache.log4j.Logger;
 
 public class RecoverManager {
@@ -203,7 +205,7 @@ public class RecoverManager {
 
 	}
 
-	public synchronized boolean prepareTargetForRecover() {
+	public synchronized boolean prepareTargetForRecover(Timestamp dataEsecuzione) {
 
 		logger.info("START PREPARE TARGET FOR RECOVER");
 
@@ -232,7 +234,7 @@ public class RecoverManager {
 			String separatorTable = ":";
 			String separatorLine = ";";
 			flag = qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET_WITH_PROCEDURE,
-					separatorTable, separatorLine);
+					separatorTable, separatorLine, dataEsecuzione);
 			if(!flag) {
 				setRecovered(true);
 				throw new Exception(DmAlmConstants.ERROR_CARICAMENTO_BACKUP);

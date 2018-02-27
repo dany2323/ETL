@@ -123,7 +123,7 @@ public class DmAlmFillTarget {
 				// preparo il target al Recover in caso di errori bloccanti:
 				// svuoto le tabelle di backup, effettuo il backup del target
 				// allo stato corrente (ultimo stato consistente)
-				flag = RecoverManager.getInstance().prepareTargetForRecover();
+				flag = RecoverManager.getInstance().prepareTargetForRecover(dataEsecuzione);
 			}
 			
 			if (flag) {
