@@ -83,7 +83,6 @@ public class RichiestaSupportoDAO {
 				bean.setSeverityRichSupporto(rs.getString("SEVERITY_RICH_SUPPORTO"));
 				bean.setDescrizioneRichSupporto(rs.getString("DESCRIZIONE_RICH_SUPPORTO"));
 				bean.setNumeroTestataRdi(rs.getString("NUMERO_TESTATA_RDI"));
-				bean.setRankStatoRichSupporto(rs.getInt("RANK_STATO_RICH_SUPPORTO"));
 				bean.setDataDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
 				
@@ -181,75 +180,27 @@ public class RichiestaSupportoDAO {
 
 	}
 
-	public static void insertReleaseDiProgetto(DmalmReleaseDiProgetto release)
+	public static void insertRichiestaSupporto(DmalmRichiestaSupporto richiesta)
 			throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		CallableStatement cs = null;
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
-
-			new SQLInsertClause(connection, dialect, rls)
-					.columns(rls.cdReleasediprog, rls.codice,
-							rls.dataDisponibilitaEff,
-							rls.dataPassaggioInEsercizio,
-							rls.descrizioneReleasediprog, rls.dmalmProjectFk02,
-							rls.dmalmReleasediprogPk,
-							rls.dmalmStatoWorkitemFk03,
-							rls.dmalmStrutturaOrgFk01, rls.dmalmTempoFk04,
-							rls.dsAutoreReleasediprog,
-							rls.dtCambioStatoReleasediprog,
-							rls.dtCaricamentoReleasediprog,
-							rls.dtCreazioneReleasediprog,
-							rls.dtModificaReleasediprog,
-							rls.dtRisoluzioneReleasediprog,
-							rls.dtScadenzaReleasediprog, rls.dtStoricizzazione,
-							rls.fornitura, rls.fr, rls.idAutoreReleasediprog,
-							rls.idRepository, rls.motivoRisoluzioneRelProg,
-							rls.numeroLinea, rls.numeroTestata,
-							rls.rankStatoReleasediprog,
-							rls.titoloReleasediprog, rls.versione, rls.stgPk,
-							rls.dmalmAreaTematicaFk05, rls.dmalmUserFk06,
-							rls.uri, rls.dtAnnullamento, rls.dtInizioQF,
-							rls.dtFineQF, rls.numQuickFix,
-							rls.severity, rls.priority, rls.typeRelease)
-					.values(release.getCdReleasediprog(), release.getCodice(),
-							release.getDataDisponibilitaEff(),
-							release.getDataPassaggioInEsercizio(),
-							release.getDescrizioneReleasediprog(),
-							release.getDmalmProjectFk02(),
-							release.getDmalmReleasediprogPk(),
-							release.getDmalmStatoWorkitemFk03(),
-							release.getDmalmStrutturaOrgFk01(),
-							release.getDmalmTempoFk04(),
-							release.getDsAutoreReleasediprog(),
-							release.getDtCambioStatoReleasediprog(),
-							release.getDtCaricamentoReleasediprog(),
-							release.getDtCreazioneReleasediprog(),
-							release.getDtModificaReleasediprog(),
-							release.getDtRisoluzioneReleasediprog(),
-							release.getDtScadenzaReleasediprog(),
-							release.getDtModificaReleasediprog(),
-							release.getFornitura(), release.getFr(),
-							release.getIdAutoreReleasediprog(),
-							release.getIdRepository(),
-							release.getMotivoRisoluzioneRelProg(),
-							release.getNumeroLinea(),
-							release.getNumeroTestata(), new Double(1),
-							release.getTitoloReleasediprog(),
-							release.getVersione(), release.getStgPk(),
-							release.getDmalmAreaTematicaFk05(),
-							release.getDmalmUserFk06(), release.getUri(),
-							release.getDtAnnullamento(),
-							release.getDtInizioQF(), release.getDtFineQF(),
-							release.getNumQuickFix(),
-							//DM_ALM-320
-							release.getSeverity(), release.getPriority(),
-							release.getTypeRelease()).execute();
+			
+			// in the type map, add the mapping of RICHSUPPTYPE SQL  
+		    // type to the DmalmRichiestaSupporto custom Java type 
+		    Map map = connection.getTypeMap();
+		    map.put("RICHSUPPTYPE", Class.forName("DmalmRichiestaSupporto"));
+	        
+			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO", 1);
+			cs = connection.prepareCall(sql);
+			cs.setObject(1, richiesta, OracleTypes.STRUCT);
+			cs.execute();
 
 			connection.commit();
 

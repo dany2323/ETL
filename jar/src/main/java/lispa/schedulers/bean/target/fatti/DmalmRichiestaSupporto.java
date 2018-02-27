@@ -1,7 +1,13 @@
 package lispa.schedulers.bean.target.fatti;
 
-public class DmalmRichiestaSupporto {
+import java.sql.SQLData;
+import java.sql.SQLException;
+import java.sql.SQLInput;
+import java.sql.SQLOutput;
 
+public class DmalmRichiestaSupporto implements SQLData {
+
+	private String sql_type;
 	private String idRepository;
 	private String uriRichiestaSupporto;
 	private Integer dmalmRichiestaSupportoPk;
@@ -25,6 +31,74 @@ public class DmalmRichiestaSupporto {
 	private Integer rankStatoRichSupporto;
 	private java.sql.Timestamp dataDisponibilita;
 	private String priorityRichSupporto;
+	
+	public DmalmRichiestaSupporto() {
+		
+	}
+	
+	public DmalmRichiestaSupporto(String sql_type, DmalmRichiestaSupporto richiesta) {
+		
+		this.sql_type = sql_type;
+		this.idRepository = richiesta.getIdRepository();
+		this.uriRichiestaSupporto = richiesta.getUriRichiestaSupporto();
+		this.dmalmRichiestaSupportoPk = richiesta.getDmalmRichiestaSupportoPk();
+		this.stgPk = richiesta.getStgPk();
+		this.dmalmProjectFk02 = richiesta.getDmalmProjectFk02();
+		this.dmalmUserFk06 = richiesta.getDmalmUserFk06();
+		this.cdRichiestaSupporto = richiesta.getCdRichiestaSupporto();
+		this.dataRisoluzioneRichSupporto = richiesta.getDataRisoluzioneRichSupporto();
+		this.nrGiorniFestivi = richiesta.getNrGiorniFestivi();
+		this.tempoTotRichSupporto = richiesta.getTempoTotRichSupporto();
+		this.dmalmStatoWorkitemFk03 = richiesta.getDmalmStatoWorkitemFk03();
+		this.dataCreazRichSupporto = richiesta.getDataCreazRichSupporto();
+		this.dataModificaRecord = richiesta.getDataModificaRecord();
+		this.dataChiusRichSupporto = richiesta.getDataChiusRichSupporto();
+		this.useridRichSupporto = richiesta.getUseridRichSupporto();
+		this.nomeRichSupporto = richiesta.getNomeRichSupporto();
+		this.motivoRisoluzione = richiesta.getMotivoRisoluzione();
+		this.severityRichSupporto = richiesta.getSeverityRichSupporto();
+		this.descrizioneRichSupporto = richiesta.getDescrizioneRichSupporto();
+		this.numeroTestataRdi = richiesta.getNumeroTestataRdi();
+		this.rankStatoRichSupporto = richiesta.getRankStatoRichSupporto();
+		this.dataDisponibilita = richiesta.getDataDisponibilita();
+		this.priorityRichSupporto = richiesta.getPriorityRichSupporto();
+	}
+	
+	public DmalmRichiestaSupporto(String sql_type, String idRepository, String uriRichiestaSupporto,
+			Integer dmalmRichiestaSupportoPk, String stgPk, Integer dmalmProjectFk02,
+			Integer dmalmUserFk06, String cdRichiestaSupporto, java.sql.Timestamp dataRisoluzioneRichSupporto,
+			Integer nrGiorniFestivi, Integer tempoTotRichSupporto, Integer dmalmStatoWorkitemFk03,
+			java.sql.Timestamp dataCreazRichSupporto, java.sql.Timestamp dataModificaRecord,
+			java.sql.Timestamp dataChiusRichSupporto, String useridRichSupporto,	String nomeRichSupporto,
+			String motivoRisoluzione, String severityRichSupporto, String descrizioneRichSupporto,
+			String numeroTestataRdi, Integer rankStatoRichSupporto, java.sql.Timestamp dataDisponibilita,
+			String priorityRichSupporto) {
+		
+		this.sql_type = sql_type;
+		this.idRepository = idRepository;
+		this.uriRichiestaSupporto = uriRichiestaSupporto;
+		this.dmalmRichiestaSupportoPk = dmalmRichiestaSupportoPk;
+		this.stgPk = stgPk;
+		this.dmalmProjectFk02 = dmalmProjectFk02;
+		this.dmalmUserFk06 = dmalmUserFk06;
+		this.cdRichiestaSupporto = cdRichiestaSupporto;
+		this.dataRisoluzioneRichSupporto = dataRisoluzioneRichSupporto;
+		this.nrGiorniFestivi = nrGiorniFestivi;
+		this.tempoTotRichSupporto = tempoTotRichSupporto;
+		this.dmalmStatoWorkitemFk03 = dmalmStatoWorkitemFk03;
+		this.dataCreazRichSupporto = dataCreazRichSupporto;
+		this.dataModificaRecord = dataModificaRecord;
+		this.dataChiusRichSupporto = dataChiusRichSupporto;
+		this.useridRichSupporto = useridRichSupporto;
+		this.nomeRichSupporto = nomeRichSupporto;
+		this.motivoRisoluzione = motivoRisoluzione;
+		this.severityRichSupporto = severityRichSupporto;
+		this.descrizioneRichSupporto = descrizioneRichSupporto;
+		this.numeroTestataRdi = numeroTestataRdi;
+		this.rankStatoRichSupporto = rankStatoRichSupporto;
+		this.dataDisponibilita = dataDisponibilita;
+		this.priorityRichSupporto = priorityRichSupporto;
+	}
 	
 	public String getIdRepository() {
 		return idRepository;
@@ -163,5 +237,68 @@ public class DmalmRichiestaSupporto {
 	}
 	public void setPriorityRichSupporto(String priorityRichSupporto) {
 		this.priorityRichSupporto = priorityRichSupporto;
+	}
+	
+	@Override
+	public String getSQLTypeName() throws SQLException { 
+		return sql_type;
+	}
+	
+	@Override
+	public void readSQL(SQLInput stream, String typeName) throws SQLException {
+		
+		sql_type = typeName;
+		
+		idRepository = stream.readString();
+		uriRichiestaSupporto = stream.readString();
+		dmalmRichiestaSupportoPk = stream.readInt();
+		stgPk = stream.readString();
+		dmalmProjectFk02 = stream.readInt();
+		dmalmUserFk06 = stream.readInt();
+		cdRichiestaSupporto = stream.readString();
+		dataRisoluzioneRichSupporto = stream.readTimestamp();
+		nrGiorniFestivi = stream.readInt();
+		tempoTotRichSupporto = stream.readInt();
+		dmalmStatoWorkitemFk03 = stream.readInt();
+		dataCreazRichSupporto = stream.readTimestamp();
+		dataModificaRecord = stream.readTimestamp();
+		dataChiusRichSupporto = stream.readTimestamp();
+		useridRichSupporto = stream.readString();
+		nomeRichSupporto = stream.readString();
+		motivoRisoluzione = stream.readString();
+		severityRichSupporto = stream.readString();
+		descrizioneRichSupporto = stream.readString();
+		numeroTestataRdi = stream.readString();
+		rankStatoRichSupporto = stream.readInt();
+		dataDisponibilita = stream.readTimestamp();
+		priorityRichSupporto = stream.readString();
+	}
+	
+	@Override
+	public void writeSQL(SQLOutput stream) throws SQLException { 
+
+		stream.writeString(idRepository);
+	    stream.writeString(uriRichiestaSupporto);
+	    stream.writeInt(dmalmRichiestaSupportoPk);
+		stream.writeString(stgPk);
+		stream.writeInt(dmalmProjectFk02);
+		stream.writeInt(dmalmUserFk06);
+		stream.writeString(cdRichiestaSupporto);
+		stream.writeTimestamp(dataRisoluzioneRichSupporto);
+		stream.writeInt(nrGiorniFestivi);
+		stream.writeInt(tempoTotRichSupporto);
+		stream.writeInt(dmalmStatoWorkitemFk03);
+		stream.writeTimestamp(dataCreazRichSupporto);
+		stream.writeTimestamp(dataModificaRecord);
+		stream.writeTimestamp(dataChiusRichSupporto);
+		stream.writeString(useridRichSupporto);
+		stream.writeString(nomeRichSupporto);
+		stream.writeString(motivoRisoluzione);
+		stream.writeString(severityRichSupporto);
+		stream.writeString(descrizioneRichSupporto);
+		stream.writeString(numeroTestataRdi);
+		stream.writeInt(rankStatoRichSupporto);
+		stream.writeTimestamp(dataDisponibilita);
+		stream.writeString(priorityRichSupporto);
 	}
 }

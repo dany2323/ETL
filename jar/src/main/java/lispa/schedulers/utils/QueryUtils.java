@@ -212,11 +212,21 @@ public class QueryUtils {
 	
 	public static String getCallFunction(String function, Integer numberInParameters) {
 		
-		String parameters = "";
+		String parameters = " ";
 		while (numberInParameters > 0) {
 			parameters += "?,";
 			numberInParameters--;
 		}
 		return "{? = call "+ function +"(" + parameters.substring(0, parameters.length()-1) + ")}";
+	}
+	
+	public static String getCallProcedure(String procedure, Integer numberInParameters) {
+		
+		String parameters = " ";
+		while (numberInParameters > 0) {
+			parameters += "?,";
+			numberInParameters--;
+		}
+		return "{call "+ procedure +"(" + parameters.substring(0, parameters.length()-1) + ")}";
 	}
 }

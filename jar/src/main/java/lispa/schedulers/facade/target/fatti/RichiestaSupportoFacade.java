@@ -7,20 +7,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
-import com.mysema.query.Tuple;
-
-import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
-import lispa.schedulers.dao.target.ReleaseDiProgettoOdsDAO;
-import lispa.schedulers.dao.target.fatti.ReleaseDiProgettoDAO;
+import lispa.schedulers.dao.target.RichiestaSupportoOdsDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseDiProgetto;
-import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.LogUtils;
 
 public class RichiestaSupportoFacade {
@@ -31,7 +24,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 		
 
 		List<DmalmRichiestaSupporto> staging_richieste = new ArrayList<DmalmRichiestaSupporto>();
-		List<Tuple> target_richieste = new ArrayList<Tuple>();
+		List<DmalmRichiestaSupporto> target_richieste = new ArrayList<DmalmRichiestaSupporto>();
 		
 		int righeNuove = 0;
 		int righeModificate = 0;
@@ -47,30 +40,30 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 		{
 			staging_richieste  = RichiestaSupportoDAO.getAllRichiestaSupporto(dataEsecuzione);
 			
-			ReleaseDiProgettoOdsDAO.delete();
+			RichiestaSupportoOdsDAO.delete();
 			
 			logger.debug("START -> Popolamento Richiesta Supporto, "+staging_richieste.size()+ " richiese di supporto");
 			
-//			ReleaseDiProgettoOdsDAO.insert(staging_richieste, dataEsecuzione);
-//			
-			List<DmalmRichiestaSupporto> x = ReleaseDiProgettoOdsDAO.getAll();
+			RichiestaSupportoOdsDAO.insert(staging_richieste, dataEsecuzione);
+			
+			List<DmalmRichiestaSupporto> x = RichiestaSupportoOdsDAO.getAll();
 			
 			logger.debug("STOP -> Richiesta Supporto, "+staging_richieste.size()+ " richiese di supporto");
 			
 			for(DmalmRichiestaSupporto richieste : x) {
 				
 				richieste_tmp = richieste;
+				
 				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+				target_richieste = RichiestaSupportoDAO.getRichiestaSupporto(richieste);
 
-				target_richieste = ReleaseDiProgettoDAO.getReleaseDiProgetto(richieste);
-//
-//				// se non trovo almento un record, inserisco il project nel target
-//				if(target_releases.size()==0)
-//				{
-//					righeNuove++;
-//					release.setDtCambioStatoReleasediprog(release.getDtModificaReleasediprog());
-					ReleaseDiProgettoDAO.insertReleaseDiProgetto(release);
-//				}
+				// se non trovo almento un record, inserisco il project nel target
+				if(target_richieste.size()==0)
+				{
+					righeNuove++;
+					richieste.setDataModificaRecord(richieste.getDataModificaRecord());
+					RichiestaSupportoDAO.insertRichiestaSupporto(richieste);
+				}
 //				else
 //				{
 //					boolean modificato = false;
@@ -143,16 +136,16 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 //								// STORICIZZO
 //								// aggiorno la data di fine validita sul record corrente
 //								//AnomaliaProdottoDAO.updateDataFineValidita(dataEsecuzione, anomalia);								
-								ReleaseDiProgettoDAO.updateRank(release, new Double(0));
+//								ReleaseDiProgettoDAO.updateRank(release, new Double(0));
 //
 //								// inserisco un nuovo record
-								ReleaseDiProgettoDAO.insertReleaseDiProgettoUpdate(dataEsecuzione, release, true);	
+//								ReleaseDiProgettoDAO.insertReleaseDiProgettoUpdate(dataEsecuzione, release, true);	
 //								
 //							}
 //							else
 //							{
 //    							 // Aggiorno lo stesso
-								ReleaseDiProgettoDAO.updateReleaseDiProgetto(release);
+//								ReleaseDiProgettoDAO.updateReleaseDiProgetto(release);
 //							}
 //						}
 //					}
@@ -170,7 +163,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 		catch (DAOException e) 
 		{
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(LogUtils.objectToString(release_tmp));
+			logger.error(LogUtils.objectToString(richieste_tmp));
 			logger.error(e.getMessage(), e);
 			
 			
@@ -179,7 +172,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 		catch(Exception e)
 		{
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(LogUtils.objectToString(release_tmp));
+			logger.error(LogUtils.objectToString(richieste_tmp));
 			logger.error(e.getMessage(), e);
 			
 			
@@ -194,7 +187,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 				EsitiCaricamentoDAO.insert
 				(
 							dataEsecuzione,
-							DmAlmConstants.TARGET_RELEASE_DI_PROG, 
+							DmAlmConstants.TARGET_RICHIESTA_SUPPORTO, 
 							stato, 
 							new Timestamp(dtInizioCaricamento.getTime()), 
 							new Timestamp(dtFineCaricamento.getTime()), 
