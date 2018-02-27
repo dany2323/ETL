@@ -187,8 +187,8 @@ public class QueryManager {
 			cstmt = conn.prepareCall("{? = call BACKUP_TARGET(?, ?, ?)}");
 			cstmt.registerOutParameter(1, Types.VARCHAR);
 			cstmt.setString(2, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
-			cstmt.setString(3, backupTable);
-			cstmt.setString(4, targetTable);
+			cstmt.setString(3, backupTable.trim());
+			cstmt.setString(4, targetTable.trim());
 			cstmt.executeUpdate();
 			
 			String stringFlag = cstmt.getString(1);
