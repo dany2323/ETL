@@ -46,6 +46,7 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
+import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
@@ -234,9 +235,11 @@ public class RecoverManager {
 					separatorTable, separatorLine);
 			if(!flag) {
 				setRecovered(true);
+				throw new Exception(DmAlmConstants.ERROR_CARICAMENTO_BACKUP);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 
 		logger.info("STOP PREPARE TARGET FOR RECOVER");

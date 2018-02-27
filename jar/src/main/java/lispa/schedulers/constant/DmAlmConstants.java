@@ -303,6 +303,7 @@ public final class DmAlmConstants {
 	
 
 	// MESSAGGI ERRORE
+	public static final String ERROR_CARICAMENTO_BACKUP = "Errore caricamento tabelle di backup. Rollback non effettuato!";
 	// CLASSIFICATORI
 	public static final String CLASSIFICATORE_CODICE_DUPLICATO = "Codice Classificatore duplicato";
 	public static final String CLASSIFICATORE_CODICE_NULL = "Codice Classificatore null";

@@ -732,7 +732,7 @@ public class DmAlmFillTarget {
 					EsitiCaricamentoDAO.inserisciRecordSentinella();
 				}
 			} else {
-				logger.error("Errore caricamento tabelle di backup. Rollback non effettuato!");
+				logger.error(DmAlmConstants.ERROR_CARICAMENTO_BACKUP);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
