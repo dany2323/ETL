@@ -14,6 +14,7 @@ import lispa.schedulers.dao.target.RichiestaSupportoOdsDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.LogUtils;
 
 public class RichiestaSupportoFacade {
@@ -36,8 +37,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 
 		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 
-		try
-		{
+		try	{
 			staging_richieste  = RichiestaSupportoDAO.getAllRichiestaSupporto(dataEsecuzione);
 			
 			RichiestaSupportoOdsDAO.delete();
@@ -50,37 +50,29 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 			
 			logger.debug("STOP -> Richiesta Supporto, "+staging_richieste.size()+ " richiese di supporto");
 			
-			for(DmalmRichiestaSupporto richieste : x) {
+			for(DmalmRichiestaSupporto richiesta : x) {
 				
-				richieste_tmp = richieste;
+				richieste_tmp = richiesta;
 				
-				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
-				target_richieste = RichiestaSupportoDAO.getRichiestaSupporto(richieste);
+				target_richieste = RichiestaSupportoDAO.getRichiestaSupporto(richiesta);
 
-				// se non trovo almento un record, inserisco il project nel target
-				if(target_richieste.size()==0)
-				{
+				if(target_richieste.size()==0) {
 					righeNuove++;
-					richieste.setDataModificaRecord(richieste.getDataModificaRecord());
-					RichiestaSupportoDAO.insertRichiestaSupporto(richieste);
-				}
-//				else
-//				{
-//					boolean modificato = false;
-//
-//					for(Tuple row : target_releases)
-//					{
-//						
-//						if(row !=null)
-//						{
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmStatoWorkitemFk03), release.getDmalmStatoWorkitemFk03()))
-//							{
-//								release.setDtCambioStatoReleasediprog(release.getDtModificaReleasediprog());
-//								modificato = true;
-//							}
-//							else {
-//								release.setDtCambioStatoReleasediprog(row.get(rel.dtCambioStatoReleasediprog));
-//							}
+					richiesta.setDataCambioStatoRichSupp(richiesta.getDataModificaRecord());
+					RichiestaSupportoDAO.insertRichiestaSupporto(richiesta, dataEsecuzione);
+				} else {
+					boolean modificato = false;
+
+					for(DmalmRichiestaSupporto row : target_richieste) {
+						
+						if(row !=null) {
+							
+							if(!modificato && BeanUtils.areDifferent(row.getDmalmStatoWorkitemFk03(), richiesta.getDmalmStatoWorkitemFk03())) {
+								richiesta.setDataCambioStatoRichSupp(richiesta.getDataModificaRecord());
+								modificato = true;
+							} else {
+								richiesta.setDataCambioStatoRichSupp(row.getDataCambioStatoRichSupp());
+							}
 //							if(!modificato && BeanUtils.areDifferent(row.get(rel.numeroTestata), release.getNumeroTestata()))
 //							{
 //								modificato = true;
@@ -147,18 +139,10 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 //    							 // Aggiorno lo stesso
 //								ReleaseDiProgettoDAO.updateReleaseDiProgetto(release);
 //							}
-//						}
-//					}
-//				}
+						}
+					}
+				}
 			}
-			
-//			ReleaseDiProgettoDAO.updateATFK();
-//			
-//			ReleaseDiProgettoDAO.updateUOFK();
-//			
-//			ReleaseDiProgettoDAO.updateTempoFK();
-//
-//			ReleaseDiProgettoDAO.updateRankInMonth();
 		}
 		catch (DAOException e) 
 		{

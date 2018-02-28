@@ -5,10 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -61,7 +59,6 @@ public class RichiestaSupportoOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		OracleCallableStatement ocs = null;
-		CallableStatement cs = null;
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -70,8 +67,8 @@ public class RichiestaSupportoOdsDAO {
 			
 	        String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO_ODS", 2);
 		    for (DmalmRichiestaSupporto richiesta : staging_richieste) {
-		    		DmalmRichiestaSupporto r = new DmalmRichiestaSupporto(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", richiesta);
-			    	Object [] objRichSupp = r.getObject(r);
+//		    		DmalmRichiestaSupporto r = new DmalmRichiestaSupporto(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", richiesta);
+			    	Object [] objRichSupp = richiesta.getObject(richiesta);
 			    	// Now Declare a descriptor to associate the host object type with the
 			    	// record type in the database.
 			    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
@@ -152,7 +149,7 @@ public class RichiestaSupportoOdsDAO {
 				bean.setRankStatoRichSupporto(rs.getInt("RANK_STATO_RICH_SUPPORTO"));
 				bean.setDataDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
-				
+				bean.setDataCaricamento(rs.getTimestamp("DATA_CARICAMENTO"));
 				richieste.add(bean);
 			}
 

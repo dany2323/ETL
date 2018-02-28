@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -21,12 +20,16 @@ import com.mysema.query.types.template.StringTemplate;
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseDiProgetto;
 import lispa.schedulers.utils.QueryUtils;
+import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleTypes;
+import oracle.sql.STRUCT;
+import oracle.sql.StructDescriptor;
 
 public class RichiestaSupportoDAO {
 
@@ -115,7 +118,7 @@ public class RichiestaSupportoDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-		CallableStatement cs = null;
+		OracleCallableStatement ocs = null;
 		ResultSet rs = null;
 		DmalmRichiestaSupporto bean = null;
 		List<DmalmRichiestaSupporto> richieste = new LinkedList<DmalmRichiestaSupporto>();
@@ -124,19 +127,22 @@ public class RichiestaSupportoDAO {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			// in the type map, add the mapping of RICHSUPPTYPE SQL  
-		    // type to the DmalmRichiestaSupporto custom Java type 
-		    Map map = connection.getTypeMap();
-		    map.put("RICHSUPPTYPE", Class.forName("DmalmRichiestaSupporto"));
-	        
 			String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_RICHIESTA_SUPPORTO", 1);
-			cs = connection.prepareCall(sql);
-			cs.registerOutParameter(1, OracleTypes.CURSOR);
-			cs.setObject(2, richiesta, OracleTypes.STRUCT);
-			cs.execute();
+			Object [] objRichSupp = richiesta.getObject(richiesta);
+		    	// Now Declare a descriptor to associate the host object type with the
+		    	// record type in the database.
+		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+		    	// Now create the STRUCT objects to associate the host objects
+		    	// with the database records.
+		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+
+		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
+			ocs.registerOutParameter(1, OracleTypes.CURSOR);
+			ocs.setObject(2, structObj);
+			ocs.execute();
 			
 			//return the result set
-            rs = (ResultSet)cs.getObject(1);
+            rs = (ResultSet)ocs.getObject(1);
             
 			logger.debug("Query Eseguita!");
 			while (rs.next()) {
@@ -180,28 +186,27 @@ public class RichiestaSupportoDAO {
 
 	}
 
-	public static void insertRichiestaSupporto(DmalmRichiestaSupporto richiesta)
+	public static void insertRichiestaSupporto(DmalmRichiestaSupporto richiesta, Timestamp dataEsecuzione)
 			throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-		CallableStatement cs = null;
+		OracleCallableStatement ocs = null;
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
 			
-			// in the type map, add the mapping of RICHSUPPTYPE SQL  
-		    // type to the DmalmRichiestaSupporto custom Java type 
-		    Map map = connection.getTypeMap();
-		    map.put("RICHSUPPTYPE", Class.forName("DmalmRichiestaSupporto"));
-	        
-			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO", 1);
-			cs = connection.prepareCall(sql);
-			cs.setObject(1, richiesta, OracleTypes.STRUCT);
-			cs.execute();
-
+			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO", 2);
+			Object [] objRichSupp = richiesta.getObject(richiesta);
+		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
+			ocs.setObject(1, structObj);
+			ocs.setTimestamp(2, dataEsecuzione);
+			ocs.execute();
+			
 			connection.commit();
 
 		} catch (Exception e) {

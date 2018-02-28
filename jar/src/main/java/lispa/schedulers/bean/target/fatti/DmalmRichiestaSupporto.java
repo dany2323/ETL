@@ -7,7 +7,7 @@ import java.sql.SQLOutput;
 
 public class DmalmRichiestaSupporto implements SQLData {
 
-	private static final Integer COUNT_COLUMN = 23;
+	private static final Integer COUNT_COLUMN = 24;
 	private String sql_type;
 	private String idRepository;
 	private String uriRichiestaSupporto;
@@ -30,76 +30,78 @@ public class DmalmRichiestaSupporto implements SQLData {
 	private String descrizioneRichSupporto;
 	private String numeroTestataRdi;
 	private Integer rankStatoRichSupporto;
+	private java.sql.Timestamp dataCambioStatoRichSupp;
 	private java.sql.Timestamp dataDisponibilita;
 	private String priorityRichSupporto;
+	private java.sql.Timestamp dataCaricamento;
 	
-	public DmalmRichiestaSupporto() {
-		
-	}
-	
-	public DmalmRichiestaSupporto(String sql_type, DmalmRichiestaSupporto richiesta) {
-		
-		this.sql_type = sql_type;
-		this.idRepository = richiesta.getIdRepository();
-		this.uriRichiestaSupporto = richiesta.getUriRichiestaSupporto();
-		this.dmalmRichiestaSupportoPk = richiesta.getDmalmRichiestaSupportoPk();
-		this.stgPk = richiesta.getStgPk();
-		this.dmalmProjectFk02 = richiesta.getDmalmProjectFk02();
-		this.dmalmUserFk06 = richiesta.getDmalmUserFk06();
-		this.cdRichiestaSupporto = richiesta.getCdRichiestaSupporto();
-		this.dataRisoluzioneRichSupporto = richiesta.getDataRisoluzioneRichSupporto();
-		this.nrGiorniFestivi = richiesta.getNrGiorniFestivi();
-		this.tempoTotRichSupporto = richiesta.getTempoTotRichSupporto();
-		this.dmalmStatoWorkitemFk03 = richiesta.getDmalmStatoWorkitemFk03();
-		this.dataCreazRichSupporto = richiesta.getDataCreazRichSupporto();
-		this.dataModificaRecord = richiesta.getDataModificaRecord();
-		this.dataChiusRichSupporto = richiesta.getDataChiusRichSupporto();
-		this.useridRichSupporto = richiesta.getUseridRichSupporto();
-		this.nomeRichSupporto = richiesta.getNomeRichSupporto();
-		this.motivoRisoluzione = richiesta.getMotivoRisoluzione();
-		this.severityRichSupporto = richiesta.getSeverityRichSupporto();
-		this.descrizioneRichSupporto = richiesta.getDescrizioneRichSupporto();
-		this.numeroTestataRdi = richiesta.getNumeroTestataRdi();
-		this.rankStatoRichSupporto = richiesta.getRankStatoRichSupporto();
-		this.dataDisponibilita = richiesta.getDataDisponibilita();
-		this.priorityRichSupporto = richiesta.getPriorityRichSupporto();
-	}
-	
-	public DmalmRichiestaSupporto(String sql_type, String idRepository, String uriRichiestaSupporto,
-			Integer dmalmRichiestaSupportoPk, String stgPk, Integer dmalmProjectFk02,
-			Integer dmalmUserFk06, String cdRichiestaSupporto, java.sql.Timestamp dataRisoluzioneRichSupporto,
-			Integer nrGiorniFestivi, Integer tempoTotRichSupporto, Integer dmalmStatoWorkitemFk03,
-			java.sql.Timestamp dataCreazRichSupporto, java.sql.Timestamp dataModificaRecord,
-			java.sql.Timestamp dataChiusRichSupporto, String useridRichSupporto,	String nomeRichSupporto,
-			String motivoRisoluzione, String severityRichSupporto, String descrizioneRichSupporto,
-			String numeroTestataRdi, Integer rankStatoRichSupporto, java.sql.Timestamp dataDisponibilita,
-			String priorityRichSupporto) {
-		
-		this.sql_type = sql_type;
-		this.idRepository = idRepository;
-		this.uriRichiestaSupporto = uriRichiestaSupporto;
-		this.dmalmRichiestaSupportoPk = dmalmRichiestaSupportoPk;
-		this.stgPk = stgPk;
-		this.dmalmProjectFk02 = dmalmProjectFk02;
-		this.dmalmUserFk06 = dmalmUserFk06;
-		this.cdRichiestaSupporto = cdRichiestaSupporto;
-		this.dataRisoluzioneRichSupporto = dataRisoluzioneRichSupporto;
-		this.nrGiorniFestivi = nrGiorniFestivi;
-		this.tempoTotRichSupporto = tempoTotRichSupporto;
-		this.dmalmStatoWorkitemFk03 = dmalmStatoWorkitemFk03;
-		this.dataCreazRichSupporto = dataCreazRichSupporto;
-		this.dataModificaRecord = dataModificaRecord;
-		this.dataChiusRichSupporto = dataChiusRichSupporto;
-		this.useridRichSupporto = useridRichSupporto;
-		this.nomeRichSupporto = nomeRichSupporto;
-		this.motivoRisoluzione = motivoRisoluzione;
-		this.severityRichSupporto = severityRichSupporto;
-		this.descrizioneRichSupporto = descrizioneRichSupporto;
-		this.numeroTestataRdi = numeroTestataRdi;
-		this.rankStatoRichSupporto = rankStatoRichSupporto;
-		this.dataDisponibilita = dataDisponibilita;
-		this.priorityRichSupporto = priorityRichSupporto;
-	}
+//	public DmalmRichiestaSupporto() {
+//		
+//	}
+//	
+//	public DmalmRichiestaSupporto(String sql_type, DmalmRichiestaSupporto richiesta) {
+//		
+//		this.sql_type = sql_type;
+//		this.idRepository = richiesta.getIdRepository();
+//		this.uriRichiestaSupporto = richiesta.getUriRichiestaSupporto();
+//		this.dmalmRichiestaSupportoPk = richiesta.getDmalmRichiestaSupportoPk();
+//		this.stgPk = richiesta.getStgPk();
+//		this.dmalmProjectFk02 = richiesta.getDmalmProjectFk02();
+//		this.dmalmUserFk06 = richiesta.getDmalmUserFk06();
+//		this.cdRichiestaSupporto = richiesta.getCdRichiestaSupporto();
+//		this.dataRisoluzioneRichSupporto = richiesta.getDataRisoluzioneRichSupporto();
+//		this.nrGiorniFestivi = richiesta.getNrGiorniFestivi();
+//		this.tempoTotRichSupporto = richiesta.getTempoTotRichSupporto();
+//		this.dmalmStatoWorkitemFk03 = richiesta.getDmalmStatoWorkitemFk03();
+//		this.dataCreazRichSupporto = richiesta.getDataCreazRichSupporto();
+//		this.dataModificaRecord = richiesta.getDataModificaRecord();
+//		this.dataChiusRichSupporto = richiesta.getDataChiusRichSupporto();
+//		this.useridRichSupporto = richiesta.getUseridRichSupporto();
+//		this.nomeRichSupporto = richiesta.getNomeRichSupporto();
+//		this.motivoRisoluzione = richiesta.getMotivoRisoluzione();
+//		this.severityRichSupporto = richiesta.getSeverityRichSupporto();
+//		this.descrizioneRichSupporto = richiesta.getDescrizioneRichSupporto();
+//		this.numeroTestataRdi = richiesta.getNumeroTestataRdi();
+//		this.rankStatoRichSupporto = richiesta.getRankStatoRichSupporto();
+//		this.dataDisponibilita = richiesta.getDataDisponibilita();
+//		this.priorityRichSupporto = richiesta.getPriorityRichSupporto();
+//	}
+//	
+//	public DmalmRichiestaSupporto(String sql_type, String idRepository, String uriRichiestaSupporto,
+//			Integer dmalmRichiestaSupportoPk, String stgPk, Integer dmalmProjectFk02,
+//			Integer dmalmUserFk06, String cdRichiestaSupporto, java.sql.Timestamp dataRisoluzioneRichSupporto,
+//			Integer nrGiorniFestivi, Integer tempoTotRichSupporto, Integer dmalmStatoWorkitemFk03,
+//			java.sql.Timestamp dataCreazRichSupporto, java.sql.Timestamp dataModificaRecord,
+//			java.sql.Timestamp dataChiusRichSupporto, String useridRichSupporto,	String nomeRichSupporto,
+//			String motivoRisoluzione, String severityRichSupporto, String descrizioneRichSupporto,
+//			String numeroTestataRdi, Integer rankStatoRichSupporto, java.sql.Timestamp dataDisponibilita,
+//			String priorityRichSupporto) {
+//		
+//		this.sql_type = sql_type;
+//		this.idRepository = idRepository;
+//		this.uriRichiestaSupporto = uriRichiestaSupporto;
+//		this.dmalmRichiestaSupportoPk = dmalmRichiestaSupportoPk;
+//		this.stgPk = stgPk;
+//		this.dmalmProjectFk02 = dmalmProjectFk02;
+//		this.dmalmUserFk06 = dmalmUserFk06;
+//		this.cdRichiestaSupporto = cdRichiestaSupporto;
+//		this.dataRisoluzioneRichSupporto = dataRisoluzioneRichSupporto;
+//		this.nrGiorniFestivi = nrGiorniFestivi;
+//		this.tempoTotRichSupporto = tempoTotRichSupporto;
+//		this.dmalmStatoWorkitemFk03 = dmalmStatoWorkitemFk03;
+//		this.dataCreazRichSupporto = dataCreazRichSupporto;
+//		this.dataModificaRecord = dataModificaRecord;
+//		this.dataChiusRichSupporto = dataChiusRichSupporto;
+//		this.useridRichSupporto = useridRichSupporto;
+//		this.nomeRichSupporto = nomeRichSupporto;
+//		this.motivoRisoluzione = motivoRisoluzione;
+//		this.severityRichSupporto = severityRichSupporto;
+//		this.descrizioneRichSupporto = descrizioneRichSupporto;
+//		this.numeroTestataRdi = numeroTestataRdi;
+//		this.rankStatoRichSupporto = rankStatoRichSupporto;
+//		this.dataDisponibilita = dataDisponibilita;
+//		this.priorityRichSupporto = priorityRichSupporto;
+//	}
 	
 	public String getIdRepository() {
 		return idRepository;
@@ -227,6 +229,14 @@ public class DmalmRichiestaSupporto implements SQLData {
 	public void setRankStatoRichSupporto(Integer rankStatoRichSupporto) {
 		this.rankStatoRichSupporto = rankStatoRichSupporto;
 	}
+	public java.sql.Timestamp getDataCambioStatoRichSupp() {
+		return dataCambioStatoRichSupp;
+	}
+
+	public void setDataCambioStatoRichSupp(java.sql.Timestamp dataCambioStatoRichSupp) {
+		this.dataCambioStatoRichSupp = dataCambioStatoRichSupp;
+	}
+
 	public java.sql.Timestamp getDataDisponibilita() {
 		return dataDisponibilita;
 	}
@@ -240,33 +250,41 @@ public class DmalmRichiestaSupporto implements SQLData {
 		this.priorityRichSupporto = priorityRichSupporto;
 	}
 	
+	public java.sql.Timestamp getDataCaricamento() {
+		return dataCaricamento;
+	}
+
+	public void setDataCaricamento(java.sql.Timestamp dataCaricamento) {
+		this.dataCaricamento = dataCaricamento;
+	}
+
 	public Object[] getObject(DmalmRichiestaSupporto richiesta) {
 		
 		Object[] objRichSupp = new Object[COUNT_COLUMN];
-		objRichSupp[0] = ;
-		objRichSupp[1] = ;
-		objRichSupp[2] = ; 
-		objRichSupp[3] = ; 
-		objRichSupp[4] = ; 
-		objRichSupp[5] = ; 
-		objRichSupp[6] = ; 
-		objRichSupp[7] = ;
-		objRichSupp[8] = ;
-		objRichSupp[9] = ;
-		objRichSupp[10] = ;
-		objRichSupp[11] = ;
-		objRichSupp[12] = ;
-		objRichSupp[13] = ;
-		objRichSupp[14] = ;
-		objRichSupp[15] = ;
-		objRichSupp[16] = ;
-		objRichSupp[17] = ;
-		objRichSupp[18] = ;
-		objRichSupp[19] = ;
-		objRichSupp[20] = ;
-		objRichSupp[21] = ;
-		objRichSupp[22] = ;
-		objRichSupp[23] = ;
+		objRichSupp[0] = richiesta.getIdRepository();
+		objRichSupp[1] = richiesta.getUriRichiestaSupporto();
+		objRichSupp[2] = richiesta.getDmalmRichiestaSupportoPk();
+		objRichSupp[3] = richiesta.getStgPk();
+		objRichSupp[4] = richiesta.getDmalmProjectFk02();
+		objRichSupp[5] = richiesta.getDmalmUserFk06();
+		objRichSupp[6] = richiesta.getCdRichiestaSupporto();
+		objRichSupp[7] = richiesta.getDataRisoluzioneRichSupporto();
+		objRichSupp[8] = richiesta.getNrGiorniFestivi();
+		objRichSupp[9] = richiesta.getTempoTotRichSupporto();
+		objRichSupp[10] = richiesta.getDmalmStatoWorkitemFk03();
+		objRichSupp[11] = richiesta.getDataCreazRichSupporto();
+		objRichSupp[12] = richiesta.getDataModificaRecord();
+		objRichSupp[13] = richiesta.getDataChiusRichSupporto();
+		objRichSupp[14] = richiesta.getUseridRichSupporto();
+		objRichSupp[15] = richiesta.getNomeRichSupporto();
+		objRichSupp[16] = richiesta.getMotivoRisoluzione();
+		objRichSupp[17] = richiesta.getSeverityRichSupporto();
+		objRichSupp[18] = richiesta.getDescrizioneRichSupporto();
+		objRichSupp[19] = richiesta.getNumeroTestataRdi();
+		objRichSupp[20] = richiesta.getRankStatoRichSupporto();
+		objRichSupp[21] = richiesta.getDataCambioStatoRichSupp();
+		objRichSupp[22] = richiesta.getDataDisponibilita();
+		objRichSupp[23] = richiesta.getPriorityRichSupporto();
 		
 		return objRichSupp;
 	}
