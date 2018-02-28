@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
@@ -67,18 +68,13 @@ public class RichiestaSupportoOdsDAO {
 
 			connection.setAutoCommit(false);
 			
-			// in the type map, add the mapping of RICHSUPPTYPE SQL  
-		    // type to the DmalmRichiestaSupporto custom Java type 
-//		    Map map = connection.getTypeMap();
-//		    map.put("DM_ALM_SV.RICH_SUPP_TYPE", Class.forName("lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto"));
-//	        connection.setTypeMap(map);
 	        String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO_ODS", 2);
 		    for (DmalmRichiestaSupporto richiesta : staging_richieste) {
-		    		DmalmRichiestaSupporto r = new DmalmRichiestaSupporto("DM_ALM_SV.RICHSUPPTYPE", richiesta);
-			    	Object [] objRichSupp = {r};
+		    		DmalmRichiestaSupporto r = new DmalmRichiestaSupporto(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", richiesta);
+			    	Object [] objRichSupp = r.getObject(r);
 			    	// Now Declare a descriptor to associate the host object type with the
 			    	// record type in the database.
-			    	StructDescriptor structDesc = StructDescriptor.createDescriptor("DM_ALM_SV.RICHSUPPTYPE", connection);
+			    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
 			    	// Now create the STRUCT objects to associate the host objects
 			    	// with the database records.
 			    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);

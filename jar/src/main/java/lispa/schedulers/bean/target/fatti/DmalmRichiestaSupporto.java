@@ -7,6 +7,7 @@ import java.sql.SQLOutput;
 
 public class DmalmRichiestaSupporto implements SQLData {
 
+	private static final Integer COUNT_COLUMN = 23;
 	private String sql_type;
 	private String idRepository;
 	private String uriRichiestaSupporto;
@@ -237,6 +238,37 @@ public class DmalmRichiestaSupporto implements SQLData {
 	}
 	public void setPriorityRichSupporto(String priorityRichSupporto) {
 		this.priorityRichSupporto = priorityRichSupporto;
+	}
+	
+	public Object[] getObject(DmalmRichiestaSupporto richiesta) {
+		
+		Object[] objRichSupp = new Object[COUNT_COLUMN];
+		objRichSupp[0] = ;
+		objRichSupp[1] = ;
+		objRichSupp[2] = ; 
+		objRichSupp[3] = ; 
+		objRichSupp[4] = ; 
+		objRichSupp[5] = ; 
+		objRichSupp[6] = ; 
+		objRichSupp[7] = ;
+		objRichSupp[8] = ;
+		objRichSupp[9] = ;
+		objRichSupp[10] = ;
+		objRichSupp[11] = ;
+		objRichSupp[12] = ;
+		objRichSupp[13] = ;
+		objRichSupp[14] = ;
+		objRichSupp[15] = ;
+		objRichSupp[16] = ;
+		objRichSupp[17] = ;
+		objRichSupp[18] = ;
+		objRichSupp[19] = ;
+		objRichSupp[20] = ;
+		objRichSupp[21] = ;
+		objRichSupp[22] = ;
+		objRichSupp[23] = ;
+		
+		return objRichSupp;
 	}
 	
 	@Override
