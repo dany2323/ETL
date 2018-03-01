@@ -93,13 +93,8 @@ import lispa.schedulers.queryimplementation.target.fatti.QDmalmTask;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
-import oracle.jdbc.OracleCallableStatement;
-import oracle.jdbc.OracleTypes;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -1260,6 +1255,31 @@ public class CheckAnnullamentiSGRCMFacade {
 									}
 									break;
 
+								case "sup":
+									List<DmalmRichiestaSupporto> richieste = RichiestaSupportoDAO
+											.getRichiestaSupporto(history.getDmalmProjectPk(), 0);
+									for (DmalmRichiestaSupporto richiesta : richieste) {
+										DmalmRichiestaSupporto r = RichiestaSupportoDAO
+												.getRichiestaSupporto(richiesta.getDmalmRichiestaSupportoPk());
+										if (r != null) {
+												if (r.getDataStoricizzazione().equals(dataEsecuzione)) {
+													// già storicizzato oggi
+													r.setAnnullato("");
+													r.setDataAnnullamento(null);
+													r.setDmalmProjectFk02(p.getDmalmProjectPk());
+													RichiestaSupportoDAO.updateRichiestaSupporto(r);
+												} else {
+													RichiestaSupportoDAO.updateRank(r, new Double(0));
+													r.setAnnullato("");
+													r.setDataStoricizzazione(dataEsecuzione);
+													r.setDataAnnullamento(null);
+													r.setDmalmProjectFk02(p.getDmalmProjectPk());
+													RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione,
+																	r, false);
+												}
+											}
+										}
+										break;
 								}
 
 							} catch (Exception e) {
@@ -2247,18 +2267,11 @@ public class CheckAnnullamentiSGRCMFacade {
 										break;
 										
 									case "sup":
-										Connection connection = cm.getConnectionOracle();
-										String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_PK_RICH_SUPP_BY_HISTORY_PK", 1);
-										OracleCallableStatement ocs = (OracleCallableStatement)connection.prepareCall(sql);
-										ocs.registerOutParameter(1, OracleTypes.CURSOR);
-										ocs.setInt(2, history.getDmalmProjectPk());
-										ocs.execute();
-										
-										//return the result set
-										ResultSet rs = (ResultSet)ocs.getObject(1);
-										while (rs.next()) {
+										List<DmalmRichiestaSupporto> richieste = RichiestaSupportoDAO
+												.getRichiestaSupporto(history.getDmalmProjectPk(), 0);
+										for (DmalmRichiestaSupporto richiesta : richieste) {
 											DmalmRichiestaSupporto r = RichiestaSupportoDAO
-													.getRichiestaSupporto(rs.getInt("DMALM_RICH_SUPPORTO_PK"));
+													.getRichiestaSupporto(richiesta.getDmalmRichiestaSupportoPk());
 											if (r != null) {
 												if (r.getDataStoricizzazione()
 														.equals(dataEsecuzione)) {
@@ -2267,24 +2280,15 @@ public class CheckAnnullamentiSGRCMFacade {
 													r.setDataAnnullamento(dataEsecuzione);
 													r.setDmalmProjectFk02(p
 															.getDmalmProjectPk());
-													RichiestaSupportoDAO
-															.updateReleaseDiProgetto(r);
+													RichiestaSupportoDAO.updateRichiestaSupporto(r);
 												} else {
-													RichiestaSupportoDAO
-															.updateRank(
-																	r,
-																	new Double(
-																			0));
+													RichiestaSupportoDAO.updateRank(r, new Double(0));
 													r.setAnnullato(unmarked);
 													r.setDataStoricizzazione(dataEsecuzione);
 													r.setDataAnnullamento(dataEsecuzione);
 													r.setDmalmProjectFk02(p
 															.getDmalmProjectPk());
-													RichiestaSupportoDAO
-															.insertReleaseDiProgettoUpdate(
-																	dataEsecuzione,
-																	r,
-																	false);
+													RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, r, false);
 												}
 											}
 										}
@@ -2731,6 +2735,15 @@ public class CheckAnnullamentiSGRCMFacade {
 							dialect, classificatore);
 
 					targetTipologiaWi = DmAlmConstants.TARGET_CLASSIFICATORE;
+					break;
+				case "sup":
+					DmalmRichiestaSupporto richiesta = new DmalmRichiestaSupporto();
+					richiesta.setCdRichiestaSupporto(rs.getString("CODICE"));
+					richiesta.setIdRepository(rs.getString("ID_REPOSITORY"));
+					RichiestaSupportoDAO.updateWIRichiestaSupportoDeleted(richiesta, DataEsecuzione.getInstance()
+											.getDataEsecuzione());
+
+					targetTipologiaWi = DmAlmConstants.TARGET_RICHIESTA_SUPPORTO;
 					break;
 				default:
 					logger.info("Tipologia Workitem non gestita - "

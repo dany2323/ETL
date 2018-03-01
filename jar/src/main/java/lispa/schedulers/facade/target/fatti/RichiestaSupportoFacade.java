@@ -143,10 +143,10 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 								RichiestaSupportoDAO.updateRank(richiesta, new Double(0));
 
 								// inserisco un nuovo record
-								RichiestaSupportoDAO.insertReleaseDiProgettoUpdate(dataEsecuzione, richiesta, true);	
+								RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, richiesta, true);	
 							} else {
     							 // Aggiorno lo stesso
-								RichiestaSupportoDAO.updateReleaseDiProgetto(richiesta);
+								RichiestaSupportoDAO.updateRichiestaSupporto(richiesta);
 							}
 						}
 					}

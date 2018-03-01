@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.sql.SQLInput;
 import java.sql.SQLOutput;
 
+import com.mysema.query.types.template.StringTemplate;
+
 public class DmalmRichiestaSupporto implements SQLData {
 
 	private static final Integer COUNT_COLUMN = 27;
@@ -279,12 +281,13 @@ public class DmalmRichiestaSupporto implements SQLData {
 		this.dataCaricamento = dataCaricamento;
 	}
 
-	public Object[] getObject(DmalmRichiestaSupporto richiesta) {
+	public Object[] getObject(DmalmRichiestaSupporto richiesta, boolean flag) {
 		
 		Object[] objRichSupp = new Object[COUNT_COLUMN];
 		objRichSupp[0] = richiesta.getIdRepository();
 		objRichSupp[1] = richiesta.getUriRichiestaSupporto();
-		objRichSupp[2] = richiesta.getDmalmRichiestaSupportoPk();
+		objRichSupp[2] = (flag == true ? richiesta.getDmalmRichiestaSupportoPk() : 
+			StringTemplate.create("HISTORY_WORKITEM_SEQ.nextval"));
 		objRichSupp[3] = richiesta.getStgPk();
 		objRichSupp[4] = richiesta.getDmalmProjectFk02();
 		objRichSupp[5] = richiesta.getDmalmUserFk06();
@@ -302,13 +305,15 @@ public class DmalmRichiestaSupporto implements SQLData {
 		objRichSupp[17] = richiesta.getSeverityRichSupporto();
 		objRichSupp[18] = richiesta.getDescrizioneRichSupporto();
 		objRichSupp[19] = richiesta.getNumeroTestataRdi();
-		objRichSupp[20] = richiesta.getRankStatoRichSupporto();
+		objRichSupp[20] = (flag == true ? new Short("1")  : 
+			richiesta.getRankStatoRichSupporto());
 		objRichSupp[21] = richiesta.getDataCambioStatoRichSupp();
 		objRichSupp[22] = richiesta.getDataDisponibilita();
 		objRichSupp[23] = richiesta.getPriorityRichSupporto();
 		objRichSupp[24] = richiesta.getAnnullato();
 		objRichSupp[25] = richiesta.getDataAnnullamento();
-		objRichSupp[26] = richiesta.getDataStoricizzazione();
+		objRichSupp[26] = (flag== true ? richiesta.getDataModificaRecord() : 
+			richiesta.getDataStoricizzazione());
 		
 		return objRichSupp;
 	}

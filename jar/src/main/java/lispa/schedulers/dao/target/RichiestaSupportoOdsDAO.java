@@ -68,7 +68,7 @@ public class RichiestaSupportoOdsDAO {
 	        String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO_ODS", 2);
 		    for (DmalmRichiestaSupporto richiesta : staging_richieste) {
 //		    		DmalmRichiestaSupporto r = new DmalmRichiestaSupporto(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", richiesta);
-			    	Object [] objRichSupp = richiesta.getObject(richiesta);
+			    	Object [] objRichSupp = richiesta.getObject(richiesta, true);
 			    	// Now Declare a descriptor to associate the host object type with the
 			    	// record type in the database.
 			    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);

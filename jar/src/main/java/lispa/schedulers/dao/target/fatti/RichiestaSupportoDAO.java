@@ -14,13 +14,11 @@ import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import lispa.schedulers.bean.target.DmalmProject;
-import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseDiProgetto;
 import lispa.schedulers.utils.QueryUtils;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleTypes;
@@ -30,8 +28,6 @@ import oracle.sql.StructDescriptor;
 public class RichiestaSupportoDAO {
 
 	private static Logger logger = Logger.getLogger(RichiestaSupportoDAO.class);
-	private static SQLTemplates dialect = new HSQLDBTemplates();
-	private static QDmalmReleaseDiProgetto rls = QDmalmReleaseDiProgetto.dmalmReleaseDiProgetto;
 
 	public static List<DmalmRichiestaSupporto> getAllRichiestaSupporto(
 			Timestamp dataEsecuzione) throws Exception {
@@ -124,7 +120,7 @@ public class RichiestaSupportoDAO {
 			connection = cm.getConnectionOracle();
 
 			String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_RICHIESTA_SUPPORTO", 1);
-			Object [] objRichSupp = richiesta.getObject(richiesta);
+			Object [] objRichSupp = richiesta.getObject(richiesta, true);
 		    	// Now Declare a descriptor to associate the host object type with the
 		    	// record type in the database.
 		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
@@ -195,7 +191,7 @@ public class RichiestaSupportoDAO {
 			connection.setAutoCommit(false);
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO", 2);
-			Object [] objRichSupp = richiesta.getObject(richiesta);
+			Object [] objRichSupp = richiesta.getObject(richiesta, true);
 		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
 		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
@@ -227,7 +223,7 @@ public class RichiestaSupportoDAO {
 			connection.setAutoCommit(false);
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.UPDATE_RANK", 2);
-			Object [] objRichSupp = richiesta.getObject(richiesta);
+			Object [] objRichSupp = richiesta.getObject(richiesta, true);
 		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
 		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
@@ -246,7 +242,7 @@ public class RichiestaSupportoDAO {
 		}
 	}
 
-	public static void insertReleaseDiProgettoUpdate(Timestamp dataEsecuzione,
+	public static void insertRichiestaSupportoUpdate(Timestamp dataEsecuzione,
 			DmalmRichiestaSupporto richiesta, boolean pkValue)
 			throws DAOException {
 
@@ -260,7 +256,7 @@ public class RichiestaSupportoDAO {
 			connection.setAutoCommit(false);
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_UPDATE_RICH_SUPPORTO", 2);
-			Object [] objRichSupp = richiesta.getObject(richiesta);
+			Object [] objRichSupp = richiesta.getObject(richiesta, pkValue);
 		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
 		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
@@ -279,7 +275,7 @@ public class RichiestaSupportoDAO {
 		}
 	}
 
-	public static void updateReleaseDiProgetto(DmalmRichiestaSupporto richiesta)
+	public static void updateRichiestaSupporto(DmalmRichiestaSupporto richiesta)
 			throws DAOException {
 		
 		ConnectionManager cm = null;
@@ -292,7 +288,7 @@ public class RichiestaSupportoDAO {
 			connection.setAutoCommit(false);
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.UPDATE_RICH_SUPPORTO", 1);
-			Object [] objRichSupp = richiesta.getObject(richiesta);
+			Object [] objRichSupp = richiesta.getObject(richiesta, true);
 		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
 		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
@@ -322,7 +318,7 @@ public class RichiestaSupportoDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-
+			
 			String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_RICHIESTA_SUPPORTO_BY_PK", 1);
 
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
@@ -375,27 +371,141 @@ public class RichiestaSupportoDAO {
 
 		return bean;
 	}
-
-	public static boolean checkEsistenzaRelease(DmalmReleaseDiProgetto r,
-			DmalmProject p) throws DAOException{
+	
+	public static List<DmalmRichiestaSupporto> getRichiestaSupporto(Integer pk_proj, Integer typeQuery)
+			throws DAOException {
+		
 		ConnectionManager cm = null;
 		Connection connection = null;
-
-		List<Tuple> list = new ArrayList<Tuple>();
+		OracleCallableStatement ocs = null;
+		ResultSet rs = null;
+		List<DmalmRichiestaSupporto> richieste = new LinkedList<DmalmRichiestaSupporto>();
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
+			
+			String sql = "";
+			switch(typeQuery) {
+				case 0:
+					sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_PK_RICH_SUPP_BY_PK_HIS", 1);
+					break;
+				case 1:
+					sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_PK_RICH_SUPP_BY_PK_HIS_SUB", 1);
+					break;
+				default:
+					break;
+			}
+			
 
-			SQLQuery query = new SQLQuery(connection, dialect);
+		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
+			ocs.registerOutParameter(1, OracleTypes.CURSOR);
+			ocs.setInt(2, pk_proj);
+			ocs.execute();
+			
+			//return the result set
+            rs = (ResultSet)ocs.getObject(1);
+            
+			logger.debug("Query Eseguita!");
+			while (rs.next()) {
+				// Elabora il risultato
+				DmalmRichiestaSupporto bean = new DmalmRichiestaSupporto();
+				bean.setIdRepository(rs.getString("ID_REPOSITORY"));
+				bean.setUriRichiestaSupporto(rs.getString("URI_RICHIESTA_SUPPORTO"));
+				bean.setDmalmRichiestaSupportoPk(rs.getInt("DMALM_RICH_SUPPORTO_PK"));
+				bean.setStgPk(rs.getString("STG_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
+				bean.setCdRichiestaSupporto(rs.getString("ID_RICHIESTA_SUPPORTO"));
+				bean.setDataRisoluzioneRichSupporto(rs.getTimestamp("DATA_RISOLUZIONE_RICH_SUPPORTO"));
+				bean.setNrGiorniFestivi(rs.getInt("NR_GIORNI_FESTIVI"));
+				bean.setTempoTotRichSupporto(rs.getInt("TEMPO_TOT_RICH_SUPPORTO"));
+				bean.setDmalmStatoWorkitemFk03(rs.getInt("DMALM_STATO_WORKITEM_FK_03"));
+				bean.setDataCreazRichSupporto(rs.getTimestamp("DATA_CREAZ_RICH_SUPPORTO"));
+				bean.setDataModificaRecord(rs.getTimestamp("DATA_MODIFICA_RECORD"));
+				bean.setDataChiusRichSupporto(rs.getTimestamp("DATA_CHIUS_RICH_SUPPORTO"));
+				bean.setUseridRichSupporto(rs.getString("USERID_RICH_SUPPORTO"));
+				bean.setNomeRichSupporto(rs.getString("NOME_RICH_SUPPORTO"));
+				bean.setMotivoRisoluzione(rs.getString("MOTIVO_RISOLUZIONE"));
+				bean.setSeverityRichSupporto(rs.getString("SEVERITY_RICH_SUPPORTO"));
+				bean.setDescrizioneRichSupporto(rs.getString("DESCRIZIONE_RICH_SUPPORTO"));
+				bean.setNumeroTestataRdi(rs.getString("NUMERO_TESTATA_RDI"));
+				bean.setRankStatoRichSupporto(rs.getInt("RANK_STATO_RICH_SUPPORTO"));
+				bean.setDataDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
+				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
+				bean.setAnnullato(rs.getString("ANNULLATO"));
+				bean.setDataAnnullamento(rs.getTimestamp("DATA_ANNULLAMENTO"));
+				bean.setDataStoricizzazione(rs.getTimestamp("DATA_STORICIZZAZIONE"));
+				
+				richieste.add(bean);
+			}
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 
-			list = query
-					.from(rls)
-					.where(rls.dmalmProjectFk02.eq(p
-							.getDmalmProjectPk()))
-					.where(rls.cdReleasediprog.eq(r.getCdReleasediprog()))
-					.where(rls.idRepository.eq(r.getIdRepository()))
-					.list(rls.all());
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return richieste;
+	}
+	
+
+	public static void updateWIRichiestaSupportoDeleted(DmalmRichiestaSupporto richiesta, Timestamp dataEsecuzione)
+			throws DAOException {
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+		OracleCallableStatement ocs = null;
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+			
+			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.UPDATE_WI_RICH_SUPPORTO_DELETE", 2);
+			Object [] objRichSupp = richiesta.getObject(richiesta, true);
+		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
+			ocs.setObject(1, structObj);
+			ocs.setTimestamp(2, dataEsecuzione);
+			ocs.execute();
+			
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+	}
+	
+	public static boolean checkEsistenzaRichiestaSupporto(DmalmRichiestaSupporto richiesta,
+			DmalmProject p) throws DAOException{
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+		OracleCallableStatement ocs = null;
+		String flag = "FALSE";
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+			
+			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.CHECK_ESISTENZA_RICH_SUPPORTO", 2);
+			Object [] objRichSupp = richiesta.getObject(richiesta, true);
+		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
+			ocs.setObject(1, structObj);
+			ocs.setInt(2, p.getDmalmProjectPk());
+			ocs.execute();
+			
+			flag = ocs.getString(1);
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -406,7 +516,7 @@ public class RichiestaSupportoDAO {
 			}
 		}
 
-		if (list.size() > 0) {
+		if (flag.equals("TRUE")) {
 			return true;
 		} else {
 			return false;
