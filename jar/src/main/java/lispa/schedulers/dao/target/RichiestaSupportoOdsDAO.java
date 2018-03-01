@@ -149,6 +149,7 @@ public class RichiestaSupportoOdsDAO {
 				bean.setRankStatoRichSupporto(rs.getInt("RANK_STATO_RICH_SUPPORTO"));
 				bean.setDataDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
+				bean.setDataStoricizzazione(rs.getTimestamp("DATA_STORICIZZAZIONE"));
 				bean.setDataCaricamento(rs.getTimestamp("DATA_CARICAMENTO"));
 				richieste.add(bean);
 			}

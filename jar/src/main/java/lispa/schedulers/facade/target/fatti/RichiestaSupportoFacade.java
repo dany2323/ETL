@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -73,72 +72,82 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 							} else {
 								richiesta.setDataCambioStatoRichSupp(row.getDataCambioStatoRichSupp());
 							}
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.numeroTestata), release.getNumeroTestata()))
-//							{
-//								modificato = true;
-//							}
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.numeroLinea), release.getNumeroLinea()))
-//							{
-//								modificato = true;
-//							}
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmProjectFk02), release.getDmalmProjectFk02()))
-//							{
-//								modificato = true;
-//							}
-//				
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.dtScadenzaReleasediprog), release.getDtScadenzaReleasediprog()))
-//							{
-//								modificato = true;
-//							}
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.descrizioneReleasediprog), release.getDescrizioneReleasediprog()))
-//							{
-//								modificato = true;
-//							}
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmUserFk06), release.getDmalmUserFk06()))
-//							{
-//								modificato = true;
-//							}
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.uri), release.getUri()))
-//							{
-//								modificato = true;
-//							}
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.annullato), release.getAnnullato()))
-//							{
-//								modificato = true;
-//							}
-//
-//							//DM_ALM-320
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.severity), release.getSeverity()))
-//							{
-//								modificato = true;
-//							}
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.priority), release.getPriority()))
-//							{
-//								modificato = true;
-//							}
-//							
-//							if(!modificato && BeanUtils.areDifferent(row.get(rel.typeRelease), release.getTypeRelease()))
-//							{
-//								modificato=true;
-//							}
-//							
-//							if(modificato)
-//							{
-//								righeModificate++;
-//								// STORICIZZO
-//								// aggiorno la data di fine validita sul record corrente
-//								//AnomaliaProdottoDAO.updateDataFineValidita(dataEsecuzione, anomalia);								
-//								ReleaseDiProgettoDAO.updateRank(release, new Double(0));
-//
-//								// inserisco un nuovo record
-//								ReleaseDiProgettoDAO.insertReleaseDiProgettoUpdate(dataEsecuzione, release, true);	
-//								
-//							}
-//							else
-//							{
-//    							 // Aggiorno lo stesso
-//								ReleaseDiProgettoDAO.updateReleaseDiProgetto(release);
-//							}
+							if(!modificato && BeanUtils.areDifferent(row.getUriRichiestaSupporto(), richiesta.getUriRichiestaSupporto())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getDmalmProjectFk02(), richiesta.getDmalmProjectFk02())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getCdRichiestaSupporto(), richiesta.getCdRichiestaSupporto())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getDataRisoluzioneRichSupporto(), richiesta.getDataRisoluzioneRichSupporto())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getNrGiorniFestivi(), richiesta.getNrGiorniFestivi())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getTempoTotRichSupporto(), richiesta.getTempoTotRichSupporto())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getAnnullato(), richiesta.getAnnullato())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getSeverityRichSupporto(), richiesta.getSeverityRichSupporto())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getPriorityRichSupporto(), richiesta.getPriorityRichSupporto())) {
+								modificato = true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getDmalmStatoWorkitemFk03(), richiesta.getDmalmStatoWorkitemFk03())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getDataModificaRecord(), richiesta.getDataModificaRecord())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getDataChiusRichSupporto(), richiesta.getDataChiusRichSupporto())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getUseridRichSupporto(), richiesta.getUseridRichSupporto())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getNomeRichSupporto(), richiesta.getNomeRichSupporto())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getMotivoRisoluzione(), richiesta.getMotivoRisoluzione())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getSeverityRichSupporto(), richiesta.getSeverityRichSupporto())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getDescrizioneRichSupporto(), richiesta.getDescrizioneRichSupporto())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getNumeroTestataRdi(), richiesta.getNumeroTestataRdi())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getDataCambioStatoRichSupp(), richiesta.getDataCambioStatoRichSupp())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getDataDisponibilita(), richiesta.getDataDisponibilita())) {
+								modificato=true;
+							}
+							if(!modificato && BeanUtils.areDifferent(row.getPriorityRichSupporto(), richiesta.getPriorityRichSupporto())) {
+								modificato=true;
+							}
+							
+							if(modificato) {
+								righeModificate++;
+								// STORICIZZO
+								// aggiorno la data di fine validita sul record corrente
+								RichiestaSupportoDAO.updateRank(richiesta, new Double(0));
+
+								// inserisco un nuovo record
+								RichiestaSupportoDAO.insertReleaseDiProgettoUpdate(dataEsecuzione, richiesta, true);	
+							} else {
+    							 // Aggiorno lo stesso
+								RichiestaSupportoDAO.updateReleaseDiProgetto(richiesta);
+							}
 						}
 					}
 				}
@@ -162,14 +171,12 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 			
 			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
 		}
-		finally
-		{
+		finally {
 			dtFineCaricamento = new Date();
 
 			try {
 				
-				EsitiCaricamentoDAO.insert
-				(
+				EsitiCaricamentoDAO.insert (
 							dataEsecuzione,
 							DmAlmConstants.TARGET_RICHIESTA_SUPPORTO, 
 							stato, 
@@ -181,11 +188,8 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 							0
 				);	
 			} catch (DAOException | SQLException e) {
-
 				logger.error(e.getMessage(), e);
-				
 			}
 		}
-
 	}
 }

@@ -28,6 +28,7 @@ import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
+import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
 import lispa.schedulers.bean.target.fatti.DmalmTask;
 import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
@@ -54,6 +55,7 @@ import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaManutenzioneDAO;
+import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
 import lispa.schedulers.dao.target.fatti.SottoprogrammaDAO;
 import lispa.schedulers.dao.target.fatti.TaskDAO;
 import lispa.schedulers.dao.target.fatti.TaskItDAO;
@@ -91,7 +93,10 @@ import lispa.schedulers.queryimplementation.target.fatti.QDmalmTask;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import oracle.jdbc.OracleCallableStatement;
+import oracle.jdbc.OracleTypes;
 
 import org.apache.log4j.Logger;
 
@@ -2236,6 +2241,50 @@ public class CheckAnnullamentiSGRCMFacade {
 																		c,
 																		false);
 													}
+												}
+											}
+										}
+										break;
+										
+									case "sup":
+										Connection connection = cm.getConnectionOracle();
+										String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_PK_RICH_SUPP_BY_HISTORY_PK", 1);
+										OracleCallableStatement ocs = (OracleCallableStatement)connection.prepareCall(sql);
+										ocs.registerOutParameter(1, OracleTypes.CURSOR);
+										ocs.setInt(2, history.getDmalmProjectPk());
+										ocs.execute();
+										
+										//return the result set
+										ResultSet rs = (ResultSet)ocs.getObject(1);
+										while (rs.next()) {
+											DmalmRichiestaSupporto r = RichiestaSupportoDAO
+													.getRichiestaSupporto(rs.getInt("DMALM_RICH_SUPPORTO_PK"));
+											if (r != null) {
+												if (r.getDataStoricizzazione()
+														.equals(dataEsecuzione)) {
+													// già storicizzato oggi
+													r.setAnnullato(unmarked);
+													r.setDataAnnullamento(dataEsecuzione);
+													r.setDmalmProjectFk02(p
+															.getDmalmProjectPk());
+													RichiestaSupportoDAO
+															.updateReleaseDiProgetto(r);
+												} else {
+													RichiestaSupportoDAO
+															.updateRank(
+																	r,
+																	new Double(
+																			0));
+													r.setAnnullato(unmarked);
+													r.setDataStoricizzazione(dataEsecuzione);
+													r.setDataAnnullamento(dataEsecuzione);
+													r.setDmalmProjectFk02(p
+															.getDmalmProjectPk());
+													RichiestaSupportoDAO
+															.insertReleaseDiProgettoUpdate(
+																	dataEsecuzione,
+																	r,
+																	false);
 												}
 											}
 										}

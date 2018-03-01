@@ -7,7 +7,7 @@ import java.sql.SQLOutput;
 
 public class DmalmRichiestaSupporto implements SQLData {
 
-	private static final Integer COUNT_COLUMN = 24;
+	private static final Integer COUNT_COLUMN = 27;
 	private String sql_type;
 	private String idRepository;
 	private String uriRichiestaSupporto;
@@ -33,6 +33,9 @@ public class DmalmRichiestaSupporto implements SQLData {
 	private java.sql.Timestamp dataCambioStatoRichSupp;
 	private java.sql.Timestamp dataDisponibilita;
 	private String priorityRichSupporto;
+	private String annullato;
+	private java.sql.Timestamp dataAnnullamento;
+	private java.sql.Timestamp dataStoricizzazione;
 	private java.sql.Timestamp dataCaricamento;
 	
 //	public DmalmRichiestaSupporto() {
@@ -250,6 +253,24 @@ public class DmalmRichiestaSupporto implements SQLData {
 		this.priorityRichSupporto = priorityRichSupporto;
 	}
 	
+	public String getAnnullato() {
+		return annullato;
+	}
+	public void setAnnullato(String annullato) {
+		this.annullato = annullato;
+	}
+	public java.sql.Timestamp getDataAnnullamento() {
+		return dataAnnullamento;
+	}
+	public void setDataAnnullamento(java.sql.Timestamp dataAnnullamento) {
+		this.dataAnnullamento = dataAnnullamento;
+	}
+	public java.sql.Timestamp getDataStoricizzazione() {
+		return dataStoricizzazione;
+	}
+	public void setDataStoricizzazione(java.sql.Timestamp dataStoricizzazione) {
+		this.dataStoricizzazione = dataStoricizzazione;
+	}
 	public java.sql.Timestamp getDataCaricamento() {
 		return dataCaricamento;
 	}
@@ -285,6 +306,9 @@ public class DmalmRichiestaSupporto implements SQLData {
 		objRichSupp[21] = richiesta.getDataCambioStatoRichSupp();
 		objRichSupp[22] = richiesta.getDataDisponibilita();
 		objRichSupp[23] = richiesta.getPriorityRichSupporto();
+		objRichSupp[24] = richiesta.getAnnullato();
+		objRichSupp[25] = richiesta.getDataAnnullamento();
+		objRichSupp[26] = richiesta.getDataStoricizzazione();
 		
 		return objRichSupp;
 	}
