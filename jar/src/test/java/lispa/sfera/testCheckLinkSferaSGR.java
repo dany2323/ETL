@@ -3,6 +3,7 @@ package lispa.sfera;
 import junit.framework.TestCase;
 import lispa.schedulers.facade.sfera.CheckLinkSferaSgrCmFacade;
 import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.utils.DateUtils;
 
 import java.sql.Timestamp;
@@ -15,8 +16,13 @@ public class testCheckLinkSferaSGR extends TestCase {
 	public void test() {
 		 Timestamp dataEsecuzione = DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-02-21 22:40:00.0",
 		 "yyyy-MM-dd HH:mm:00"));
-		
+		 try{
+		 Log4JConfiguration.inizialize();
 		
 		 CheckLinkSferaSgrCmFacade.execute(dataEsecuzione);
+		 } catch (Exception e)
+		 {
+			 System.out.println(""+e.getMessage());
+		 }
 	}
 }

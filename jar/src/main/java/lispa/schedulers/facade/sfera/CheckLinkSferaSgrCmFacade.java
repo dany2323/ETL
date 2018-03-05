@@ -69,7 +69,7 @@ public class CheckLinkSferaSgrCmFacade {
 						nomeWI= multiWI[0].substring(0, multiWI[0].lastIndexOf("-"));
 						for(int i=1;i<multiWI.length;i++)
 						{
-							multiWI[i]=multiWI[0]+"-"+multiWI[i];
+							multiWI[i]=nomeWI+"-"+multiWI[i];
 						}
 						
 					} catch (Exception e) {
@@ -99,6 +99,7 @@ public class CheckLinkSferaSgrCmFacade {
 										progetto.get(prog.dmalmAsmFk), nomeprog);
 	
 						if (sviWiTupla.size() == 0 && manWiTupla.size() == 0) {
+							
 							ErroriCaricamentoDAO.insert(
 									DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
