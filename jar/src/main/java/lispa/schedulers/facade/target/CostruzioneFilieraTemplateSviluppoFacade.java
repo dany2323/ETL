@@ -130,6 +130,18 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 						insertedWorkitemsList);
 			}
 			
+			// DM_ALM-350 richiesta di supporto
+			//creazione altro secondo livello filiera template Sviluppo
+			startWorkitemsList = LinkedWorkitemsDAO
+					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "sup", "documento");
+			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
+					+ startWorkitemsList.size());
+
+			if (startWorkitemsList.size() > 0) {
+				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
+						insertedWorkitemsList);
+			}
+			
 			// INIZIO DM_ALM-352
 			// aggiunta dei WI Build alla tabella DMALM_TEMPLATE_INT_TECNICA
 			List<DmalmLinkedWorkitems> insertedWorkitemsListBuild = new LinkedList<DmalmLinkedWorkitems>();
