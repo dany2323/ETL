@@ -1573,8 +1573,6 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
-					/*.where(link.tipoWiPadre.in("release_it", "taskit")
-					.and(link.tipoWiFiglio.in("taskit", "defect")))*/
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
 					.list(Projections.bean(DmalmLinkedWorkitems.class,
