@@ -46,6 +46,7 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
+import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
@@ -54,6 +55,8 @@ import lispa.schedulers.svn.SIREUserRolesXML;
 import lispa.schedulers.svn.SISSSchedeServizioXML;
 import lispa.schedulers.svn.SISSUserRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
+
+import java.sql.Timestamp;
 
 import org.apache.log4j.Logger;
 
@@ -202,33 +205,48 @@ public class RecoverManager {
 
 	}
 
-	public synchronized void prepareTargetForRecover() {
+	public synchronized boolean prepareTargetForRecover(Timestamp dataEsecuzione) {
 
 		logger.info("START PREPARE TARGET FOR RECOVER");
 
+		boolean flag = false;
 		QueryManager qm = null;
 
 		try {
 
 			qm = QueryManager.getInstance();
 
-			String separator = ";";
+//			String separator = ";";
 
 			// cancella tutto il contenuto delle tabelle di backup
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.TRUNCATE_BACKUP_TABLES, separator);
+//			qm.executeMultipleStatementsFromFile(
+//					DmAlmConstants.TRUNCATE_BACKUP_TABLES, separator);
 
 			// inserisce il contenuto delle tabelle di target nelle tabelle di
 			// backup
-			qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET,
-					separator);
-
+//			qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET,
+//					separator);
+			
+			// DM_ALM-325
+			// cancella tutto il contenuto delle tabelle di backup e
+			// inserisce il contenuto delle tabelle di target nelle tabelle di
+			// backup
+			String separatorTable = ":";
+			String separatorLine = ";";
+			flag = qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET_WITH_PROCEDURE,
+					separatorTable, separatorLine, dataEsecuzione);
+			if(!flag) {
+				setRecovered(true);
+				throw new Exception(DmAlmConstants.ERROR_CARICAMENTO_BACKUP);
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 
 		logger.info("STOP PREPARE TARGET FOR RECOVER");
-
+		
+		return flag;
 	}
 
 	// MPS

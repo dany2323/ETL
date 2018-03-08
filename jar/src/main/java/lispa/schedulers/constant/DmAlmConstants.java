@@ -168,6 +168,7 @@ public final class DmAlmConstants {
 	
 	//Query per procedura di ripristino: attenzione questi file contengono istruzioni sql multiple
 	public static final String BACKUP_TARGET = "backup_target.sql";
+	public static final String BACKUP_TARGET_WITH_PROCEDURE = "backup_target_with_procedure.sql";
 	public static final String BACKUP_MPS_TARGET = "backup_mps_target.sql";
 	public static final String TRUNCATE_BACKUP_TABLES = "truncate_backup_tables.sql";
 	public static final String TRUNCATE_BACKUP_MPS_TABLES = "truncate_backup_mps_tables.sql";
@@ -299,8 +300,10 @@ public final class DmAlmConstants {
 	public static final String TARGET_FILIERA_PRODUTTIVA = "DMALM_FILIERA_PRODUTTIVA";
 
 	public static final String TARGET_ALL = "ALL";
+	
 
 	// MESSAGGI ERRORE
+	public static final String ERROR_CARICAMENTO_BACKUP = "Errore caricamento tabelle di backup. Rollback non effettuato!";
 	// CLASSIFICATORI
 	public static final String CLASSIFICATORE_CODICE_DUPLICATO = "Codice Classificatore duplicato";
 	public static final String CLASSIFICATORE_CODICE_NULL = "Codice Classificatore null";
@@ -309,6 +312,10 @@ public final class DmAlmConstants {
 	public static final String ELETTRA_ANN_UNITA_ORGANIZZATIVE = "getannullamenti_el_unita_org.sql";
 	public static final String ELETTRA_ANN_AMBTEC_CLASSIF = "getannullamenti_el_ambtec_classif.sql";
 	public static final String ELETTRA_ANN_PERSONALE = "getannullamenti_el_personale.sql";
+	public static final String ELETTRA_ANN_FUNZIONALITA = "getannullamenti_el_funzionalita.sql";
+	public static final String ELETTRA_ANN_MODULO = "getannullamenti_el_modulo.sql";
+	public static final String ELETTRA_ANN_PRODOTTO = "getannullamenti_el_prodotto.sql";
+	public static final String ELETTRA_ANN_PRODOTTO_FISICAMENTE= "getannullamenti_el_prodotto_fisicamente.sql";
 
 	// MESSAGGI ERRORE
 	// PRODOTTO
@@ -393,6 +400,7 @@ public final class DmAlmConstants {
 	public static final String ROOT_UO_CD_ENTE = "LI";
 	public static final String LOGICAMENTE = "UNMARKED";
 	public static final String FISICAMENTE = "ANNULLATO FISICAMENTE";
+	public static final String DISMESSO = "DISMESSO";
 	
 	// MESSAGGI ERRORE
 	// SGR PROJECT
@@ -420,7 +428,7 @@ public final class DmAlmConstants {
 	public static final String SCHEDULAZIONE_BO_ENABLE = "enable";
 
 	public static final String ENABLER = "enable";
-
+	public static final String ANNULLATO_LOGICAMENTE_ELETTRA="ANNULLATO LOGICAMENTE";
 	public static final String UNMARKED = "UNMARKED";
 	
 	public static final String PROJECT_PATH_SUFFIX = "/.polarion/polarion-project.xml";
@@ -487,7 +495,7 @@ public final class DmAlmConstants {
 	public static final String PROJECT_NAME_MALFORMED = "ESF011 - NOME DEL PROGETTO SFERA NON RISPETTA IL PATTERN PREDEFINITO";
 	public static final String WRONG_PROJECT_TYPE = "TIPO DELLA MPP DIVERSA DA BASELINE";
 	public static final String WRONG_MISURE_TYPE = "TIPO DELLA MISURA NON È ASSOCIATO AL METODO CORRETTO";
-	public static final String MISURE_NAME_MALFORMED = "NOME DELLA MISURA SFERA NON RISPETTA IL PATTERN PREDEFINITO";
+	public static final String MISURE_NAME_MALFORMED = "ESF090 - NOME DELLA MISURA SFERA NON RISPETTA IL PATTERN PREDEFINITO";
 	public static final String MISURE_APPROACH_MALFORMED = "APPROCCIO DELLA MISURA DIVERSO DA STANDARD, ERRATO!!";
 	public static final String WRONG_MEASURER = "UTENTE MISURATORE ERRATO";
 	public static final String WRONG_MEASURE_STATUS = "STATO ERRATO PER LA MISURA CORRENTE";
@@ -601,6 +609,7 @@ public final class DmAlmConstants {
 	public static String FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO="ESF084 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-02 - Valore non permesso : ";
 	public static String MANCATA_CORRISPONDENZA_SFERA_WI="ESF087 - Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM ";
 	public static String NO_CORR_STATO_WI_MISURA="ESF088 - Mancata corrispondenza tra lo STATO dei WI e lo stato della MISURA SFERA";
+	public static String PERMESSION_NON_PERMESSO="ESF089 - PERMISSIONS  valore non permesso ";
     
 	public static String getProperty(String property) {
 

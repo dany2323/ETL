@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.queryimplementation.staging.QDmalmEsitiCaricamenti;
 
@@ -387,6 +388,8 @@ public class DateUtils {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 			annullati = query.from(esiti).where(esiti.dataCaricamento.lt(now))
+					.where(esiti.entitaTarget.eq(DmAlmConstants.TARGET_ALL))
+					.where(esiti.statoEsecuzione.eq(DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE))
 					.list(esiti.dataCaricamento.max());
 
 		} catch (Exception e) {

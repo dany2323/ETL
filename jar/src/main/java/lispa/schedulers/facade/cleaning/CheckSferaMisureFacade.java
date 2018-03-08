@@ -293,8 +293,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FONTE_MISURA,
 						DmAlmConstants.TARGET_ASM,
 						MisuraUtils.MisuraToString(row),
-						"PERMISSIONS  valore non permesso : "
-								+ row.get(stgMisura.permissions),
+						DmAlmConstants.PERMESSION_NON_PERMESSO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
 			}

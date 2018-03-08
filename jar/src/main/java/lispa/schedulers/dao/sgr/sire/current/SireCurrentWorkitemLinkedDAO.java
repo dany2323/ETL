@@ -74,7 +74,7 @@ public class SireCurrentWorkitemLinkedDAO {
 											+ fonteWorkitemLinked.fkWorkitem
 											+ ",0,4000)")));
 
-			logger.debug("fillSireCurrentWorkitemLinked - cfworkitems.sizw: " + cfworkitems.size());
+			logger.debug("fillSireCurrentWorkitemLinked - cfworkitems.size: " + cfworkitems.size());
 			
 			Iterator<Tuple> i = cfworkitems.iterator();
 			Object[] el = null;

@@ -71,21 +71,6 @@ public class CostruzioneFilieraTemplateAssFunzionaleFacade {
 				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
 						insertedWorkitemsList);
 			}
-
-			// INIZIO DM_ALM-352
-			// aggiunta dei WI Build alla tabella DMALM_TEMPLATE_INT_TECNICA
-			List<DmalmLinkedWorkitems> insertedWorkitemsListBuild = new LinkedList<DmalmLinkedWorkitems>();
-			
-			List<DmalmLinkedWorkitems> startWorkitemsListBuild = LinkedWorkitemsDAO
-					.getStartWorkitemsAddBuildTemplate(dataInizioFiliera);
-			logger.debug("CostruzioneFilieraTemplateAssFunzionaleFacade - Aggiunta WI Build - lista.size: "
-					+ startWorkitemsListBuild.size());
-
-			if (startWorkitemsListBuild.size() > 0) {
-				idFiliera = gestisciListaAddWiBuild(idFiliera, startWorkitemsListBuild,
-						insertedWorkitemsListBuild);
-			}
-			// FINE DM_ALM-352
 			
 			logger.info("STOP CostruzioneFilieraTemplateAssFunzionaleFacade.execute()");
 		} catch (DAOException de) {
