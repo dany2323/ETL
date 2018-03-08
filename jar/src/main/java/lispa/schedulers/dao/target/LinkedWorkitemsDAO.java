@@ -1536,6 +1536,7 @@ public class LinkedWorkitemsDAO {
 					.where(link.ruolo.isNotNull())
 					.where(build.rankStatoBuild.eq(new Double("1")))
 					.where(build.dtCreazioneBuild.goe(dataInizioFiliera))
+					.where(build.annullato.isNull())
 					.orderBy(link.idRepositoryPadre.asc())
 					.orderBy(link.fkWiPadre.asc())
 					.orderBy(link.fkWiFiglio.asc())
