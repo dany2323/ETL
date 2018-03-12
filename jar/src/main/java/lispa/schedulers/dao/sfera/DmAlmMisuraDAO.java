@@ -328,7 +328,9 @@ public class DmAlmMisuraDAO {
 			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
 					misura);
 			
-			insert.columns(misura.a1Num,
+			insert.columns(misura.dmalmMisuraPk,
+					misura.dmalmStgMisuraPk,
+					misura.a1Num,
 					misura.a1Ufp,
 					misura.a2Num,
 					misura.a2Ufp,
@@ -443,7 +445,9 @@ public class DmAlmMisuraDAO {
 					misura.valoreScostamento,
 					misura.versioneMsr,
 					misura.progettoSfera)
-				.values(misure.getA1Num(),
+				.values(misure.getDmalmMisuraPk(),
+						misure.getDmalmStgMisuraPk(),
+						misure.getA1Num(),
 						misure.getA1Ufp(),
 						misure.getA2Num(),
 						misure.getA2Ufp(),
