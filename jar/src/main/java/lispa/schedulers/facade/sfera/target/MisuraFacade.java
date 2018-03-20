@@ -68,7 +68,7 @@ public class MisuraFacade {
 				// se non trovo almento un record, inserisco la nuova struttura
 				// organizzativa nel target
 
-				if (target.size() == 0) {
+				if (target.size() == 0 && misure.getNomeMisura().startsWith("UFFICIOSO-")) {
 					righeNuove++;
 
 					DmAlmMisuraDAO.insertMisure(dataEsecuzione, misure);
@@ -81,7 +81,7 @@ public class MisuraFacade {
 					for (Tuple row : target) {
 						// aggiorno la data di fine validita del record corrente
 
-						if (row != null) {
+						if (row != null && !isUfficiosoInTargetAndStaging(row.get(misura.nomeMisura),misure.getNomeMisura())) {
 							boolean modificato = false;
 
 							if (BeanUtils.areDifferent(
@@ -195,6 +195,14 @@ public class MisuraFacade {
 			logger.info("STOP MisuraFacade.execute");
 		}
 	}
+
+	private static boolean isUfficiosoInTargetAndStaging(String nomeProgettoTarget, String nomeProgettoStaging) {
+		if(nomeProgettoTarget.startsWith("UFFICIOSO-") && nomeProgettoTarget.charAt(14)=='#' &&
+				nomeProgettoStaging.startsWith("UFFICIOSO-") && nomeProgettoStaging.charAt(14)=='#')
+			return true;
+		return false;
+	}
+
 
 	private static void rinascitaFisicaMisura(Timestamp dataEsecuzione,
 			DmalmMisura misure, String parApplicazione, String parNomeProgetto) {

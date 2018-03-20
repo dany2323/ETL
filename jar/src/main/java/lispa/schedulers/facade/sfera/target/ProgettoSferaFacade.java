@@ -70,7 +70,7 @@ public class ProgettoSferaFacade {
 				// se non trovo almento un record, inserisco la nuova struttura
 				// organizzativa nel target
 
-				if (target.size() == 0) {
+				if (target.size() == 0 && !project.getNomeProgetto().startsWith("UFFICIOSO-")) {
 					righeNuove++;
 
 					DmAlmProgettoSferaDAO.insertProgettoSfera(project,
@@ -84,7 +84,7 @@ public class ProgettoSferaFacade {
 					for (Tuple row : target) {
 						// aggiorno la data di fine validita del record corrente
 
-						if (row != null) {
+						if (row != null && !isUfficiosoInTargetAndStaging(row.get(progetto.nomeProgetto),project.getNomeProgetto())) {
 							boolean modificato = false;
 
 							if (BeanUtils.areDifferent(
@@ -291,6 +291,13 @@ public class ProgettoSferaFacade {
 
 			logger.info("STOP ProgettoSferaFacade.execute");
 		}
+	}
+
+	private static boolean isUfficiosoInTargetAndStaging(String nomeProgettoTarget, String nomeProgettoStaging) {
+		if(nomeProgettoTarget.startsWith("UFFICIOSO-") && nomeProgettoTarget.charAt(14)=='#' &&
+				nomeProgettoStaging.startsWith("UFFICIOSO-") && nomeProgettoStaging.charAt(14)=='#')
+			return true;
+		return false;
 	}
 
 	private static void rinascitaFisicaProgettoSfera(Timestamp dataEsecuzione,
