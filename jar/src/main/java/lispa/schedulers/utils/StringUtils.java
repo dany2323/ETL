@@ -3,12 +3,23 @@ package lispa.schedulers.utils;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Array;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 
 public class StringUtils {
 	
@@ -197,6 +208,48 @@ public class StringUtils {
 		} else {
 			return input;
 		}
+	}
+	
+	public static List<String> getLogFromStoredProcedureByTimestamp(String nameStoredProcedure) {
+		Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
+		ConnectionManager cm = null;
+		Connection connection = null;
+		Statement stmt = null;
+		java.util.List<String> stringArray = null;
+		String sql = "{call "+nameStoredProcedure+"(?, ?)}";
+		try {
+			
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			stmt = connection.createStatement();
+
+		    try {
+		        stmt.executeUpdate("begin dbms_output.enable(); end;");
+
+		        CallableStatement call = connection.prepareCall(sql);
+		        
+	            call.registerOutParameter(1, Types.ARRAY, "DBMSOUTPUT_LINESARRAY");
+            		call.setObject(2, dataEsecuzione);
+	            call.execute();
+
+	            Array array = null;
+	            try {
+	                array = call.getArray(1);
+	                stringArray = Arrays.asList((String[]) array.getArray());
+	            }
+	            finally {
+	                if (array != null)
+	                    array.free();
+	            }
+		    }
+		    finally {
+		        stmt.executeUpdate("begin dbms_output.disable(); end;");
+		    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return stringArray;
 	}
 
 }
