@@ -1,16 +1,8 @@
 package lispa.schedulers.action;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-
-import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
 import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.cleaning.CheckAnomaliaDifettoProdottoFacade;
 import lispa.schedulers.facade.target.SvecchiamentoFacade;
@@ -23,9 +15,7 @@ import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
 import lispa.schedulers.utils.MailUtil;
-import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.StringUtils;
-import lispa.schedulers.utils.enums.Workitem_Type;
 
 import org.apache.log4j.Logger;
 
@@ -143,8 +133,12 @@ public class DmAlmETL {
 		
 		if (!RecoverManager.getInstance().isRecovered()) {
 			List<String> listMessage = StringUtils.getLogFromStoredProcedureByTimestamp("VERIFICA_ESITO_ETL");
-			for(String message : listMessage) {
-				logger.info(message);
+			if (listMessage != null) {	
+				for(String message : listMessage) {
+					logger.info(message);
+				}
+			} else {
+				logger.info("*** NESSUNA INFORMAZIONE DAI LOG DELLA STORED PROCEDURE ***");
 			}
 		}
 

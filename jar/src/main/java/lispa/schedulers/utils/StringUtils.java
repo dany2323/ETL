@@ -235,7 +235,9 @@ public class StringUtils {
 	            Array array = null;
 	            try {
 	                array = call.getArray(1);
-	                stringArray = Arrays.asList((String[]) array.getArray());
+	                if (array != null) {
+	                		stringArray = Arrays.asList((String[]) array.getArray());
+	                }
 	            }
 	            finally {
 	                if (array != null)
