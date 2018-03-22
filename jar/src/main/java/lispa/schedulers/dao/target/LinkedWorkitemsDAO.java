@@ -1685,7 +1685,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 			
-			resultList = query
+			resultList = query.distinct()
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem))
 					.where(link.tipoWiFiglio.eq("documento"))
