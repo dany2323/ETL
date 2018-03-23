@@ -82,10 +82,11 @@ public class CheckAnnullamentiElettraFacade {
 				String id;
 				id = rs.getString("ID_FUNZIONALITA");
 
-//				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.idFunzionalita.equalsIgnoreCase(id))
-//					.set(funzionalita.nome, "#"+DmAlmConstants.FISICAMENTE+"##"+dataCaricamento+"#"+id)		
-//					.set(funzionalita.annullato, DmAlmConstants.FISICAMENTE)
-//						.set(funzionalita.dtAnnullamento, dataOggi).execute();
+				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.idFunzionalita.equalsIgnoreCase(id))
+					.set(funzionalita.nome, "#"+DmAlmConstants.FISICAMENTE+"##"+dataCaricamento+"#"+id)		
+					.set(funzionalita.annullato, DmAlmConstants.FISICAMENTE)
+						.set(funzionalita.dtAnnullamento, dataOggi).execute();
+				
 				logger.debug("UPDATE "+funzionalita+" SET "+funzionalita.nome+"= #"+DmAlmConstants.FISICAMENTE+"##"+dataCaricamento+"#"+id
 						+" AND "+funzionalita.annullato+" = "+DmAlmConstants.FISICAMENTE+ " AND "+funzionalita.dtAnnullamento+" = "+dataOggi
 						+" WHERE "+funzionalita.idFunzionalita+" = "+id);
@@ -103,10 +104,10 @@ public class CheckAnnullamentiElettraFacade {
 				Integer id;
 				id = rs.getInt("DMALM_FUNZIONALITA_PK");
 
-//				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.funzionalitaPk.eq(id))
-//					.set(funzionalita.nome, "#"+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+"##"+dataCaricamento+"#"+id)	
-//					.set(funzionalita.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
-//						.set(funzionalita.dtAnnullamento, dataOggi).execute();
+				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.funzionalitaPk.eq(id))
+					.set(funzionalita.nome, "#"+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+"##"+dataCaricamento+"#"+id)	
+					.set(funzionalita.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
+						.set(funzionalita.dtAnnullamento, dataOggi).execute();
 				
 				logger.debug("UPDATE "+funzionalita+" SET "+funzionalita.nome+"= #"+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+"##"+dataCaricamento+"#"+id
 						+" AND "+funzionalita.annullato+" = "+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+ " AND "+funzionalita.dtAnnullamento+" = "+dataOggi
@@ -157,10 +158,10 @@ public class CheckAnnullamentiElettraFacade {
 				String id;
 				id = rs.getString("ID_MODULO");
 
-//				new SQLUpdateClause(conn, dialect, moduli).where(moduli.idModulo.equalsIgnoreCase(id))
-//					.set(moduli.nome, "#"+DmAlmConstants.FISICAMENTE+"##"+dataCaricamento+"#"+id)	
-//					.set(moduli.annullato, DmAlmConstants.FISICAMENTE).set(moduli.dataAnnullamento, dataOggi)
-//						.execute();
+				new SQLUpdateClause(conn, dialect, moduli).where(moduli.idModulo.equalsIgnoreCase(id))
+					.set(moduli.nome, "#"+DmAlmConstants.FISICAMENTE+"##"+dataCaricamento+"#"+id)	
+					.set(moduli.annullato, DmAlmConstants.FISICAMENTE).set(moduli.dataAnnullamento, dataOggi)
+						.execute();
 				
 				logger.debug("UPDATE "+moduli+" SET "+moduli.nome+"= #"+DmAlmConstants.FISICAMENTE+"##"+dataCaricamento+"#"+id
 						+" AND "+moduli.annullato+" = "+DmAlmConstants.FISICAMENTE+ " AND "+moduli.dataAnnullamento+" = "+dataOggi
@@ -189,10 +190,10 @@ public class CheckAnnullamentiElettraFacade {
 				Integer id;
 				id = rs.getInt("DMALM_MODULO_PK");
 
-//				new SQLUpdateClause(conn, dialect, moduli).where(moduli.moduloPk.equalsIgnoreCase(id))
-//					.set(moduli.nome, "#"+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+"##"+dataCaricamento+"#"+id)	
-//					.set(moduli.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
-//						.set(moduli.dataAnnullamento, dataOggi).execute();
+				new SQLUpdateClause(conn, dialect, moduli).where(moduli.moduloPk.eq(id))
+					.set(moduli.nome, "#"+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+"##"+dataCaricamento+"#"+id)	
+					.set(moduli.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
+						.set(moduli.dataAnnullamento, dataOggi).execute();
 				
 				logger.debug("UPDATE "+moduli+" SET "+moduli.nome+"= #"+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+"##"+dataCaricamento+"#"+id
 						+" AND "+moduli.annullato+" = "+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA+ " AND "+moduli.dataAnnullamento+" = "+dataOggi
@@ -252,9 +253,9 @@ public class CheckAnnullamentiElettraFacade {
 				String id;
 				id = rs.getString("ID_PRODOTTO");
 
-//				new SQLUpdateClause(conn, dialect, prodotti).where(prodotti.idProdotto.equalsIgnoreCase(id))
-//						.set(prodotti.annullato, DmAlmConstants.FISICAMENTE).set(prodotti.stato, DmAlmConstants.ELIMINATO).set(prodotti.dataAnnullamento, dataOggi)
-//						.execute();
+				new SQLUpdateClause(conn, dialect, prodotti).where(prodotti.idProdotto.equalsIgnoreCase(id))
+						.set(prodotti.annullato, DmAlmConstants.FISICAMENTE).set(prodotti.stato, DmAlmConstants.ELIMINATO).set(prodotti.dataAnnullamento, dataOggi)
+						.execute();
 				
 				logger.debug("UPDATE "+prodotti+" SET "+prodotti.annullato+" = "+DmAlmConstants.FISICAMENTE
 						+ " AND "+prodotti.stato+" = "+ DmAlmConstants.ELIMINATO
@@ -287,10 +288,10 @@ public class CheckAnnullamentiElettraFacade {
 				Integer id;
 				id = rs.getInt("DMALM_PRODOTTO_PK");
 
-//				new SQLUpdateClause(conn, dialect, prodotti).where(prodotti.prodottoPk.equalsIgnoreCase(id))
-//						.set(prodotti.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
-//						.set(prodotti.stato, DmAlmConstants.DISMESSO)
-//						.set(prodotti.dataAnnullamento, dataOggi).execute();
+				new SQLUpdateClause(conn, dialect, prodotti).where(prodotti.prodottoPk.eq(id))
+						.set(prodotti.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
+						.set(prodotti.stato, DmAlmConstants.DISMESSO)
+						.set(prodotti.dataAnnullamento, dataOggi).execute();
 
 				logger.debug("UPDATE "+prodotti+" SET "+prodotti.annullato+" = "+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA
 						+ " AND "+prodotti.stato+" = "+ DmAlmConstants.DISMESSO
@@ -335,9 +336,9 @@ public class CheckAnnullamentiElettraFacade {
 			String dataCaricamento = formatDate.format(dataOggi);
 
 			for (Integer id : listIdProdotti) {
-//				new SQLUpdateClause(conn, dialect, moduli).where(moduli.prodottoFk.eq(id))
-//						.set(moduli.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
-//						.set(moduli.annullato, tipoAnnullamento).set(moduli.dataAnnullamento, dataOggi).execute();
+				new SQLUpdateClause(conn, dialect, moduli).where(moduli.prodottoFk.eq(id))
+						.set(moduli.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
+						.set(moduli.annullato, tipoAnnullamento).set(moduli.dataAnnullamento, dataOggi).execute();
 
 				logger.debug("UPDATE "+moduli+" SET "+moduli.nome+"= #"+tipoAnnullamento+"##"+dataCaricamento+"#"+id
 						+" AND "+moduli.annullato+" = "+tipoAnnullamento+ " AND "+moduli.dataAnnullamento+" = "+dataOggi
@@ -368,10 +369,10 @@ public class CheckAnnullamentiElettraFacade {
 			String dataCaricamento = formatDate.format(dataOggi);
 			for (Integer id : listIdModuli) {
 
-//				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.dmalmModuloFk01.eq(id))
-//					.set(funzionalita.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
-//					.set(funzionalita.annullato, tipoAnnullamento).set(funzionalita.dtAnnullamento, dataOggi)
-//					.execute();
+				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.dmalmModuloFk01.eq(id))
+					.set(funzionalita.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
+					.set(funzionalita.annullato, tipoAnnullamento).set(funzionalita.dtAnnullamento, dataOggi)
+					.execute();
 				
 				logger.debug("UPDATE "+funzionalita+" SET "+funzionalita.nome+"= #"+tipoAnnullamento+"##"+dataCaricamento+"#"+id
 						+" AND "+funzionalita.annullato+" = "+tipoAnnullamento+ " AND "+funzionalita.dtAnnullamento+" = "+dataOggi
@@ -407,10 +408,10 @@ public class CheckAnnullamentiElettraFacade {
 			while (rs.next()) {
 				String id;
 				id = rs.getString("CD_AREA");
-//				new SQLUpdateClause(conn, dialect, unitaOrganizzativa)
-//						.where(unitaOrganizzativa.codiceArea.equalsIgnoreCase(id))
-//						.set(unitaOrganizzativa.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
-//						.set(unitaOrganizzativa.dataAnnullamento, dataOggi).execute();
+				new SQLUpdateClause(conn, dialect, unitaOrganizzativa)
+						.where(unitaOrganizzativa.codiceArea.equalsIgnoreCase(id))
+						.set(unitaOrganizzativa.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
+						.set(unitaOrganizzativa.dataAnnullamento, dataOggi).execute();
 				
 				logger.debug("UPDATE "+unitaOrganizzativa+" SET "+unitaOrganizzativa.annullato+" = "+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA
 						+ " AND "+unitaOrganizzativa.dataAnnullamento+" = "+dataOggi
@@ -458,9 +459,9 @@ public class CheckAnnullamentiElettraFacade {
 				String id;
 				id = rs.getString("CD_PERSONALE");
 
-//				new SQLUpdateClause(conn, dialect, personale).where(personale.codicePersonale.equalsIgnoreCase(id))
-//						.set(personale.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
-//						.set(personale.dataAnnullamento, dataOggi).execute();
+				new SQLUpdateClause(conn, dialect, personale).where(personale.codicePersonale.equalsIgnoreCase(id))
+						.set(personale.annullato, DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA)
+						.set(personale.dataAnnullamento, dataOggi).execute();
 				
 				logger.debug("UPDATE "+personale+" SET "+personale.annullato+" = "+DmAlmConstants.ANNULLATO_LOGICAMENTE_ELETTRA
 						+ " AND "+personale.dataAnnullamento+" = "+dataOggi
@@ -510,11 +511,11 @@ public class CheckAnnullamentiElettraFacade {
 				idAmbTecn = rs.getString("ID_AMB_TECN");
 				idClassificatore = rs.getString("ID_CLASSIFICATORE");
 
-//				new SQLUpdateClause(conn, dialect, ambienteTecnologicoClassificatori)
-//						.where(ambienteTecnologicoClassificatori.idAmbienteTecnologico.equalsIgnoreCase(idAmbTecn))
-//						.where(ambienteTecnologicoClassificatori.idClassificatore.equalsIgnoreCase(idClassificatore))
-//						.set(ambienteTecnologicoClassificatori.annullato, DmAlmConstants.FISICAMENTE)
-//						.set(ambienteTecnologicoClassificatori.dataAnnullamento, dataOggi).execute();
+				new SQLUpdateClause(conn, dialect, ambienteTecnologicoClassificatori)
+						.where(ambienteTecnologicoClassificatori.idAmbienteTecnologico.equalsIgnoreCase(idAmbTecn))
+						.where(ambienteTecnologicoClassificatori.idClassificatore.equalsIgnoreCase(idClassificatore))
+						.set(ambienteTecnologicoClassificatori.annullato, DmAlmConstants.FISICAMENTE)
+						.set(ambienteTecnologicoClassificatori.dataAnnullamento, dataOggi).execute();
 				
 				logger.debug("UPDATE "+ambienteTecnologicoClassificatori+" SET "+ambienteTecnologicoClassificatori.annullato+" = "+DmAlmConstants.FISICAMENTE
 						+" AND "+ambienteTecnologicoClassificatori.dataAnnullamento+" = "+dataOggi
