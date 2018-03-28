@@ -132,13 +132,29 @@ public class DmAlmETL {
 		}
 		
 		if (!RecoverManager.getInstance().isRecovered()) {
-			List<String> listMessage = StringUtils.getLogFromStoredProcedureByTimestamp("VERIFICA_ESITO_ETL");
+			List<String> listMessage = StringUtils.getLogFromStoredProcedureByTimestamp(DmAlmConstants.STORED_PROCEDURE_VERIFICA_ESITO_ETL);
 			if (listMessage != null) {	
 				for(String message : listMessage) {
 					logger.info(message);
 				}
 			} else {
 				logger.info("*** NESSUNA INFORMAZIONE DAI LOG DELLA STORED PROCEDURE ***");
+			}
+		}
+		// se errore nella Stored Procedure effettuo il ripristino di tutto
+		if (ErrorManager.getInstance().hasError()) {
+			// SFERA/ELETTRA/SGRCM
+			if (ExecutionManager.getInstance().isExecutionSfera()
+					|| ExecutionManager.getInstance()
+							.isExecutionElettraSgrcm()) {
+				RecoverManager.getInstance().startRecoverTarget();
+				RecoverManager.getInstance().startRecoverStaging();
+			}
+
+			// MPS
+			if (ExecutionManager.getInstance().isExecutionMps()) {
+				RecoverManager.getInstance().startRecoverTrgMps();
+				RecoverManager.getInstance().startRecoverStgMps();
 			}
 		}
 
