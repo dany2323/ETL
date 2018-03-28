@@ -611,6 +611,9 @@ public final class DmAlmConstants {
 	public static String NO_CORR_STATO_WI_MISURA="ESF088 - Mancata corrispondenza tra lo STATO dei WI e lo stato della MISURA SFERA";
 	public static String PERMESSION_NON_PERMESSO="ESF089 - PERMISSIONS  valore non permesso ";
     
+	// nome Stored Procedure
+	public static String STORED_PROCEDURE_VERIFICA_ESITO_ETL = "VERIFICA_ESITO_ETL";
+	
 	public static String getProperty(String property) {
 
 		String props = "";
