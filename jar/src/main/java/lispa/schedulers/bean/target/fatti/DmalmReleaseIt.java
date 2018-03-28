@@ -78,6 +78,36 @@ public class DmalmReleaseIt {
     
 	private String typeRelease;
 	
+	private String motivoSospensione;
+	
+	private Integer counterQf;
+	
+	private Integer giorniQf;
+	
+	public String getMotivoSospensione() {
+		return motivoSospensione;
+	}
+
+	public void setMotivoSospensione(String motivoSospensione) {
+		this.motivoSospensione = motivoSospensione;
+	}
+
+	public Integer getCounterQf() {
+		return counterQf;
+	}
+
+	public void setCounterQf(Integer counterQf) {
+		this.counterQf = counterQf;
+	}
+
+	public Integer getGiorniQf() {
+		return giorniQf;
+	}
+
+	public void setGiorniQf(Integer giorniQf) {
+		this.giorniQf = giorniQf;
+	}
+
 	public String getPriority() {
 		return priority;
 	}

@@ -102,6 +102,9 @@ public class ReleaseItDAO {
 				bean.setPriority(rs.getString("PRIORITY"));
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setTypeRelease(rs.getString("TYPE_RELEASE"));
+				bean.setMotivoSospensione(rs.getString("MOTIVO_SOSPENSIONE"));
+				bean.setCounterQf(rs.getInt("COUNTER_QF"));
+				bean.setGiorniQf(rs.getInt("GIORNI_QF"));
 				releases.add(bean);
 			}
 
@@ -200,7 +203,10 @@ public class ReleaseItDAO {
 							releaseIt.dtAnnullamento,
 							releaseIt.severity,
 							releaseIt.priority,
-							releaseIt.typeRelease)
+							releaseIt.typeRelease,
+							releaseIt.motivoSospensione,
+							releaseIt.counterQf,
+							releaseIt.giorniQf)
 					.values(release.getCdReleaseIt(),
 							release.getDescrizioneReleaseIt(),
 							release.getDmalmReleaseItPk(),
@@ -229,7 +235,10 @@ public class ReleaseItDAO {
 							release.getDtAnnullamento(),
 							release.getSeverity(),
 							release.getPriority(),
-							release.getTypeRelease()).execute();
+							release.getTypeRelease(),
+							release.getMotivoSospensione(),
+							release.getCounterQf(),
+							release.getGiorniQf()).execute();
 
 			connection.commit();
 
@@ -316,7 +325,10 @@ public class ReleaseItDAO {
 							releaseIt.annullato,
 							releaseIt.severity,
 							releaseIt.priority,
-							releaseIt.typeRelease)
+							releaseIt.typeRelease,
+							releaseIt.motivoSospensione,
+							releaseIt.counterQf,
+							releaseIt.giorniQf)
 					.values(release.getCdReleaseIt(),
 							release.getDescrizioneReleaseIt(),
 							pkValue == true ? release.getDmalmReleaseItPk() : StringTemplate
@@ -349,7 +361,10 @@ public class ReleaseItDAO {
 							release.getAnnullato(),
 							release.getSeverity(),
 							release.getPriority(),
-							release.getTypeRelease()).execute();
+							release.getTypeRelease(),
+							release.getMotivoSospensione(),
+							release.getCounterQf(),
+							release.getGiorniQf()).execute();
 
 			connection.commit();
 
@@ -426,6 +441,9 @@ public class ReleaseItDAO {
 					.set(releaseIt.severity, release.getSeverity())
 					.set(releaseIt.priority,release.getPriority())
 					.set(releaseIt.typeRelease, release.getTypeRelease())
+					.set(releaseIt.motivoSospensione, release.getMotivoSospensione())
+					.set(releaseIt.counterQf, release.getCounterQf())
+					.set(releaseIt.giorniQf, release.getGiorniQf())
 					.execute();
 
 			connection.commit();
@@ -500,7 +518,9 @@ public class ReleaseItDAO {
 			r.setTitoloReleaseIt(t.get(releaseIt.titoloReleaseIt));
 			r.setUri(t.get(releaseIt.uri));
 			r.setTypeRelease(t.get(releaseIt.typeRelease));
-			
+			r.setMotivoSospensione(t.get(releaseIt.motivoSospensione));
+			r.setCounterQf(t.get(releaseIt.counterQf));
+			r.setGiorniQf(t.get(releaseIt.giorniQf));
 			return r;
 			
 		}else return null;
