@@ -3,12 +3,15 @@ package lispa.schedulers.dao;
 import java.sql.Array;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
+
+import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 
@@ -45,6 +48,10 @@ public class UtilsDAO {
             if (array != null) {
             		stringArray = Arrays.asList((String[]) array.getArray());
             }
+		} catch (SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {

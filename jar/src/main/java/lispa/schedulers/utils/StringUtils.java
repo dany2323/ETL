@@ -3,24 +3,12 @@ package lispa.schedulers.utils;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Array;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
-
 import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 
