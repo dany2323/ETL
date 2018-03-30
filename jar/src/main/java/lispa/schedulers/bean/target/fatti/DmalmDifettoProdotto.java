@@ -2,6 +2,11 @@ package lispa.schedulers.bean.target.fatti;
 
 import javax.annotation.Generated;
 
+import lispa.schedulers.utils.EnumUtils;
+import lispa.schedulers.utils.enums.CF_anomalia;
+import lispa.schedulers.utils.enums.CF_defect;
+import lispa.schedulers.utils.enums.Workitem_Type;
+
 /**
  * DmalmDifettoProdotto is a Querydsl bean type
  */
@@ -317,13 +322,7 @@ public class DmalmDifettoProdotto {
 
     public void setProvenienzaDifetto(String provenienzaDifetto) {
     	//DM_ALM-289 Aggiunto commento # 4
-    	if(provenienzaDifetto!=null)
-    	{
-    		provenienzaDifetto=provenienzaDifetto.split(" ")[0];
-	    	if(provenienzaDifetto.contains("SVI"))
-	    		provenienzaDifetto=provenienzaDifetto.replaceAll("SVI", "SV");
-    	}    	
-        this.provenienzaDifetto = provenienzaDifetto;
+        this.provenienzaDifetto = EnumUtils.getCustomFieldValue(Workitem_Type.anomalia, CF_defect.role.toString(), provenienzaDifetto);
     }
 
     public Double getRankStatoDifetto() {
