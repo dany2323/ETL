@@ -19,6 +19,8 @@ public class DmAlmConfigReaderProperties
 	public static final String SQL_PROGETTO_SVILUPPO_DEMAND 	= "drqs.sql";
 	public static final String SQL_DOCUMENTO					= "documento.sql";
 	public static final String SQL_RELEASE_DI_PROGETTO			= "release.sql";
+	public static final String SQL_RELEASE_DI_PROGETTO_NOT_IN_TARGET= "releasenotintarget.sql";
+
 	public static final String SQL_TASK							= "task.sql";
 	public static final String SQL_TESTCASE						= "testcase.sql";
 	public static final String SQL_MANUTENZIONE 				= "sman.sql";

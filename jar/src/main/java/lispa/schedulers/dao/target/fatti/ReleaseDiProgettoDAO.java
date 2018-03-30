@@ -1,6 +1,7 @@
 package lispa.schedulers.dao.target.fatti;
 
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_RELEASE_DI_PROGETTO;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_RELEASE_DI_PROGETTO_NOT_IN_TARGET;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseDiProgetto;
@@ -165,6 +167,131 @@ public class ReleaseDiProgettoDAO {
 
 		return releases;
 	}
+	
+	public static List<DmalmReleaseDiProgetto> getAllReleaseDiProgettoNotInTarget(
+			Timestamp dataEsecuzione) throws Exception {
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		DmalmReleaseDiProgetto bean = null;
+		List<DmalmReleaseDiProgetto> releases = new ArrayList<DmalmReleaseDiProgetto>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = QueryManager.getInstance().getQuery(
+					SQL_RELEASE_DI_PROGETTO_NOT_IN_TARGET);
+			ps = connection.prepareStatement(sql);
+
+			ps.setFetchSize(200);
+			
+			rs = ps.executeQuery();
+
+			//logger.debug("Query Eseguita!");
+
+			while (rs.next()) {
+				// Elabora il risultato
+				bean = new DmalmReleaseDiProgetto();
+
+				bean.setCdReleasediprog(rs.getString("CD_REL_DI_PROG"));
+				bean.setCodice(rs.getString("CODICE"));
+				bean.setDataDisponibilitaEff(rs
+						.getTimestamp("DATA_DISPONIBILITA_EFFETTIVA"));
+				bean.setDataPassaggioInEsercizio(rs
+						.getTimestamp("DATA_PASSAGGIO_IN_ESERC"));
+				bean.setDescrizioneReleasediprog(rs
+						.getString("DESCRIZIONE_REL_DI_PROG"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				bean.setDmalmStatoWorkitemFk03(rs
+						.getInt("DMALM_STATO_WORKITEM_FK_03"));
+				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
+				bean.setDmalmReleasediprogPk(rs.getInt("DMALM_REL_DI_PROG_PK"));
+				bean.setDsAutoreReleasediprog(rs
+						.getString("NOME_AUTORE_REL_DI_PROG"));
+				bean.setDtCaricamentoReleasediprog(dataEsecuzione);
+				bean.setDtCreazioneReleasediprog(rs
+						.getTimestamp("DATA_INSERIMENTO_RECORD"));
+				bean.setDtModificaReleasediprog(rs
+						.getTimestamp("DATA_MODIFICA_REL_DI_PROG"));
+				bean.setDtRisoluzioneReleasediprog(rs
+						.getTimestamp("DATA_RISOLUZIONE_REL_DI_PROG"));
+				bean.setDtScadenzaReleasediprog(rs
+						.getTimestamp("DATA_SCADENZA_REL_DI_PROG"));
+				bean.setFornitura(rs.getString("CLASSE_DI_FORNITURA"));
+				bean.setFr(rs.getBoolean("FIRST_RELEASE"));
+				bean.setIdAutoreReleasediprog(rs
+						.getString("ID_AUTORE_REL_DI_PROG"));
+				bean.setIdRepository(rs.getString("ID_REPOSITORY"));
+				bean.setMotivoRisoluzioneRelProg(rs
+						.getString("MOTIVO_RISOL_REL_DI_PROG"));
+				bean.setNumeroLinea(StringUtils.getLinea(rs
+						.getString("CODICE_INTERVENTO")));
+				bean.setNumeroTestata(StringUtils.getTestata(rs
+						.getString("CODICE_INTERVENTO")));
+				bean.setTitoloReleasediprog(rs.getString("TITOLO_REL_DI_PROG"));
+				bean.setVersione(rs.getString("VERSIONE"));
+				bean.setUri(rs.getString("URI_WI"));
+				bean.setStgPk(rs.getString("STG_REL_DI_PROG_PK"));
+
+				String registry = rs.getString("REGISTRY");
+				Timestamp inizio = null;
+				Timestamp fine = null;
+				Integer qf = null;
+				if (registry != null) {
+					try {
+						String[] regToSplit = registry.split(",");
+
+						if (regToSplit.length > 0) {
+							inizio = DateUtils.stringToTimestamp(regToSplit[0], "yyyy-MM-dd HH:mm");
+							if (StringUtils.hasText(regToSplit[1])) {
+								fine = DateUtils
+										.stringToTimestamp(regToSplit[1], "yyyy-MM-dd HH:mm");
+							}
+							qf = Integer.parseInt(regToSplit[2]);
+						}
+					} catch (Exception e) {
+						logger.error(
+								"Registry non valorizzato correttamente - CdRelease: "
+										+ bean.getCdReleasediprog()
+										+ ", registry: " + registry, e);
+					}
+				}
+				bean.setDtInizioQF(inizio);
+				bean.setDtFineQF(fine);
+				bean.setNumQuickFix(qf);
+
+				//DM_ALM-320
+				bean.setSeverity(rs.getString("SEVERITY"));
+				bean.setPriority(rs.getString("PRIORITY"));
+				bean.setTypeRelease(rs.getString("TYPE_RELEASE"));
+				
+				releases.add(bean);
+			}
+
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return releases;
+	}
 
 	public static List<Tuple> getReleaseDiProgetto(
 			DmalmReleaseDiProgetto release) throws DAOException {
@@ -187,6 +314,37 @@ public class ReleaseDiProgettoDAO {
 					.where(rls.idRepository.equalsIgnoreCase(release
 							.getIdRepository()))
 					.where(rls.rankStatoReleasediprog.eq(new Double(1)))
+					.list(rls.all());
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return releases;
+
+	}
+	
+	public static List<Tuple> getReleaseDiProgettoFromStagingPK(
+			DmalmReleaseDiProgetto release) throws DAOException {
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> releases = new ArrayList<Tuple>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			releases = query
+					.from(rls)
+					.where(rls.stgPk.equalsIgnoreCase(release
+							.getStgPk()))
 					.list(rls.all());
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
