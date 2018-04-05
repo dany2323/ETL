@@ -1662,7 +1662,7 @@ public class ProjectSgrCmDAO {
 					.where(proj.annullato.eq(annullato))
 					.where(proj.dtFineValidita.eq(DateUtils
 							.setDtFineValidita9999()))
-					.where(proj.dtAnnullamento.eq(dt_esecuzione))
+					//.where(proj.dtAnnullamento.eq(dt_esecuzione))
 					.list(proj.all());
 
 		} catch (Exception e) {

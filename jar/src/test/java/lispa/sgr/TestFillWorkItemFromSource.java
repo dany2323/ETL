@@ -1,5 +1,8 @@
 package lispa.sgr;
 
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_RETRY;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,8 +14,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jdt.internal.compiler.flow.LoopingFlowContext;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -24,22 +29,39 @@ import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryAttachmentDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryUserDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.ReleaseDiProgettoOdsDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseDiProgettoDAO;
 import lispa.schedulers.dao.target.fatti.TaskDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.cleaning.CheckAnnullamentiSGRCMFacade;
 import lispa.schedulers.facade.cleaning.CheckChangingWorkitemFacade;
 import lispa.schedulers.facade.target.CostruzioneFilieraTemplateSviluppoFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.queryimplementation.target.QDmalmFilieraTemplateSviluppo;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseDiProgetto;
+import lispa.schedulers.runnable.staging.sire.current.SireSchedeServizioRunnable;
+import lispa.schedulers.runnable.staging.sire.current.SireUserRolesRunnable;
+import lispa.schedulers.runnable.staging.sire.history.SireHistoryAttachmentRunnable;
+import lispa.schedulers.runnable.staging.sire.history.SireHistoryHyperlinkRunnable;
+import lispa.schedulers.runnable.staging.sire.history.SireHistoryProjectGroupRunnable;
+import lispa.schedulers.runnable.staging.sire.history.SireHistoryProjectRunnable;
+import lispa.schedulers.runnable.staging.sire.history.SireHistoryRevisionRunnable;
+import lispa.schedulers.runnable.staging.sire.history.SireHistoryUserRunnable;
+import lispa.schedulers.runnable.staging.sire.history.SireHistoryWorkitemUserAssignedRunnable;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.LogUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 
@@ -47,6 +69,10 @@ public class TestFillWorkItemFromSource extends TestCase {
 	
 	private Connection connection;
 	private ConnectionManager cm;
+	
+	private static int retry;
+
+	private static int wait;
 	
 	private static Logger logger =  Logger.getLogger(TaskDAO.class);
 
@@ -62,7 +88,9 @@ public class TestFillWorkItemFromSource extends TestCase {
 									"yyyy-MM-dd HH:mm:00"));
 			
 			//SireHistoryWorkitemDAO.fillSireHistoryWorkitem(workItemToLoad, maxRev, Workitem_Type.release);;
-			execute(dataEsecuzione);
+			CheckAnnullamentiSGRCMFacade.annullaWorkitemFigli();
+
+			//execute(dataEsecuzione);
 		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -89,137 +117,144 @@ public class TestFillWorkItemFromSource extends TestCase {
 
 		try
 		{
-			staging_releases  = ReleaseDiProgettoDAO.getAllReleaseDiProgettoNotInTarget(dataEsecuzione);
-			
-			ReleaseDiProgettoOdsDAO.delete();
-			
-			//logger.debug("START -> Popolamento Release ODS, "+staging_releases.size()+ " release");
-			
-			ReleaseDiProgettoOdsDAO.insert(staging_releases, dataEsecuzione);
-			
-			List<DmalmReleaseDiProgetto> x = ReleaseDiProgettoOdsDAO.getAll();
-			
-			//logger.debug("STOP -> Popolamento Release ODS, "+staging_releases.size()+ " release");
-			
-			for(DmalmReleaseDiProgetto release : x)
-			{   
+			int maxrev=2000000;
+			for(int i=1000000;i<maxrev; i=i+10000)
+			{
+				int j=i+10000;
+				logger.info("Da Rev "+i+" a rev "+j);
+				staging_releases  = ReleaseDiProgettoDAO.getAllReleaseDiProgettoNotInTarget(dataEsecuzione,i,i+10000);
+				logger.info("Trovate "+staging_releases.size());
+
+				ReleaseDiProgettoOdsDAO.delete();
 				
-				release_tmp = release;
-				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
-
-				target_releases = ReleaseDiProgettoDAO.getReleaseDiProgetto(release);
-				release.setDtCaricamentoReleasediprog(release.getDtStoricizzazione());
-
-				// se non trovo almento un record, inserisco il project nel target
-				if(target_releases.size()==0)
-				{
-					righeNuove++;
-					release.setDtCambioStatoReleasediprog(release.getDtModificaReleasediprog());
-					logger.debug("Cerco di inserire release con ID : "+release.getDmalmReleasediprogPk()+" CD_RELEASE : "+release.getCdReleasediprog());
-					ReleaseDiProgettoDAO.insertReleaseDiProgetto(release);
-					//logger.debug("Inserito release con ID : "+release.getDmalmReleasediprogPk());
+				//logger.debug("START -> Popolamento Release ODS, "+staging_releases.size()+ " release");
+				
+				ReleaseDiProgettoOdsDAO.insert(staging_releases, dataEsecuzione);
+				
+				List<DmalmReleaseDiProgetto> x = ReleaseDiProgettoOdsDAO.getAll();
+				
+				//logger.debug("STOP -> Popolamento Release ODS, "+staging_releases.size()+ " release");
+				
+				for(DmalmReleaseDiProgetto release : x)
+				{   
 					
-				}
-				else
-				{
-					logger.debug("Cerco di modificare release con ID : "+release.getDmalmReleasediprogPk()+" CD_RELEASE : "+release.getCdReleasediprog());
-					boolean modificato = false;
-
-					for(Tuple row : target_releases)
+					release_tmp = release;
+					// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+	
+					target_releases = ReleaseDiProgettoDAO.getReleaseDiProgetto(release);
+					release.setDtCaricamentoReleasediprog(release.getDtStoricizzazione());
+	
+					// se non trovo almento un record, inserisco il project nel target
+					if(target_releases.size()==0)
 					{
-						Timestamp targetMod=row.get(rel.dtModificaReleasediprog);
-						Timestamp stagingMod=release.getDtModificaReleasediprog();
-						logger.info("Target release ha data"+row.get(rel.dtModificaReleasediprog)+ "Staging :"+release.getDtModificaReleasediprog());
-						if(row !=null && stagingMod.getNanos()> targetMod.getNanos())
+						righeNuove++;
+						release.setDtCambioStatoReleasediprog(release.getDtModificaReleasediprog());
+						logger.debug("Cerco di inserire release con ID : "+release.getDmalmReleasediprogPk()+" CD_RELEASE : "+release.getCdReleasediprog());
+						ReleaseDiProgettoDAO.insertReleaseDiProgetto(release);
+						//logger.debug("Inserito release con ID : "+release.getDmalmReleasediprogPk());
+						
+					}
+					else
+					{
+						logger.debug("Cerco di modificare release con ID : "+release.getDmalmReleasediprogPk()+" CD_RELEASE : "+release.getCdReleasediprog());
+						boolean modificato = false;
+	
+						for(Tuple row : target_releases)
 						{
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmStatoWorkitemFk03), release.getDmalmStatoWorkitemFk03()))
+							Timestamp targetMod=row.get(rel.dtModificaReleasediprog);
+							Timestamp stagingMod=release.getDtModificaReleasediprog();
+							logger.info("Target release ha data"+row.get(rel.dtModificaReleasediprog)+ "Staging :"+release.getDtModificaReleasediprog());
+							if(row !=null && stagingMod.getNanos()> targetMod.getNanos())
 							{
-								release.setDtCambioStatoReleasediprog(release.getDtModificaReleasediprog());
-								modificato = true;
-							}
-							else {
-								release.setDtCambioStatoReleasediprog(row.get(rel.dtCambioStatoReleasediprog));
-							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.numeroTestata), release.getNumeroTestata()))
-							{
-								modificato = true;
-							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.numeroLinea), release.getNumeroLinea()))
-							{
-								modificato = true;
-							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmProjectFk02), release.getDmalmProjectFk02()))
-							{
-								modificato = true;
-							}
-				
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.dtScadenzaReleasediprog), release.getDtScadenzaReleasediprog()))
-							{
-								modificato = true;
-							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.descrizioneReleasediprog), release.getDescrizioneReleasediprog()))
-							{
-								modificato = true;
-							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmUserFk06), release.getDmalmUserFk06()))
-							{
-								modificato = true;
-							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.uri), release.getUri()))
-							{
-								modificato = true;
-							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.annullato), release.getAnnullato()))
-							{
-								modificato = true;
-							}
-
-							//DM_ALM-320
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.severity), release.getSeverity()))
-							{
-								modificato = true;
-							}
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.priority), release.getPriority()))
-							{
-								modificato = true;
-							}
-							
-							if(!modificato && BeanUtils.areDifferent(row.get(rel.typeRelease), release.getTypeRelease()))
-							{
-								modificato=true;
-							}
-							
-							if(modificato)
-							{
-								righeModificate++;
-								// STORICIZZO
-								// aggiorno la data di fine validita sul record corrente
-								//AnomaliaProdottoDAO.updateDataFineValidita(dataEsecuzione, anomalia);								
-								ReleaseDiProgettoDAO.updateRank(release, new Double(0));
-
-								// inserisco un nuovo record
-								ReleaseDiProgettoDAO.insertReleaseDiProgettoUpdate(dataEsecuzione, release, true);	
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmStatoWorkitemFk03), release.getDmalmStatoWorkitemFk03()))
+								{
+									release.setDtCambioStatoReleasediprog(release.getDtModificaReleasediprog());
+									modificato = true;
+								}
+								else {
+									release.setDtCambioStatoReleasediprog(row.get(rel.dtCambioStatoReleasediprog));
+								}
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.numeroTestata), release.getNumeroTestata()))
+								{
+									modificato = true;
+								}
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.numeroLinea), release.getNumeroLinea()))
+								{
+									modificato = true;
+								}
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmProjectFk02), release.getDmalmProjectFk02()))
+								{
+									modificato = true;
+								}
+					
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.dtScadenzaReleasediprog), release.getDtScadenzaReleasediprog()))
+								{
+									modificato = true;
+								}
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.descrizioneReleasediprog), release.getDescrizioneReleasediprog()))
+								{
+									modificato = true;
+								}
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.dmalmUserFk06), release.getDmalmUserFk06()))
+								{
+									modificato = true;
+								}
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.uri), release.getUri()))
+								{
+									modificato = true;
+								}
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.annullato), release.getAnnullato()))
+								{
+									modificato = true;
+								}
+	
+								//DM_ALM-320
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.severity), release.getSeverity()))
+								{
+									modificato = true;
+								}
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.priority), release.getPriority()))
+								{
+									modificato = true;
+								}
 								
+								if(!modificato && BeanUtils.areDifferent(row.get(rel.typeRelease), release.getTypeRelease()))
+								{
+									modificato=true;
+								}
+								
+								if(modificato)
+								{
+									righeModificate++;
+									// STORICIZZO
+									// aggiorno la data di fine validita sul record corrente
+									//AnomaliaProdottoDAO.updateDataFineValidita(dataEsecuzione, anomalia);								
+									ReleaseDiProgettoDAO.updateRank(release, new Double(0));
+	
+									// inserisco un nuovo record
+									ReleaseDiProgettoDAO.insertReleaseDiProgettoUpdate(dataEsecuzione, release, true);	
+									
+								}
+								else
+								{
+	    							 // Aggiorno lo stesso
+									ReleaseDiProgettoDAO.updateReleaseDiProgetto(release);
+								}
 							}
-							else
-							{
-    							 // Aggiorno lo stesso
-								ReleaseDiProgettoDAO.updateReleaseDiProgetto(release);
-							}
+							else 
+								logger.info("NO modifica");
 						}
-						else 
-							logger.info("NO modifica");
 					}
 				}
+				
+	//			ReleaseDiProgettoDAO.updateATFK();
+	//			
+	//			ReleaseDiProgettoDAO.updateUOFK();
+	//			
+	//			ReleaseDiProgettoDAO.updateTempoFK();
+	//
+	//			ReleaseDiProgettoDAO.updateRankInMonth();
 			}
-			
-//			ReleaseDiProgettoDAO.updateATFK();
-//			
-//			ReleaseDiProgettoDAO.updateUOFK();
-//			
-//			ReleaseDiProgettoDAO.updateTempoFK();
-//
-//			ReleaseDiProgettoDAO.updateRankInMonth();
 		}
 		catch (DAOException e) 
 		{
@@ -267,5 +302,4 @@ public class TestFillWorkItemFromSource extends TestCase {
 
 	}
 	
-
 }

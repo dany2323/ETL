@@ -169,7 +169,7 @@ public class ReleaseDiProgettoDAO {
 	}
 	
 	public static List<DmalmReleaseDiProgetto> getAllReleaseDiProgettoNotInTarget(
-			Timestamp dataEsecuzione) throws Exception {
+			Timestamp dataEsecuzione, int fromRevision, int toRevision) throws Exception {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -186,7 +186,11 @@ public class ReleaseDiProgettoDAO {
 			String sql = QueryManager.getInstance().getQuery(
 					SQL_RELEASE_DI_PROGETTO_NOT_IN_TARGET);
 			ps = connection.prepareStatement(sql);
-
+			
+			ps.setInt(1, fromRevision);
+			ps.setInt(2, toRevision);
+			ps.setInt(3,fromRevision);
+			ps.setInt(4, toRevision);
 			ps.setFetchSize(200);
 			
 			rs = ps.executeQuery();

@@ -1,4 +1,4 @@
- SELECT * FROM (SELECT  
+SELECT * FROM (SELECT  
 		'SIRE' as ID_REPOSITORY,
 		hw.c_uri as URI_WI, 
 		hw.sire_history_workitem_pk as DMALM_REL_DI_PROG_PK,
@@ -50,8 +50,8 @@
 							left join DMALM_USER u
 							on u.ID_USER = hu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SIRE'
 		where hw.c_type = 'release'
-	    AND hw.c_pk NOT IN (SELECT STG_PK FROM DMALM_RELEASE_DI_PROGETTO))
-        WHERE ROWNUM <=1000
+	    AND hw.sire_history_workitem_pk NOT IN (SELECT DMALM_RELEASEDIPROG_PK FROM DMALM_RELEASE_DI_PROGETTO)
+        AND hw.c_rev between ? AND ?)
 UNION  ALL  
  SELECT * FROM (SELECT  
 		'SISS' as ID_REPOSITORY,
@@ -105,6 +105,6 @@ UNION  ALL
 							left join DMALM_USER u
 							on u.ID_USER = hu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SISS'
 		where hw.c_type = 'release'
-	    AND hw.c_pk NOT IN (SELECT STG_PK FROM DMALM_RELEASE_DI_PROGETTO)
+	    AND hw.siss_history_workitem_pk NOT IN (SELECT DMALM_RELEASEDIPROG_PK FROM DMALM_RELEASE_DI_PROGETTO)
+        AND hw.c_rev between ? AND ?
 )
-WHERE ROWNUM <= 1000
