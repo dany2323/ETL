@@ -36,8 +36,6 @@ public class FilieraTemplateDocumentiDAO {
 			SQLTemplates dialect = new HSQLDBTemplates();
 
 			connection.setAutoCommit(false);
-			logger.info("Inserisco Record Documento : id filiera"+idFiliera+" livello"+livello+ "fkWiPadre"+
-					fkWi +"fk Documento"+fkDocumento);
 			for (Integer d : fkDocumento) {
 				new SQLInsertClause(connection, dialect, filiera)
 						.columns(filiera.template,
