@@ -733,6 +733,18 @@ public class DmAlmFillTarget {
 				}
 			} else {
 				logger.error(DmAlmConstants.ERROR_CARICAMENTO_BACKUP);
+				if (ExecutionManager.getInstance().isExecutionSfera()
+						|| ExecutionManager.getInstance()
+								.isExecutionElettraSgrcm()) {
+					RecoverManager.getInstance().startRecoverStaging();
+				}
+
+				// MPS
+				if (ExecutionManager.getInstance().isExecutionMps()) {
+					RecoverManager.getInstance().startRecoverStgMps();
+				}
+				
+				
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

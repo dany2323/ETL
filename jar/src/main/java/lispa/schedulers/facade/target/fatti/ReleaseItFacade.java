@@ -131,6 +131,10 @@ public class ReleaseItFacade {
 							{
 								modificato=true;
 							}
+							if(!modificato && BeanUtils.areDifferent(row.get(rel_it.motivoSospensione),release.getMotivoSospensione()))
+							{
+								modificato=true;
+							}
 							if(modificato)
 							{
 								righeModificate++;

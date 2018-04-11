@@ -240,7 +240,7 @@ public class EnumUtils {
 								CF_values=CF_role_values.values();
 								for(Enum <?> enumCf: CF_values)
 								{
-									if(enumCf.equals(idValue))
+									if(enumCf.toString().equals(idValue))
 										return idValue;
 								}
 								return null;
@@ -255,7 +255,7 @@ public class EnumUtils {
 								CF_values=CF_role_values.values();
 								for(Enum <?> enumCf: CF_values)
 								{
-									if(enumCf.equals(idValue))
+									if(enumCf.toString().equals(idValue))
 										return idValue;
 								}
 								return null;

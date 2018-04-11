@@ -95,7 +95,7 @@ public class CheckSferaMisureFacade implements Runnable {
 					idProgettoAppoggio = -1;
 					okVerificaAsm = true;
 				}
-
+				
 				// I controlli prj vengono effettuati solo una volta per ogni
 				// Prj della stessa Asm in modo da non appesantire il log
 				if (!row.get(stgMisura.idProgetto).equals(idProgettoAppoggio)) {
@@ -279,7 +279,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						datoInput);
 			}
 
-			if (row.get(stgMisura.applicazione) != null
+			if (row.get(stgMisura.idProgetto) ==null && row.get(stgMisura.idMsr)==null && row.get(stgMisura.applicazione) != null
 					&& !row.get(stgMisura.applicazione).isEmpty()
 					&& row.get(stgMisura.applicazione)
 							.startsWith(
@@ -287,7 +287,7 @@ public class CheckSferaMisureFacade implements Runnable {
 					&& (!row.get(stgMisura.permissions).equals(
 							"Admin (RESPAPP);Admin (READWRITE);"))
 						||!row.get(stgMisura.permissions).equals(
-								"Admin (READWRITE);Admin (RESPAPP);") ) {
+								"Admin (READWRITE);Admin (RESPAPP);"))  {
 				errore++;
 				ErroriCaricamentoDAO.insert(
 						DmAlmConstants.FONTE_MISURA,
