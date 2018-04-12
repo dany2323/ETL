@@ -80,7 +80,10 @@ public class RichiestaSupportoDAO {
 				bean.setNumeroTestataRdi(rs.getString("NUMERO_TESTATA_RDI"));
 				bean.setDataDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
-				
+				bean.setCodiceArea(rs.getString("CODICE_AREA"));
+				bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
+				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
+				bean.setTimespent(rs.getFloat("TIMESPENT"));
 				richieste.add(bean);
 			}
 
@@ -163,7 +166,10 @@ public class RichiestaSupportoDAO {
 				bean.setRankStatoRichSupporto(rs.getInt("RANK_STATO_RICH_SUPPORTO"));
 				bean.setDataDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
-				
+				bean.setCodiceArea(rs.getString("CODICE_AREA"));
+				bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
+				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
+				bean.setTimespent(rs.getFloat("TIMESPENT"));
 				richieste.add(bean);
 			}
 		} catch (Exception e) {
@@ -359,7 +365,10 @@ public class RichiestaSupportoDAO {
 				bean.setAnnullato(rs.getString("ANNULLATO"));
 				bean.setDataAnnullamento(rs.getTimestamp("DATA_ANNULLAMENTO"));
 				bean.setDataStoricizzazione(rs.getTimestamp("DATA_STORICIZZAZIONE"));
-				
+				bean.setCodiceArea(rs.getString("CODICE_AREA"));
+				bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
+				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
+				bean.setTimespent(rs.getFloat("TIMESPENT"));
 			}
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -436,7 +445,10 @@ public class RichiestaSupportoDAO {
 				bean.setAnnullato(rs.getString("ANNULLATO"));
 				bean.setDataAnnullamento(rs.getTimestamp("DATA_ANNULLAMENTO"));
 				bean.setDataStoricizzazione(rs.getTimestamp("DATA_STORICIZZAZIONE"));
-				
+				bean.setCodiceArea(rs.getString("CODICE_AREA"));
+				bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
+				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
+				bean.setTimespent(rs.getFloat("TIMESPENT"));
 				richieste.add(bean);
 			}
 		} catch (Exception e) {

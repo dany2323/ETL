@@ -39,6 +39,11 @@ public class DmalmRichiestaSupporto implements SQLData {
 	private java.sql.Timestamp dataAnnullamento;
 	private java.sql.Timestamp dataStoricizzazione;
 	private java.sql.Timestamp dataCaricamento;
+	private String codiceArea;
+	private String codiceProdotto;
+	private java.sql.Timestamp dtScadenzaRichiestaSupporto;
+    private Float timespent;
+
 	
 //	public DmalmRichiestaSupporto() {
 //		
@@ -379,5 +384,29 @@ public class DmalmRichiestaSupporto implements SQLData {
 		stream.writeInt(rankStatoRichSupporto);
 		stream.writeTimestamp(dataDisponibilita);
 		stream.writeString(priorityRichSupporto);
+	}
+	public String getCodiceArea() {
+		return codiceArea;
+	}
+	public void setCodiceArea(String codiceArea) {
+		this.codiceArea = codiceArea;
+	}
+	public String getCodiceProdotto() {
+		return codiceProdotto;
+	}
+	public void setCodiceProdotto(String codiceProdotto) {
+		this.codiceProdotto = codiceProdotto;
+	}
+	public java.sql.Timestamp getDtScadenzaRichiestaSupporto() {
+		return dtScadenzaRichiestaSupporto;
+	}
+	public void setDtScadenzaRichiestaSupporto(java.sql.Timestamp dtScadenzaRichiestaSupporto) {
+		this.dtScadenzaRichiestaSupporto = dtScadenzaRichiestaSupporto;
+	}
+	public Float getTimespent() {
+		return timespent;
+	}
+	public void setTimespent(Float timespent) {
+		this.timespent = timespent;
 	}
 }
