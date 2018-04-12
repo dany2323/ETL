@@ -276,6 +276,7 @@ public final class DmAlmConstants {
 	public static final String TARGET_RELEASE_SERVIZI = "DMALM_RELEASE_SERVIZI";
 	public static final String TARGET_PEI = "DMALM_PEI";
 	public static final String TARGET_CLASSIFICATORE = "DMALM_CLASSIFICATORE";
+	public static final String TARGET_RICHIESTA_SUPPORTO = "DMALM_RICHIESTA_SUPPORTO";
 
 	public static final String TARGET_AREATEMATICA = "DMALM_AREA_TEMATICA";
 	public static final String TARGET_STATOWORKITEM = "DMALM_STATO_WORKITEM";

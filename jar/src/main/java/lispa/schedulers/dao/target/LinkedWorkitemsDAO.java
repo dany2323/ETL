@@ -1334,7 +1334,7 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.where(link.fkWiPadre.eq(fkWiFiglio))
-					.where(link.tipoWiPadre.in("release", "testcase", "task", "anomalia")
+					.where(link.tipoWiPadre.in("release", "testcase", "task", "anomalia", "documento")
 					.and(link.tipoWiFiglio.in("testcase", "task", "anomalia", "defect")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
