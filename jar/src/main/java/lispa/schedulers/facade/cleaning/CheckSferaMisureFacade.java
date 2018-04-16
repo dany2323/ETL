@@ -279,15 +279,15 @@ public class CheckSferaMisureFacade implements Runnable {
 						datoInput);
 			}
 
-			if (row.get(stgMisura.idProgetto) ==null && row.get(stgMisura.idMsr)==null && row.get(stgMisura.applicazione) != null
+			if (row.get(stgMisura.idProgetto) ==null && row.get(stgMisura.idMsr)==null
 					&& !row.get(stgMisura.applicazione).isEmpty()
 					&& row.get(stgMisura.applicazione)
 							.startsWith(
 									DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH)
-					&& (!row.get(stgMisura.permissions).equals(
-							"Admin (RESPAPP);Admin (READWRITE);"))
-						||!row.get(stgMisura.permissions).equals(
-								"Admin (READWRITE);Admin (RESPAPP);"))  {
+					&& !(row.get(stgMisura.permissions).equals(
+							"Admin (RESPAPP);Admin (READWRITE);")
+						|| row.get(stgMisura.permissions).equals(
+								"Admin (READWRITE);Admin (RESPAPP); d")))  {
 				errore++;
 				ErroriCaricamentoDAO.insert(
 						DmAlmConstants.FONTE_MISURA,

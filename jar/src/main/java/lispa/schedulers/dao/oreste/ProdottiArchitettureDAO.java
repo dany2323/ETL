@@ -606,11 +606,11 @@ public class ProdottiArchitettureDAO {
 
 		List<Tuple> prodotti = new ArrayList<Tuple>();
 		List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(sigla);
-		if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
+		/*if(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1)){
 			if (sigla.contains(".")) {
 				sigla = sigla.substring(0, sigla.indexOf("."));
 			}
-		}
+		}*/
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
