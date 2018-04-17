@@ -1380,6 +1380,7 @@ public class ProjectSgrCmDAO {
 
 			projects = query
 					.from(proj)
+					.where(proj.annullato.isNull())
 					.where(proj.siglaProject
 							.eq(applicazione)
 							.or(proj.siglaProject.like(applicazione + "..%"))
@@ -1413,6 +1414,7 @@ public class ProjectSgrCmDAO {
 
 				projects = query
 						.from(proj)
+						.where(proj.annullato.isNull())
 						.where(proj.siglaProject
 								.eq(applicazione)
 								.or(proj.siglaProject
@@ -1447,6 +1449,7 @@ public class ProjectSgrCmDAO {
 
 					projects = query
 							.from(proj)
+							.where(proj.annullato.isNull())
 							.where(proj.siglaProject
 									.eq(applicazione)
 									.or(proj.siglaProject.like(applicazione

@@ -1023,6 +1023,7 @@ public class DmAlmAsmDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 			
 			t = query.from(asm)
+					.where(asm.annullato.isNull())
 					.where(asm.applicazione.eq(siglaPrj)
 							.or(asm.applicazione.like(siglaPrj + "..%"))
 							.or(asm.applicazione.like("%.." + siglaPrj + "..%"))
@@ -1051,6 +1052,7 @@ public class DmAlmAsmDAO {
 				query = new SQLQuery(connection, dialect);
 
 				t = query.from(asm)
+						.where(asm.annullato.isNull())
 						.where(asm.applicazione.eq(siglaPrj)
 								.or(asm.applicazione.like(siglaPrj + "..%"))
 								.or(asm.applicazione.like("%.." + siglaPrj + "..%"))
@@ -1077,6 +1079,7 @@ public class DmAlmAsmDAO {
 					query = new SQLQuery(connection, dialect);
 
 					t = query.from(asm)
+							.where(asm.annullato.isNull())
 							.where(asm.applicazione.eq(siglaPrj)
 									.or(asm.applicazione.like(siglaPrj + "..%"))
 									.or(asm.applicazione.like("%.." + siglaPrj + "..%"))

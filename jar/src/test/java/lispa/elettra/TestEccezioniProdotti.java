@@ -94,6 +94,7 @@ public class TestEccezioniProdotti extends TestCase{
 				SQLQuery query = new SQLQuery(connection, dialect);
 				
 				projList = query.from(project)
+						.where(project.annullato.isNull())
 						.orderBy(project.siglaProject.asc(), project.dtInizioValidita.asc())
 						.list(project.all());
 				
@@ -125,6 +126,7 @@ public class TestEccezioniProdotti extends TestCase{
 				query = new SQLQuery(connection, dialect);
 				
 				asmList = query.from(dmalmAsm)
+					.where(dmalmAsm.annullato.isNull())
 					.orderBy(dmalmAsm.applicazione.asc(), dmalmAsm.dataInizioValidita.asc())
 					.list(dmalmAsm.all());
 				
