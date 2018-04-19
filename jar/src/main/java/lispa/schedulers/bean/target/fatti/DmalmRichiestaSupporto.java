@@ -9,7 +9,7 @@ import com.mysema.query.types.template.StringTemplate;
 
 public class DmalmRichiestaSupporto implements SQLData {
 
-	private static final Integer COUNT_COLUMN = 27;
+	private static final Integer COUNT_COLUMN = 31;
 	private String sql_type;
 	private String idRepository;
 	private String uriRichiestaSupporto;
@@ -319,6 +319,10 @@ public class DmalmRichiestaSupporto implements SQLData {
 		objRichSupp[25] = richiesta.getDataAnnullamento();
 		objRichSupp[26] = (flag== true ? richiesta.getDataModificaRecord() : 
 			richiesta.getDataStoricizzazione());
+		objRichSupp[27] = richiesta.getCodiceArea();
+		objRichSupp[28] = richiesta.getCodiceProdotto();
+		objRichSupp[29] = richiesta.getDtScadenzaRichiestaSupporto();
+		objRichSupp[30] = richiesta.getTimespent();
 		
 		return objRichSupp;
 	}
