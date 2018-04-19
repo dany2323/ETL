@@ -879,6 +879,7 @@ public class DmAlmAsmDAO {
 							.or(asm.unitaOrganizzativaFk
 							.ne(elettraProdotto.unitaOrganizzativaFk))
 							))
+					.where(asm.applicazione.notLike("#ANNULLATO LOGICAMENTE##%"))
 					.distinct()
 					.list(asm.idAsm, elettraProdotto.unitaOrganizzativaFk);
 		} catch (Exception e) {
