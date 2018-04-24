@@ -387,7 +387,7 @@ public class SissHistoryWorkitemDAO {
 								hist.get(fonteHistoryWorkItems.cSeverity),
 								hist.get(fonteHistoryWorkItems.cResolvedon),
 								hist.get(fonteHistoryWorkItems.fkUriProject),
-								hist.get(fonteHistoryWorkItems.cTitle).substring(0, Math.min(hist.get(fonteHistoryWorkItems.cTitle).length(), 3999)),
+								hist.get(fonteHistoryWorkItems.cTitle)!=null?hist.get(fonteHistoryWorkItems.cTitle).substring(0, Math.min(hist.get(fonteHistoryWorkItems.cTitle).length(), 3999)):null,
 								hist.get(fonteHistoryWorkItems.cId),
 								hist.get(fonteHistoryWorkItems.cRev),
 								hist.get(fonteHistoryWorkItems.cPlannedstart),

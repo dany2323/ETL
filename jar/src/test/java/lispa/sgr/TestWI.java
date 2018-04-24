@@ -21,7 +21,10 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.DifettoProdottoOdsDAO;
+import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.fatti.DifettoDAO;
+import lispa.schedulers.facade.target.ProjectSgrCmFacade;
+import lispa.schedulers.facade.target.fatti.RichiestaSupportoFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
@@ -43,7 +46,20 @@ public class TestWI extends TestCase {
 		try {
 			Log4JConfiguration.inizialize();
 
-			loadWiAndCustomFieldInStaging("sup",1310000L,2000000L);
+			/*ProjectSgrCmFacade.execute(DateUtils.stringToTimestamp("2018-02-26 22:40:00",
+					"yyyy-MM-dd HH:mm:00"));*/
+			
+			
+			
+			
+			
+			
+			
+			/*RichiestaSupportoFacade.execute(DateUtils.stringToTimestamp("2018-04-19 09:14:00",
+							"yyyy-MM-dd HH:mm:00")); */
+			
+			
+			loadWiAndCustomFieldInStaging("release_it",1310000L,2000000L);
 //			
 //			List<DmalmDifettoProdotto> staging_difettoprodotto = new ArrayList<DmalmDifettoProdotto>();
 //			List<Tuple> target_difettoprodotto = new ArrayList<Tuple>();
@@ -207,91 +223,91 @@ public class TestWI extends TestCase {
 		tentativi++;
 		logger.debug("Tentativo " + tentativi);
 		
-		for(long i=804620;i<maxRev;i=i+1)
+		for(long i=minRevisionsByType.get(type);i<maxRev;i=i+2)
 		{
 			minRevisionsByType.put(type, i);
-			long j=i+1;
+			long j=i+2;
 			logger.info("Carico da rev "+i+" a "+j);
 			SissHistoryWorkitemDAO.fillSissHistoryWorkitem(
 					minRevisionsByType, j, type);
 			inDeadLock = ErrorManager.getInstance().hasDeadLock();
-		}
-//		if (!inDeadLock) {
-//			List<String> customFields = EnumUtils
-//					.getCFEnumerationByType(type);
-//
-//			SissHistoryCfWorkitemDAO
-//			.fillSissHistoryCfWorkitemByWorkitemType(
-//					minRevisionsByType.get(type),
-//					maxRev, type, customFields);
-//			cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
-//		}
-//
-//		logger.debug("Fine tentativo " + tentativi + " - WI deadlock "
-//				+ inDeadLock + " - CF deadlock " + cfDeadlock);
-//
-//		if (inDeadLock || cfDeadlock) {
-//			while (inDeadLock || cfDeadlock) {
-//
-//				tentativi++;
-//
-//				if (tentativi > retry) {
-//					logger.debug("Raggiunto limite tentativi: "
-//							+ tentativi);
-//					Exception e = new Exception("Deadlock detected");
-//					ErrorManager.getInstance().exceptionOccurred(true,
-//							e);
-//					return;
-//				}
-//
-//				logger.debug("Errore, aspetto 3 minuti");
-//				logger.debug("Tentativo " + tentativi);
-//				TimeUnit.MINUTES.sleep(wait);
-//
-//				if (inDeadLock) {
-//					SissHistoryWorkitemDAO.fillSissHistoryWorkitem(
-//							minRevisionsByType, maxRev, type);
-//					inDeadLock = ErrorManager.getInstance()
-//							.hasDeadLock();
-//					if (!inDeadLock) {
-//						logger.debug("Non in deadlock -> provo i CF");
-//						List<String> customFields = EnumUtils
-//								.getCFEnumerationByType(type);
-//
-//						SissHistoryCfWorkitemDAO
-//						.fillSissHistoryCfWorkitemByWorkitemType(
-//								minRevisionsByType.get(type),
-//								maxRev, type,
-//								customFields);
-//						cfDeadlock = ErrorManager.getInstance()
-//								.hascfDeadLock();
-//						logger.debug("I CF sono in deadlock "
-//								+ cfDeadlock);
+//		
+//			if (!inDeadLock) {
+//				List<String> customFields = EnumUtils
+//						.getCFEnumerationByType(type);
+//	
+//				SissHistoryCfWorkitemDAO
+//				.fillSissHistoryCfWorkitemByWorkitemType(
+//						minRevisionsByType.get(type),
+//						j, type, customFields);
+//				cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
+//			}
+//	
+//			logger.debug("Fine tentativo " + tentativi + " - WI deadlock "
+//					+ inDeadLock + " - CF deadlock " + cfDeadlock);
+//	
+//			if (inDeadLock || cfDeadlock) {
+//				while (inDeadLock || cfDeadlock) {
+//	
+//					tentativi++;
+//	
+//					if (tentativi > retry) {
+//						logger.debug("Raggiunto limite tentativi: "
+//								+ tentativi);
+//						Exception e = new Exception("Deadlock detected");
+//						ErrorManager.getInstance().exceptionOccurred(true,
+//								e);
+//						return;
 //					}
-//				} else {
-//					if (cfDeadlock) {
-//						logger.debug("Scarico soltanto i CF");
-//
-//						List<String> customFields = EnumUtils
-//								.getCFEnumerationByType(type);
-//
-//						SissHistoryCfWorkitemDAO
-//						.fillSissHistoryCfWorkitemByWorkitemType(
-//								minRevisionsByType
-//								.get(type),
-//								maxRev, type,
-//								customFields);
-//
-//						cfDeadlock = ErrorManager.getInstance()
-//								.hascfDeadLock();
-//
-//						logger.debug("I CF sono in deadlock "
-//								+ cfDeadlock);
+//	
+//					logger.debug("Errore, aspetto 3 minuti");
+//					logger.debug("Tentativo " + tentativi);
+//					TimeUnit.MINUTES.sleep(wait);
+//	
+//					if (inDeadLock) {
+//						SissHistoryWorkitemDAO.fillSissHistoryWorkitem(
+//								minRevisionsByType, j, type);
+//						inDeadLock = ErrorManager.getInstance()
+//								.hasDeadLock();
+//						if (!inDeadLock) {
+//							logger.debug("Non in deadlock -> provo i CF");
+//							List<String> customFields = EnumUtils
+//									.getCFEnumerationByType(type);
+//	
+//							SissHistoryCfWorkitemDAO
+//							.fillSissHistoryCfWorkitemByWorkitemType(
+//									minRevisionsByType.get(type),
+//									j, type,
+//									customFields);
+//							cfDeadlock = ErrorManager.getInstance()
+//									.hascfDeadLock();
+//							logger.debug("I CF sono in deadlock "
+//									+ cfDeadlock);
+//						}
+//					} else {
+//						if (cfDeadlock) {
+//							logger.debug("Scarico soltanto i CF");
+//	
+//							List<String> customFields = EnumUtils
+//									.getCFEnumerationByType(type);
+//	
+//							SissHistoryCfWorkitemDAO
+//							.fillSissHistoryCfWorkitemByWorkitemType(
+//									minRevisionsByType
+//									.get(type),
+//									j, type,
+//									customFields);
+//	
+//							cfDeadlock = ErrorManager.getInstance()
+//									.hascfDeadLock();
+//	
+//							logger.debug("I CF sono in deadlock "
+//									+ cfDeadlock);
+//						}
 //					}
 //				}
 //			}
-//		}
-
+		}
 		logger.debug("START delete not matching CFs SISS");
 		SissHistoryCfWorkitemDAO.deleteNotMatchingCFS();
 		logger.debug("STOP delete not matching CFs SISS");
