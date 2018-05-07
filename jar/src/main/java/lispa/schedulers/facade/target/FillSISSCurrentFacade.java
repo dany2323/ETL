@@ -7,6 +7,8 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ProjectRolesDAO;
 import lispa.schedulers.dao.StatoWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentProjectDAO;
+import lispa.schedulers.dao.sgr.siss.current.SissCurrentRevisionDAO;
+import lispa.schedulers.dao.sgr.siss.current.SissCurrentSubterraUriMapDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentWorkitemLinkedDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
@@ -47,6 +49,18 @@ public class FillSISSCurrentFacade {
 			// Date());
 			// SissCurrentUserDAO.fillSissCurrentUser();
 			// logger.debug("STOP  "+new Date());
+			
+			// Viene popolata la tabella di staging DMALM_CURRENT_REVISION
+			logger.debug("START fillSissCurrentRevision");
+			SissCurrentRevisionDAO.delete();
+			SissCurrentRevisionDAO.fillSissCurrentRevision();
+			logger.debug("STOP fillSissCurrentRevision");
+			
+			// Viene popolata la tabella di staging DMALM_CURRENT_SUBTERRA_URI_MAP
+			logger.debug("START fillSissCurrentSubterraUriMap");
+			SissCurrentSubterraUriMapDAO.delete();
+			SissCurrentSubterraUriMapDAO.fillSissCurrentSubterraUriMap();
+			logger.debug("STOP fillSissCurrentSubterraUriMap");
 			
 			logger.debug("START fillSissCurrentWorkitemLinked");
 			SissCurrentWorkitemLinkedDAO.fillSissCurrentWorkitemLinked();

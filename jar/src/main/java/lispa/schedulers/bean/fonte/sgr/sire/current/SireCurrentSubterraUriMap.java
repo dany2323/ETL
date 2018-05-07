@@ -3,7 +3,7 @@ package lispa.schedulers.bean.fonte.sgr.sire.current;
 import javax.annotation.Generated;
 
 @Generated("com.mysema.query.codegen.BeanSerializer")
-public class SireSubterraUriMap {
+public class SireCurrentSubterraUriMap {
 
     private String cPk;
     

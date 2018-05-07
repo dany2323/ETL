@@ -33,7 +33,7 @@ public class SissHistoryUserDAO
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser  fonteUsers= lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser.user;
 
 	private static QSissHistoryUser   stgUsers  = QSissHistoryUser.sissHistoryUser;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 	public static void fillSissHistoryUser(long minRevision, long maxRevision) throws Exception {
 
 		ConnectionManager cm   = null;

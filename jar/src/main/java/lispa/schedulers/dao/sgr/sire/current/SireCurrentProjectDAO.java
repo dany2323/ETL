@@ -55,7 +55,7 @@ public class SireCurrentProjectDAO
 			}};
 			
             lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject.project;
-            lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
+            lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 			
             SQLQuery query = new SQLQuery(pgConnection, dialect); 
 

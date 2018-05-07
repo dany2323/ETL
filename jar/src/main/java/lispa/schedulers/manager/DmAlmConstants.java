@@ -9,19 +9,19 @@ public class DmAlmConstants {
 	private static String dbLinkPolarionCurrentRevisionSiss, dbLinkPolarionCurrentRevisionSire;
 
 	
-	public static String GetDbLinkPolarionCurrentSiss()
-	{
-		if(dbLinkPolarionCurrentSiss == null)
-			dbLinkPolarionCurrentSiss = GetDbLinkPolarionCurrent(ConnectionManager.GetPropertiesReader(), true);
-		return dbLinkPolarionCurrentSiss;
-	}
-	
-	public static String GetDbLinkPolarionCurrentSire()
-	{
-		if(dbLinkPolarionCurrentSire == null)
-			dbLinkPolarionCurrentSire = GetDbLinkPolarionCurrent(ConnectionManager.GetPropertiesReader(), false);
-		return dbLinkPolarionCurrentSire;
-	}	
+//	public static String GetDbLinkPolarionCurrentSiss()
+//	{
+//		if(dbLinkPolarionCurrentSiss == null)
+//			dbLinkPolarionCurrentSiss = GetDbLinkPolarionCurrent(ConnectionManager.GetPropertiesReader(), true);
+//		return dbLinkPolarionCurrentSiss;
+//	}
+//	
+//	public static String GetDbLinkPolarionCurrentSire()
+//	{
+//		if(dbLinkPolarionCurrentSire == null)
+//			dbLinkPolarionCurrentSire = GetDbLinkPolarionCurrent(ConnectionManager.GetPropertiesReader(), false);
+//		return dbLinkPolarionCurrentSire;
+//	}	
 	
 	private static String GetDbLinkPolarionCurrent(PropertiesReader propertiesReader, boolean siss)
 	{
@@ -61,27 +61,27 @@ public class DmAlmConstants {
 		return select;
 	}
 	
-	public static String GetPolarionSchemaSissHistory()
-	{
-		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
-	}
-	
-	public static String GetPolarionSchemaSireHistory()
-	{
-		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
-	}
-
-	public static String GetDbLinkPolarionCurrentRevisionSiss() {
-		if(dbLinkPolarionCurrentRevisionSiss == null)
-			dbLinkPolarionCurrentRevisionSiss = GetDbLinkPolarionCurrentRevision(ConnectionManager.GetPropertiesReader(), true);
-		return dbLinkPolarionCurrentRevisionSiss;
-	}
-	
-	public static String GetDbLinkPolarionCurrentRevisionSire() {
-		if(dbLinkPolarionCurrentRevisionSire == null)
-			dbLinkPolarionCurrentRevisionSire = GetDbLinkPolarionCurrentRevision(ConnectionManager.GetPropertiesReader(), false);
-		return dbLinkPolarionCurrentRevisionSire;
-	}
+//	public static String GetPolarionSchemaSissHistory()
+//	{
+//		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
+//	}
+//	
+//	public static String GetPolarionSchemaSireHistory()
+//	{
+//		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
+//	}
+//
+//	public static String GetDbLinkPolarionCurrentRevisionSiss() {
+//		if(dbLinkPolarionCurrentRevisionSiss == null)
+//			dbLinkPolarionCurrentRevisionSiss = GetDbLinkPolarionCurrentRevision(ConnectionManager.GetPropertiesReader(), true);
+//		return dbLinkPolarionCurrentRevisionSiss;
+//	}
+//	
+//	public static String GetDbLinkPolarionCurrentRevisionSire() {
+//		if(dbLinkPolarionCurrentRevisionSire == null)
+//			dbLinkPolarionCurrentRevisionSire = GetDbLinkPolarionCurrentRevision(ConnectionManager.GetPropertiesReader(), false);
+//		return dbLinkPolarionCurrentRevisionSire;
+//	}
 
 	private static String GetDbLinkPolarionCurrentRevision(PropertiesReader propertiesReader, boolean siss) {
 		String url, userName, password;

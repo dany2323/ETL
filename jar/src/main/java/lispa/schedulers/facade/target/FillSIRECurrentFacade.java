@@ -7,6 +7,8 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ProjectRolesDAO;
 import lispa.schedulers.dao.StatoWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentProjectDAO;
+import lispa.schedulers.dao.sgr.sire.current.SireCurrentRevisionDAO;
+import lispa.schedulers.dao.sgr.sire.current.SireCurrentSubterraUriMapDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemLinkedDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
@@ -47,6 +49,18 @@ public class FillSIRECurrentFacade {
 			// SireCurrentUserDAO.fillSireCurrentUser();
 			// logger.debug("STOP  fillSireCurrentUser "+ new Date());
 
+			// Viene popolata la tabella di staging DMALM_CURRENT_REVISION
+			logger.debug("START fillSireCurrentRevision");
+			SireCurrentRevisionDAO.delete();
+			SireCurrentRevisionDAO.fillSireCurrentRevision();
+			logger.debug("STOP fillSireCurrentRevision");
+			
+			// Viene popolata la tabella di staging DMALM_CURRENT_SUBTERRA_URI_MAP
+			logger.debug("START fillSireCurrentSubterraUriMap");
+			SireCurrentSubterraUriMapDAO.delete();
+			SireCurrentSubterraUriMapDAO.fillSireCurrentSubterraUriMap();
+			logger.debug("STOP fillSireCurrentSubterraUriMap");
+			
 			logger.debug("START fillSireCurrentWorkitemLinked");
 			SireCurrentWorkitemLinkedDAO.fillSireCurrentWorkitemLinked();
 			logger.debug("STOP fillSireCurrentWorkitemLinked");

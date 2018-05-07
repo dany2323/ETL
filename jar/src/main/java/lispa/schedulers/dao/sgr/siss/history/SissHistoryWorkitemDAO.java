@@ -296,7 +296,7 @@ public class SissHistoryWorkitemDAO {
 
 	}
 	
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireSubterraUriMap.urimap;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 
 	public static void fillSissHistoryWorkitem(
 			Map<Workitem_Type, Long> minRevisionsByType, long maxRevision,

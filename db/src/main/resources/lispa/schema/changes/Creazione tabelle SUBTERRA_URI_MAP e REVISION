@@ -1,0 +1,21 @@
+CREATE TABLE DMALM_CURRENT_SUBTERRA_URI_MAP (
+    C_ID NUMBER(15,0),
+    C_REPOSITORY VARCHAR2(4),
+    C_PK VARCHAR2(4000),
+    CONSTRAINT CURR_SUB_URI_MAP_PK PRIMARY KEY (c_pk, C_REPOSITORY)
+);
+
+CREATE TABLE DMALM_CURRENT_REVISION (
+    c_pk NUMBER(15,0),
+    C_REPOSITORY VARCHAR2(4),
+    c_uri  NUMBER(15,0),
+    c_rev  NUMBER(15,0),
+    c_deleted VARCHAR2(5),
+    c_author VARCHAR2(50),
+    c_created timestamp(6),
+    c_internalcommit VARCHAR2(5),
+    c_message VARCHAR2(4000),
+    c_name VARCHAR2(50)  ,
+    c_repositoryname VARCHAR2(50),
+    CONSTRAINT DMALM_REVISION_PK PRIMARY KEY (c_pk, C_REPOSITORY)
+);
