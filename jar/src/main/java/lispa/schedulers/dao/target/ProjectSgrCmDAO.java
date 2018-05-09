@@ -1371,6 +1371,9 @@ public class ProjectSgrCmDAO {
 		List<Tuple> projects = new ArrayList<Tuple>();
 		List<DmalmProject> ret = new ArrayList<DmalmProject>();
 
+		
+		
+		
 		try {
 			// caso x.y.z (prodotto.modulo.funzionalita)
 			cm = ConnectionManager.getInstance();
@@ -1442,6 +1445,7 @@ public class ProjectSgrCmDAO {
 					}
 				} else {
 					// caso x (prodotto)
+
 					temp = applicazione.split("\\.");
 					applicazione = temp[0];
 
@@ -1470,7 +1474,7 @@ public class ProjectSgrCmDAO {
 											.and(proj.dtFineValidita
 													.after(fine))))
 							.list(proj.all());
-
+				
 					if (projects.size() > 0) {
 						for (Tuple t : projects) {
 							DmalmProject d = new DmalmProject();

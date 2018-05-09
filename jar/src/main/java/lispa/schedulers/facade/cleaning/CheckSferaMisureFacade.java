@@ -24,7 +24,7 @@ public class CheckSferaMisureFacade implements Runnable {
 	private Timestamp dataEsecuzione;
 	private boolean isAlive = true;
 	private static QDmalmStgMisura stgMisura = QDmalmStgMisura.dmalmStgMisura;
-
+	public static List <Integer> idAsmAlreadyChecked=new ArrayList<>();
 	public boolean isAlive() {
 		return isAlive;
 	}
@@ -250,6 +250,10 @@ public class CheckSferaMisureFacade implements Runnable {
 		String datoInput = null;
 
 		try {
+			if((row.get(stgMisura.idAsm) != null) && idAsmAlreadyChecked.contains(row.get(stgMisura.idAsm)))
+				return errore;
+			if((row.get(stgMisura.idAsm) != null))
+					idAsmAlreadyChecked.add(row.get(stgMisura.idAsm));
 			if (row.get(stgMisura.idAsm) == null
 					|| row.get(stgMisura.idAsm) == 0) {
 				errore++;
@@ -279,8 +283,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						datoInput);
 			}
 
-			if (row.get(stgMisura.idProgetto) ==null && row.get(stgMisura.idMsr)==null
-					&& !row.get(stgMisura.applicazione).isEmpty()
+			if (!row.get(stgMisura.applicazione).isEmpty()
 					&& row.get(stgMisura.applicazione)
 							.startsWith(
 									DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH)

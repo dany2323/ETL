@@ -11,7 +11,7 @@ insert into DMALM_ATTACHMENT (CD_ATTACHMENT, STATO_CANCELLATO, NOME_AUTORE, NOME
 				hu.c_name as NOME_AUTORE_ATTACHMENT,
 				ha.c_filename as NOME_FILE,
 				ha.c_length as DIMENSIONE_FILE,
-				hp.c_id as ID_PROJECT,
+                nvl((SELECT MAX(hp.c_id) FROM dmalm_sire_history_project hp WHERE ha.fk_project = hp.c_pk) , 0) as ID_PROJECT, 
 				ha.c_title as TITOLO,
 				ha.c_updated as DATA_MODIFICA,
 				ha.c_url as URL_ATTACHMENT,
@@ -22,7 +22,6 @@ insert into DMALM_ATTACHMENT (CD_ATTACHMENT, STATO_CANCELLATO, NOME_AUTORE, NOME
 				from dmalm_sire_history_attachment ha left join dmalm_sire_history_workitem hw 
 					on ha.fk_workitem = hw.c_pk
 						join dmalm_sire_history_user hu on ha.fk_author = hu.c_pk
-							join dmalm_sire_history_project hp on ha.fk_project = hp.c_pk  
 								join total t on t.stg_pk = ha.fk_workitem
 			where ha.data_caricamento = ?
 			union all
@@ -33,7 +32,7 @@ insert into DMALM_ATTACHMENT (CD_ATTACHMENT, STATO_CANCELLATO, NOME_AUTORE, NOME
 				hu.c_name as NOME_AUTORE_ATTACHMENT,
 				ha.c_filename as NOME_FILE,
 				ha.c_length as DIMENSIONE_FILE,
-				hp.c_id as ID_PROJECT,
+                nvl((SELECT MAX(hp.c_id) FROM dmalm_siss_history_project hp WHERE ha.fk_project = hp.c_pk) , 0) as ID_PROJECT, 
 				ha.c_title as TITOLO,
 				ha.c_updated as DATA_MODIFICA,
 				ha.c_url as URL_ATTACHMENT,
@@ -44,7 +43,6 @@ insert into DMALM_ATTACHMENT (CD_ATTACHMENT, STATO_CANCELLATO, NOME_AUTORE, NOME
 				from dmalm_siss_history_attachment ha left join dmalm_siss_history_workitem hw 
 					on ha.fk_workitem = hw.c_pk
 						join dmalm_siss_history_user hu on ha.fk_author = hu.c_pk
-							join dmalm_siss_history_project hp on ha.fk_project = hp.c_pk 
 								join total t on t.stg_pk = ha.fk_workitem
 			where ha.DATA_CARICAMENTO = ? 
 		)

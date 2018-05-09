@@ -4,6 +4,7 @@ package lispa.schedulers.dao.target.fatti;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -43,13 +44,13 @@ public class RichiestaSupportoDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-			
+			//connection.setAutoCommit(false);
 			String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_ALL_RICHIESTA_SUPPORTO", 1);
 			cs = connection.prepareCall(sql);
 			cs.registerOutParameter(1, OracleTypes.CURSOR);
 			cs.setTimestamp(2, dataEsecuzione);
+			cs.setFetchSize(75);
 			cs.execute();
-			
 			//return the result set
             rs = (ResultSet)cs.getObject(1);
             
@@ -100,6 +101,7 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
@@ -138,9 +140,8 @@ public class RichiestaSupportoDAO {
 			
 			//return the result set
             rs = (ResultSet)ocs.getObject(1);
-            
-			logger.debug("Query Eseguita!");
 			while (rs.next()) {
+				logger.info("Cerco di inserire "+rs.getString("STG_PK")+ " ");
 				// Elabora il risultato
 				bean = new DmalmRichiestaSupporto();
 				bean.setIdRepository(rs.getString("ID_REPOSITORY"));
@@ -171,11 +172,21 @@ public class RichiestaSupportoDAO {
 				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
 				bean.setTimespent(rs.getFloat("TIMESPENT"));
 				richieste.add(bean);
+				logger.info("Inserito");
+
 			}
+		
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			if(ocs!=null)
+				try {
+					ocs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
@@ -195,7 +206,8 @@ public class RichiestaSupportoDAO {
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
-			
+    		
+
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO", 2);
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
 		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
@@ -204,13 +216,20 @@ public class RichiestaSupportoDAO {
 			ocs.setObject(1, structObj);
 			ocs.setTimestamp(2, dataEsecuzione);
 			ocs.execute();
-			
 			connection.commit();
+			
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			if(ocs!=null)
+				try {
+					ocs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
@@ -243,6 +262,15 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			if(ocs!=null)
+			{
+				try {
+					ocs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
@@ -260,6 +288,7 @@ public class RichiestaSupportoDAO {
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
+
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_UPDATE_RICH_SUPPORTO", 2);
 			Object [] objRichSupp = richiesta.getObject(richiesta, pkValue);
@@ -268,6 +297,7 @@ public class RichiestaSupportoDAO {
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.setObject(1, structObj);
 			ocs.setTimestamp(2, dataEsecuzione);
+			
 			ocs.execute();
 			
 			connection.commit();
@@ -276,6 +306,13 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			if(ocs!=null)
+				try {
+					ocs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
@@ -307,6 +344,13 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			if(ocs!=null)
+				try {
+					ocs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			if (cm != null)
 				cm.closeConnection(connection);
 		}

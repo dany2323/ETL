@@ -1,5 +1,6 @@
 package lispa.sgr;
 
+import static lispa.schedulers.constant.DmAlmConstants.DEFAULT_DAY_DELETE;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_RETRY;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
 
@@ -16,6 +17,7 @@ import com.mysema.query.Tuple;
 
 import junit.framework.TestCase;
 import lispa.schedulers.action.DmAlmETL;
+import lispa.schedulers.action.DmAlmFillStaging;
 import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryCfWorkitemDAO;
@@ -23,13 +25,18 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.DifettoProdottoOdsDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.fatti.DifettoDAO;
+import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProjectElFacade;
 import lispa.schedulers.facade.target.ProjectSgrCmFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaSupportoFacade;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.Log4JConfiguration;
+import lispa.schedulers.manager.RecoverManager;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
+import lispa.schedulers.runnable.staging.SGRCMSireRunnable;
+import lispa.schedulers.runnable.staging.SGRCMSissRunnable;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.EnumUtils;
@@ -46,20 +53,34 @@ public class TestWI extends TestCase {
 		try {
 			Log4JConfiguration.inizialize();
 
-			/*ProjectSgrCmFacade.execute(DateUtils.stringToTimestamp("2018-02-26 22:40:00",
-					"yyyy-MM-dd HH:mm:00"));*/
+					
+			int days = DEFAULT_DAY_DELETE;
+			final Timestamp dataEsecuzioneDeleted = DateUtils
+					.getAddDayToDate(-days);
 			
+			Thread sire = new Thread(new SGRCMSireRunnable(logger,
+					dataEsecuzioneDeleted));
+
+			// SISS
+			Thread siss = new Thread(new SGRCMSissRunnable(logger,
+					dataEsecuzioneDeleted));
+
+			siss.start();
+			siss.join();
 			
+			sire.start();
+			sire.join();
 			
-			
-			
-			
-			
-			/*RichiestaSupportoFacade.execute(DateUtils.stringToTimestamp("2018-04-19 09:14:00",
+			//CheckLinkAsmSferaProjectElFacade.execute();
+			//loadWiAndCustomFieldInStaging("sup",0L,100000L);
+
+			/*RichiestaSupportoFacade.execute(DateUtils.stringToTimestamp("2018-05-03 20:40:00",
 							"yyyy-MM-dd HH:mm:00")); */
+			/*DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-05-03 20:40:00",
+					"yyyy-MM-dd HH:mm:00"));
+			RecoverManager.getInstance().startRecoverTarget();
 			
-			
-			loadWiAndCustomFieldInStaging("release_it",1310000L,2000000L);
+			RecoverManager.getInstance().startRecoverStaging();*/
 //			
 //			List<DmalmDifettoProdotto> staging_difettoprodotto = new ArrayList<DmalmDifettoProdotto>();
 //			List<Tuple> target_difettoprodotto = new ArrayList<Tuple>();
@@ -223,15 +244,15 @@ public class TestWI extends TestCase {
 		tentativi++;
 		logger.debug("Tentativo " + tentativi);
 		
-		for(long i=minRevisionsByType.get(type);i<maxRev;i=i+2)
+		for(long i=minRevisionsByType.get(type);i<maxRev;i=i+10000)
 		{
 			minRevisionsByType.put(type, i);
-			long j=i+2;
+			long j=i+10000;
 			logger.info("Carico da rev "+i+" a "+j);
 			SissHistoryWorkitemDAO.fillSissHistoryWorkitem(
 					minRevisionsByType, j, type);
 			inDeadLock = ErrorManager.getInstance().hasDeadLock();
-//		
+		
 //			if (!inDeadLock) {
 //				List<String> customFields = EnumUtils
 //						.getCFEnumerationByType(type);

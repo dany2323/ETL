@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Struct;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,29 +65,31 @@ public class RichiestaSupportoOdsDAO {
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
-			
+			int i=0;
 	        String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO_ODS", 2);
 		    for (DmalmRichiestaSupporto richiesta : staging_richieste) {
 //		    		DmalmRichiestaSupporto r = new DmalmRichiestaSupporto(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", richiesta);
 			    	Object [] objRichSupp = richiesta.getObject(richiesta, true);
 			    	// Now Declare a descriptor to associate the host object type with the
 			    	// record type in the database.
-			    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+			    	//StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
 			    	// Now create the STRUCT objects to associate the host objects
 			    	// with the database records.
-			    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+			    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 			    	// Declare the callable statement.
 			    	// This has to be of type OracleCallableStatement to use:
 			    	// setOracleObject(
 			    	// and
 			    	// registerOutParameter(position,type,oracletype)
 			    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
-				ocs.setObject(1, structObj);
+				ocs.setObject(1, structObj); 
 				ocs.setTimestamp(2, dataEsecuzione);
 				ocs.execute();
-		    }
+				ocs.close();
+				i++;
 
-			connection.commit();
+		    }
+		    connection.commit();
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -111,17 +114,16 @@ public class RichiestaSupportoOdsDAO {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			connection.setAutoCommit(false);
+			//connection.setAutoCommit(false);
 
 			String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_ALL_RICHIESTA_SUPPORTO_ODS", 0);
 			cs = connection.prepareCall(sql);
 			cs.registerOutParameter(1, OracleTypes.CURSOR);
+			cs.setFetchSize(75);
 			cs.execute();
-			
 			//return the result set
             rs = (ResultSet)cs.getObject(1);
             
-			logger.debug("Query Eseguita!");
 
 			while (rs.next()) {
 				// Elabora il risultato
@@ -154,13 +156,15 @@ public class RichiestaSupportoOdsDAO {
 				richieste.add(bean);
 			}
 
-			connection.commit();
-
+			//connection.commit();
+			
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 			throw new DAOException(e);
 		} finally {
+			if(cs!=null)
+				cs.close();
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
