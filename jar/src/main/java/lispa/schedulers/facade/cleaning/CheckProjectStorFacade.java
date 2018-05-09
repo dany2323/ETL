@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaProdotto;
@@ -25,6 +24,7 @@ import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
+import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
 import lispa.schedulers.bean.target.fatti.DmalmTask;
 import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
@@ -49,6 +49,7 @@ import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaManutenzioneDAO;
+import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
 import lispa.schedulers.dao.target.fatti.SottoprogrammaDAO;
 import lispa.schedulers.dao.target.fatti.TaskDAO;
 import lispa.schedulers.dao.target.fatti.TaskItDAO;
@@ -84,9 +85,7 @@ import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLSubQuery;
@@ -1245,6 +1244,26 @@ public class CheckProjectStorFacade {
 																	dataEsecuzione,
 																	c, false);
 												}
+											}
+										}
+									}
+									break;
+									
+								case "sup":
+									List<DmalmRichiestaSupporto> richieste = RichiestaSupportoDAO
+														.getRichiestaSupporto(history.getDmalmProjectPk(), 1);
+									for (DmalmRichiestaSupporto richiesta : richieste) {
+										DmalmRichiestaSupporto r = RichiestaSupportoDAO
+												.getRichiestaSupporto(richiesta.getDmalmRichiestaSupportoPk());
+										if (r != null) {
+											boolean exist = RichiestaSupportoDAO.checkEsistenzaRichiestaSupporto(r, p);
+											if (!exist) {
+												if (r.getRankStatoRichSupporto() == 1) {
+													RichiestaSupportoDAO.updateRank(r, new Double(0));
+												}
+												r.setDataStoricizzazione(p.getDtInizioValidita());
+												r.setDmalmProjectFk02(p.getDmalmProjectPk());
+												RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, r, false);
 											}
 										}
 									}

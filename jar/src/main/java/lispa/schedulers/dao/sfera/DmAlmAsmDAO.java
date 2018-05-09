@@ -22,7 +22,6 @@ import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdotto;
 import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -879,6 +878,7 @@ public class DmAlmAsmDAO {
 							.or(asm.unitaOrganizzativaFk
 							.ne(elettraProdotto.unitaOrganizzativaFk))
 							))
+					.where(asm.applicazione.notLike("#ANNULLATO LOGICAMENTE##%"))
 					.distinct()
 					.list(asm.idAsm, elettraProdotto.unitaOrganizzativaFk);
 		} catch (Exception e) {
@@ -1023,10 +1023,13 @@ public class DmAlmAsmDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 			
 			t = query.from(asm)
+					.where(asm.annullato.isNull())
 					.where(asm.applicazione.eq(siglaPrj)
 							.or(asm.applicazione.like(siglaPrj + "..%"))
 							.or(asm.applicazione.like("%.." + siglaPrj + "..%"))
-							.or(asm.applicazione.like("%.." + siglaPrj)))
+							.or(asm.applicazione.like("%.." + siglaPrj))
+							.or(asm.applicazione.like(siglaPrj + ".%"))
+							.or(asm.applicazione.like("%.." + siglaPrj + ".%")))
 					.where(asm.dataInizioValidita.between(inizio, fine)
 						.or(asm.dataFineValidita.between(inizio, fine))
 						.or(asm.dataInizioValidita.before(inizio).and(asm.dataFineValidita.after(fine))))
@@ -1051,6 +1054,7 @@ public class DmAlmAsmDAO {
 				query = new SQLQuery(connection, dialect);
 
 				t = query.from(asm)
+						.where(asm.annullato.isNull())
 						.where(asm.applicazione.eq(siglaPrj)
 								.or(asm.applicazione.like(siglaPrj + "..%"))
 								.or(asm.applicazione.like("%.." + siglaPrj + "..%"))
@@ -1075,8 +1079,9 @@ public class DmAlmAsmDAO {
 					siglaPrj = temp[0];
 					
 					query = new SQLQuery(connection, dialect);
-
+						
 					t = query.from(asm)
+							.where(asm.annullato.isNull())
 							.where(asm.applicazione.eq(siglaPrj)
 									.or(asm.applicazione.like(siglaPrj + "..%"))
 									.or(asm.applicazione.like("%.." + siglaPrj + "..%"))

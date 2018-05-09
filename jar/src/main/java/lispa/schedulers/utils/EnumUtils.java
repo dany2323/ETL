@@ -24,6 +24,7 @@ import lispa.schedulers.utils.enums.CF_rqd;
 import lispa.schedulers.utils.enums.CF_sman;
 import lispa.schedulers.utils.enums.CF_sottoprogramma;
 import lispa.schedulers.utils.enums.CF_srqs;
+import lispa.schedulers.utils.enums.CF_sup;
 import lispa.schedulers.utils.enums.CF_role_values;
 import lispa.schedulers.utils.enums.CF_task;
 import lispa.schedulers.utils.enums.CF_taskit;
@@ -107,6 +108,9 @@ public class EnumUtils {
 		case "sottoprogramma":	
 			CF_enum = CF_sottoprogramma.values();
 			break;
+		case "sup":
+			CF_enum= CF_sup.values();
+			break;
 		case "srqs":	
 			CF_enum = CF_srqs.values();
 			break;
@@ -125,6 +129,7 @@ public class EnumUtils {
 		case "classificatore":	
 			CF_enum = CF_classificatore.values();
 			break;
+			
 		default:
 			CF_enum = null;
 		}

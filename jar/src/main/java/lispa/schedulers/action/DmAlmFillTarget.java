@@ -68,6 +68,7 @@ import lispa.schedulers.facade.target.fatti.ReleaseItFacade;
 import lispa.schedulers.facade.target.fatti.ReleaseServiziFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaGestioneFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaManutenzioneFacade;
+import lispa.schedulers.facade.target.fatti.RichiestaSupportoFacade;
 import lispa.schedulers.facade.target.fatti.SottoprogrammaFacade;
 import lispa.schedulers.facade.target.fatti.TaskFacade;
 import lispa.schedulers.facade.target.fatti.TaskItFacade;
@@ -450,6 +451,16 @@ public class DmAlmFillTarget {
 					} else {
 						logger.info("Entità già elaborata per la data di esecuzione ");
 					}
+					/*
+					// DM_ALM-350
+					logger.info("START RichiestaSupporto.execute "
+							+ new Date());
+					if (!alreadyExecuted(DmAlmConstants.TARGET_RICHIESTA_SUPPORTO)) {
+						RichiestaSupportoFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione ");
+					}*/
+					// FINE DM_ALM-350
 	
 					if (ErrorManager.getInstance().hasError()) {
 						RecoverManager.getInstance().startRecoverTarget();

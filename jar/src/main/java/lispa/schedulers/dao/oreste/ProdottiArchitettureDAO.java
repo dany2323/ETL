@@ -619,6 +619,7 @@ public class ProdottiArchitettureDAO {
 
 			prodotti = query
 					.from(dmalmElProdArc)
+					.where(dmalmElProdArc.annullato.eq("NO"))
 					.where(dmalmElProdArc.sigla.eq(sigla))
 					.where(dmalmElProdArc.dataInizioValidita.between(inizio, fine)
 							.or(dmalmElProdArc.dataFineValidita.between(inizio, fine))

@@ -3,7 +3,6 @@ package lispa.schedulers.utils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -14,7 +13,7 @@ import org.apache.log4j.Logger;
 
 public class QueryUtils {
 	private static Logger logger = Logger.getLogger(QueryUtils.class);
-
+	
 	public static int getCountByWIType(Workitem_Type type) {
 		String wi = type.toString();
 		ConnectionManager cm = null;
@@ -209,5 +208,25 @@ public class QueryUtils {
 		}
 
 		return count;
+	}
+	
+	public static String getCallFunction(String function, Integer numberInParameters) {
+		
+		String parameters = " ";
+		while (numberInParameters > 0) {
+			parameters += "?,";
+			numberInParameters--;
+		}
+		return "{? = call "+ function +"(" + parameters.substring(0, parameters.length()-1) + ")}";
+	}
+	
+	public static String getCallProcedure(String procedure, Integer numberInParameters) {
+		
+		String parameters = " ";
+		while (numberInParameters > 0) {
+			parameters += "?,";
+			numberInParameters--;
+		}
+		return "{call "+ procedure +"(" + parameters.substring(0, parameters.length()-1) + ")}";
 	}
 }
