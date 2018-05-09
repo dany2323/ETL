@@ -5,10 +5,12 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryUser;
 import lispa.schedulers.utils.StringUtils;
 
@@ -33,13 +35,13 @@ public class SissHistoryUserDAO
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser  fonteUsers= lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser.user;
 
 	private static QSissHistoryUser   stgUsers  = QSissHistoryUser.sissHistoryUser;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 	public static void fillSissHistoryUser(long minRevision, long maxRevision) throws Exception {
 
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
 		Connection        pgConnection = null;
 		List<Tuple>       users = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -68,16 +70,20 @@ public class SissHistoryUserDAO
 							fonteUsers.cInitials,
 							StringTemplate.create("0 as c_is_local"),
 							fonteUsers.cName,
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteUsers.cUri + ") || '%' || c_rev as c_pk"),
-							fonteUsers.cRev,
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteUsers.cUri + ") as c_uri")
+							fonteUsers.cUri,
+							fonteUsers.cRev
 							);
 
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgUsers);
+			int size_counter = 0;
+			
 			for(Tuple row : users) {
 				Object[] vals = row.toArray();
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String cUri = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String cPk = cUri+"%"+vals[9];
 				
-				new SQLInsertClause(connOracle, dialect, stgUsers)
-				.columns(
+				insert.columns(
 						stgUsers.cAvatarfilename,
 						stgUsers.cDeleted,
 						stgUsers.cDisablednotifications,
@@ -115,17 +121,28 @@ public class SissHistoryUserDAO
 								vals[5],
 								vals[6],
 								StringUtils.getMaskedValue((String)vals[7]),
-								StringUtils.getMaskedValue((String)vals[8]),
+								StringUtils.getMaskedValue(cPk),
 								vals[9],
-								StringUtils.getMaskedValue((String)vals[10]),
-								
+								StringUtils.getMaskedValue(cUri),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_USER_SEQ.nextval")
 								)
-								.execute();
-
+						.addBatch();
+				
+				size_counter++;
+				
+				if(!insert.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
+					insert.execute();
+					insert = new SQLInsertClause(connOracle, dialect, stgUsers);
+					size_counter = 0;
+				}
 
 			}
+			if(!insert.isEmpty())
+			{
+				insert.execute();
+			}
+	
 			connOracle.commit();
 		}
 		catch(Exception e) {

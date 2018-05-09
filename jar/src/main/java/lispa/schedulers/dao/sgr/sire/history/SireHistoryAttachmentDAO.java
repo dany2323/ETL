@@ -11,6 +11,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConstants;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryAttachment;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment;
 import lispa.schedulers.utils.StringUtils;
 
@@ -40,6 +41,7 @@ public class SireHistoryAttachmentDAO {
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> attachments = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -66,23 +68,35 @@ public class SireHistoryAttachmentDAO {
 							fonteAttachment.cId,
 							StringTemplate.create("0 as c_is_local"),
 							fonteAttachment.cLength,
-							StringTemplate.create("(SELECT a.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " + fonteAttachment.cUri + ") || '%' || c_rev as c_pk"),
+							fonteAttachment.cUri,
 							fonteAttachment.cRev,
 							fonteAttachment.cTitle,
 							fonteAttachment.cUpdated,
-							StringTemplate.create("(SELECT b.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " + fonteAttachment.cUri + ") as c_uri"),
 							fonteAttachment.cUrl,
-							StringTemplate.create("(SELECT c.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " + fonteAttachment.fkUriAuthor + ") || '%' || (select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_author) as fk_author"),
-							StringTemplate.create("(SELECT d.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " + fonteAttachment.fkUriProject + ") || '%' || (select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".project where project.c_pk = fk_project) as fk_project"),
-							StringTemplate.create("(SELECT e.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " e WHERE e.c_id = " + fonteAttachment.fkUriAuthor + ") as fk_uri_author"),
-							StringTemplate.create("(SELECT f.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " f WHERE f.c_id = " + fonteAttachment.fkUriProject + ") as fk_uri_project"),
-							StringTemplate.create("(SELECT g.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " g WHERE g.c_id = " + fonteAttachment.fkUriWorkitem + ") as fk_uri_workitem"),
-							StringTemplate.create("(SELECT h.c_pk FROM " + DmAlmConstants.GetDbLinkPolarionCurrentSire() + " h WHERE h.c_id = " + fonteAttachment.fkUriWorkitem + ") || '%' || (select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem")
+							fonteAttachment.fkUriAuthor,
+							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_author) as fk_rev_author"),
+							fonteAttachment.fkUriProject,
+							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".project where project.c_pk = fk_project) as fk_rev_project"),
+							fonteAttachment.fkUriWorkitem,
+							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_rev_workitem")
 							);
 			
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
+			int n_righe_inserite = 0;
 			
 			for (Tuple row : attachments) {
+
 				Object[] val = row.toArray();
+				
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String cUri = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[5].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String cPk = cUri+"%"+val[6];
+				String fkUriAuthor= queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[10].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkUriProject = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[12].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[14].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkAuthor = fkUriAuthor+"%"+val[11];
+				String fkProject = fkUriProject+"%"+val[13];
+				String fkWorkitem = fkUriWorkitem+"%"+val[15];
 				
 				//Applico il cast a timespent solo se esistono dei valori data 
 				StringExpression dateValue = null;
@@ -119,27 +133,38 @@ public class SireHistoryAttachmentDAO {
 								val[2],
 								val[3],
 								val[4],
-								val[5],
+								cPk,
 								val[6],
 								val[7],
 								dateValue,
-								val[9],
+								cUri,
 								val[10],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
-								StringUtils.getMaskedValue((String)val[11]),
-								val[12],
-								StringUtils.getMaskedValue((String)val[13]),
-								val[14],
-								val[15],
-								val[16],
+								StringUtils.getMaskedValue(fkAuthor),
+								fkProject,
+								StringUtils.getMaskedValue(fkUriAuthor),
+								fkUriProject,
+								fkUriWorkitem,
+								fkWorkitem,
 								StringTemplate.create("HISTORY_ATTACHMENT_SEQ.nextval")
 										
-						)
-						.execute();
-					
+						).addBatch();
+				
+						n_righe_inserite++;
+				
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						connOracle.commit();
+						insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
+					}
+				}
+
 			}
-			
-			connOracle.commit();
+			if (!insert.isEmpty()) {
+				insert.execute();
+				connOracle.commit();
+			}
 			
 		} catch (Exception e) {
 ErrorManager.getInstance().exceptionOccurred(true, e);

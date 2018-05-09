@@ -12,6 +12,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryHyperlink;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryHyperlink;
 import lispa.schedulers.utils.enums.Workitem_Type;
 
@@ -41,6 +42,7 @@ public class SireHistoryHyperlinkDAO {
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> hyperlinks = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			
@@ -77,8 +79,8 @@ public class SireHistoryHyperlinkDAO {
 							
 							fonteHyperlink.cRole,
 							fonteHyperlink.cUrl,
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " + fonteHyperlink.fkUriPWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem"),
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " + fonteHyperlink.fkUriPWorkitem + ") as fk_uri_p_workitem")
+							fonteHyperlink.fkUriPWorkitem,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem")
 							);
 			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
@@ -90,6 +92,9 @@ public class SireHistoryHyperlinkDAO {
 				batchcounter++;
 				
 				Object[] val = row.toArray();
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String fkUriPWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkPWorkitem = fkUriPWorkitem+"%"+val[3];
 				
 				insert
 						.columns(
@@ -104,7 +109,7 @@ public class SireHistoryHyperlinkDAO {
 						)
 								
 						.values(
-								val[0],val[1],val[2],val[3],
+								val[0],val[1],fkPWorkitem,fkUriPWorkitem,
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 										

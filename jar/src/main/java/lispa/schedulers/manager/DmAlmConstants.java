@@ -61,16 +61,16 @@ public class DmAlmConstants {
 		return select;
 	}
 	
-//	public static String GetPolarionSchemaSissHistory()
-//	{
-//		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
-//	}
-//	
-//	public static String GetPolarionSchemaSireHistory()
-//	{
-//		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
-//	}
-//
+	public static String GetPolarionSchemaSissHistory()
+	{
+		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
+	}
+	
+	public static String GetPolarionSchemaSireHistory()
+	{
+		return lispa.schedulers.constant.DmAlmConstants.POLARION_SCHEMA;
+	}
+
 //	public static String GetDbLinkPolarionCurrentRevisionSiss() {
 //		if(dbLinkPolarionCurrentRevisionSiss == null)
 //			dbLinkPolarionCurrentRevisionSiss = GetDbLinkPolarionCurrentRevision(ConnectionManager.GetPropertiesReader(), true);

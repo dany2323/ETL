@@ -222,10 +222,10 @@ public class TestSGR extends TestCase
 		long minRevisionProjects = SissHistoryProjectDAO.getMinRevision();
 		long maxRevisions = SissHistoryRevisionDAO.getMaxRevision();
 
-		SireHistoryProjectDAO.fillSireHistoryProject(minRevisionProjectr,
-				maxRevisionr);
 		SissHistoryProjectDAO.fillSissHistoryProject(minRevisionProjects,
 				maxRevisions);
+		SireHistoryProjectDAO.fillSireHistoryProject(minRevisionProjectr,
+				maxRevisionr);
 	}
 
 	public void testGetDescriptionsWorkitem() throws Exception {

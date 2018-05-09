@@ -12,6 +12,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryHyperlink;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryHyperlink;
 import lispa.schedulers.utils.enums.Workitem_Type;
 
@@ -34,7 +35,6 @@ public class SissHistoryHyperlinkDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryHyperlink fonteHyperlink = SissHistoryHyperlink.structWorkitemHyperlinks;
 	
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryHyperlink stgHyperlink = QSissHistoryHyperlink.dmalmSissHistoryHyperlink;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
 	
 	public static void fillSissHistoryHyperlink(Map<Workitem_Type, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
@@ -43,6 +43,7 @@ public class SissHistoryHyperlinkDAO {
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> hyperlinks = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			
@@ -80,8 +81,8 @@ public class SissHistoryHyperlinkDAO {
 								
 								fonteHyperlink.cRole,
 								fonteHyperlink.cUrl,
-								StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteHyperlink.fkUriPWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem"),
-								StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteHyperlink.fkUriPWorkitem + ") as fk_uri_p_workitem")
+								fonteHyperlink.fkUriPWorkitem,
+								StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem")
 								);
 	
 				SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
@@ -92,6 +93,9 @@ public class SissHistoryHyperlinkDAO {
 					batchcounter++;
 					
 					Object[] vals = row.toArray();
+					SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+					String fkUriPWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
+					String fkPWorkitem = fkUriPWorkitem+"%"+vals[3];
 					
 					insert
 							.columns(
@@ -109,9 +113,8 @@ public class SissHistoryHyperlinkDAO {
 									
 									vals[0],
 									vals[1],
-									vals[2],
-									vals[3],
-									
+									fkPWorkitem,
+									fkUriPWorkitem,
 									DataEsecuzione.getInstance().getDataEsecuzione(),
 									StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 											

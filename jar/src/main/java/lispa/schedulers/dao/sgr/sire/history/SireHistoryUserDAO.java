@@ -9,6 +9,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryUser;
 import lispa.schedulers.utils.StringUtils;
 
@@ -33,13 +34,14 @@ public class SireHistoryUserDAO
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
 
 	private static QSireHistoryUser   stgUsers  = QSireHistoryUser.sireHistoryUser;
-
+	
 	public static void fillSireHistoryUser(long minRevision, long maxRevision) throws SQLException, DAOException {
 
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
 		Connection        pgConnection = null;
 		List<Tuple>       users = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -70,16 +72,19 @@ public class SireHistoryUserDAO
 							fonteUsers.cInitials,
 							StringTemplate.create("0 as c_is_local"),
 							fonteUsers.cName,
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " + fonteUsers.cUri + ") || '%' || c_rev as c_pk"),
-							fonteUsers.cRev,
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " + fonteUsers.cUri + ") as c_uri")
+							fonteUsers.cUri,
+							fonteUsers.cRev
 							);
-
+			
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgUsers);
+			int n_righe_inserite = 0;
 			for(Tuple row : users) {
 				Object[] vals = row.toArray();
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String cUri = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String cPk = cUri+"%"+vals[9];
 				
-				new SQLInsertClause(connOracle, dialect, stgUsers)
-				.columns(
+				insert.columns(
 						stgUsers.cAvatarfilename,
 						stgUsers.cDeleted,
 						stgUsers.cDisablednotifications,
@@ -103,17 +108,28 @@ public class SireHistoryUserDAO
 								vals[5],
 								vals[6],
 								StringUtils.getMaskedValue((String)vals[7]),
-								StringUtils.getMaskedValue((String)vals[8]),
+								StringUtils.getMaskedValue(cPk),
 								vals[9],
-								StringUtils.getMaskedValue((String)vals[10]),
+								StringUtils.getMaskedValue(cUri),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_USER_SEQ.nextval")
-								)
-								.execute();
-
-
-			}
-			connOracle.commit();
+						).addBatch();
+					
+					n_righe_inserite++;
+			
+					if (!insert.isEmpty()) {
+						if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+							insert.execute();
+							connOracle.commit();
+							insert = new SQLInsertClause(connOracle, dialect, stgUsers);
+						}
+					}
+		
+				}
+				if (!insert.isEmpty()) {
+					insert.execute();
+					connOracle.commit();
+				}
 		}
 		catch(Exception e) {
 ErrorManager.getInstance().exceptionOccurred(true, e);

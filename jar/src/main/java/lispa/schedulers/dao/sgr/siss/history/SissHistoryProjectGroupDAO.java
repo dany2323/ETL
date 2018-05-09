@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProjectgroup;
 
 import org.apache.log4j.Logger;
@@ -37,6 +39,8 @@ public class SissHistoryProjectGroupDAO
 		Connection 	 	  connOracle = null;
 		Connection        pgConnection = null;
 		List<Tuple>       projectgroups = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+		int size_counter = 0;
 		
 		try {
 			cm = ConnectionManager.getInstance();
@@ -60,19 +64,20 @@ public class SissHistoryProjectGroupDAO
 							fonteProjectGroups.cLocation,
 							StringTemplate.create("0 as c_is_local"),
 							fonteSubterraUriMap.cPk,
-							StringTemplate.create("(SELECT b.c_pk FROM subterra_uri_map b WHERE b.c_id = " + fonteProjectGroups.fkUriParent +") as fk_uri_parent"),
-							StringTemplate.create("(SELECT c.c_pk FROM subterra_uri_map c WHERE c.c_id = " + fonteProjectGroups.fkUriParent + ") as fk_parent"),
+							fonteProjectGroups.fkUriParent,
 							fonteProjectGroups.cName,
 							fonteProjectGroups.cDeleted,
 							fonteProjectGroups.cRev,
 							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
 							);
 			
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
 			for(Tuple row : projectgroups) {
 				Object[] val = row.toArray();
-				
-				new SQLInsertClause(connOracle, dialect, stgProjectGroups)
-				.columns(
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String fkUriParent = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
+				size_counter++;
+				insert.columns(
 						stgProjectGroups.cLocation,
 						stgProjectGroups.cIsLocal,
 						stgProjectGroups.cPk,
@@ -89,19 +94,29 @@ public class SissHistoryProjectGroupDAO
 								val[0],
 								val[1],
 								val[2],
-								val[3],
+								fkUriParent,
+								fkUriParent,
 								val[4],
 								val[5],
 								val[6],
 								val[7],
-								val[8],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
 								)
-								.execute();
+						.addBatch();
+				if(!insert.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
+					insert.execute();
+					insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
+					size_counter = 0;
+					
+				}
 
-				
 			}
+			if(!insert.isEmpty())
+			{
+				insert.execute();
+			}
+	
 			connOracle.commit();
 		}
 		catch(Exception e) {

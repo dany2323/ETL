@@ -68,12 +68,13 @@ public class SireHistoryProjectGroupDAO
 							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
 							);
 			
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
+			int n_righe_inserite = 0;
 			
 			for(Tuple row : projectgroups) {
 				Object[] val = row.toArray();
 				
-				new SQLInsertClause(connOracle, dialect, stgProjectGroups)
-				.columns(
+				insert.columns(
 						stgProjectGroups.cLocation,
 						stgProjectGroups.cIsLocal,
 						stgProjectGroups.cPk,
@@ -98,12 +99,23 @@ public class SireHistoryProjectGroupDAO
 								val[8],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
-								)
-								.execute();
-
-				
+					).addBatch();
+					
+					n_righe_inserite++;
+			
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						connOracle.commit();
+						insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
+					}
+				}
+	
 			}
-			connOracle.commit();
+			if (!insert.isEmpty()) {
+				insert.execute();
+				connOracle.commit();
+			}
 		}
 		catch(Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

@@ -1,6 +1,10 @@
 package lispa.sgr.siss.history;
 
 import junit.framework.TestCase;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryRevisionDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.cleaning.CheckSGRSISSProjectFacade;
@@ -43,11 +47,18 @@ public class TestSISSHistoryProject extends TestCase
 
 	}
 
-	public void testGetProject() throws DAOException, PropertiesReaderException {
-		Log4JConfiguration.inizialize();
-		logger = Logger.getLogger(ConnectionManager.class);
-		CheckSGRSISSProjectFacade.execute(logger, DateUtils.stringToTimestamp(
-				"2014-07-14 09:50:00", "yyyy-MM-dd HH:mm:00"));
+	public void testFillProjectStaging() throws Exception {
+		long minRevisionProjects = SissHistoryProjectDAO.getMinRevision();
+		long maxRevisions = SissHistoryRevisionDAO.getMaxRevision();
+
+		SissHistoryProjectDAO.fillSissHistoryProject(minRevisionProjects,
+				maxRevisions);
 	}
+//	public void testGetProject() throws DAOException, PropertiesReaderException {
+//		Log4JConfiguration.inizialize();
+//		logger = Logger.getLogger(ConnectionManager.class);
+//		CheckSGRSISSProjectFacade.execute(logger, DateUtils.stringToTimestamp(
+//				"2014-07-14 09:50:00", "yyyy-MM-dd HH:mm:00"));
+//	}
 
 }

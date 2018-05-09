@@ -14,6 +14,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryCfWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Splitted_CF;
@@ -113,6 +114,7 @@ public class SireHistoryCfWorkitemDAO {
 		List<Tuple> cfWorkitem = null;
 		String customFieldName = null;
 		boolean scaricaCF = false;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -159,8 +161,8 @@ public class SireHistoryCfWorkitemDAO {
 									fonteCFWorkItems.cDateValue,
 									fonteCFWorkItems.cBooleanValue,
 									fonteCFWorkItems.cName,
-									StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_uri_workitem"),
-									StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
+									fonteCFWorkItems.fkUriWorkitem,
+									StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
 									fonteCFWorkItems.cLongValue,
 									fonteCFWorkItems.cDurationtimeValue,
 									fonteCFWorkItems.cCurrencyValue
@@ -177,6 +179,9 @@ public class SireHistoryCfWorkitemDAO {
 
 						count_batch++;
 						Object[] val = row.toArray();
+						SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+						String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[6].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+						String fkWorkitem = fkUriWorkitem+"%"+val[7];
 						
 						//Applico il cast a timespent solo se esistono dei valori data 
 						StringExpression dateOnlyValue = null;
@@ -208,8 +213,8 @@ public class SireHistoryCfWorkitemDAO {
 										dateValue,
 										val[4],
 										val[5],
-										val[6],
-										val[7],
+										fkUriWorkitem,
+										fkWorkitem,
 										val[8],
 										val[9],
 										val[10],

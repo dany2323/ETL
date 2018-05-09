@@ -11,6 +11,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRelWorkUserAss;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
@@ -42,6 +43,7 @@ public class SireHistoryWorkitemUserAssignedDAO
 		Connection 	 	  connOracle = null;
 		Connection        pgConnection = null;
 		List<Tuple>       workItemUserAssignees = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 		
 		try {
 			cm = ConnectionManager.getInstance();
@@ -72,11 +74,10 @@ public class SireHistoryWorkitemUserAssignedDAO
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 					.list(
 //fonteWorkitemAssignees.all()
-							
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " + fonteWorkitemAssignees.fkUriUser + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_user) as fk_user"),
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") as fk_uri_workitem"),
-							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " + fonteWorkitemAssignees.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() +".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
-							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " + fonteWorkitemAssignees.fkUriUser + ") as fk_uri_user")
+							fonteWorkitemAssignees.fkUriUser,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_user) as fk_user"),
+							fonteWorkitemAssignees.fkUriWorkitem,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() +".workitem where workitem.c_pk = fk_workitem) as fk_workitem")
 							);
 			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgWorkitemUserAssignees);
@@ -85,6 +86,11 @@ public class SireHistoryWorkitemUserAssignedDAO
 			
 			for(Tuple row : workItemUserAssignees) {
 				Object[] vals = row.toArray();
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String fkUriUser = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[0].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkUser = fkUriUser+"%"+vals[1];
+				String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkWorkitem = fkUriWorkitem+"%"+vals[3];
 				
 				insert
 				.columns(
@@ -96,10 +102,10 @@ public class SireHistoryWorkitemUserAssignedDAO
 						stgWorkitemUserAssignees.workitemUserAssignedPK
 						)
 						.values(								
-								StringUtils.getMaskedValue((String)vals[0]),
-								vals[1],
-								vals[2],
-								StringUtils.getMaskedValue((String)vals[3]),
+								StringUtils.getMaskedValue(fkUser),
+								fkUriWorkitem,
+								fkWorkitem,
+								StringUtils.getMaskedValue(fkUriUser),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_WORKUSERASS_SEQ.nextval")
 								)

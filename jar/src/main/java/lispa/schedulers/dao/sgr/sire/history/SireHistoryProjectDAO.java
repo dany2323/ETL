@@ -10,6 +10,8 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryProject;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProject;
 import lispa.schedulers.svn.ProjectTemplateINI;
@@ -46,6 +48,8 @@ public class SireHistoryProjectDAO {
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> projects = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentRevision stgRevision = QDmalmCurrentRevision.currentRevision;
 
 		try {
 			logger.debug("SireHistoryProjectDAO.fillSireHistoryProject - minRevision: " + minRevision + ", maxRevision: " + maxRevision);
@@ -63,7 +67,6 @@ public class SireHistoryProjectDAO {
 			}};
 
 			SQLQuery query = new SQLQuery(pgConnection, dialect);
-			
 			projects = query
 					.from(fonteProjects)
 					.where(fonteProjects.cRev.gt(minRevision).and(fonteProjects.cRev.loe(maxRevision)))
@@ -75,38 +78,47 @@ public class SireHistoryProjectDAO {
 					.list(
 							fonteProjects.cTrackerprefix, 
 							StringTemplate.create("0"),
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " + fonteProjects.cUri + ") || '%' || project.c_rev as c_pk"),
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " + fonteProjects.fkUriLead + ") as fk_uri_lead"),
+							fonteProjects.cUri,
+							fonteProjects.fkUriLead,
 							fonteProjects.cDeleted, 
 							fonteProjects.cFinish,
-							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " + fonteProjects.cUri + ") as c_uri"),
+							fonteProjects.cUri,
 							fonteProjects.cStart,
-							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " + fonteProjects.fkUriProjectgroup + ") as FK_URI_PROJECTGROUP"),
+							fonteProjects.fkUriProjectgroup,
 							fonteProjects.cActive, 
 							fonteProjects.cLocation,
-							StringTemplate.create("(SELECT e.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " e WHERE e.c_id = " + fonteProjects.fkUriProjectgroup + ") || '%' || project.c_rev as fk_projectgroup"),
-							StringTemplate.create("(SELECT f.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " f WHERE f.c_id = " + fonteProjects.fkUriLead + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_lead) as fk_lead"),
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_lead) as fk_rev_lead"),
 							fonteProjects.cLockworkrecordsdate,
 							fonteProjects.cName, 
 							fonteProjects.cId,
 							fonteProjects.cRev, 
-							StringTemplate.create("(SELECT r.c_created FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentRevisionSire() + " r WHERE r.c_name = cast(project.c_rev as text)) as c_created"),
 							fonteProjects.cDescription
 							);
 
 			logger.debug("SireHistoryProjectDAO.fillSireHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
-
+			
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjects);
+			int n_righe_inserite = 0;
+			
 			for (Tuple row : projects) {
 				Object[] vals = row.toArray();
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String cUri = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String cPk = cUri+"%"+vals[14];
+				String fkUriLead = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkLead = fkUriLead+"%"+vals[11];
+				String fkUriProjectgroup = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkProjectgroup = fkUriProjectgroup+"%"+vals[14];
+				String cCreated = queryConnOracle.from(stgRevision).where(stgRevision.cName.eq(String.valueOf(vals[14]))).where(stgRevision.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgRevision.cCreated).get(0).toString();
 				
 				//Applico il cast a timespent solo se esistono dei valori data 
 				StringExpression dateValue = null;
 				if(vals[17] != null) {
-					dateValue = StringTemplate.create("to_timestamp('"+vals[17]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
+					dateValue = StringTemplate.create("to_timestamp('"+cCreated+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
 				}
 				
-				new SQLInsertClause(connOracle, dialect, stgProjects)
-						.columns(
+				
+						insert.columns(
 								stgProjects.cTrackerprefix,
 								stgProjects.cIsLocal, 
 								stgProjects.cPk,
@@ -132,17 +144,17 @@ public class SireHistoryProjectDAO {
 						.values(
 								vals[0],
 								vals[1],
-								vals[2],
-								StringUtils.getMaskedValue((String)vals[3]),
+								cPk,
+								StringUtils.getMaskedValue(fkUriLead),
 								vals[4],
 								vals[5],
-								vals[6],
+								cUri,
 								vals[7],
-								vals[8],
+								fkUriProjectgroup,
 								vals[9],
 								vals[10],
-								vals[11],
-								StringUtils.getMaskedValue((String)vals[12]),
+								fkProjectgroup,
+								StringUtils.getMaskedValue(fkLead),
 								vals[13],
 								vals[14],
 								vals[15],
@@ -153,10 +165,23 @@ public class SireHistoryProjectDAO {
 								vals[16],
 								dateValue,
 								vals[18]
-								).execute();
-			}
+							).addBatch();
+								
+								n_righe_inserite++;
+						
+						if (!insert.isEmpty()) {
+							if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+								insert.execute();
+								connOracle.commit();
+								insert = new SQLInsertClause(connOracle, dialect, stgProjects);
+							}
+						}
 
-			connOracle.commit();
+					}
+					if (!insert.isEmpty()) {
+						insert.execute();
+						connOracle.commit();
+					}
 			ConnectionManager.getInstance().dismiss();
 			updateProjectTemplate(minRevision, maxRevision);
 

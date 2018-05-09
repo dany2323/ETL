@@ -126,14 +126,16 @@ public class SissCurrentWorkitemLinkedDAO {
 					+ cfworkitems.size());
 
 			Iterator<Tuple> i = cfworkitems.iterator();
+			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, workItemLinked);
 			Object[] el = null;
-
+			long n_righe_inserite = 0;
+			int batchSize = 5000;
+			
 			while (i.hasNext()) {
 
 				el = ((Tuple) i.next()).toArray();
 
-				new SQLInsertClause(oracleConnection, dialect, workItemLinked)
-						.columns(
+				insert.columns(
 								workItemLinked.cSuspect, 
 								workItemLinked.cRole,
 								workItemLinked.fkPWorkitem,
@@ -155,12 +157,23 @@ public class SissCurrentWorkitemLinkedDAO {
 										.getDataEsecuzione(),
 								StringTemplate
 										.create("CURRENT_WORK_LINKED_SEQ.nextval"))
-						.execute();
+						.addBatch();
+				
+				n_righe_inserite++;
+				
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite % batchSize == 0) {
+						insert.execute();
+						oracleConnection.commit();
+						insert = new SQLInsertClause(oracleConnection, dialect, workItemLinked);
+					}
+				}
 
 			}
-
-			oracleConnection.commit();
-
+			if (!insert.isEmpty()) {
+				insert.execute();
+				oracleConnection.commit();
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 

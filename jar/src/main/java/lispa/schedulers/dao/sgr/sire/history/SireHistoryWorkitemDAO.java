@@ -23,6 +23,7 @@ import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitem;
 import lispa.schedulers.queryimplementation.target.QDmalmStatoWorkitem;
 import lispa.schedulers.utils.StringUtils;
@@ -277,6 +278,7 @@ public class SireHistoryWorkitemDAO {
 		Connection pgConnection = null;
 
 		List<Tuple> historyworkitems = new ArrayList<Tuple>();
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 
@@ -309,40 +311,38 @@ public class SireHistoryWorkitemDAO {
 							.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 					.list(
-
 							//fonteHistoryWorkItems.all()
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " +  fonteHistoryWorkItems.fkUriModule + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".module where module.c_pk = fk_module) as fk_module"),
+							fonteHistoryWorkItems.fkUriModule,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".module where module.c_pk = fk_module) as fk_module"),
 							StringTemplate.create("0 as c_is_local"),
 							fonteHistoryWorkItems.cPriority,
 							fonteHistoryWorkItems.cAutosuspect,
 							fonteHistoryWorkItems.cResolution, 
 							fonteHistoryWorkItems.cCreated,
 							fonteHistoryWorkItems.cOutlinenumber,
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " +  fonteHistoryWorkItems.fkUriProject + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".project where project.c_pk = fk_project) as fk_project"),
+							fonteHistoryWorkItems.fkUriProject,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".project where project.c_pk = fk_project) as fk_project"),
 							fonteHistoryWorkItems.cDeleted,
 							fonteHistoryWorkItems.cPlannedend,
-							fonteHistoryWorkItems.cUpdated, 
-							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " +  fonteHistoryWorkItems.fkUriAuthor + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_author) as fk_author"),
-							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " +  fonteHistoryWorkItems.cUri + ") as c_uri"),
-							StringTemplate.create("(SELECT e.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " e WHERE e.c_id = " +  fonteHistoryWorkItems.fkUriModule+ ") as fk_uri_module"),
+							fonteHistoryWorkItems.cUpdated,
+							fonteHistoryWorkItems.fkUriAuthor,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_author) as fk_author"),
+							fonteHistoryWorkItems.cUri,
 							fonteHistoryWorkItems.cTimespent,
 							fonteHistoryWorkItems.cStatus,
 							fonteHistoryWorkItems.cSeverity,
 							fonteHistoryWorkItems.cResolvedon,
-							StringTemplate.create("(SELECT f.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " f WHERE f.c_id = " +  fonteHistoryWorkItems.fkUriProject + ") as fk_uri_project"),
 							fonteHistoryWorkItems.cTitle,
 							fonteHistoryWorkItems.cId, 
 							fonteHistoryWorkItems.cRev,
 							fonteHistoryWorkItems.cPlannedstart, 
-							StringTemplate.create("(SELECT g.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " g WHERE g.c_id = " +  fonteHistoryWorkItems.fkUriAuthor + ") as fk_uri_author"),
 							fonteHistoryWorkItems.cDuedate, 
 							fonteHistoryWorkItems.cRemainingestimate,
 							fonteHistoryWorkItems.cType,
-							StringTemplate.create("(SELECT h.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " h WHERE h.c_id = " +  fonteHistoryWorkItems.cUri + ") || '%' || c_rev as c_pk"),
 							fonteHistoryWorkItems.cLocation,
-							StringTemplate.create("(SELECT i.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " i WHERE i.c_id = " +  fonteHistoryWorkItems.fkUriTimepoint + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".timepoint where timepoint.c_pk = fk_timepoint) as fk_timepoint"),
+							fonteHistoryWorkItems.fkUriTimepoint,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".timepoint where timepoint.c_pk = fk_timepoint) as fk_timepoint"),
 							fonteHistoryWorkItems.cInitialestimate,
-							StringTemplate.create("(SELECT j.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " j WHERE j.c_id = " +  fonteHistoryWorkItems.fkUriTimepoint + ") as fk_uri_timepoint"),
 							fonteHistoryWorkItems.cPreviousstatus
 							);
 
@@ -357,6 +357,17 @@ public class SireHistoryWorkitemDAO {
 			for (Tuple hist : historyworkitems) {
 				
 				Object[] vals = hist.toArray();
+				SQLQuery queryConnOracle = new SQLQuery(OracleConnection, dialect);
+				String fkUriModule = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[0].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkModule = fkUriModule+"%"+vals[1];
+				String fkUriProject = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkProject = fkUriProject+"%"+vals[9];
+				String fkUriAuthor = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[13].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkAuthor = fkUriAuthor+"%"+vals[14];
+				String cUri = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[15].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String cPk = cUri+"%"+vals[22];
+				String fkUriTimepoint = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[28].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkTimepoint = fkUriTimepoint+"%"+vals[29];
 				
 				batch_size_counter++;
 				insert.columns(
@@ -396,38 +407,38 @@ public class SireHistoryWorkitemDAO {
 						stgWorkItems.dataCaricamento,
 						stgWorkItems.dmalmHistoryWorkitemPk)
 						.values(
-								vals[0],
+								fkModule,
 								vals[1],
 								vals[2],
 								vals[3],
 								vals[4],
 								vals[5],
 								vals[6],
-								vals[7],
+								fkProject,
 								vals[8],
 								vals[9],
 								vals[10],
-								StringUtils.getMaskedValue((String)vals[11]),
-								vals[12],
-								vals[13],
+								StringUtils.getMaskedValue(fkAuthor),
+								cUri,
+								fkUriModule,
 								vals[14],
 								vals[15],
 								vals[16],
 								vals[17],
-								vals[18],
+								fkUriProject,
 								vals[19],
 								vals[20],
 								vals[21],
 								vals[22],
-								StringUtils.getMaskedValue((String)vals[23]),
+								StringUtils.getMaskedValue(fkUriAuthor),
 								vals[24],
 								vals[25],
 								vals[26],
-								vals[27],
+								cPk,
 								vals[28],
-								vals[29],
+								fkTimepoint,
 								vals[30],
-								vals[31],
+								fkUriTimepoint,
 								vals[32],
 								
 								/*

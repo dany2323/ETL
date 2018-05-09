@@ -1,19 +1,13 @@
 package lispa.schedulers.dao.sgr.sire.current;
 
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireCurrentProject;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.PostgresTemplates;
@@ -21,7 +15,6 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
 public class SireCurrentSubterraUriMapDAO {
 
@@ -56,28 +49,37 @@ public class SireCurrentSubterraUriMapDAO {
 
 			logger.debug("fillSireCurrentSubterraUriMap - subterra.size: " + subterra.size());
 			
+			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, stgSubterra);
 			Iterator<Tuple> i = subterra.iterator();
 			Object[] el = null;
-
+			
 			while (i.hasNext()) {
 
 				el = ((Tuple) i.next()).toArray();
 
-				new SQLInsertClause(oracleConnection, dialect, stgSubterra)
-						.columns(stgSubterra.cId,
+				insert.columns(stgSubterra.cPk,
 								stgSubterra.cRepo,
-								stgSubterra.cPk)
+								stgSubterra.cId)
 						.values(el[0],
-								StringTemplate.create(DmAlmConstants.REPOSITORY_SIRE),
+								DmAlmConstants.REPOSITORY_SIRE,
 								el[1])
-						.execute();
+						.addBatch();
 
 				n_righe_inserite++;
+				
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						oracleConnection.commit();
+						insert = new SQLInsertClause(oracleConnection, dialect, stgSubterra);
+					}
+				}
 
 			}
-
-			oracleConnection.commit();
-
+			if (!insert.isEmpty()) {
+				insert.execute();
+				oracleConnection.commit();
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
@@ -110,7 +112,7 @@ public class SireCurrentSubterraUriMapDAO {
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
-			new SQLDeleteClause(connection, dialect, stgSubterra).execute();
+			new SQLDeleteClause(connection, dialect, stgSubterra).where(stgSubterra.cRepo.eq(DmAlmConstants.REPOSITORY_SIRE)).execute();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

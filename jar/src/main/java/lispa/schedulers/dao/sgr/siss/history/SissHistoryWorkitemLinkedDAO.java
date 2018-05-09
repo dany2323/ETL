@@ -10,6 +10,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitemLinked;
 import lispa.schedulers.utils.enums.Workitem_Type;
 
@@ -31,7 +32,6 @@ public class SissHistoryWorkitemLinkedDAO
 	
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 	
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 		
 	private static QSissHistoryWorkitemLinked stgLinkedWorkitems = QSissHistoryWorkitemLinked.sissHistoryWorkitemLinked;
 
@@ -41,6 +41,7 @@ public class SissHistoryWorkitemLinkedDAO
 		Connection 	 	  connOracle = null;
 		Connection        pgConnection = null;
 		List<Tuple>       linkedWorkitems = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 		
 		try {
 			cm = ConnectionManager.getInstance();
@@ -68,12 +69,10 @@ public class SissHistoryWorkitemLinkedDAO
 					.list(
 							fonteLinkedWorkitems.cRevision,
 							fonteLinkedWorkitems.cRole,
-
-							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " d WHERE d.c_id = " +  fonteLinkedWorkitems.fkUriPWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem"),
-							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " + fonteLinkedWorkitems.fkUriPWorkitem + ") as fk_uri_p_workitem"), 
-							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " + fonteLinkedWorkitems.fkUriWorkitem + ") as fk_uri_workitem"), 
-							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " c WHERE c.c_id = " +  fonteLinkedWorkitems.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
-
+							fonteLinkedWorkitems.fkUriPWorkitem,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem"),
+							fonteLinkedWorkitems.fkUriWorkitem,
+							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
 							fonteLinkedWorkitems.cSuspect
 							);
 			
@@ -82,9 +81,13 @@ public class SissHistoryWorkitemLinkedDAO
 			
 			for(Tuple row : linkedWorkitems) {
 				Object[] vals = row.toArray();
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String fkUriPWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
+				String fkPWorkitem = fkUriPWorkitem+"%"+vals[3];
+				String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[4].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
+				String fkWorkitem = fkUriWorkitem+"%"+vals[5];
 				
-				insert
-				.columns(
+				insert.columns(
 						stgLinkedWorkitems.cRevision,
 						stgLinkedWorkitems.cRole,
 						stgLinkedWorkitems.fkPWorkitem,
@@ -98,10 +101,10 @@ public class SissHistoryWorkitemLinkedDAO
 						.values(								
 								vals[0],
 								vals[1],
-								vals[2],
-								vals[3],
-								vals[4],
-								vals[5],
+								fkPWorkitem,
+								fkUriPWorkitem,
+								fkUriWorkitem,
+								fkWorkitem,
 								vals[6],
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								 StringTemplate.create("HISTORY_WORK_LINKED_SEQ.nextval")

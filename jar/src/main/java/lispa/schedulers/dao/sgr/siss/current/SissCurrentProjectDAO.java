@@ -161,15 +161,16 @@ public class SissCurrentProjectDAO
 							)*/
 							);
 
+			SQLInsertClause insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
 			Iterator<Tuple> i = projects.iterator();
 			Object[] el= null;
-
+			int batchSize = 5000;
+			
 			while (i.hasNext()) {
 
 				el= ((Tuple)i.next()).toArray();
 
-				new SQLInsertClause(OracleConnection, dialect, stgProject)
-				.columns(
+				insert.columns(
 						stgProject.cTrackerprefix,
 						stgProject.cIsLocal,
 						stgProject.cPk,
@@ -209,13 +210,23 @@ public class SissCurrentProjectDAO
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("CURRENT_PROJECT_SEQ.nextval")
 								)
-								.execute();
+						.addBatch();
 				
 				n_righe_inserite++;
+				
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite % batchSize == 0) {
+						insert.execute();
+						OracleConnection.commit();
+						insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
+					}
+				}
+
 			}
-
-			OracleConnection.commit();
-
+			if (!insert.isEmpty()) {
+				insert.execute();
+				OracleConnection.commit();
+			}
 		}
 	catch (Exception e)
 	{

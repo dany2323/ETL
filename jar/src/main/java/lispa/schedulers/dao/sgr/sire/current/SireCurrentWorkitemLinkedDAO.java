@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
+import lispa.schedulers.bean.target.elettra.DmalmElAmbienteTecnologicoClassificatori;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -93,15 +95,15 @@ public class SireCurrentWorkitemLinkedDAO {
 
 			logger.debug("fillSireCurrentWorkitemLinked - cfworkitems.sizw: " + cfworkitems.size());
 			
+			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, stgProjectgroup);
 			Iterator<Tuple> i = cfworkitems.iterator();
 			Object[] el = null;
 
 			while (i.hasNext()) {
 
 				el = ((Tuple) i.next()).toArray();
-
-				new SQLInsertClause(oracleConnection, dialect, stgProjectgroup)
-						.columns(stgProjectgroup.cSuspect,
+				
+				insert.columns(stgProjectgroup.cSuspect,
 								stgProjectgroup.cRole,
 								stgProjectgroup.fkPWorkitem,
 								stgProjectgroup.cRevision,
@@ -121,13 +123,23 @@ public class SireCurrentWorkitemLinkedDAO {
 										.getDataEsecuzione(),
 								StringTemplate
 										.create("CURRENT_WORK_LINKED_SEQ.nextval"))
-						.execute();
-
+						.addBatch();
+				
 				n_righe_inserite++;
+				
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						oracleConnection.commit();
+						insert = new SQLInsertClause(oracleConnection, dialect, stgProjectgroup);
+					}
+				}
 
 			}
-
-			oracleConnection.commit();
+			if (!insert.isEmpty()) {
+				insert.execute();
+				oracleConnection.commit();
+			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

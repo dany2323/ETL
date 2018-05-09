@@ -15,6 +15,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryCfWorkitem;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryCfWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Splitted_CF;
@@ -37,7 +38,6 @@ public class SissHistoryCfWorkitemDAO {
 			.getLogger(SissHistoryCfWorkitemDAO.class);
 
 	private static SissHistoryCfWorkitem fonteCFWorkItems = SissHistoryCfWorkitem.cfWorkitem;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 	private static QSissHistoryCfWorkitem stgCFWorkItems = QSissHistoryCfWorkitem.sissHistoryCfWorkitem;
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
@@ -108,6 +108,7 @@ public class SissHistoryCfWorkitemDAO {
 		List<Tuple> cfWorkitem = null;
 		String customFieldName = null;
 		boolean scaricaCF = false;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -156,8 +157,8 @@ public class SissHistoryCfWorkitemDAO {
 									fonteCFWorkItems.cDateValue,
 									fonteCFWorkItems.cBooleanValue,
 									fonteCFWorkItems.cName,
-									StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " a WHERE a.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") as fk_uri_workitem"),
-									StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSiss() + " b WHERE b.c_id = " +  fonteCFWorkItems.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
+									fonteCFWorkItems.fkUriWorkitem,
+									StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
 									fonteCFWorkItems.cLongValue,
 									fonteCFWorkItems.cDurationtimeValue,
 									fonteCFWorkItems.cCurrencyValue
@@ -173,6 +174,9 @@ public class SissHistoryCfWorkitemDAO {
 					for (Tuple row : cfWorkitem) {
 
 						Object[] vals = row.toArray();
+						SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+						String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[6].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
+						String fkWorkitem = fkUriWorkitem+"%"+vals[7];
 						
 						count_batch++;
 						
@@ -208,8 +212,8 @@ public class SissHistoryCfWorkitemDAO {
 										dateValue,
 										vals[4],
 										vals[5],
-										vals[6],
-										vals[7],
+										fkUriWorkitem,
+										fkWorkitem,
 										vals[8],
 										vals[9],
 										vals[10],

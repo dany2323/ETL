@@ -18,6 +18,7 @@ import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.QTuple;
 import com.mysema.query.types.template.StringTemplate;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -84,7 +85,8 @@ public class SireCurrentProjectDAO
                             )
                             );
 
-
+            SQLInsertClause insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
+            int size_counter = 0;
             Iterator<Tuple> i = project.iterator();
             Object[] el= null;
 
@@ -92,8 +94,8 @@ public class SireCurrentProjectDAO
 
                 el= ((Tuple)i.next()).toArray();
                 
-                new SQLInsertClause(OracleConnection, dialect, stgProject)
-				.columns(
+                
+				insert.columns(
 						stgProject.cTrackerprefix,
 						stgProject.cIsLocal,
 						stgProject.cPk,
@@ -133,11 +135,23 @@ public class SireCurrentProjectDAO
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("CURRENT_PROJECT_SEQ.nextval")
 								)
-								.execute();
+						.addBatch();
+				
+				size_counter++;
+				
+				if(!insert.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
+					insert.execute();
+					insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
+					size_counter = 0;
+				}
 
-				n_righe_inserite++;
-
-            }
+			}
+			if(!insert.isEmpty())
+			{
+				insert.execute();
+			}
+	
+			OracleConnection.commit();
 			
 			
 /*
@@ -216,8 +230,6 @@ public class SireCurrentProjectDAO
 
 				n_righe_inserite++;
 	    	}*/
-
-			OracleConnection.commit();
 
 		}
 		catch (Exception e)

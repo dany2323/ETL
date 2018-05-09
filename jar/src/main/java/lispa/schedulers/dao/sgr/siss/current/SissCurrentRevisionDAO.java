@@ -18,7 +18,6 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
 public class SissCurrentRevisionDAO {
 
@@ -53,15 +52,16 @@ public class SissCurrentRevisionDAO {
 
 			logger.debug("fillSissCurrentRevision - revision.size: " + revision.size());
 			
+			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, stgRevision);
 			Iterator<Tuple> i = revision.iterator();
 			Object[] el = null;
-
+			int batchSize = 5000;
+			
 			while (i.hasNext()) {
 
 				el = ((Tuple) i.next()).toArray();
-
-				new SQLInsertClause(oracleConnection, dialect, stgRevision)
-						.columns(stgRevision.cPk,
+				
+				insert.columns(stgRevision.cPk,
 								stgRevision.cRepo,
 								stgRevision.cUri,
 								stgRevision.cRev,
@@ -73,7 +73,7 @@ public class SissCurrentRevisionDAO {
 								stgRevision.cName,
 								stgRevision.cRepositoryname)
 						.values(el[0],
-								StringTemplate.create(DmAlmConstants.REPOSITORY_SISS),
+								DmAlmConstants.REPOSITORY_SISS,
 								el[1],
 								el[2],
 								el[3],
@@ -83,14 +83,23 @@ public class SissCurrentRevisionDAO {
 								el[7],
 								el[8],
 								el[9])
-						.execute();
-
+						.addBatch();
+				
 				n_righe_inserite++;
+				
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite % batchSize == 0) {
+						insert.execute();
+						oracleConnection.commit();
+						insert = new SQLInsertClause(oracleConnection, dialect, stgRevision);
+					}
+				}
 
 			}
-
-			oracleConnection.commit();
-
+			if (!insert.isEmpty()) {
+				insert.execute();
+				oracleConnection.commit();
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
@@ -123,8 +132,9 @@ public class SissCurrentRevisionDAO {
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QDmalmCurrentRevision stgRevision = QDmalmCurrentRevision.currentRevision;
 
-			new SQLDeleteClause(connection, dialect, stgRevision).execute();
-
+			new SQLDeleteClause(connection, dialect, stgRevision).where(stgRevision.cRepo.eq(DmAlmConstants.REPOSITORY_SISS)).execute();
+			connection.commit();
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {

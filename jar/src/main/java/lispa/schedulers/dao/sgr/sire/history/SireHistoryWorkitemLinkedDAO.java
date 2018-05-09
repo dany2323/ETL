@@ -11,6 +11,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitemLinked;
 import lispa.schedulers.utils.enums.Workitem_Type;
 
@@ -39,6 +40,7 @@ public class SireHistoryWorkitemLinkedDAO
 		Connection 	 	  connOracle = null;
 		Connection        pgConnection = null;
 		List<Tuple>       linkedWorkitems = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 		
 		try {
 			cm = ConnectionManager.getInstance();
@@ -65,12 +67,10 @@ public class SireHistoryWorkitemLinkedDAO
                 					.list(
                 							fonteLinkedWorkitems.cRevision,
                 							fonteLinkedWorkitems.cRole,
-
-                							StringTemplate.create("(SELECT d.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " d WHERE d.c_id = " +  fonteLinkedWorkitems.fkUriPWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem"),
-                							StringTemplate.create("(SELECT a.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " a WHERE a.c_id = " + fonteLinkedWorkitems.fkUriPWorkitem + ") as fk_uri_p_workitem"), 
-                							StringTemplate.create("(SELECT b.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " b WHERE b.c_id = " + fonteLinkedWorkitems.fkUriWorkitem + ") as fk_uri_workitem"), 
-                							StringTemplate.create("(SELECT c.c_pk FROM " + lispa.schedulers.manager.DmAlmConstants.GetDbLinkPolarionCurrentSire() + " c WHERE c.c_id = " +  fonteLinkedWorkitems.fkUriWorkitem + ") || '%' || (select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
-
+                							fonteLinkedWorkitems.fkUriPWorkitem,
+                							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem"),
+                							fonteLinkedWorkitems.fkUriWorkitem,
+                							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
                 							fonteLinkedWorkitems.cSuspect
                 						 );
 			
@@ -80,6 +80,11 @@ public class SireHistoryWorkitemLinkedDAO
 			for(Tuple row : linkedWorkitems) {
 				
 				Object[] vals = row.toArray();
+				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
+				String fkUriPWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkPWorkitem = fkUriPWorkitem+"%"+vals[3];
+				String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[4].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
+				String fkWorkitem = fkUriWorkitem+"%"+vals[5];
 				
 				insert
 				.columns(
@@ -97,10 +102,10 @@ public class SireHistoryWorkitemLinkedDAO
 						(		
 								vals[0],
 								vals[1],
-								vals[2],
-								vals[3],
-								vals[4],
-								vals[5],
+								fkPWorkitem,
+								fkUriPWorkitem,
+								fkUriWorkitem,
+								fkWorkitem,
 								vals[6],
 								
 								

@@ -1,7 +1,6 @@
 package lispa.schedulers.dao.sgr.siss.current;
 
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
 public class SissCurrentSubterraUriMapDAO {
 
@@ -54,27 +52,38 @@ public class SissCurrentSubterraUriMapDAO {
 
 			logger.debug("fillSissCurrentSubterraUriMap - subterra.size: " + subterra.size());
 			
+			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, stgSubterra);
 			Iterator<Tuple> i = subterra.iterator();
 			Object[] el = null;
-
+			int batchSize = 5000;
+			
 			while (i.hasNext()) {
 
 				el = ((Tuple) i.next()).toArray();
 
-				new SQLInsertClause(oracleConnection, dialect, stgSubterra)
-						.columns(stgSubterra.cId,
-								stgSubterra.cPk)
-						.values(StringTemplate.create(DmAlmConstants.REPOSITORY_SISS),
-								el[0],
+				insert.columns(stgSubterra.cPk,
+								stgSubterra.cRepo,
+								stgSubterra.cId)
+						.values(	el[0],
+								DmAlmConstants.REPOSITORY_SISS,
 								el[1])
-						.execute();
+						.addBatch();
 
 				n_righe_inserite++;
 
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite % batchSize == 0) {
+						insert.execute();
+						oracleConnection.commit();
+						insert = new SQLInsertClause(oracleConnection, dialect, stgSubterra);
+					}
+				}
+
 			}
-
-			oracleConnection.commit();
-
+			if (!insert.isEmpty()) {
+				insert.execute();
+				oracleConnection.commit();
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
@@ -107,7 +116,7 @@ public class SissCurrentSubterraUriMapDAO {
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
-			new SQLDeleteClause(connection, dialect, stgSubterra).execute();
+			new SQLDeleteClause(connection, dialect, stgSubterra).where(stgSubterra.cRepo.eq(DmAlmConstants.REPOSITORY_SISS)).execute();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
