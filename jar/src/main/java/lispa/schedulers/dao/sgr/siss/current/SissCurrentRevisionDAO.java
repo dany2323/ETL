@@ -55,7 +55,6 @@ public class SissCurrentRevisionDAO {
 			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, stgRevision);
 			Iterator<Tuple> i = revision.iterator();
 			Object[] el = null;
-			int batchSize = 5000;
 			
 			while (i.hasNext()) {
 
@@ -88,7 +87,7 @@ public class SissCurrentRevisionDAO {
 				n_righe_inserite++;
 				
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite % batchSize == 0) {
+					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE_PG == 0) {
 						insert.execute();
 						oracleConnection.commit();
 						insert = new SQLInsertClause(oracleConnection, dialect, stgRevision);

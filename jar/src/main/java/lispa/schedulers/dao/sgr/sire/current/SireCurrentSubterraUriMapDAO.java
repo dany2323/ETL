@@ -68,7 +68,7 @@ public class SireCurrentSubterraUriMapDAO {
 				n_righe_inserite++;
 				
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE == 0) {
+					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE_PG == 0) {
 						insert.execute();
 						oracleConnection.commit();
 						insert = new SQLInsertClause(oracleConnection, dialect, stgSubterra);

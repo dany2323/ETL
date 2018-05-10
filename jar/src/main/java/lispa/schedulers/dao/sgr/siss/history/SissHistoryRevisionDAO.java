@@ -164,8 +164,10 @@ public class SissHistoryRevisionDAO {
 							fonteRevisions.cRev,
 							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
 							);
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+			logger.debug("fillSissHistoryRevision - revisions.size: "+ (revisions != null ? revisions.size() : 0));
 			
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			int size_counter = 0;
 			
 			
@@ -207,7 +209,7 @@ public class SissHistoryRevisionDAO {
 									vals[9],
 									vals[10],
 									StringTemplate.create("HISTORY_REVISION_SEQ.nextval"),
-									DataEsecuzione.getInstance().getDataEsecuzione()
+									dataEsecuzione
 							)
 							.addBatch();
 					if(!revisions.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {

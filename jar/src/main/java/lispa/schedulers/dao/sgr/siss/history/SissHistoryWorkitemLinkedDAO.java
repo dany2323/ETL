@@ -1,6 +1,7 @@
 package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,16 +77,18 @@ public class SissHistoryWorkitemLinkedDAO
 							fonteLinkedWorkitems.cSuspect
 							);
 			
+			logger.debug("fillSissHistoryWorkitemLinked - linkedWorkitems.size: "+ (linkedWorkitems != null ? linkedWorkitems.size() : 0));
+			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgLinkedWorkitems);
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			int batchcounter = 0;
 			
 			for(Tuple row : linkedWorkitems) {
 				Object[] vals = row.toArray();
-				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
-				String fkUriPWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
-				String fkPWorkitem = fkUriPWorkitem+"%"+vals[3];
-				String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[4].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
-				String fkWorkitem = fkUriWorkitem+"%"+vals[5];
+				String fkUriPWorkitem = vals[2] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
+				String fkPWorkitem = fkUriPWorkitem+"%"+(vals[3] != null ? vals[3].toString() : "");
+				String fkUriWorkitem = vals[4] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[4].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[4].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
+				String fkWorkitem = fkUriWorkitem+"%"+(vals[5] != null ? vals[5].toString() : "");
 				
 				insert.columns(
 						stgLinkedWorkitems.cRevision,
@@ -106,7 +109,7 @@ public class SissHistoryWorkitemLinkedDAO
 								fkUriWorkitem,
 								fkWorkitem,
 								vals[6],
-								DataEsecuzione.getInstance().getDataEsecuzione(),
+								dataEsecuzione,
 								 StringTemplate.create("HISTORY_WORK_LINKED_SEQ.nextval")
 								)
 								.addBatch();
@@ -192,4 +195,7 @@ public class SissHistoryWorkitemLinkedDAO
 
 	}
 	
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
 }

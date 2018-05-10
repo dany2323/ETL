@@ -169,14 +169,15 @@ public class SissHistoryCfWorkitemDAO {
 
 					SQLInsertClause insert = new SQLInsertClause(connOracle,
 							dialect, stgCFWorkItems);
+					Timestamp dataEsecuzione = DataEsecuzione.getInstance()
+							.getDataEsecuzione();
 					int count_batch = 0;
 
 					for (Tuple row : cfWorkitem) {
 
 						Object[] vals = row.toArray();
-						SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
-						String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[6].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
-						String fkWorkitem = fkUriWorkitem+"%"+vals[7];
+						String fkUriWorkitem = vals[6] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[6].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[6].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
+						String fkWorkitem = fkUriWorkitem+"%"+ (vals[7] != null ? vals[7].toString() : "");
 						
 						count_batch++;
 						
@@ -231,8 +232,7 @@ public class SissHistoryCfWorkitemDAO {
 										row.get(fonteCFWorkItems.cDurationtimeValue),
 										row.get(fonteCFWorkItems.cCurrencyValue),
 										*/
-										DataEsecuzione.getInstance()
-												.getDataEsecuzione(),
+										dataEsecuzione,
 										StringTemplate
 												.create("HISTORY_CF_WORKITEM_SEQ.nextval"))
 								.addBatch();
@@ -577,5 +577,9 @@ public class SissHistoryCfWorkitemDAO {
 		}
 
 		return cfWorkitem;
+	}
+	
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
 	}
 }

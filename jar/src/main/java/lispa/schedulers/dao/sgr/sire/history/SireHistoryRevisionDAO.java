@@ -165,6 +165,8 @@ public class SireHistoryRevisionDAO {
 							fonteRevisions.cRev,
 							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
 							);
+			
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 
 			int batch_size_counter = 0;
@@ -208,7 +210,7 @@ public class SireHistoryRevisionDAO {
 								vals[9],
 								vals[10],
 								StringTemplate.create("HISTORY_REVISION_SEQ.nextval"),
-								DataEsecuzione.getInstance().getDataEsecuzione()
+								dataEsecuzione
 								);
 				insert.addBatch();
 				if(!revisions.isEmpty() && batch_size_counter == DmAlmConstants.BATCH_SIZE) {

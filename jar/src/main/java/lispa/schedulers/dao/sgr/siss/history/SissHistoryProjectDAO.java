@@ -1,6 +1,7 @@
 package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,17 +99,18 @@ public class SissHistoryProjectDAO {
 							);
 			
 			logger.debug("SissHistoryProjectDAO.fillSissHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			
 			for (Tuple row : projects) {
 				Object[] vals = row.toArray();
 				
-				String cUri = vals[2] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).size() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "")  : "";
+				String cUri = vals[2] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "")  : "";
 				String cPk = cUri+"%"+ vals[15] != null ? vals[15].toString() : "";
-				String fkUriLead = vals[3] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).size() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
+				String fkUriLead = vals[3] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
 				String fkLead = fkUriLead+"%"+ (vals[11] != null ? vals[11].toString() : "");
-				String fkUriProjectgroup = vals[8] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).size() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
+				String fkUriProjectgroup = vals[8] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
 				String fkProjectgroup = fkUriProjectgroup+"%"+ (vals[11] != null ? vals[11].toString() : "");
-				String cCreated = vals[15] != null ? (queryConnOracle(connOracle, dialect).from(stgRevision).where(stgRevision.cName.eq(String.valueOf(vals[15]))).where(stgRevision.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgRevision.cCreated).size() > 0 ? queryConnOracle(connOracle, dialect).from(stgRevision).where(stgRevision.cName.eq(String.valueOf(vals[15]))).where(stgRevision.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgRevision.cCreated).get(0).toString() : "") : "";
+				String cCreated = vals[15] != null ? (queryConnOracle(connOracle, dialect).from(stgRevision).where(stgRevision.cName.eq(String.valueOf(vals[15]))).where(stgRevision.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgRevision).where(stgRevision.cName.eq(String.valueOf(vals[15]))).where(stgRevision.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgRevision.cCreated).get(0).toString() : "") : "";
 				
 				//Applico il cast a timespent solo se esistono dei valori data 
 				StringExpression dateValue = null;
@@ -158,8 +160,7 @@ public class SissHistoryProjectDAO {
 								vals[12],
 								vals[13],
 								vals[14],
-								DataEsecuzione.getInstance()
-										.getDataEsecuzione(),
+								dataEsecuzione,
 								StringTemplate
 										.create("HISTORY_PROJECT_SEQ.nextval"),
 								vals[15],
@@ -488,9 +489,7 @@ public class SissHistoryProjectDAO {
 		return projects;
 	}
 	
-	private static SQLQuery queryConnOracle (Connection connOracle, PostgresTemplates dialect) {
-		SQLQuery query = new SQLQuery(connOracle, dialect);
-		return query;
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
 	}
-
 }

@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
-import lispa.schedulers.bean.target.elettra.DmalmElAmbienteTecnologicoClassificatori;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;

@@ -2,6 +2,7 @@ package lispa.schedulers.dao.sgr.siss.history;
 
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,14 +75,16 @@ public class SissHistoryUserDAO
 							fonteUsers.cRev
 							);
 
+			logger.debug("fillSissHistoryUser - users.size: "+ (users != null ? users.size() : 0));
+			
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgUsers);
 			int size_counter = 0;
 			
 			for(Tuple row : users) {
 				Object[] vals = row.toArray();
-				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
-				String cUri = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
-				String cPk = cUri+"%"+vals[9];
+				String cUri = vals[8] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
+				String cPk = cUri+"%"+(vals[9] != null ? vals[9].toString() : "");
 				
 				insert.columns(
 						stgUsers.cAvatarfilename,
@@ -124,7 +127,7 @@ public class SissHistoryUserDAO
 								StringUtils.getMaskedValue(cPk),
 								vals[9],
 								StringUtils.getMaskedValue(cUri),
-								DataEsecuzione.getInstance().getDataEsecuzione(),
+								dataEsecuzione,
 								StringTemplate.create("HISTORY_USER_SEQ.nextval")
 								)
 						.addBatch();
@@ -221,5 +224,8 @@ public class SissHistoryUserDAO
 
 	}
 
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
 
 }

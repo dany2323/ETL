@@ -50,15 +50,13 @@ public class FillSISSCurrentFacade {
 			// SissCurrentUserDAO.fillSissCurrentUser();
 			// logger.debug("STOP  "+new Date());
 			
-			// Viene popolata la tabella di staging DMALM_CURRENT_REVISION
+			//Viene popolata la tabella di staging DMALM_CURRENT_REVISION
 			logger.debug("START fillSissCurrentRevision");
-			SissCurrentRevisionDAO.delete();
 			SissCurrentRevisionDAO.fillSissCurrentRevision();
 			logger.debug("STOP fillSissCurrentRevision");
 			
 			// Viene popolata la tabella di staging DMALM_CURRENT_SUBTERRA_URI_MAP
 			logger.debug("START fillSissCurrentSubterraUriMap");
-			SissCurrentSubterraUriMapDAO.delete();
 			SissCurrentSubterraUriMapDAO.fillSissCurrentSubterraUriMap();
 			logger.debug("STOP fillSissCurrentSubterraUriMap");
 			
@@ -152,6 +150,10 @@ public class FillSISSCurrentFacade {
 			 * SissCurrentWorkitemUserAssignedDAO.delete(dataEsecuzione);
 			 */
 
+			SissCurrentRevisionDAO.delete();
+			
+			SissCurrentSubterraUriMapDAO.delete();
+			
 			SissCurrentWorkitemLinkedDAO.delete(dataEsecuzione);
 
 			SissCurrentProjectDAO.delete(dataEsecuzione);

@@ -80,11 +80,10 @@ public class SireHistoryWorkitemLinkedDAO
 			for(Tuple row : linkedWorkitems) {
 				
 				Object[] vals = row.toArray();
-				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
-				String fkUriPWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
-				String fkPWorkitem = fkUriPWorkitem+"%"+vals[3];
-				String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[4].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
-				String fkWorkitem = fkUriWorkitem+"%"+vals[5];
+				String fkUriPWorkitem = vals[2] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
+				String fkPWorkitem = fkUriPWorkitem+"%"+(vals[3] != null ? vals[3].toString() : "");
+				String fkUriWorkitem = vals[4] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[4].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[4].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
+				String fkWorkitem = fkUriWorkitem+"%"+(vals[5] != null ? vals[5].toString() : "");
 				
 				insert
 				.columns(
@@ -205,4 +204,7 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 
 	}
 	
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
 }

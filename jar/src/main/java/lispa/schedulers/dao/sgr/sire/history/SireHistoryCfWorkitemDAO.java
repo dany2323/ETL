@@ -179,9 +179,8 @@ public class SireHistoryCfWorkitemDAO {
 
 						count_batch++;
 						Object[] val = row.toArray();
-						SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
-						String fkUriWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[6].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
-						String fkWorkitem = fkUriWorkitem+"%"+val[7];
+						String fkUriWorkitem = val[6] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[6].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[6].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
+						String fkWorkitem = fkUriWorkitem+"%"+ (val[7] != null ? val[7].toString() : "");
 						
 						//Applico il cast a timespent solo se esistono dei valori data 
 						StringExpression dateOnlyValue = null;
@@ -559,5 +558,9 @@ public class SireHistoryCfWorkitemDAO {
 		}
 
 		return cfWorkitem;
+	}
+	
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
 	}
 }

@@ -1,6 +1,7 @@
 package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,11 +72,13 @@ public class SissHistoryProjectGroupDAO
 							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
 							);
 			
+			logger.debug("fillSissHistoryProjectGroup - projectgroups.size: "+ (projectgroups != null ? projectgroups.size() : 0));
+			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			for(Tuple row : projectgroups) {
 				Object[] val = row.toArray();
-				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
-				String fkUriParent = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
+				String fkUriParent = val[3] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
 				size_counter++;
 				insert.columns(
 						stgProjectGroups.cLocation,
@@ -100,8 +103,8 @@ public class SissHistoryProjectGroupDAO
 								val[5],
 								val[6],
 								val[7],
-								DataEsecuzione.getInstance().getDataEsecuzione(),
-								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
+								dataEsecuzione,
+								StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
 								)
 						.addBatch();
 				if(!insert.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
@@ -219,5 +222,8 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 
 	}	
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
 	
 }

@@ -51,13 +51,11 @@ public class FillSIRECurrentFacade {
 
 			// Viene popolata la tabella di staging DMALM_CURRENT_REVISION
 			logger.debug("START fillSireCurrentRevision");
-			SireCurrentRevisionDAO.delete();
 			SireCurrentRevisionDAO.fillSireCurrentRevision();
 			logger.debug("STOP fillSireCurrentRevision");
 			
 			// Viene popolata la tabella di staging DMALM_CURRENT_SUBTERRA_URI_MAP
 			logger.debug("START fillSireCurrentSubterraUriMap");
-			SireCurrentSubterraUriMapDAO.delete();
 			SireCurrentSubterraUriMapDAO.fillSireCurrentSubterraUriMap();
 			logger.debug("STOP fillSireCurrentSubterraUriMap");
 			
@@ -124,6 +122,10 @@ public class FillSIRECurrentFacade {
 			 * SireCurrentWorkitemUserAssignedDAO.delete(dataEsecuzione);
 			 */
 
+			SireCurrentRevisionDAO.delete();
+			
+			SireCurrentSubterraUriMapDAO.delete();
+			
 			SireCurrentWorkitemLinkedDAO.delete(dataEsecuzione);
 
 			SireCurrentProjectDAO.delete(dataEsecuzione);

@@ -2,6 +2,7 @@ package lispa.schedulers.dao.sgr.sire.history;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryProjectgroup;
 
 import org.apache.log4j.Logger;
@@ -37,6 +39,7 @@ public class SireHistoryProjectGroupDAO
 		Connection 	 	  connOracle = null;
 		Connection        pgConnection = null;
 		List<Tuple>       projectgroups = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 		
 		try {
 			cm = ConnectionManager.getInstance();
@@ -60,19 +63,20 @@ public class SireHistoryProjectGroupDAO
 							fonteProjectGroups.cLocation,
 							StringTemplate.create("0 as c_is_local"),
 							fonteSubterraUriMap.cPk,
-							StringTemplate.create("(SELECT b.c_pk FROM subterra_uri_map b WHERE b.c_id = " + fonteProjectGroups.fkUriParent +") as fk_uri_parent"),
-							StringTemplate.create("(SELECT c.c_pk FROM subterra_uri_map c WHERE c.c_id = " + fonteProjectGroups.fkUriParent + ") as fk_parent"),
+							fonteProjectGroups.fkUriParent,
 							fonteProjectGroups.cName,
 							fonteProjectGroups.cDeleted,
 							fonteProjectGroups.cRev,
 							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
 							);
 			
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
 			int n_righe_inserite = 0;
 			
 			for(Tuple row : projectgroups) {
 				Object[] val = row.toArray();
+				String fkUriParent = val[3] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
 				
 				insert.columns(
 						stgProjectGroups.cLocation,
@@ -91,13 +95,13 @@ public class SireHistoryProjectGroupDAO
 								val[0],
 								val[1],
 								val[2],
-								val[3],
-								val[4],
+								fkUriParent,
+								fkUriParent,
 								val[5],
 								val[6],
 								val[7],
 								val[8],
-								DataEsecuzione.getInstance().getDataEsecuzione(),
+								dataEsecuzione,
 								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
 					).addBatch();
 					
@@ -216,5 +220,8 @@ public class SireHistoryProjectGroupDAO
 
 	}	
 	
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
 		
 } 

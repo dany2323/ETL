@@ -32,8 +32,9 @@ public final class DmAlmConstants {
 	public static final String DATE_SFERA_FILENAME = "yyyy_MM_dd";
 	public static final String TIMESTAMP_SFERA_FILENAME = "yyyy_MM_dd_HH_mm_ss";
 	public static final int MAX_VARCHAR2_LENGHT = 4000;
-	public static final int BATCH_SIZE = 5000;
-
+	public static final int BATCH_SIZE_PG = 5000;
+	public static final int BATCH_SIZE = 1000;
+	
 	public static final String REPOSITORY_SIRE = "SIRE";
 	public static final String REPOSITORY_SISS = "SISS";
 	public static final String SCHEMA_CURRENT = "CURRENT";

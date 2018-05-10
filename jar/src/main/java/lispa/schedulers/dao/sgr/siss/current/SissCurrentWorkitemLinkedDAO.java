@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -126,10 +127,10 @@ public class SissCurrentWorkitemLinkedDAO {
 					+ cfworkitems.size());
 
 			Iterator<Tuple> i = cfworkitems.iterator();
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, workItemLinked);
 			Object[] el = null;
 			long n_righe_inserite = 0;
-			int batchSize = 5000;
 			
 			while (i.hasNext()) {
 
@@ -153,8 +154,7 @@ public class SissCurrentWorkitemLinkedDAO {
 								el[4],
 								el[5],
 								el[6],
-								DataEsecuzione.getInstance()
-										.getDataEsecuzione(),
+								dataEsecuzione,
 								StringTemplate
 										.create("CURRENT_WORK_LINKED_SEQ.nextval"))
 						.addBatch();
@@ -162,7 +162,7 @@ public class SissCurrentWorkitemLinkedDAO {
 				n_righe_inserite++;
 				
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite % batchSize == 0) {
+					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE == 0) {
 						insert.execute();
 						oracleConnection.commit();
 						insert = new SQLInsertClause(oracleConnection, dialect, workItemLinked);

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -161,10 +162,12 @@ public class SissCurrentProjectDAO
 							)*/
 							);
 
+			logger.debug("fillSissCurrentProject - projects.size: "+ projects.size());
+			
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			SQLInsertClause insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
 			Iterator<Tuple> i = projects.iterator();
 			Object[] el= null;
-			int batchSize = 5000;
 			
 			while (i.hasNext()) {
 
@@ -207,7 +210,7 @@ public class SissCurrentProjectDAO
 								el[13] ,
 								el[14] ,
 								el[15] ,
-								DataEsecuzione.getInstance().getDataEsecuzione(),
+								dataEsecuzione,
 								StringTemplate.create("CURRENT_PROJECT_SEQ.nextval")
 								)
 						.addBatch();
@@ -215,7 +218,7 @@ public class SissCurrentProjectDAO
 				n_righe_inserite++;
 				
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite % batchSize == 0) {
+					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE == 0) {
 						insert.execute();
 						OracleConnection.commit();
 						insert = new SQLInsertClause(OracleConnection, dialect, stgProject);

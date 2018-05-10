@@ -92,9 +92,8 @@ public class SireHistoryHyperlinkDAO {
 				batchcounter++;
 				
 				Object[] val = row.toArray();
-				SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
-				String fkUriPWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0);
-				String fkPWorkitem = fkUriPWorkitem+"%"+val[3];
+				String fkUriPWorkitem = val[2] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkPWorkitem = fkUriPWorkitem+"%"+(val[3] != null ? val[3].toString() : "");
 				
 				insert
 						.columns(
@@ -165,6 +164,10 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			if(cm != null) cm.closeConnection(connection);
 		}
 
+	}
+	
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
 	}
 	
 }

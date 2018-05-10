@@ -2,6 +2,7 @@ package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -85,17 +86,18 @@ public class SissHistoryHyperlinkDAO {
 								StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem")
 								);
 	
-				SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
+				logger.debug("fillSissHistoryHyperlink - hyperlink.size: "+ (hyperlinks != null ? hyperlinks.size() : 0));
 				
+				SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
+				Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 				int batchcounter = 0;
 				
 				for (Tuple row : hyperlinks) {
 					batchcounter++;
 					
 					Object[] vals = row.toArray();
-					SQLQuery queryConnOracle = new SQLQuery(connOracle, dialect);
-					String fkUriPWorkitem = queryConnOracle.from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0);
-					String fkPWorkitem = fkUriPWorkitem+"%"+vals[3];
+					String fkUriPWorkitem = vals[2] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
+					String fkPWorkitem = fkUriPWorkitem+"%"+(vals[3] != null ? vals[3].toString() : "");
 					
 					insert
 							.columns(
@@ -115,7 +117,7 @@ public class SissHistoryHyperlinkDAO {
 									vals[1],
 									fkPWorkitem,
 									fkUriPWorkitem,
-									DataEsecuzione.getInstance().getDataEsecuzione(),
+									dataEsecuzione,
 									StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 											
 							)
@@ -173,6 +175,9 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			if(cm != null) cm.closeConnection(connection);
 		}
 
+	}
+	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
 	}
 	
 }

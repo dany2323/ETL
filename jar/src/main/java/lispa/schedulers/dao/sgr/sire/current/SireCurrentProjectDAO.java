@@ -84,7 +84,8 @@ public class SireCurrentProjectDAO
                             StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
                             )
                             );
-
+            
+            Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
             SQLInsertClause insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
             int size_counter = 0;
             Iterator<Tuple> i = project.iterator();
@@ -132,7 +133,7 @@ public class SireCurrentProjectDAO
                                 el[13] ,
                                 el[14] ,
                                 el[15] ,
-								DataEsecuzione.getInstance().getDataEsecuzione(),
+								dataEsecuzione,
 								StringTemplate.create("CURRENT_PROJECT_SEQ.nextval")
 								)
 						.addBatch();
