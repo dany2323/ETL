@@ -97,10 +97,10 @@ public class SireHistoryProjectGroupDAO
 								val[2],
 								fkUriParent,
 								fkUriParent,
+								val[4],
 								val[5],
 								val[6],
 								val[7],
-								val[8],
 								dataEsecuzione,
 								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
 					).addBatch();
