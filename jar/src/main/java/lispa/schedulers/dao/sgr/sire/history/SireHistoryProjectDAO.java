@@ -2,6 +2,7 @@ package lispa.schedulers.dao.sgr.sire.history;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,7 +97,7 @@ public class SireHistoryProjectDAO {
 							);
 
 			logger.debug("SireHistoryProjectDAO.fillSireHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
-			
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjects);
 			int n_righe_inserite = 0;
 			
@@ -154,16 +155,15 @@ public class SireHistoryProjectDAO {
 								vals[10],
 								fkProjectgroup,
 								StringUtils.getMaskedValue(fkLead),
+								vals[12],
 								vals[13],
 								vals[14],
-								vals[15],
-								DataEsecuzione.getInstance()
-										.getDataEsecuzione(),
+								dataEsecuzione,
 								StringTemplate
 										.create("HISTORY_PROJECT_SEQ.nextval"),
-								vals[16],
+								vals[15],
 								dateValue,
-								vals[18]
+								vals[16]
 							).addBatch();
 								
 								n_righe_inserite++;

@@ -439,7 +439,8 @@ public class SireHistoryWorkitemDAO {
 								fkTimepoint,
 								vals[30],
 								fkUriTimepoint,
-								vals[32],
+								vals[31],
+
 								
 								/*
 								hist.get(fonteHistoryWorkItems.fkModule),
