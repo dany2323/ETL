@@ -1374,7 +1374,7 @@ public class LinkedWorkitemsDAO {
 					.on(releaseIT.cdReleaseIt.eq(link.codiceWiPadre)
 						.and(releaseIT.idRepository.eq(link.idRepositoryPadre)))
 					.where(link.tipoWiPadre.eq("release_it"))
-					.where(link.tipoWiFiglio.eq("build").or(link.tipoWiFiglio.eq("taskit")))
+					.where(link.tipoWiFiglio.in("build","taskit","testcase","defect"))
 					.where(link.ruolo.isNotNull())
 					.where(releaseIT.rankStatoReleaseIt.eq(new Double("1")))
 					.where(releaseIT.dtCreazioneReleaseIt.goe(dataInizioFiliera))
@@ -1414,8 +1414,8 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
-					.where(link.tipoWiPadre.in("build", "taskit")
-					.and(link.tipoWiFiglio.in("taskit", "defect")))
+					.where(link.tipoWiPadre.in("build","taskit","testcase","defect")
+					.and(link.tipoWiFiglio.in("build","taskit","testcase","defect")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
 					.list(Projections.bean(DmalmLinkedWorkitems.class,
@@ -1530,7 +1530,7 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.join(build)
-					.on(build.cdBuild.eq(link.codiceWiPadre)
+					.on(build.cdBuild.eq(link.codiceWiFiglio)
 						.and(build.idRepository.eq(link.idRepositoryPadre)))
 					.where(link.tipoWiPadre.eq("build"))
 					.where(link.ruolo.isNotNull())
@@ -1574,6 +1574,8 @@ public class LinkedWorkitemsDAO {
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
 					.where(link.ruolo.isNotNull())
+					.where(link.tipoWiPadre.in("build","release_it"))
+					//.where(link.tipoWiFiglio.in("build","release_it"))
 					.orderBy(link.fkWiFiglio.asc())
 					.list(Projections.bean(DmalmLinkedWorkitems.class,
 							link.all()));
