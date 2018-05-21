@@ -167,7 +167,7 @@ public class SireHistoryRevisionDAO {
 							);
 			
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 
 			int batch_size_counter = 0;
 			for(Tuple row : revisions) {
@@ -181,8 +181,8 @@ public class SireHistoryRevisionDAO {
 					dateValue = StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
 				}
 
-				insert
-				.columns(
+				new SQLInsertClause(connOracle, dialect, stgRevisions)
+					.columns(
 						stgRevisions.cPk,
 						stgRevisions.cAuthor,
 						stgRevisions.cCreated,
@@ -211,18 +211,17 @@ public class SireHistoryRevisionDAO {
 								vals[10],
 								StringTemplate.create("HISTORY_REVISION_SEQ.nextval"),
 								dataEsecuzione
-								);
-				insert.addBatch();
-				if(!revisions.isEmpty() && batch_size_counter == DmAlmConstants.BATCH_SIZE) {
-					insert.execute();
-					insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
-					batch_size_counter = 0;
-					
-				}
+								).execute();
+//				if(!revisions.isEmpty() && batch_size_counter == DmAlmConstants.BATCH_SIZE) {
+//					insert.execute();
+//					insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+//					batch_size_counter = 0;
+//					
+//				}
 			}
-			if(!revisions.isEmpty()) {
-				insert.execute();
-			}
+//			if(!revisions.isEmpty()) {
+//				insert.execute();
+//			}
 			connOracle.commit();
 
 

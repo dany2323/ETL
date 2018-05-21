@@ -385,18 +385,19 @@ public class SissHistoryWorkitemDAO {
 			for (Tuple hist : historyworkitems) {
 				Object[] vals = hist.toArray();
 				String fkUriModule = vals[0] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[0].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[0].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkModule = fkUriModule+"%"+(vals[1] != null ? vals[1].toString() : "");
+				String fkModule = fkUriModule != "" ? (fkUriModule +"%"+(vals[1] != null ? vals[1].toString() : "")) : "";
 				String fkUriProject = vals[8] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkProject = fkUriProject+"%"+(vals[9] != null ? vals[9].toString() : "");
+				String fkProject = fkUriProject != "" ? (fkUriProject +"%"+(vals[9] != null ? vals[9].toString() : "")) : "";
 				String fkUriAuthor = vals[13] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[13].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[13].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkAuthor = fkUriAuthor+"%"+(vals[14] != null ? vals[14].toString() : "");
+				String fkAuthor = fkUriAuthor != "" ? (fkUriAuthor +"%"+(vals[14] != null ? vals[14].toString() : "")) : "";
 				String cUri = vals[15] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[15].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[15].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
-				String cPk = cUri+"%"+(vals[22] != null ? vals[22].toString() : "");
-				String fkUriTimepoint = vals[0] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[28].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[28].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkTimepoint = fkUriTimepoint+"%"+(vals[29] != null ? vals[29].toString() : "");
-				
+				String cPk = cUri != "" ? (cUri +"%"+(vals[22] != null ? vals[22].toString() : "")) : "";
+				String fkUriTimepoint = vals[28] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[28].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[28].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkTimepoint = fkUriTimepoint != "" ? (fkUriTimepoint +"%"+(vals[29] != null ? vals[29].toString() : "")) : "";
 				
 				batch_size_counter++;
+				
+				logger.debug(batch_size_counter+" - "+fkUriModule +" - "+ fkModule +" - "+ fkUriProject +" - "+ fkProject +" - "+ fkUriAuthor +" - "+ fkAuthor +" - "+ cUri +" - "+ cPk +" - "+ fkTimepoint +" - "+ fkUriTimepoint);
 				insert.columns(
 						stgWorkItems.fkModule,
 						stgWorkItems.cIsLocal,

@@ -71,14 +71,15 @@ public class SireHistoryProjectGroupDAO
 							);
 			
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
+//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
 			int n_righe_inserite = 0;
 			
 			for(Tuple row : projectgroups) {
 				Object[] val = row.toArray();
 				String fkUriParent = val[3] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
 				
-				insert.columns(
+				new SQLInsertClause(connOracle, dialect, stgProjectGroups)
+					.columns(
 						stgProjectGroups.cLocation,
 						stgProjectGroups.cIsLocal,
 						stgProjectGroups.cPk,
@@ -103,23 +104,23 @@ public class SireHistoryProjectGroupDAO
 								val[7],
 								dataEsecuzione,
 								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
-					).addBatch();
+					).execute();
 					
 					n_righe_inserite++;
 			
-				if (!insert.isEmpty()) {
-					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
-						insert.execute();
-						connOracle.commit();
-						insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
-					}
-				}
+//				if (!insert.isEmpty()) {
+//					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+//						insert.execute();
+//						connOracle.commit();
+//						insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
+//					}
+//				}
 	
 			}
-			if (!insert.isEmpty()) {
-				insert.execute();
-				connOracle.commit();
-			}
+//			if (!insert.isEmpty()) {
+//				insert.execute();
+//				connOracle.commit();
+//			}
 		}
 		catch(Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

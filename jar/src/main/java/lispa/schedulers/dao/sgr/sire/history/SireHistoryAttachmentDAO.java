@@ -81,7 +81,7 @@ public class SireHistoryAttachmentDAO {
 							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_rev_workitem")
 							);
 			
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
+//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
 			int n_righe_inserite = 0;
 			
 			for (Tuple row : attachments) {
@@ -147,23 +147,25 @@ public class SireHistoryAttachmentDAO {
 								fkWorkitem,
 								StringTemplate.create("HISTORY_ATTACHMENT_SEQ.nextval")
 										
-						).addBatch();
+						).execute();
 				
 						n_righe_inserite++;
 				
-				if (!insert.isEmpty()) {
-					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
-						insert.execute();
-						connOracle.commit();
-						insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
-					}
-				}
+//				if (!insert.isEmpty()) {
+//					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+//						insert.execute();
+//						connOracle.commit();
+//						insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
+//					}
+//				}
 
 			}
-			if (!insert.isEmpty()) {
-				insert.execute();
-				connOracle.commit();
-			}
+			
+			connOracle.commit();
+//			if (!insert.isEmpty()) {
+//				insert.execute();
+//				connOracle.commit();
+//			}
 			
 		} catch (Exception e) {
 ErrorManager.getInstance().exceptionOccurred(true, e);

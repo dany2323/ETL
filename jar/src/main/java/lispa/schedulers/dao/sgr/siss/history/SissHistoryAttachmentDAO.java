@@ -89,8 +89,8 @@ public class SissHistoryAttachmentDAO {
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
 			
 			for (Tuple row : attachments) {
+
 				Object[] vals = row.toArray();
-				
 				String cUri = vals[5] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[5].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[5].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
 				String cPk = cUri+"%"+ (vals[6] != null ? vals[6].toString() : "");
 				String fkUriAuthor= vals[10] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[10].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[10].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
@@ -106,7 +106,8 @@ public class SissHistoryAttachmentDAO {
 					dateValue = StringTemplate.create("to_timestamp('"+vals[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
 				}
 
-				insert.columns(
+				new SQLInsertClause(connOracle, dialect, stgAttachment)
+					.columns(
 								stgAttachment.cDeleted,
 								stgAttachment.cFilename,
 								stgAttachment.cId,
@@ -148,24 +149,25 @@ public class SissHistoryAttachmentDAO {
 								fkWorkitem,
 								StringTemplate.create("HISTORY_ATTACHMENT_SEQ.nextval")
 										
-						)
-						.addBatch();
+						).execute();
 				
 				n_righe_inserite++;
 				
-				if (!insert.isEmpty()) {
-					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
-						insert.execute();
-						connOracle.commit();
-						insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
-					}
-				}
+//				if (!insert.isEmpty()) {
+//					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+//						insert.execute();
+//						connOracle.commit();
+//						insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
+//					}
+//				}
 
 			}
-			if (!insert.isEmpty()) {
-				insert.execute();
-				connOracle.commit();
-			}
+			
+			connOracle.commit();
+//			if (!insert.isEmpty()) {
+//				insert.execute();
+//				connOracle.commit();
+//			}
 			
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

@@ -74,13 +74,14 @@ public class SissHistoryProjectGroupDAO
 			
 			logger.debug("fillSissHistoryProjectGroup - projectgroups.size: "+ (projectgroups != null ? projectgroups.size() : 0));
 			
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
+//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			for(Tuple row : projectgroups) {
 				Object[] val = row.toArray();
 				String fkUriParent = val[3] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[3].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
 				size_counter++;
-				insert.columns(
+				new SQLInsertClause(connOracle, dialect, stgProjectGroups)
+					.columns(
 						stgProjectGroups.cLocation,
 						stgProjectGroups.cIsLocal,
 						stgProjectGroups.cPk,
@@ -105,20 +106,20 @@ public class SissHistoryProjectGroupDAO
 								val[7],
 								dataEsecuzione,
 								StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
-								)
-						.addBatch();
-				if(!insert.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
-					insert.execute();
-					insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
-					size_counter = 0;
-					
-				}
+								).execute();
+
+//				if(!insert.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
+//					insert.execute();
+//					insert = new SQLInsertClause(connOracle, dialect, stgProjectGroups);
+//					size_counter = 0;
+//					
+//				}
 
 			}
-			if(!insert.isEmpty())
-			{
-				insert.execute();
-			}
+//			if(!insert.isEmpty())
+//			{
+//				insert.execute();
+//			}
 	
 			connOracle.commit();
 		}

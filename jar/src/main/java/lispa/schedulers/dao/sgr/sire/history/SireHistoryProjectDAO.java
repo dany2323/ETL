@@ -98,7 +98,7 @@ public class SireHistoryProjectDAO {
 
 			logger.debug("SireHistoryProjectDAO.fillSireHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjects);
+//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjects);
 			int n_righe_inserite = 0;
 			
 			for (Tuple row : projects) {
@@ -118,7 +118,8 @@ public class SireHistoryProjectDAO {
 				}
 				
 				
-						insert.columns(
+				new SQLInsertClause(connOracle, dialect, stgProjects)
+					.columns(
 								stgProjects.cTrackerprefix,
 								stgProjects.cIsLocal, 
 								stgProjects.cPk,
@@ -164,23 +165,25 @@ public class SireHistoryProjectDAO {
 								vals[15],
 								dateValue,
 								vals[16]
-							).addBatch();
+							).execute();
 								
 								n_righe_inserite++;
 						
-						if (!insert.isEmpty()) {
-							if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
-								insert.execute();
-								connOracle.commit();
-								insert = new SQLInsertClause(connOracle, dialect, stgProjects);
-							}
-						}
+//						if (!insert.isEmpty()) {
+//							if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+//								insert.execute();
+//								connOracle.commit();
+//								insert = new SQLInsertClause(connOracle, dialect, stgProjects);
+//							}
+//						}
 
 					}
-					if (!insert.isEmpty()) {
-						insert.execute();
-						connOracle.commit();
-					}
+			
+			connOracle.commit();
+//					if (!insert.isEmpty()) {
+//						insert.execute();
+//						connOracle.commit();
+//					}
 			ConnectionManager.getInstance().dismiss();
 			updateProjectTemplate(minRevision, maxRevision);
 

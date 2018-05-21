@@ -83,7 +83,7 @@ public class SireHistoryHyperlinkDAO {
 							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem")
 							);
 			
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
+//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
 			
 			int batchcounter = 0;
 
@@ -95,7 +95,7 @@ public class SireHistoryHyperlinkDAO {
 				String fkUriPWorkitem = val[2] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
 				String fkPWorkitem = fkUriPWorkitem+"%"+(val[3] != null ? val[3].toString() : "");
 				
-				insert
+				new SQLInsertClause(connOracle, dialect, stgHyperlink)
 						.columns(
 								
 								stgHyperlink.cRole,
@@ -113,18 +113,18 @@ public class SireHistoryHyperlinkDAO {
 								StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 										
 						)
-						.addBatch();
+						.execute();
 				
-				if(batchcounter % DmAlmConstants.BATCH_SIZE == 0 && !insert.isEmpty()) {
-					insert.execute();
-					insert  = new SQLInsertClause(connOracle, dialect, stgHyperlink);
-				}
+//				if(batchcounter % DmAlmConstants.BATCH_SIZE == 0 && !insert.isEmpty()) {
+//					insert.execute();
+//					insert  = new SQLInsertClause(connOracle, dialect, stgHyperlink);
+//				}
 				
 			}
 			
-			if(!insert.isEmpty()) {
-				insert.execute();
-			}
+//			if(!insert.isEmpty()) {
+//				insert.execute();
+//			}
 			
 			connOracle.commit();
 			}

@@ -242,6 +242,8 @@ public class SireHistoryCfWorkitemDAO {
 					if (cm != null) {
 						cm.closeConnection(connOracle);
 					}
+					
+					logger.info("Custom field '"+c_name+"' dei Work Item di tipo "+w_type.toString()+" importati con successo.");
 				}
 			}
 			

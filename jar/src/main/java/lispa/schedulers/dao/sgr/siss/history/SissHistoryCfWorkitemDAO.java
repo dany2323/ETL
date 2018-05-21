@@ -240,7 +240,6 @@ public class SissHistoryCfWorkitemDAO {
 						if (!insert.isEmpty()
 								&& count_batch % DmAlmConstants.BATCH_SIZE == 0) {
 							insert.execute();
-							logger.info("Custom field '"+c_name+"' dei Work Item di tipo "+w_type.toString()+" importati con successo.");
 							insert = new SQLInsertClause(connOracle, dialect,
 									stgCFWorkItems);
 						}
@@ -249,7 +248,6 @@ public class SissHistoryCfWorkitemDAO {
 
 					if (!insert.isEmpty()) {
 						insert.execute();
-						logger.info("Custom field '"+c_name+"' dei Work Item di tipo "+w_type.toString()+" importati con successo.");
 					}
 
 					if (cm != null) {
@@ -258,6 +256,8 @@ public class SissHistoryCfWorkitemDAO {
 					if (cm != null) {
 						cm.closeConnection(connOracle);
 					}
+					
+					logger.info("Custom field '"+c_name+"' dei Work Item di tipo "+w_type.toString()+" importati con successo.");
 				}
 			}
 		} catch (Exception e) {

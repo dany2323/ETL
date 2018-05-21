@@ -88,7 +88,7 @@ public class SissHistoryHyperlinkDAO {
 	
 				logger.debug("fillSissHistoryHyperlink - hyperlink.size: "+ (hyperlinks != null ? hyperlinks.size() : 0));
 				
-				SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
+//				SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
 				Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 				int batchcounter = 0;
 				
@@ -99,7 +99,7 @@ public class SissHistoryHyperlinkDAO {
 					String fkUriPWorkitem = vals[2] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[2].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
 					String fkPWorkitem = fkUriPWorkitem+"%"+(vals[3] != null ? vals[3].toString() : "");
 					
-					insert
+					new SQLInsertClause(connOracle, dialect, stgHyperlink)
 							.columns(
 									
 									stgHyperlink.cRole,
@@ -120,21 +120,20 @@ public class SissHistoryHyperlinkDAO {
 									dataEsecuzione,
 									StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
 											
-							)
-							.addBatch();
+							).execute();
 					
-					if(batchcounter % DmAlmConstants.BATCH_SIZE == 0 && !insert.isEmpty()) {
-						insert.execute();
-						logger.info("Hyperlink dei Work Item di tipo "+type.toString()+" importati con successo.");
-						insert  = new SQLInsertClause(connOracle, dialect, stgHyperlink);
-					}
+//					if(batchcounter % DmAlmConstants.BATCH_SIZE == 0 && !insert.isEmpty()) {
+//						insert.execute();
+//						logger.info("Hyperlink dei Work Item di tipo "+type.toString()+" importati con successo.");
+//						insert  = new SQLInsertClause(connOracle, dialect, stgHyperlink);
+//					}
 					
 				}
 				
-				if(!insert.isEmpty()) {
-					insert.execute();
-					logger.info("Hyperlink dei Work Item di tipo "+type.toString()+" importati con successo.");
-				}
+//				if(!insert.isEmpty()) {
+//					insert.execute();
+//					logger.info("Hyperlink dei Work Item di tipo "+type.toString()+" importati con successo.");
+//				}
 				
 				connOracle.commit();
 				

@@ -166,7 +166,7 @@ public class SissHistoryRevisionDAO {
 							);
 			logger.debug("fillSissHistoryRevision - revisions.size: "+ (revisions != null ? revisions.size() : 0));
 			
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			int size_counter = 0;
 			
@@ -182,7 +182,8 @@ public class SissHistoryRevisionDAO {
 					}
 					
 					size_counter++;
-					insert.columns(
+					new SQLInsertClause(connOracle, dialect, stgRevisions)
+						.columns(
 							stgRevisions.cPk,
 							stgRevisions.cAuthor,
 							stgRevisions.cCreated,
@@ -210,20 +211,20 @@ public class SissHistoryRevisionDAO {
 									vals[10],
 									StringTemplate.create("HISTORY_REVISION_SEQ.nextval"),
 									dataEsecuzione
-							)
-							.addBatch();
-					if(!revisions.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
-						insert.execute();
-						insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
-						size_counter = 0;
-						
-					}
+							).execute();
+
+//					if(!revisions.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
+//						insert.execute();
+//						insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+//						size_counter = 0;
+//						
+//					}
 
 				}
-				if(!revisions.isEmpty())
-				{
-					insert.execute();
-				}
+//				if(!revisions.isEmpty())
+//				{
+//					insert.execute();
+//				}
 		
 				connOracle.commit();
 		}

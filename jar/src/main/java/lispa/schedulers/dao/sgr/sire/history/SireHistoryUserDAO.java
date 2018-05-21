@@ -76,14 +76,15 @@ public class SireHistoryUserDAO
 							fonteUsers.cRev
 							);
 			
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgUsers);
+//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgUsers);
 			int n_righe_inserite = 0;
 			for(Tuple row : users) {
 				Object[] vals = row.toArray();
 				String cUri = vals[8] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
 				String cPk = cUri+"%"+(vals[9] != null ? vals[9].toString() : "");
 				
-				insert.columns(
+				new SQLInsertClause(connOracle, dialect, stgUsers)
+					.columns(
 						stgUsers.cAvatarfilename,
 						stgUsers.cDeleted,
 						stgUsers.cDisablednotifications,
@@ -112,23 +113,24 @@ public class SireHistoryUserDAO
 								StringUtils.getMaskedValue(cUri),
 								DataEsecuzione.getInstance().getDataEsecuzione(),
 								StringTemplate.create("HISTORY_USER_SEQ.nextval")
-						).addBatch();
+						).execute();
 					
 					n_righe_inserite++;
 			
-					if (!insert.isEmpty()) {
-						if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
-							insert.execute();
-							connOracle.commit();
-							insert = new SQLInsertClause(connOracle, dialect, stgUsers);
-						}
-					}
+//					if (!insert.isEmpty()) {
+//						if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+//							insert.execute();
+//							connOracle.commit();
+//							insert = new SQLInsertClause(connOracle, dialect, stgUsers);
+//						}
+//					}
 		
 				}
-				if (!insert.isEmpty()) {
-					insert.execute();
-					connOracle.commit();
-				}
+//				if (!insert.isEmpty()) {
+//					insert.execute();
+//					connOracle.commit();
+//				}
+			connOracle.commit();
 		}
 		catch(Exception e) {
 ErrorManager.getInstance().exceptionOccurred(true, e);
