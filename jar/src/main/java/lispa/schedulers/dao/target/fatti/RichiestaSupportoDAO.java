@@ -5,26 +5,19 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Struct;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.log4j.Logger;
-import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
-import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.utils.QueryUtils;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleTypes;
-import oracle.sql.STRUCT;
-import oracle.sql.StructDescriptor;
 
 public class RichiestaSupportoDAO {
 
@@ -128,11 +121,11 @@ public class RichiestaSupportoDAO {
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
 		    	// Now Declare a descriptor to associate the host object type with the
 		    	// record type in the database.
-		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+//		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
 		    	// Now create the STRUCT objects to associate the host objects
 		    	// with the database records.
-		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
-
+//		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.registerOutParameter(1, OracleTypes.CURSOR);
 			ocs.setObject(2, structObj);
@@ -141,7 +134,7 @@ public class RichiestaSupportoDAO {
 			//return the result set
             rs = (ResultSet)ocs.getObject(1);
 			while (rs.next()) {
-				logger.info("Cerco di inserire "+rs.getString("STG_PK")+ " ");
+//				logger.info("Cerco di inserire "+rs.getString("STG_PK")+ " ");
 				// Elabora il risultato
 				bean = new DmalmRichiestaSupporto();
 				bean.setIdRepository(rs.getString("ID_REPOSITORY"));
@@ -172,7 +165,7 @@ public class RichiestaSupportoDAO {
 				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
 				bean.setTimespent(rs.getFloat("TIMESPENT"));
 				richieste.add(bean);
-				logger.info("Inserito");
+//				logger.info("Inserito");
 
 			}
 		
@@ -210,8 +203,9 @@ public class RichiestaSupportoDAO {
 
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO", 2);
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
-		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
-		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+//		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+//		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.setObject(1, structObj);
 			ocs.setTimestamp(2, dataEsecuzione);
@@ -249,8 +243,9 @@ public class RichiestaSupportoDAO {
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.UPDATE_RANK", 2);
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
-		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
-		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+//		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+//		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.setObject(1, structObj);
 			ocs.setDouble(2, double1);
@@ -292,8 +287,9 @@ public class RichiestaSupportoDAO {
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_UPDATE_RICH_SUPPORTO", 2);
 			Object [] objRichSupp = richiesta.getObject(richiesta, pkValue);
-		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
-		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+//		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+//		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.setObject(1, structObj);
 			ocs.setTimestamp(2, dataEsecuzione);
@@ -332,8 +328,9 @@ public class RichiestaSupportoDAO {
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.UPDATE_RICH_SUPPORTO", 1);
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
-		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
-		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+//		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+//		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.setObject(1, structObj);
 			ocs.execute();
@@ -521,8 +518,9 @@ public class RichiestaSupportoDAO {
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.UPDATE_WI_RICH_SUPPORTO_DELETE", 2);
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
-		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
-		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+//		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+//		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.setObject(1, structObj);
 			ocs.setTimestamp(2, dataEsecuzione);
@@ -554,8 +552,9 @@ public class RichiestaSupportoDAO {
 			
 			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.CHECK_ESISTENZA_RICH_SUPPORTO", 2);
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
-		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
-		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+//		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
+//		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
+		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.setObject(1, structObj);
 			ocs.setInt(2, p.getDmalmProjectPk());

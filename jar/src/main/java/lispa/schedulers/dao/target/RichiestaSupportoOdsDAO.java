@@ -10,15 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.log4j.Logger;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
-import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.utils.QueryUtils;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleTypes;
-import oracle.sql.STRUCT;
-import oracle.sql.StructDescriptor;
 
 public class RichiestaSupportoOdsDAO {
 
@@ -65,7 +62,6 @@ public class RichiestaSupportoOdsDAO {
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
-			int i=0;
 	        String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO_ODS", 2);
 		    for (DmalmRichiestaSupporto richiesta : staging_richieste) {
 //		    		DmalmRichiestaSupporto r = new DmalmRichiestaSupporto(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", richiesta);
@@ -86,7 +82,6 @@ public class RichiestaSupportoOdsDAO {
 				ocs.setTimestamp(2, dataEsecuzione);
 				ocs.execute();
 				ocs.close();
-				i++;
 
 		    }
 		    connection.commit();

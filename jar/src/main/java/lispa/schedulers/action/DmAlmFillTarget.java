@@ -5,7 +5,6 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_TARGET_
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
