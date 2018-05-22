@@ -397,7 +397,6 @@ public class SissHistoryWorkitemDAO {
 				
 				batch_size_counter++;
 				
-				logger.debug(batch_size_counter+" - "+fkUriModule +" - "+ fkModule +" - "+ fkUriProject +" - "+ fkProject +" - "+ fkUriAuthor +" - "+ fkAuthor +" - "+ cUri +" - "+ cPk +" - "+ fkTimepoint +" - "+ fkUriTimepoint);
 				insert.columns(
 						stgWorkItems.fkModule,
 						stgWorkItems.cIsLocal,

@@ -106,6 +106,7 @@ public class SireCurrentSubterraUriMapDAO {
 		Connection connection = null;
 
 		try {
+			logger.debug("START Eliminazione dati SUBTERRA_URI SIRE");
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
@@ -113,6 +114,7 @@ public class SireCurrentSubterraUriMapDAO {
 			QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 			new SQLDeleteClause(connection, dialect, stgSubterra).where(stgSubterra.cRepo.eq(DmAlmConstants.REPOSITORY_SIRE)).execute();
+			logger.debug("STOP Eliminazione dati SUBTERRA_URI SIRE");
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

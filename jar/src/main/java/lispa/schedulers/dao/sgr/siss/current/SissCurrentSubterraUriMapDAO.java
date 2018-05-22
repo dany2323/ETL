@@ -109,6 +109,7 @@ public class SissCurrentSubterraUriMapDAO {
 		Connection connection = null;
 
 		try {
+			logger.debug("START Eliminazione dati SUBTERRA_URI SISS");
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
@@ -116,6 +117,7 @@ public class SissCurrentSubterraUriMapDAO {
 			QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 			new SQLDeleteClause(connection, dialect, stgSubterra).where(stgSubterra.cRepo.eq(DmAlmConstants.REPOSITORY_SISS)).execute();
+			logger.debug("STOP Eliminazione dati SUBTERRA_URI SISS");
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

@@ -125,6 +125,7 @@ public class SireCurrentRevisionDAO {
 		Connection connection = null;
 
 		try {
+			logger.debug("START Eliminazione dati REVISION SIRE");
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
@@ -133,6 +134,7 @@ public class SireCurrentRevisionDAO {
 
 			new SQLDeleteClause(connection, dialect, stgRevision).where(stgRevision.cRepo.eq(DmAlmConstants.REPOSITORY_SIRE)).execute();
 			connection.commit();
+			logger.debug("STOP Eliminazione dati REVISION SIRE");
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
