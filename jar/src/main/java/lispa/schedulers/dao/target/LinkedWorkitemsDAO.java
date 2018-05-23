@@ -1371,9 +1371,9 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.join(releaseIT)
-					.on(releaseIT.cdReleaseIt.eq(link.codiceWiPadre)
+					.on((releaseIT.cdReleaseIt.eq(link.codiceWiFiglio).or(releaseIT.cdReleaseIt.eq(link.codiceWiPadre)))
 						.and(releaseIT.idRepository.eq(link.idRepositoryPadre)))
-					.where(link.tipoWiPadre.in("release_it","build"))
+					.where(link.tipoWiPadre.in("release_it,build"))
 					.where(link.tipoWiFiglio.in("release_it","taskit"))
 					.where(link.ruolo.isNotNull())
 					.where(releaseIT.rankStatoReleaseIt.eq(new Double("1")))
