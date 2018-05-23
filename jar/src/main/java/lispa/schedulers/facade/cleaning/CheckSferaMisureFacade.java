@@ -290,7 +290,7 @@ public class CheckSferaMisureFacade implements Runnable {
 					&& !(row.get(stgMisura.permissions).equals(
 							"Admin (RESPAPP);Admin (READWRITE);")
 						|| row.get(stgMisura.permissions).equals(
-								"Admin (READWRITE);Admin (RESPAPP); d")))  {
+								"Admin (READWRITE);Admin (RESPAPP);")))  {
 				errore++;
 				ErroriCaricamentoDAO.insert(
 						DmAlmConstants.FONTE_MISURA,

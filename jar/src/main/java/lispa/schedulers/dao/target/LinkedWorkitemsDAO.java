@@ -1371,10 +1371,10 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.join(releaseIT)
-					.on(releaseIT.cdReleaseIt.eq(link.codiceWiPadre)
+					.on((releaseIT.cdReleaseIt.eq(link.codiceWiFiglio).or(releaseIT.cdReleaseIt.eq(link.codiceWiPadre)))
 						.and(releaseIT.idRepository.eq(link.idRepositoryPadre)))
-					.where(link.tipoWiPadre.eq("release_it"))
-					.where(link.tipoWiFiglio.eq("build").or(link.tipoWiFiglio.eq("taskit")))
+					.where(link.tipoWiPadre.in("release_it,build"))
+					.where(link.tipoWiFiglio.in("release_it","taskit"))
 					.where(link.ruolo.isNotNull())
 					.where(releaseIT.rankStatoReleaseIt.eq(new Double("1")))
 					.where(releaseIT.dtCreazioneReleaseIt.goe(dataInizioFiliera))
@@ -1414,7 +1414,7 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
-					.where(link.tipoWiPadre.in("build", "taskit")
+					.where(link.tipoWiPadre.in("taskit","release_it")
 					.and(link.tipoWiFiglio.in("taskit", "defect")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
