@@ -288,9 +288,9 @@ public class CheckSferaMisureFacade implements Runnable {
 							.startsWith(
 									DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH)
 					&& !(row.get(stgMisura.permissions).equals(
-							"Admin (RESPAPP);Admin (READWRITE);")
-						|| row.get(stgMisura.permissions).equals(
-								"Admin (READWRITE);Admin (RESPAPP);")))  {
+							StringUtils.getMaskedValue("Admin (RESPAPP);Admin (READWRITE);"))
+						|| (row.get(stgMisura.permissions).equals(
+								StringUtils.getMaskedValue("Admin (READWRITE);Admin (RESPAPP);"))))) {
 				errore++;
 				ErroriCaricamentoDAO.insert(
 						DmAlmConstants.FONTE_MISURA,

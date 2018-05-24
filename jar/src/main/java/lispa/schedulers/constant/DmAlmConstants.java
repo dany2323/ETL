@@ -584,7 +584,7 @@ public final class DmAlmConstants {
 	public static String FLAG_ASM_IN_MANUTENZIONE_NON_PERMESSO="ESF054 - APP-ATT:FLAG_ASM_IN_MANUTENZIONE - Valore non permesso : ";
 	public static String COD_DIREZIONE_DEMAND_OBBLIGATORIO="ESF055 - APP-ATT:COD_DIREZIONE_DEMAND e' obbligatorio ";
 	public static String FORNITORE_MPP_NON_VALORIZZATO_SVILUPPO="ESF056 - PRJ-ATT:FORNITORE_MPP non e' valorizzabile per progetti di tipo 'Sviluppo' oppure 'Manutenzione evolutiva'";
-	public static String FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE="ESF0058 - PRJ-ATT:FORNITORE_SVILUPPO_MEV non e' valorizzabile per progetti di tipo 'Baseline'";
+	public static String FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE="ESF058 - PRJ-ATT:FORNITORE_SVILUPPO_MEV non e' valorizzabile per progetti di tipo 'Baseline'";
 	public static String COD_RDI_NO_PATTERN="ESF059 - PRJ-ATT: COD_ RDI non rispetta il pattern predefinito ";
 	public static String MP_PERCENT_CICLO_DI_VITA="ESF061 - PRJ-ATT:MP_PERCENT_CICLO_DI_VITA non e' valorizzabile per progetti di tipo 'Baseline'";
 	public static String MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO="ESF062 - PRJ-ATT:MP_PERCENT_CICLO_DI_VITA - Valore non permesso : ";
