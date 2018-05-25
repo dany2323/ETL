@@ -17,7 +17,10 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.target.QDmalmAsmProject;
+import lispa.schedulers.queryimplementation.target.QDmalmAsmProjectEl;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
+import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdotto;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmMisura;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmProgettoSfera;
 import lispa.schedulers.utils.DateUtils;
@@ -563,6 +566,36 @@ public class CheckAnnullamentiSferaFacade {
 				 deleteProject.where(progettoSfera.dmalmProgettoSferaPk.eq(prj.get(progettoSfera.dmalmProgettoSferaPk)));
 				 deleteProject.execute();
 			 }
+			 
+			 /* elimino i figli della DMALM_ASM
+			  * dalle tabelle 
+			  * - DMALM_ASM_PROJECT_PRODOTTO
+			  * - DMALM_ASM_PROJECT_PRODOTTO_ARC
+			  * - DMALM_ASM_PRODOTTO
+			  * - DMALM_PROGETTO_SFERA
+			  */
+			 //inizio
+			 QDmalmAsmProject asmProject = QDmalmAsmProject.dmalmAsmProject;
+			 SQLDeleteClause deleteAsmProj = new SQLDeleteClause(connection, dialect, asmProject);
+			 deleteAsmProj.where(asmProject.dmalmAsmPk.eq(idAsmPk));
+			 deleteAsmProj.execute();
+			 
+			 QDmalmAsmProjectEl asmProjectEl = QDmalmAsmProjectEl.dmalmAsmProject;
+			 SQLDeleteClause deleteAsmProjEl = new SQLDeleteClause(connection, dialect, asmProjectEl);
+			 deleteAsmProjEl.where(asmProjectEl.dmalmAsmPk.eq(idAsmPk));
+			 deleteAsmProjEl.execute();
+			 
+			 QDmalmAsmProdotto asmProdotto = QDmalmAsmProdotto.dmalmAsmProdotto;
+			 SQLDeleteClause deleteAsmProdotto = new SQLDeleteClause(connection, dialect, asmProdotto);
+			 deleteAsmProdotto.where(asmProdotto.dmalmAsmPk.eq(idAsmPk));
+			 deleteAsmProdotto.execute();
+			 
+			 QDmalmProgettoSfera progSfera = QDmalmProgettoSfera.dmalmProgettoSfera;
+			 SQLDeleteClause deleteProgSfera = new SQLDeleteClause(connection, dialect, progSfera);
+			 deleteProgSfera.where(progSfera.dmalmAsmFk.eq(idAsmPk));
+			 deleteProgSfera.execute();
+			 //fine
+			 
 			 QDmalmAsm asm = QDmalmAsm.dmalmAsm;
 			 SQLDeleteClause deleteAsm = new SQLDeleteClause(connection, dialect, asm);
 			 deleteAsm.where(asm.dmalmAsmPk.eq(idAsmPk));
