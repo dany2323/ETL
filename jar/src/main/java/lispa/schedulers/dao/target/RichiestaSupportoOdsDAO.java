@@ -8,7 +8,6 @@ import java.sql.Struct;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.log4j.Logger;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
@@ -18,9 +17,6 @@ import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleTypes;
 
 public class RichiestaSupportoOdsDAO {
-
-	private static Logger logger = Logger
-			.getLogger(RichiestaSupportoOdsDAO.class);
 
 	public static void delete() throws DAOException, SQLException {
 
@@ -148,6 +144,10 @@ public class RichiestaSupportoOdsDAO {
 				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
 				bean.setDataStoricizzazione(rs.getTimestamp("DT_STORICIZZAZIONE"));
 				bean.setDataCaricamento(rs.getTimestamp("DATA_CARICAMENTO"));
+				bean.setCodiceArea(rs.getString("CODICE_AREA"));
+			    bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
+			    bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
+			    bean.setTimespent(rs.getFloat("TIMESPENT"));
 				richieste.add(bean);
 			}
 

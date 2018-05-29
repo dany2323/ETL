@@ -10,7 +10,7 @@ import lispa.schedulers.utils.DateUtils;
 public class TestRichiestaSupporto extends TestCase {
 	
 	private Timestamp dataEsecuzione = DateUtils.stringToTimestamp(
-			"2018-05-15 22:40:00", "yyyy-MM-dd HH:mm:00");
+			"2018-05-28 22:40:00", "yyyy-MM-dd HH:mm:00");
 	
 	public void testFillRichiestaSupporto() throws Exception {
 		Log4JConfiguration.inizialize();

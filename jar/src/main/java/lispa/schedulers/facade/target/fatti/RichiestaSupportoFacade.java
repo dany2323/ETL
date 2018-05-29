@@ -54,7 +54,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 				richieste_tmp = richiesta;
 				
 				target_richieste = RichiestaSupportoDAO.getRichiestaSupporto(richiesta);
-
+				
 				if(target_richieste.size()==0) {
 					righeNuove++;
 					richiesta.setDataCambioStatoRichSupp(richiesta.getDataModificaRecord());
