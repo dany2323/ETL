@@ -3,7 +3,7 @@
 	cw.c_uri as URI_WI,
 	cw.SISS_HISTORY_WORKITEM_PK as DMALM_DIFETTO_PRODOTTO_PK,
 	cw.C_PK as STG_PK,
-	nvl(p.DMALM_PROJECT_PK, 0) as DMALM_PROJECT_FK_02, 
+	nvl((SELECT MAX(DMALM_PROJECT_PK) FROM DMALM_PROJECT p WHERE p.ID_PROJECT= cp.c_id AND cw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SISS') , 0) as DMALM_PROJECT_FK_02, 
 	nvl(u.DMALM_USER_PK, 0) as DMALM_USER_FK_06,
 	cw.C_ID as IDENTIFICATIVO_DIFETTO,  
 	NVL(cw.C_RESOLVEDON, {ts '9999-12-31 00:00:00'}) as DATA_RISOLUZIONE_DIFETTO,
@@ -53,8 +53,6 @@
 					left join DMALM_SISS_HISTORY_PROJECT cp on cw.FK_PROJECT = cp.C_PK
 						left join dmalm_stato_workitem st
 					on st.ORIGINE_STATO = cw.c_type and cw.c_status = st.CD_STATO and cp.template = st.template
-						left join DMALM_PROJECT p 
-						on p.ID_PROJECT = cp.c_id and cw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SISS'
 							left join DMALM_USER u
 							on u.ID_USER = cu.c_id and cw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SISS'
 	WHERE   cw.c_type = 'defect'
@@ -65,7 +63,7 @@
 	cw.c_uri as URI_WI,
 	cw.SIRE_HISTORY_WORKITEM_PK as DMALM_DIFETTO_PRODOTTO_PK,
 	cw.C_PK as STG_PK,
-	nvl(p.DMALM_PROJECT_PK, 0) as DMALM_PROJECT_FK_02, 
+	nvl((SELECT MAX(DMALM_PROJECT_PK) FROM DMALM_PROJECT p WHERE p.ID_PROJECT= cp.c_id AND cw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SIRE') , 0) as DMALM_PROJECT_FK_02, 
 	nvl(u.DMALM_USER_PK, 0) as DMALM_USER_FK_06,
 	cw.C_ID as IDENTIFICATIVO_DIFETTO,  
 	NVL(cw.C_RESOLVEDON, {ts '9999-12-31 00:00:00'}) as DATA_RISOLUZIONE_DIFETTO,
@@ -115,8 +113,6 @@
 	left join DMALM_SIRE_HISTORY_PROJECT cp on  cw.FK_PROJECT = cp.C_PK
 		left join dmalm_stato_workitem st
 					on st.ORIGINE_STATO = cw.c_type and cw.c_status = st.CD_STATO and cp.template = st.template
-						left join DMALM_PROJECT p 
-						on p.ID_PROJECT = cp.c_id and cw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SIRE'
 							left join DMALM_USER u
 							on u.ID_USER = cu.c_id and cw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SIRE'
 	WHERE cw.c_type = 'defect'
