@@ -211,7 +211,7 @@ public class DmAlmFillTarget {
 				// Aggiunto checkpoint di recovery in data 17/07/17
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())
@@ -230,7 +230,7 @@ public class DmAlmFillTarget {
 				// Aggiunto checkpoint di recovery in data 19/04/17
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())
@@ -365,7 +365,7 @@ public class DmAlmFillTarget {
 
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())
@@ -450,7 +450,7 @@ public class DmAlmFillTarget {
 
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())
@@ -508,7 +508,7 @@ public class DmAlmFillTarget {
 
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())
@@ -580,7 +580,7 @@ public class DmAlmFillTarget {
 
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())
@@ -613,7 +613,7 @@ public class DmAlmFillTarget {
 
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())
@@ -628,7 +628,7 @@ public class DmAlmFillTarget {
 
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())
@@ -692,7 +692,7 @@ public class DmAlmFillTarget {
 
 				if (ErrorManager.getInstance().hasError()) {
 					RecoverManager.getInstance().startRecoverTarget();
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					// MPS
 					if (ExecutionManager.getInstance().isExecutionMps())

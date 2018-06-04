@@ -38,26 +38,26 @@ public class DmAlmETL {
 		String ambiente = DmAlmConfigReader.getInstance().getProperty(
 				DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 
-		logger.info("*** Eseguo DmAlmEtl v"
-				+ DmAlmConfigReaderProperties.VERSIONE_ETL + " ***");
-
-		logger.info("Ambiente: " + ambiente);
-
-		logger.info("Esecuzione SFERA: "
-				+ ExecutionManager.getInstance().isExecutionSfera());
-		/*
-		logger.info("Esecuzione EDMA/ORESTE/SGR_CM: "
-				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
-		*/
-		logger.info("Esecuzione EDMA/SGR_CM: "
-				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
-		
-		logger.info("Esecuzione MPS: "
-				+ ExecutionManager.getInstance().isExecutionMps());
-
-		logger.info("START DmAlmFillStaging.doWork()");
-		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
-		logger.info("STOP DmAlmFillStaging.doWork()");
+//		logger.info("*** Eseguo DmAlmEtl v"
+//				+ DmAlmConfigReaderProperties.VERSIONE_ETL + " ***");
+//
+//		logger.info("Ambiente: " + ambiente);
+//
+//		logger.info("Esecuzione SFERA: "
+//				+ ExecutionManager.getInstance().isExecutionSfera());
+//		/*
+//		logger.info("Esecuzione EDMA/ORESTE/SGR_CM: "
+//				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
+//		*/
+//		logger.info("Esecuzione EDMA/SGR_CM: "
+//				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
+//		
+//		logger.info("Esecuzione MPS: "
+//				+ ExecutionManager.getInstance().isExecutionMps());
+//
+//		logger.info("START DmAlmFillStaging.doWork()");
+//		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
+//		logger.info("STOP DmAlmFillStaging.doWork()");
 
 		if (!RecoverManager.getInstance().isRecovered()) {
 			try {
@@ -66,9 +66,9 @@ public class DmAlmETL {
 				logger.debug(e);
 			}
 
-			logger.info("START DmAlmCleaning.doWork()");
-			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
-			logger.info("STOP DmAlmCleaning.doWork()");
+//			logger.info("START DmAlmCleaning.doWork()");
+//			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
+//			logger.info("STOP DmAlmCleaning.doWork()");
 
 			try {
 				ConnectionManager.getInstance().dismiss();
@@ -118,7 +118,7 @@ public class DmAlmETL {
 							|| ExecutionManager.getInstance()
 									.isExecutionElettraSgrcm()) {
 						RecoverManager.getInstance().startRecoverTarget();
-						RecoverManager.getInstance().startRecoverStaging();
+//						RecoverManager.getInstance().startRecoverStaging();
 					}
 
 					// MPS

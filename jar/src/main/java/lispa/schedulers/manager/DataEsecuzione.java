@@ -11,7 +11,9 @@ public class DataEsecuzione {
 	private static DataEsecuzione instance;
 	
 	private DataEsecuzione(){
-		dataEsecuzione = DateUtils.getDataEsecuzione();
+//		dataEsecuzione = DateUtils.getDataEsecuzione();
+		dataEsecuzione = DateUtils.stringToTimestamp(
+				"2018-04-13 20:40:00", "yyyy-MM-dd HH:mm:00");
 	}
 	
 	public synchronized static DataEsecuzione getInstance() {

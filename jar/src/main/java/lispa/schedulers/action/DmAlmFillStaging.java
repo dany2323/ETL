@@ -133,7 +133,7 @@ public class DmAlmFillStaging {
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
 					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 					return;
 				}
 
@@ -143,7 +143,7 @@ public class DmAlmFillStaging {
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
 					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 					return;
 				}
 
@@ -152,7 +152,7 @@ public class DmAlmFillStaging {
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
 					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 					return;
 				}
 
@@ -163,7 +163,7 @@ public class DmAlmFillStaging {
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
 					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					return;
 				}
@@ -174,7 +174,7 @@ public class DmAlmFillStaging {
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
 					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 
 					return;
 				}
@@ -185,14 +185,14 @@ public class DmAlmFillStaging {
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
 					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
+//					RecoverManager.getInstance().startRecoverStaging();
 					return;
 				}
 			}
 
 			if (lispa.schedulers.manager.ErrorManager.getInstance().hasError()) {
 				logger.fatal("ERRORE: Inizio procedura di ripristino");
-				RecoverManager.getInstance().startRecoverStaging();
+//				RecoverManager.getInstance().startRecoverStaging();
 				return;
 			}
 
@@ -206,7 +206,7 @@ public class DmAlmFillStaging {
 			if (lispa.schedulers.manager.ErrorManager.getInstance()
 					.hasError()) {
 				logger.fatal("ERRORE: Inizio procedura di ripristino");
-				RecoverManager.getInstance().startRecoverStaging();
+//				RecoverManager.getInstance().startRecoverStaging();
 				return;
 			}
 
