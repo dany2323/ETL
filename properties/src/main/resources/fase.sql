@@ -14,7 +14,7 @@ SELECT
            WHEN to_char(hw.C_RESOLVEDON, 'yyyy-mm-dd') =  to_char(hw.C_CREATED, 'yyyy-mm-dd') THEN 1
            ELSE TO_NUMBER(to_date(to_char(hw.C_RESOLVEDON, 'yyyy-mm-dd'),'yyyy-mm-dd') - to_date(to_char(hw.C_CREATED, 'yyyy-mm-dd'),'yyyy-mm-dd'))
         END as TEMPO_TOTALE_RISOLUZIONE,
-		nvl(p.DMALM_PROJECT_PK, 0) as DMALM_PROJECT_FK_02, 
+		nvl((SELECT MAX(DMALM_PROJECT_PK) FROM DMALM_PROJECT p WHERE p.ID_PROJECT= hp.c_id AND hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SIRE') , 0) as DMALM_PROJECT_FK_02, 
 		nvl(u.DMALM_USER_PK, 0) as DMALM_USER_FK_06,
 		hp.c_name as NOME_PROJECT, 
 		nvl(st.DMALM_STATO_WORKITEM_PK, 0) as DMALM_STATO_WORKITEM_FK_03,
@@ -54,8 +54,6 @@ SELECT
 				on hw.fk_author = hu.c_pk
 					left join dmalm_stato_workitem st
 					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template
-						left join DMALM_PROJECT p 
-						on p.ID_PROJECT = hp.c_id and hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SIRE'
 							left join DMALM_USER u
 							on u.ID_USER = hu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SIRE'
 		where hw.c_type = 'fase'
@@ -77,7 +75,7 @@ SELECT
            WHEN to_char(hw.C_RESOLVEDON, 'yyyy-mm-dd') =  to_char(hw.C_CREATED, 'yyyy-mm-dd') THEN 1
            ELSE TO_NUMBER(to_date(to_char(hw.C_RESOLVEDON, 'yyyy-mm-dd'),'yyyy-mm-dd') - to_date(to_char(hw.C_CREATED, 'yyyy-mm-dd'),'yyyy-mm-dd'))
         END as TEMPO_TOTALE_RISOLUZIONE,
-		nvl(p.DMALM_PROJECT_PK, 0) as DMALM_PROJECT_FK_02, 
+		nvl((SELECT MAX(DMALM_PROJECT_PK) FROM DMALM_PROJECT p WHERE p.ID_PROJECT= hp.c_id AND hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SISS') , 0) as DMALM_PROJECT_FK_02, 
 		nvl(u.DMALM_USER_PK, 0) as DMALM_USER_FK_06,
 		hp.c_name as NOME_PROJECT, 
 		nvl(st.DMALM_STATO_WORKITEM_PK, 0) as DMALM_STATO_WORKITEM_FK_03,
@@ -117,8 +115,6 @@ SELECT
 				on hw.fk_author = hu.c_pk
 					left join dmalm_stato_workitem st
 					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template
-						left join DMALM_PROJECT p 
-						on p.ID_PROJECT = hp.c_id and hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SISS'
 							left join DMALM_USER u
 							on u.ID_USER = hu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SISS'
 		where hw.c_type = 'fase'
