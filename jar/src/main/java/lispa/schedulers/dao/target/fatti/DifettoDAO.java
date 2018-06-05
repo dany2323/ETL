@@ -111,6 +111,10 @@ public class DifettoDAO {
 						.getDouble("TEMPO_TOTALE_RISOLUZIONE")
 						- rs.getInt("GIORNI_FESTIVI"));
 				bean.setProvenienzaDifetto(rs.getString("PROVENIENZA_DIFETTO"));
+				if (bean.getProvenienzaDifetto().equals("project_user")) {
+					bean.setProvenienzaDifetto("SV");
+				}
+				
 				bean.setRankStatoDifetto(0.0);
 				bean.setCausaDifetto(rs.getString("CAUSA"));
 				bean.setNaturaDifetto(rs.getString("NATURA"));
