@@ -98,8 +98,6 @@ public class SireHistoryProjectDAO {
 
 			logger.debug("SireHistoryProjectDAO.fillSireHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
-//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgProjects);
-			int n_righe_inserite = 0;
 			
 			for (Tuple row : projects) {
 				Object[] vals = row.toArray();
@@ -113,7 +111,7 @@ public class SireHistoryProjectDAO {
 				
 				//Applico il cast a timespent solo se esistono dei valori data 
 				StringExpression dateValue = null;
-				if(vals[17] != null) {
+				if(cCreated != "") {
 					dateValue = StringTemplate.create("to_timestamp('"+cCreated+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
 				}
 				
@@ -167,8 +165,6 @@ public class SireHistoryProjectDAO {
 								vals[16]
 							).execute();
 								
-								n_righe_inserite++;
-						
 //						if (!insert.isEmpty()) {
 //							if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
 //								insert.execute();

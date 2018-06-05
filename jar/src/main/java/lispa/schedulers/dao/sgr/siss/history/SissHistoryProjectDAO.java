@@ -143,7 +143,6 @@ public class SissHistoryProjectDAO {
 								stgProjects.cDescription
 								)
 						.values(
-								
 								vals[0],
 								vals[1],
 								cPk,

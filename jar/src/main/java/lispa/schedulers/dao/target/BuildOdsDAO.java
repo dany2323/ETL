@@ -145,6 +145,7 @@ public class BuildOdsDAO {
 			
 			for (Tuple result : list) {
 				DmalmBuild resultEl = new DmalmBuild();
+				resultEl.setDmalmBuildPk(result.get(buildODS.dmalmBuildPk));
 				resultEl.setCdBuild(result.get(buildODS.cdBuild));
 				resultEl.setCodice(result.get(buildODS.codice));
 				resultEl.setDescrizioneBuild(result.get(buildODS.descrizioneBuild));
