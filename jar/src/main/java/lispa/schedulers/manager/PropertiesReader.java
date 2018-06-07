@@ -11,7 +11,6 @@ import lispa.schedulers.exception.PropertiesReaderException;
 
 public class PropertiesReader
 {
-//	private static final String PROPERTIES_REDAER_PATH = "lispa/schedulers/resources";
 	private Properties properties;
 	private static Logger logger = Logger.getLogger(PropertiesReader.class);
 

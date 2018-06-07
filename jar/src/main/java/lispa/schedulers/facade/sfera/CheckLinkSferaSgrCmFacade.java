@@ -66,8 +66,12 @@ public class CheckLinkSferaSgrCmFacade {
 	
 					try {
 						multiWI = WI_modified.split("\\*\\*");
-						nomeWI = multiWI[0].split("-")[0];
-						multiWI[0] = multiWI[0].split("-")[1];
+						nomeWI= multiWI[0].substring(0, multiWI[0].lastIndexOf("-"));
+						for(int i=1;i<multiWI.length;i++)
+						{
+							multiWI[i]=nomeWI+"-"+multiWI[i];
+						}
+						
 					} catch (Exception e) {
 						// gestione errore split per nomenclatura del nome errata
 						multiWI = new String[0];
@@ -82,9 +86,9 @@ public class CheckLinkSferaSgrCmFacade {
 					}
 	
 					for (String wi : multiWI) {
-						wi.trim();
-						nomeprog = nomeWI + "-" + wi;
-	
+						wi=wi.trim();
+						//nomeprog = nomeWI + "-" + wi;
+						nomeprog=wi;
 						// cerco la pk del workintem di sviluppo
 						sviWiTupla = DmAlmProgettoSferaDAO.getPkWorkitemSviluppo(
 								progetto.get(prog.dmalmAsmFk), nomeprog);
@@ -95,11 +99,12 @@ public class CheckLinkSferaSgrCmFacade {
 										progetto.get(prog.dmalmAsmFk), nomeprog);
 	
 						if (sviWiTupla.size() == 0 && manWiTupla.size() == 0) {
+							
 							ErroriCaricamentoDAO.insert(
 									DmAlmConstants.FONTE_MISURA,
 									DmAlmConstants.TARGET_PROGETTO_SFERA,
 									MisuraUtils.ProgettoSferaToString(progetto),
-									"Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM "
+									DmAlmConstants.MANCATA_CORRISPONDENZA_SFERA_WI
 									//		+ nomeprog,
 											+ MisuraUtils.ProgettoSferaToString(progetto),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
@@ -158,13 +163,9 @@ public class CheckLinkSferaSgrCmFacade {
 									ErroriCaricamentoDAO
 											.insert(DmAlmConstants.FONTE_MISURA,
 													DmAlmConstants.TARGET_MISURA,
-													MisuraUtils
-															.ProgettoSferaToString(progetto),
-													"Mancata corrispondenza tra lo STATO dei WI "
-															+ errSvi.get(progSv.cdProgSvilS)
-															+ " resolved ("
-															+ progSv.dtRisoluzioneProgSvilS
-															+ ")  e lo stato della MISURA SFERA",
+													"Progetto Sfera :"+MisuraUtils
+															.ProgettoSferaToString(progetto)+ " stato WI:"+ errSvi.get(progSv.cdProgSvilS)+" resolved ("+progSv.dtRisoluzioneProgSvilS+")",
+													DmAlmConstants.NO_CORR_STATO_WI_MISURA,
 													DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 													dataEsecuzione);
 								}

@@ -1,0 +1,356 @@
+create or replace PROCEDURE "VERIFICA_ESITO_ETL" (txtArray OUT DBMSOUTPUT_LINESARRAY, dataETL IN TIMESTAMP)  AS
+
+contaDifetti number;
+contaProject number;
+contaStrutture number;
+contaASM  number;
+contatore number;
+type tabelleDifettiArray IS VARRAY(4) OF VARCHAR2(30);
+type campiTabellaArray IS VARRAY(4) OF VARCHAR2(30); 
+nomeTabellaDifetti tabelleDifettiArray;
+nomeCampoTabella campiTabellaArray;
+v_query VARCHAR2(1000);
+
+BEGIN
+    dbms_output.put_line('/**************************************************/'); 
+    dbms_output.put_line('/****** INIZIO CONTROLLI VERIFICA_ESITO_ETL ******/');
+    dbms_output.put_line('/************************************************/');
+    dbms_output.put_line(' ');
+    dbms_output.put_line(' ');
+    nomeTabellaDifetti :=tabelleDifettiArray('DMALM_DIFETTO_PRODOTTO','DMALM_DIFETTO_PRODOTTO_DUMMY','DMALM_ANOMALIA_PRODOTTO','DMALM_ANOMALIA_PRODOTTO_DUMMY');
+    nomeCampoTabella :=campiTabellaArray('DT_CARICAMENTO_RECORD_DIFETTO','DT_CARICAMENTO_RECORD_DIFETTO','DT_CARICAMENTO_RECORD_ANOMALIA','DT_CARICAMENTO_RECORD_ANOMALIA');
+    /**************************************************/ 
+    /***** INIZIO CONTROLLI SUI DIFETTI/ANOMALIE *****/
+    /************************************************/
+     dbms_output.put_line('/***** INIZIO CONTROLLI SUI DIFETTI/ANOMALIE *****/');
+    for i in 1 .. 4 LOOP
+      /***** Conta  i record inseriti *****/
+      v_query :='select count(*) from ' || nomeTabellaDifetti(i) || ' where to_date( '||nomeCampoTabella(i)||' ,''dd/mm/yy'')=to_date(''' || dataETL || ''',' || '''dd/mm/yy'')';
+      EXECUTE IMMEDIATE v_query into contaDifetti;
+      dbms_output.put_line(nomeTabellaDifetti(i)||' numero workitem inseriti '||contaDifetti);
+
+      /***** Conta  i woritem unmarked/annullati fisicamente *****/      
+      v_query :='select count(*) from ' || nomeTabellaDifetti(i) || ' where annullato is not null and to_date( '||nomeCampoTabella(i)||' ,''dd/mm/yy'')=to_date(''' || dataETL || ''',' || '''dd/mm/yy'')';
+      EXECUTE IMMEDIATE v_query into contaDifetti;
+      if contaDifetti >0 then
+          dbms_output.put_line(nomeTabellaDifetti(i)||' Sono stati unmarked/annullati fisicamente '||contaDifetti);
+          dbms_output.put_line('******************************** ' || v_query);
+          dbms_output.put_line(' ');
+      end if;
+      
+      /***** Verifico se tutti i workitem unmarked/annullati fisicamente hanno la data annullamneto valorizzata *****/  
+      v_query :='select count(*) from ' || nomeTabellaDifetti(i) || ' where dt_annullamento is not null and to_date( '||nomeCampoTabella(i)||' ,''dd/mm/yy'')=to_date(''' || dataETL || ''',' || '''dd/mm/yy'')';
+      EXECUTE IMMEDIATE v_query into contatore;
+      if contaDifetti != contatore then
+          dbms_output.put_line(nomeTabellaDifetti(i)||' Non sono presenti tutte le date di annullamento '||contatore);
+          dbms_output.put_line('******************************** ' || v_query);
+          dbms_output.put_line(' ');
+      end if; 
+      
+      /***** Verifica provenienza difetti SV,IT,CM *****/
+      /***** Verifica provenienza difetti SV,IT,CM *****/
+      if i <3 then
+        v_query :='select count(*) from ' || nomeTabellaDifetti(i) || ' where (PROVENIENZA_DIFETTO not in (''SV'',''CM'',''IT'') or PROVENIENZA_DIFETTO is null) and to_date( '||nomeCampoTabella(i)||' ,''dd/mm/yy'')=to_date(''' || dataETL || ''',' || '''dd/mm/yy'')';
+        EXECUTE IMMEDIATE v_query into contaDifetti;
+        if contaDifetti >0 then
+            dbms_output.put_line(nomeTabellaDifetti(i)||' Esistono difetti con provenienza diversa da SV,IT,CM oppure valorizzata a null '||contaDifetti);
+            dbms_output.put_line('******************************** ' || v_query);
+            dbms_output.put_line(nomeTabellaDifetti(i)||' Inizio procedura di correzione');
+            UPDATE_PROVENIENZA_DIFETTO;
+            dbms_output.put_line(nomeTabellaDifetti(i)||' Fine procedura di correzione');
+            dbms_output.put_line(nomeTabellaDifetti(i)||' Eseguo il controllo sui dati');
+            EXECUTE IMMEDIATE v_query into contaDifetti;
+            if contaDifetti >0 then
+              dbms_output.put_line(nomeTabellaDifetti(i)||' Esistono difetti con provenienza diversa da SV,IT,CM oppure valorizzata a null '||contaDifetti);
+            end if; 
+            dbms_output.put_line(' ');
+        end if;
+      end if;
+      
+      /***** Verifica che tutti i difetti abbiamo un project collegato *****/
+      v_query :='select count(*) from ' || nomeTabellaDifetti(i) || ' where DMALM_PROJECT_FK_02 is null and to_date( '||nomeCampoTabella(i)||' ,''dd/mm/yy'')=to_date(''' || dataETL || ''',' || '''dd/mm/yy'')';
+      EXECUTE IMMEDIATE v_query into contaDifetti;
+      if contaDifetti >0 then
+          dbms_output.put_line(nomeTabellaDifetti(i)||' Esistono workitem non collegati ad un project '||contaDifetti);
+          dbms_output.put_line('******************************** ' || v_query);
+          dbms_output.put_line(' ');
+      end if;
+      
+      /***** Verifica che tutti i project collegato siano attivi *****/
+      v_query :='select count(*) from ' || nomeTabellaDifetti(i) || ' a ,dmalm_project p where p.DMALM_PROJECT_PK=a.DMALM_PROJECT_FK_02 and to_date(p.DT_FINE_VALIDITA,''dd/mm/yy'')!=to_date(''31/12/99'',''dd/mm/yy'') and to_date( a.'||nomeCampoTabella(i)||' ,''dd/mm/yy'')=to_date(''' || dataETL || ''',' || '''dd/mm/yy'')';
+      EXECUTE IMMEDIATE v_query into contaDifetti;
+      if contaDifetti >0 then
+          dbms_output.put_line(nomeTabellaDifetti(i)||' Esistono workitem collegati ad un project non attivo '||contaDifetti);
+          dbms_output.put_line('******************************** ' || v_query);
+          dbms_output.put_line(' ');
+      end if;   
+    end loop;
+    dbms_output.put_line('/***** FINE CONTROLLI SUI DIFETTI/ANOMALIE *****/');
+    dbms_output.put_line(' ');
+    /************************************************/ 
+    /***** FINE CONTROLLI SUI DIFETTI/ANOMALIE *****/
+    /**********************************************/
+
+    /*****************************************/ 
+    /***** INIZIO CONTROLLI SUI PROJECT *****/
+    /***************************************/
+    dbms_output.put_line('/***** INIZIO CONTROLLI SUI PROJECT *****/');
+    /***** Conta  i record inseriti *****/
+    /***** escludo i record dei project "fantasma" creati dalla procedura del supporto *****/
+    /***** che sono caratterizzati dall'avere sigla project null e dt_inizio_validita=dt_fine validità *****/
+    select count(*) into contaProject from DMALM_PROJECT where to_date(DT_CARICAMENTO,'dd/mm/yy')=to_date(dataETL,'dd/mm/yy') and (to_date(DT_INIZIO_VALIDITA, 'dd-mm-yy')!=to_date(DT_FINE_VALIDITA,'dd-mm-yy') and SIGLA_PROJECT is not null);
+    dbms_output.put_line('DMALM_PROJECT numero project inseriti '||contaProject);
+    
+    /***** Conta  i project con sigla nulla *****/   
+    /***** escludo i record dei project "fantasma" creati dalla procedura del supporto *****/
+    /***** che sono caratterizzati dall'avere sigla project null e dt_inizio_validita=dt_fine validità *****/
+    v_query := 'select count(*) from DMALM_PROJECT where SIGLA_PROJECT is null and to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'')
+                and to_date(DT_INIZIO_VALIDITA, ''dd-mm-yy'')!=to_date(DT_FINE_VALIDITA, ''dd-mm-yy'')';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT esistono project con sigla nulla '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+     
+    /***** verifico per per ogni record "fantasma" esista il corridpondente record *****/
+    
+     
+    /***** Conta  i project con C_PK nulla *****/
+    /***** escludo i record dei project "fantasma" creati dalla procedura del supporto *****/
+    /***** che sono caratterizzati dall'avere sigla project null e dt_inizio_validita=dt_fine validità *****/
+    v_query := 'select count(*) from DMALM_PROJECT where C_PK is null and to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'')
+               and (to_date(DT_INIZIO_VALIDITA, ''dd-mm-yy'')!=to_date(DT_FINE_VALIDITA, ''dd-mm-yy''))';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT esistono project con c_pk nulla '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+     
+    /***** Conta  i project annullati fisicamente/umarked *****/      
+    v_query := 'select count(*) from DMALM_PROJECT where ANNULLATO is not null and to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'')';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT Sono stati annullati/unmarked '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+
+    /***** Conta  i project con data annullamento valorizzata *****/
+    /***** deve coincidere con il numero di project annullati fisicamente/umarked *****/   
+    v_query := 'select count(*) from DMALM_PROJECT where DT_ANNULLAMENTO is not null and to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'')';
+    EXECUTE IMMEDIATE v_query into contatore;
+    if contatore >0 then
+          dbms_output.put_line('DMALM_PROJECT hanno data annullamento valorizzata '||contaProject);
+          dbms_output.put_line('******************************** ' || v_query);
+          dbms_output.put_line(' ');
+    end if;
+    if contatore != contaProject then
+          dbms_output.put_line('DMALM_PROJECT il numero di project annullati/unmarked non coincide con i project con data annullamento valorizzata '|| contaProject || ' ' || contatore);
+          dbms_output.put_line('******************************** ' || v_query);
+          dbms_output.put_line(' ');
+    end if;
+
+    /***** Conta i project annullati fisicamente che hanno dt_fine_validità <> da 31/12/9999 *****/      
+    v_query := 'select count(*) from DMALM_PROJECT where ANNULLATO=''ANNULLATO FISICAMNETE'' and DT_FINE_VALIDITA != to_date(''31-12-9999'', ''dd-mm-yyyy'')  and to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'')';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT Sono presenti project annullati fisicamente con data fine validità valorizzata '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+
+    /***** Conta i project umarked che hanno dt_fine_validità <> da 31/12/9999 *****/      
+    v_query := 'select count(*) from DMALM_PROJECT where ANNULLATO=''UNMARKED'' and DT_FINE_VALIDITA != to_date(''31-12-9999'', ''dd-mm-yyyy'')  and to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'')';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT Sono presenti project Unmarked con data fine validità valorizzata '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+
+    /***** Conta i project senza puntamento alla flat *****/  
+    /***** escludo i record dei project "fantasma" creati dalla procedura del supporto *****/
+    /***** che sono caratterizzati dall'avere sigla project null e dt_inizio_validita=dt_fine validità *****/
+    v_query := 'select count(*) from DMALM_PROJECT where to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'') 
+              and (DMALM_UNITAORG_FLAT_FK_04 is  null or DMALM_UNITAORG_FLAT_FK_04=0)
+              and (SIGLA_PROJECT is not null and to_date(DT_INIZIO_VALIDITA, ''dd-mm-yy'')!=to_date(DT_FINE_VALIDITA, ''dd-mm-yy''))';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT esistono project che non hanno associazione alla struttura flat '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+
+    /***** Verifica che i project siano collegati a strutture attive nella flat *****/      
+    /***** escludo i record dei project "fantasma" creati dalla procedura del supporto *****/
+    /***** che sono caratterizzati dall'avere sigla project null e dt_inizio_validita=dt_fine validità *****/
+    v_query := 'select count(*) from DMALM_PROJECT p, DMALM_EL_UNITA_ORGANIZZAT_FLAT u  where to_date(p.DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'') 
+                and u.ID_FLAT=p.DMALM_UNITAORG_FLAT_FK_04 and to_date(u.DT_FINE_VALIDITA,''dd/mm/yy'') != to_date(''31/12/99'',''dd/mm/yy'')
+                and (p.SIGLA_PROJECT is not null and to_date(p.DT_INIZIO_VALIDITA, ''dd-mm-yy'')!=to_date(p.DT_FINE_VALIDITA, ''dd-mm-yy''))';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT esistono project che sono associati a struttura flat chiuse '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+
+    /***** Conta i project senza puntamento alle unita organizzative elettra *****/  
+    /***** escludo i record dei project "fantasma" creati dalla procedura del supporto *****/
+    /***** che sono caratterizzati dall'avere sigla project null e dt_inizio_validita=dt_fine validità *****/
+    v_query := 'select count(*) from DMALM_PROJECT where to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'') 
+                and (DMALM_UNITAORGANIZZATIVA_FK_03 is  null or DMALM_UNITAORGANIZZATIVA_FK_03=0)
+                 and (SIGLA_PROJECT is not null and to_date(DT_INIZIO_VALIDITA, ''dd-mm-yy'')!=to_date(DT_FINE_VALIDITA, ''dd-mm-yy''))';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT esistono project che non hanno associazione alla struttura elettra '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+
+    /***** Verifica che i project siano collegati a strutture elettra attive  *****/      
+    /***** escludo i record dei project "fantasma" creati dalla procedura del supporto *****/
+    /***** che sono caratterizzati dall'avere sigla project null e dt_inizio_validita=dt_fine validità *****/
+    v_query := 'select count(*) from DMALM_PROJECT p, DMALM_EL_UNITA_ORGANIZZATIVE u  where to_date(p.DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'')
+                and u.DMALM_UNITA_ORG_PK=p.DMALM_UNITAORGANIZZATIVA_FK_03
+                and to_date(u.DT_FINE_VALIDITA,''dd/mm/yy'') != to_date(''31/12/99'',''dd/mm/yy'')
+                and (p.SIGLA_PROJECT is not null and to_date(p.DT_INIZIO_VALIDITA, ''dd-mm-yy'')!=to_date(p.DT_FINE_VALIDITA, ''dd-mm-yy''))';
+    EXECUTE IMMEDIATE v_query into contaProject;
+    if contaProject >0 then
+        dbms_output.put_line('DMALM_PROJECT esistono project che sono associati a struttura flat chiuse '||contaProject);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+    
+    dbms_output.put_line('/***** FINE CONTROLLI SUI PROJECT *****/');
+    dbms_output.put_line(' ');
+    /***************************************/ 
+    /***** FINe CONTROLLI SUI PROJECT *****/
+    /*************************************/
+
+    /***************************************************/ 
+    /***** INIZIO CONTROLLI SUI STRUTTURA ELETTRA *****/
+    /*************************************************/
+    dbms_output.put_line('/***** INIZIO CONTROLLI SULLE STRUTTURE ELETTRA *****/');
+    /***** Conta  i record inseriti *****/
+    select count(*) into contaStrutture from DMALM_EL_UNITA_ORGANIZZATIVE where to_date(DT_CARICAMENTO,'dd/mm/yy')=to_date(dataETL,'dd/mm/yy');
+    dbms_output.put_line('DMALM_EL_UNITA_ORGANIZZATIVE numero record inseriti '||contaStrutture);
+    
+    /***** Conta le strutture con data chiusura valorizzata *****/  
+    v_query := 'select count(*) from DMALM_EL_UNITA_ORGANIZZATIVE where to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'') and to_date(DT_FINE_VALIDITA,''dd/mm/yy'') != to_date(''31/12/99'',''dd/mm/yy'')';
+    EXECUTE IMMEDIATE v_query into contaStrutture;
+    if contaStrutture >0 then
+         dbms_output.put_line('DMALM_EL_UNITA_ORGANIZZATIVE esistono strutture chiuse '||contaStrutture);
+         dbms_output.put_line('******************************** ' || v_query);
+         dbms_output.put_line(' ');
+    end if;
+
+    /***** Conta le strutture annullate *****/  
+    v_query := 'select count(*) from DMALM_EL_UNITA_ORGANIZZATIVE where to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'') and ANNULLATO=''SI''';
+     EXECUTE IMMEDIATE v_query into contaStrutture;
+    if contaStrutture >0 then
+        dbms_output.put_line('DMALM_EL_UNITA_ORGANIZZATIVE esistono strutture annullate '||contaStrutture);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+    
+    /***** Conta le strutture con data annullamento valorizzata *****/        
+    v_query := 'select count(*) from DMALM_EL_UNITA_ORGANIZZATIVE where to_date(DT_CARICAMENTO,''dd/mm/yy'')=to_date(''' || dataETL || ''',''dd/mm/yy'') and to_date(DT_ANNULLAMENTO,''dd/mm/yy'') != to_date(''31/12/99'',''dd/mm/yy'')';
+     EXECUTE IMMEDIATE v_query into contatore;
+    if contaStrutture != contatore then
+        dbms_output.put_line('DMALM_EL_UNITA_ORGANIZZATIVE Non sono presenti tutte le date di annullamento '||contatore);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+    
+    dbms_output.put_line('/***** FINE CONTROLLI SULLE STRUTTURE ELETTRA *****/');
+     dbms_output.put_line(' ');
+     /***************************************************/ 
+    /****** FINE CONTROLLI SUI STRUTTURA ELETTRA ******/
+    /*************************************************/
+
+    /************************************************/ 
+    /***** INIZIO CONTROLLI SUI STRUTTURA FLAT *****/
+    /**********************************************/
+    dbms_output.put_line('/***** INIZIO CONTROLLI SULLE STRUTTURE FLAT *****/');
+    /***** Conta  i record inseriti *****/
+    select count(*) into contaStrutture from DMALM_EL_UNITA_ORGANIZZAT_FLAT where trunc(DT_CARICAMENTO)=to_date(dataETL,'dd/mm/yy');
+    dbms_output.put_line('DMALM_EL_UNITA_ORGANIZZAT_FLAT numero record inseriti '||contaStrutture);
+    
+    /***** Conta le strutture con data chiusura valorizzata *****/  
+    v_query := 'select count(*) from DMALM_EL_UNITA_ORGANIZZAT_FLAT where trunc(DT_CARICAMENTO)=to_date(''' || dataETL || ''',''dd/mm/yy'') and to_date(DT_FINE_VALIDITA,''dd/mm/yy'') != to_date(''31/12/99'',''dd/mm/yy'')';
+     EXECUTE IMMEDIATE v_query into contaStrutture;
+    if contaStrutture >0 then
+        dbms_output.put_line('DMALM_EL_UNITA_ORGANIZZAT_FLAT esistono strutture chiuse '||contaStrutture);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+    
+    dbms_output.put_line('/***** FINE CONTROLLI SULLE STRUTTURE FLAT *****/');
+    /************************************************/ 
+    /****** FINE CONTROLLI SUI STRUTTURA FLAT ******/
+    /**********************************************/
+   
+   
+   
+   
+    /***************************************/ 
+    /***** INIZIO CONTROLLI SULLE ASM *****/
+    /*************************************/
+    dbms_output.put_line('/***** INIZIO CONTROLLI SULLE ASM *****/'); 
+    /***** Conta  i record inseriti *****/
+    select count(*) into contaASM from DMALM_ASM where trunc(DT_CARICAMENTO)=to_date(dataETL,'dd/mm/yy');
+    dbms_output.put_line('DMALM_ASM numero record inseriti '||contaASM);
+    
+    /***** Conta ASM con struttura flat valorizzata *****/  
+    v_query := 'select count(*) from DMALM_ASM where trunc(DT_CARICAMENTO)=to_date(''' || dataETL || ''',''dd/mm/yy'') and DMALM_UNITAORG_FLAT_FK_04 is null or DMALM_UNITAORG_FLAT_FK_04=0';
+     EXECUTE IMMEDIATE v_query into contaASM;
+    if contaASM >0 then
+        dbms_output.put_line('DMALM_ASM esistono ASM non associate a strutture nella tabella FLAT '||contaASM);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+    
+    /***** Verifica che le ASM siano collegate a strutture attive nella FLAT *****/   
+     v_query := 'select count(*) from DMALM_ASM a, DMALM_EL_UNITA_ORGANIZZAT_FLAT u  where trunc(a.DT_CARICAMENTO)=to_date(''' || dataETL || ''',''dd/mm/yy'')
+                and u.ID_FLAT=a.DMALM_UNITAORG_FLAT_FK_04
+                and trunc(a.DT_CARICAMENTO)=to_date(''' || dataETL || ''',''dd/mm/yy'')
+                and to_date(u.DT_FINE_VALIDITA,''dd/mm/yy'') != to_date(''31/12/99'',''dd/mm/yy'')';
+    EXECUTE IMMEDIATE v_query into contaASM;
+    if contaASM >0 then
+        dbms_output.put_line('DMALM_ASM esistono ASM che sono associati a struttura flat chiuse '||contaASM);
+        dbms_output.put_line('******************************** ' || v_query);
+        dbms_output.put_line(' ');
+    end if;
+
+    dbms_output.put_line('/***** FINE CONTROLLI SULLE ASM *****/');    
+    /***************************************/ 
+    /****** FINE CONTROLLI SULLE ASM ******/
+    /*************************************/
+    
+    
+    dbms_output.put_line(' ');
+    dbms_output.put_line(' '); 
+    dbms_output.put_line('/************************************************/'); 
+    dbms_output.put_line('/****** FINE CONTROLLI VERIFICA_ESITO_ETL ******/');
+    dbms_output.put_line('/**********************************************/');
+
+
+    EXCEPTION
+    WHEN OTHERS THEN
+      begin
+        DBMS_OUTPUT.PUT_LINE('An error was encountered - '||SQLCODE||' -ERROR- '||SQLERRM);
+        dbms_output.put_line('********************************' || v_query);
+      end;
+
+    DECLARE
+        numLines  integer := 10000;
+    BEGIN
+        dbms_output.get_lines(txtArray, numLines);
+        for i in 1..txtarray.count loop
+            dbms_output.put_line(txtarray(i));
+        end loop;
+    END;
+    
+END VERIFICA_ESITO_ETL;

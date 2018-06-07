@@ -34,6 +34,9 @@ import lispa.schedulers.exception.PropertiesReaderException;
 
 import org.apache.log4j.Logger;
 
+import it.lispa.jotm.datasource.crypt.EncryptionHelper;
+import it.lispa.jotm.datasource.crypt.support.BaseEncryptionHelper;
+
 /**
  * Visto che l’applicazione ha necessità di gestire la concorrenzialità
  * nell’accesso, in quanto si è implementato un accesso multithread alle fonti,
@@ -84,6 +87,10 @@ public class ConnectionManager {
 	private static long oracle, oracleFonteElettra, sirecurr, sirehist,
 			sisscurr, sisshist;
 
+	// GF - Per cifratura password
+	private EncryptionHelper encryptionHelper = new BaseEncryptionHelper();
+	// GF - Per cifratura password
+				
 	private ConnectionManager() throws DAOException, PropertiesReaderException {
 
 		loadProps();
@@ -161,7 +168,8 @@ public class ConnectionManager {
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(DM_ALM_DB_URL),
 						propertiesReader.getProperty(DM_ALM_USER),
-						propertiesReader.getProperty(DM_ALM_PSW));
+						encryptionHelper.decrypt(propertiesReader.getProperty(DM_ALM_PSW)));
+				
 				oracle++;
 				if (oracle > 50)
 					logger.warn("*** ConnectionManager - ATTENZIONE, LE CONNESSIONI A ORACLE SONO "
@@ -205,7 +213,7 @@ public class ConnectionManager {
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(ELETTRA_DB_URL),
 						propertiesReader.getProperty(ELETTRA_USER),
-						propertiesReader.getProperty(ELETTRA_PSW));
+						encryptionHelper.decrypt(propertiesReader.getProperty(ELETTRA_PSW)));
 				oracleFonteElettra++;
 				if (oracleFonteElettra > 50)
 					logger.warn("*** ConnectionManager - ATTENZIONE, LE CONNESSIONI A ORACLE FONTE ELETTRA SONO "
@@ -250,7 +258,7 @@ public class ConnectionManager {
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SIRE_CURRENT_URL),
 						propertiesReader.getProperty(SIRE_CURRENT_USERNAME),
-						propertiesReader.getProperty(SIRE_CURRENT_PSW));
+						encryptionHelper.decrypt(propertiesReader.getProperty(SIRE_CURRENT_PSW)));
 				sirecurr++;
 			}
 
@@ -293,7 +301,7 @@ public class ConnectionManager {
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SIRE_HISTORY_URL),
 						propertiesReader.getProperty(SIRE_HISTORY_USERNAME),
-						propertiesReader.getProperty(SIRE_HISTORY_PSW));
+						encryptionHelper.decrypt(propertiesReader.getProperty(SIRE_HISTORY_PSW)));
 				sirehist++;
 			}
 
@@ -336,7 +344,7 @@ public class ConnectionManager {
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SISS_CURRENT_URL),
 						propertiesReader.getProperty(SISS_CURRENT_USERNAME),
-						propertiesReader.getProperty(SISS_CURRENT_PSW));
+						encryptionHelper.decrypt(propertiesReader.getProperty(SISS_CURRENT_PSW)));
 				sisscurr++;
 			}
 
@@ -379,7 +387,7 @@ public class ConnectionManager {
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SISS_HISTORY_URL),
 						propertiesReader.getProperty(SISS_HISTORY_USERNAME),
-						propertiesReader.getProperty(SISS_HISTORY_PSW));
+						encryptionHelper.decrypt(propertiesReader.getProperty(SISS_HISTORY_PSW)));
 				sisshist++;
 			}
 

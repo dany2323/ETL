@@ -678,7 +678,7 @@ public class DmAlmProgettoSferaDAO {
 									.equalsIgnoreCase(DmAlmConstants.MEV)))
 					.where(prog.dataFineValidita.eq(DateUtils
 							.setDtFineValidita9999()))
-					.where(prog.nomeProgetto.notLike("%NOWI%"))
+					.where(prog.nomeProgetto.notLike("%NOWI%")).where(prog.annullato.isNull())
 					.orderBy(prog.nomeProgetto.asc(),
 							prog.dmalmProgettoSferaPk.asc()).list(prog.all());
 

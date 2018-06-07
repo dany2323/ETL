@@ -1,0 +1,11 @@
+#### Modifica tabelle  ‘Release IT' aggiunta campi "motivo_sospensione", "counter_qf", "giorni_qf" ####
+
+alter table DMALM_RELEASE_IT add(MOTIVO_SOSPENSIONE VARCHAR2(50));
+alter table DMALM_RELEASE_IT add(COUNTER_QF NUMBER(10,0));
+alter table DMALM_RELEASE_IT add(GIORNI_QF NUMBER(10,0));
+alter table DMALM_RELEASE_IT_ODS add(MOTIVO_SOSPENSIONE VARCHAR2(50));
+alter table DMALM_RELEASE_IT_ODS add(COUNTER_QF NUMBER(10,0));
+alter table DMALM_RELEASE_IT_ODS add(GIORNI_QF NUMBER(10,0));
+alter table T_DMALM_RELEASE_IT add(MOTIVO_SOSPENSIONE VARCHAR2(50));
+alter table T_DMALM_RELEASE_IT add(COUNTER_QF NUMBER(10,0));
+alter table T_DMALM_RELEASE_IT add(GIORNI_QF NUMBER(10,0));

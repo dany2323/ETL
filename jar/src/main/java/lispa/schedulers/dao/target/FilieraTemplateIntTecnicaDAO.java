@@ -13,6 +13,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.queryimplementation.target.QDmalmFilieraTemplateIntTecnica;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.pattern.LogEvent;
 
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLTemplates;
@@ -104,6 +105,7 @@ public class FilieraTemplateIntTecnicaDAO {
 					.execute();
 			
 			if (fkDocumento != null) {
+				
 				FilieraTemplateDocumentiDAO.insert(
 						DmAlmConstants.IT, idFiliera, livello,
 						linkedWorkitem.getFkWiPadre(), linkedWorkitem.getTipoWiPadre(), fkDocumento);

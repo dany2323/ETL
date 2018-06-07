@@ -92,7 +92,7 @@ public class SireCurrentWorkitemLinkedDAO {
 					
 					);
 
-			logger.debug("fillSireCurrentWorkitemLinked - cfworkitems.sizw: " + cfworkitems.size());
+			logger.debug("fillSireCurrentWorkitemLinked - cfworkitems.size: " + cfworkitems.size());
 			
 			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, stgProjectgroup);
 			Iterator<Tuple> i = cfworkitems.iterator();

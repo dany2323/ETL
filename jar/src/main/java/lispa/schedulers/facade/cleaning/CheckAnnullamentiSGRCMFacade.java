@@ -28,6 +28,7 @@ import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
+import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
 import lispa.schedulers.bean.target.fatti.DmalmTask;
 import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
@@ -54,6 +55,7 @@ import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaManutenzioneDAO;
+import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
 import lispa.schedulers.dao.target.fatti.SottoprogrammaDAO;
 import lispa.schedulers.dao.target.fatti.TaskDAO;
 import lispa.schedulers.dao.target.fatti.TaskItDAO;
@@ -92,9 +94,7 @@ import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -1255,6 +1255,31 @@ public class CheckAnnullamentiSGRCMFacade {
 									}
 									break;
 
+								case "sup":
+									List<DmalmRichiestaSupporto> richieste = RichiestaSupportoDAO
+											.getRichiestaSupporto(history.getDmalmProjectPk(), 0);
+									for (DmalmRichiestaSupporto richiesta : richieste) {
+										DmalmRichiestaSupporto r = RichiestaSupportoDAO
+												.getRichiestaSupporto(richiesta.getDmalmRichiestaSupportoPk());
+										if (r != null) {
+												if (r.getDataStoricizzazione().equals(dataEsecuzione)) {
+													// già storicizzato oggi
+													r.setAnnullato("");
+													r.setDataAnnullamento(null);
+													r.setDmalmProjectFk02(p.getDmalmProjectPk());
+													RichiestaSupportoDAO.updateRichiestaSupporto(r);
+												} else {
+													RichiestaSupportoDAO.updateRank(r, new Double(0));
+													r.setAnnullato("");
+													r.setDataStoricizzazione(dataEsecuzione);
+													r.setDataAnnullamento(null);
+													r.setDmalmProjectFk02(p.getDmalmProjectPk());
+													RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione,
+																	r, false);
+												}
+											}
+										}
+										break;
 								}
 
 							} catch (Exception e) {
@@ -2240,6 +2265,34 @@ public class CheckAnnullamentiSGRCMFacade {
 											}
 										}
 										break;
+										
+									case "sup":
+										List<DmalmRichiestaSupporto> richieste = RichiestaSupportoDAO
+												.getRichiestaSupporto(history.getDmalmProjectPk(), 0);
+										for (DmalmRichiestaSupporto richiesta : richieste) {
+											DmalmRichiestaSupporto r = RichiestaSupportoDAO
+													.getRichiestaSupporto(richiesta.getDmalmRichiestaSupportoPk());
+											if (r != null) {
+												if (r.getDataStoricizzazione()
+														.equals(dataEsecuzione)) {
+													// già storicizzato oggi
+													r.setAnnullato(unmarked);
+													r.setDataAnnullamento(dataEsecuzione);
+													r.setDmalmProjectFk02(p
+															.getDmalmProjectPk());
+													RichiestaSupportoDAO.updateRichiestaSupporto(r);
+												} else {
+													RichiestaSupportoDAO.updateRank(r, new Double(0));
+													r.setAnnullato(unmarked);
+													r.setDataStoricizzazione(dataEsecuzione);
+													r.setDataAnnullamento(dataEsecuzione);
+													r.setDmalmProjectFk02(p
+															.getDmalmProjectPk());
+													RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, r, false);
+												}
+											}
+										}
+										break;
 
 									}
 
@@ -2682,6 +2735,15 @@ public class CheckAnnullamentiSGRCMFacade {
 							dialect, classificatore);
 
 					targetTipologiaWi = DmAlmConstants.TARGET_CLASSIFICATORE;
+					break;
+				case "sup":
+					DmalmRichiestaSupporto richiesta = new DmalmRichiestaSupporto();
+					richiesta.setCdRichiestaSupporto(rs.getString("CODICE"));
+					richiesta.setIdRepository(rs.getString("ID_REPOSITORY"));
+					RichiestaSupportoDAO.updateWIRichiestaSupportoDeleted(richiesta, DataEsecuzione.getInstance()
+											.getDataEsecuzione());
+
+					targetTipologiaWi = DmAlmConstants.TARGET_RICHIESTA_SUPPORTO;
 					break;
 				default:
 					logger.info("Tipologia Workitem non gestita - "

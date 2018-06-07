@@ -14,6 +14,7 @@ import lispa.schedulers.bean.staging.sfera.DmalmStgMisura;
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
+import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -80,12 +81,24 @@ public class MisuraUtils {
 
 	public static String ProgettoSferaToString(Tuple row) {
 		QDmalmProgettoSfera prog = QDmalmProgettoSfera.dmalmProgettoSfera;
-
+		QDmalmAsm asm = QDmalmAsm.dmalmAsm;
 		String record = "";
-
+		String applicazione="";
+		DmalmAsm app= new DmalmAsm();
+		app.setIdAsm(row.get(prog.idAsm));
+		try{
+		List<Tuple> listApp = DmAlmAsmDAO.getAsm(app);
+		if(listApp.size()>0)
+			applicazione=listApp.get(0).get(asm.applicazione);
+		}
+		catch(Exception e)
+		{
+			applicazione="";
+		}
 		if (row != null) {
 			record += "[PK: " + row.get(prog.dmalmProgettoSferaPk) + "§ ";
 			record += "ID_APPLICAZIONE: " + row.get(prog.idAsm) + "§ ";
+			record += "NOME_APPLICAZIONE: "+applicazione+"§ ";
 			record += "ID_PROGETTO: " + row.get(prog.idProgetto) + "§ ";
 			record += "NOME_PROGETTO: " + row.get(prog.nomeProgetto) + "§ ";
 			record += "TIPO_PROGETTO: " + row.get(prog.tipoProgetto) + "§ ";

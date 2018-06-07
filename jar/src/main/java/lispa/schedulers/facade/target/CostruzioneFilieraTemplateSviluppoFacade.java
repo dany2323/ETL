@@ -130,20 +130,32 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 						insertedWorkitemsList);
 			}
 			
-			// INIZIO DM_ALM-352
-			// aggiunta dei WI Build alla tabella DMALM_TEMPLATE_INT_TECNICA
-			List<DmalmLinkedWorkitems> insertedWorkitemsListBuild = new LinkedList<DmalmLinkedWorkitems>();
-			
-			List<DmalmLinkedWorkitems> startWorkitemsListBuild = LinkedWorkitemsDAO
-					.getStartWorkitemsAddBuildTemplate(dataInizioFiliera);
-			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - Aggiunta WI Build - lista.size: "
-					+ startWorkitemsListBuild.size());
+			// DM_ALM-350 richiesta di supporto
+			//creazione altro secondo livello filiera template Sviluppo
+			startWorkitemsList = LinkedWorkitemsDAO
+					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "sup", "documento");
+			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
+					+ startWorkitemsList.size());
 
-			if (startWorkitemsListBuild.size() > 0) {
-				idFiliera = gestisciListaAddWiBuild(idFiliera, startWorkitemsListBuild,
-						insertedWorkitemsListBuild);
+			if (startWorkitemsList.size() > 0) {
+				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
+						insertedWorkitemsList);
 			}
-			// FINE DM_ALM-352
+			
+//			// INIZIO DM_ALM-352
+//			// aggiunta dei WI Build alla tabella DMALM_TEMPLATE_INT_TECNICA
+//			List<DmalmLinkedWorkitems> insertedWorkitemsListBuild = new LinkedList<DmalmLinkedWorkitems>();
+//			
+//			List<DmalmLinkedWorkitems> startWorkitemsListBuild = LinkedWorkitemsDAO
+//					.getStartWorkitemsAddBuildTemplate(dataInizioFiliera);
+//			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - Aggiunta WI Build - lista.size: "
+//					+ startWorkitemsListBuild.size());
+//
+//			if (startWorkitemsListBuild.size() > 0) {
+//				idFiliera = gestisciListaAddWiBuild(idFiliera, startWorkitemsListBuild,
+//						insertedWorkitemsListBuild);
+//			}
+//			// FINE DM_ALM-352
 
 			//Gestisci i Work Item orfani
 			getWorkItemSviluppoFuoriFiliera(dataInizioFiliera);

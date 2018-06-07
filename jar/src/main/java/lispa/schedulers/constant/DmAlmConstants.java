@@ -169,6 +169,7 @@ public final class DmAlmConstants {
 	
 	//Query per procedura di ripristino: attenzione questi file contengono istruzioni sql multiple
 	public static final String BACKUP_TARGET = "backup_target.sql";
+	public static final String BACKUP_TARGET_WITH_PROCEDURE = "backup_target_with_procedure.sql";
 	public static final String BACKUP_MPS_TARGET = "backup_mps_target.sql";
 	public static final String TRUNCATE_BACKUP_TABLES = "truncate_backup_tables.sql";
 	public static final String TRUNCATE_BACKUP_MPS_TABLES = "truncate_backup_mps_tables.sql";
@@ -276,6 +277,7 @@ public final class DmAlmConstants {
 	public static final String TARGET_RELEASE_SERVIZI = "DMALM_RELEASE_SERVIZI";
 	public static final String TARGET_PEI = "DMALM_PEI";
 	public static final String TARGET_CLASSIFICATORE = "DMALM_CLASSIFICATORE";
+	public static final String TARGET_RICHIESTA_SUPPORTO = "DMALM_RICHIESTA_SUPPORTO";
 
 	public static final String TARGET_AREATEMATICA = "DMALM_AREA_TEMATICA";
 	public static final String TARGET_STATOWORKITEM = "DMALM_STATO_WORKITEM";
@@ -300,8 +302,10 @@ public final class DmAlmConstants {
 	public static final String TARGET_FILIERA_PRODUTTIVA = "DMALM_FILIERA_PRODUTTIVA";
 
 	public static final String TARGET_ALL = "ALL";
+	
 
 	// MESSAGGI ERRORE
+	public static final String ERROR_CARICAMENTO_BACKUP = "Errore caricamento tabelle di backup. Rollback non effettuato!";
 	// CLASSIFICATORI
 	public static final String CLASSIFICATORE_CODICE_DUPLICATO = "Codice Classificatore duplicato";
 	public static final String CLASSIFICATORE_CODICE_NULL = "Codice Classificatore null";
@@ -310,6 +314,10 @@ public final class DmAlmConstants {
 	public static final String ELETTRA_ANN_UNITA_ORGANIZZATIVE = "getannullamenti_el_unita_org.sql";
 	public static final String ELETTRA_ANN_AMBTEC_CLASSIF = "getannullamenti_el_ambtec_classif.sql";
 	public static final String ELETTRA_ANN_PERSONALE = "getannullamenti_el_personale.sql";
+	public static final String ELETTRA_ANN_FUNZIONALITA = "getannullamenti_el_funzionalita.sql";
+	public static final String ELETTRA_ANN_MODULO = "getannullamenti_el_modulo.sql";
+	public static final String ELETTRA_ANN_PRODOTTO = "getannullamenti_el_prodotto.sql";
+	public static final String ELETTRA_ANN_PRODOTTO_FISICAMENTE= "getannullamenti_el_prodotto_fisicamente.sql";
 
 	// MESSAGGI ERRORE
 	// PRODOTTO
@@ -394,6 +402,7 @@ public final class DmAlmConstants {
 	public static final String ROOT_UO_CD_ENTE = "LI";
 	public static final String LOGICAMENTE = "UNMARKED";
 	public static final String FISICAMENTE = "ANNULLATO FISICAMENTE";
+	public static final String DISMESSO = "DISMESSO";
 	
 	// MESSAGGI ERRORE
 	// SGR PROJECT
@@ -421,7 +430,7 @@ public final class DmAlmConstants {
 	public static final String SCHEDULAZIONE_BO_ENABLE = "enable";
 
 	public static final String ENABLER = "enable";
-
+	public static final String ANNULLATO_LOGICAMENTE_ELETTRA="ANNULLATO LOGICAMENTE";
 	public static final String UNMARKED = "UNMARKED";
 	
 	public static final String PROJECT_PATH_SUFFIX = "/.polarion/polarion-project.xml";
@@ -488,7 +497,7 @@ public final class DmAlmConstants {
 	public static final String PROJECT_NAME_MALFORMED = "ESF011 - NOME DEL PROGETTO SFERA NON RISPETTA IL PATTERN PREDEFINITO";
 	public static final String WRONG_PROJECT_TYPE = "TIPO DELLA MPP DIVERSA DA BASELINE";
 	public static final String WRONG_MISURE_TYPE = "TIPO DELLA MISURA NON È ASSOCIATO AL METODO CORRETTO";
-	public static final String MISURE_NAME_MALFORMED = "NOME DELLA MISURA SFERA NON RISPETTA IL PATTERN PREDEFINITO";
+	public static final String MISURE_NAME_MALFORMED = "ESF090 - NOME DELLA MISURA SFERA NON RISPETTA IL PATTERN PREDEFINITO";
 	public static final String MISURE_APPROACH_MALFORMED = "APPROCCIO DELLA MISURA DIVERSO DA STANDARD, ERRATO!!";
 	public static final String WRONG_MEASURER = "UTENTE MISURATORE ERRATO";
 	public static final String WRONG_MEASURE_STATUS = "STATO ERRATO PER LA MISURA CORRENTE";
@@ -565,7 +574,48 @@ public final class DmAlmConstants {
 	public static String COD_FLUSSI_IO_ASM="ESF043 - COD_FLUSSI_IO_ASM non coincide con l'insieme unione DENOM_SIST_TERZEPARTI_CONFINANTI + COD_ASM CONFINANTI: ";
 	public static String FLAG_ASM_SERVIZIO="ESF044 - APP-ATT:FLAG_ASM_SERVIZIO_COMUNE e' obbligatorio ";
 	public static String FLAG_ASM_SERVIZIO_COMUNE="ESF045 - APP-ATT:FLAG_ASM_SERVIZIO_COMUNE - Valore non permesso :";
+	public static String COD_ALTRE_ASM_NO_CONFINANTI="ESF046 - ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI non sono un sottoinsieme delle COD_ASM CONFINANTI : ";
+	public static String COD_ALTRE_ASM_NO_PATTERN="ESF047 - ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI non rispetta il pattern predefinito : ";
+	public static String COD_ALTRE_ASM_NON_PRESENTE="ESF048 - ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI  non e' presente / attivo / servizio comune nell'insieme generale dei COD_ASM : ";
+	public static String FLAG_ASM_DA_MISURARE_OBBLIGATORIO_FP="ESF049 - APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP e' obbligatorio ";
+	public static String FLAG_ASM_DA_MISURARE_VALORE_NON_PERMESSO="ESF050 - APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP - Valore non permesso : ";
+	public static String FLAG_ASM_DA_MISURARE_IN_FP_OBBLIGATORIO="ESF051 - APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP e' obbligatorio ";
+	public static String FLAG_ASM_DA_MISURARE_IN_FP_NO_PERMESSO="ESF052 - APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP - Valore non permesso : ";
+	public static String FLAG_ASM_IN_MANUTENZIONE_OBBLIGATORIO="ESF053 - APP-ATT:FLAG_ASM_IN_MANUTENZIONE e' obbligatorio ";
+	public static String FLAG_ASM_IN_MANUTENZIONE_NON_PERMESSO="ESF054 - APP-ATT:FLAG_ASM_IN_MANUTENZIONE - Valore non permesso : ";
+	public static String COD_DIREZIONE_DEMAND_OBBLIGATORIO="ESF055 - APP-ATT:COD_DIREZIONE_DEMAND e' obbligatorio ";
+	public static String FORNITORE_MPP_NON_VALORIZZATO_SVILUPPO="ESF056 - PRJ-ATT:FORNITORE_MPP non e' valorizzabile per progetti di tipo 'Sviluppo' oppure 'Manutenzione evolutiva'";
+	public static String FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE="ESF058 - PRJ-ATT:FORNITORE_SVILUPPO_MEV non e' valorizzabile per progetti di tipo 'Baseline'";
+	public static String COD_RDI_NO_PATTERN="ESF059 - PRJ-ATT: COD_ RDI non rispetta il pattern predefinito ";
+	public static String MP_PERCENT_CICLO_DI_VITA="ESF061 - PRJ-ATT:MP_PERCENT_CICLO_DI_VITA non e' valorizzabile per progetti di tipo 'Baseline'";
+	public static String MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO="ESF062 - PRJ-ATT:MP_PERCENT_CICLO_DI_VITA - Valore non permesso : ";
+	public static String FCC_FATT_CORREZZ_COMPLESSIVO_NO_BASELINE="ESF064 - PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO non e' valorizzabile per progetti di tipo 'Baseline' ";
+	public static String FCC_FATT_CORREZZ_COMPLESSIVO_NO_VALIDO="ESF065 - PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO - Valore non permesso : ";
+	public static String AUDIT_MONITORE_NO_VAL_IN_BASELINE="ESF066 - PRJ-ATT:AUDIT_MONITORE non e’ valorizzabile per progetti di tipo ‘Baseline’ ";
+	public static String AUDIT_INDICE_VERIFICABILITA_NO_VAL_BASELINE="ESF067 - PRJ-ATT:AUDIT_INDICE_VERIFICABILITA non e' valorizzabile per progetti di tipo 'Baseline'";
+	public static String UTENTE_MISURATORE_OBBLIGATORIO="ESF068 - Utente misuratore e' obbligatorio e deve assumere valore diverso da 'Admin': ";
+	public static String UTILIZZATA_NON_PERMESSO="ESF069 - UTILIZZATA - Valore non permesso : ";
+	public static String PROPRIETA_LEGALE_NON_PERMESSO="ESF070 - Proprietà legale - Valore non permesso : ";
+	public static String INCLUDE_DB_NON_PERMESSO="ESF071 - Includi nel database di patrimonio - Valore non permesso : ";
+	public static String FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO="ESF072 - PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_- DWH - Valore non permesso :";
+	public static String FLAG_APPLICABILITA_LG_FP_GIS_NO_PERMESSO="ESF073 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_GIS - Valore non permesso : ";
+	public static String FLAG_APPLICATIBILITA_LG_FP_EDMA_NON_PERMESSO="ESF074 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_EDMA - Valore non permesso : ";
+	public static String FLAG_APPLICABILITA_LG_FP_MWARE_NO_PERMESSO="ESF075 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_MWARE - Valore non permesso : ";
+	public static String FLAG_APPLICABILITA_LG_FP_SITIWEB="ESF076 - PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_SITIWEB - Valore non permesso : ";
+	public static String FLAG_APPLICABILITA_LG_FP_NON_PERMESSO="ESF077 - PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_futuro-01 - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP_NON_PERMESSO="ESF079 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_GIS_VALORE_NON_PERMESSO="ESF080 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ GIS - Valore non permesso :";
+	public static String FLAG_AMBITO_TECNOLOGICO_PORTALI_NON_PERMESSO="ESF081 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_PORTALI - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_PIAT_SPEC_ENT_NON_PERMESSO="ESF082 - PRJ-ATT:FLAG_ AMBITO_TECNOLOGICO_ PIATTAF_ SPECIAL_ ENTERPRISE - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_FUTURO_NON_PERMESSO="ESF083 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-01 - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO="ESF084 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-02 - Valore non permesso : ";
+	public static String MANCATA_CORRISPONDENZA_SFERA_WI="ESF087 - Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM ";
+	public static String NO_CORR_STATO_WI_MISURA="ESF088 - Mancata corrispondenza tra lo STATO dei WI e lo stato della MISURA SFERA";
+	public static String PERMESSION_NON_PERMESSO="ESF089 - PERMISSIONS  valore non permesso ";
     
+	// nome Stored Procedure
+	public static String STORED_PROCEDURE_VERIFICA_ESITO_ETL = "VERIFICA_ESITO_ETL";
+	
 	public static String getProperty(String property) {
 
 		String props = "";

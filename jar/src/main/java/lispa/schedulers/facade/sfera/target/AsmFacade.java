@@ -272,18 +272,14 @@ public class AsmFacade {
 	}
 
 	private static void checkIfAsmContainsBlank(Timestamp dataEsecuzione) throws Exception {
-		ConnectionManager cm = null;
-		List<DmalmAsm> asmList = new LinkedList<DmalmAsm>();
-		DmAlmAsmDAO.getAllAsm(dataEsecuzione);
+		List<DmalmAsm> asmList = DmAlmAsmDAO.getAllAsm(dataEsecuzione);
 		for(DmalmAsm asm:asmList){
-			
 			if(asm.getApplicazione().contains("#"))
 				asm.setApplicazione(asm.getApplicazione().substring(0,asm.getApplicazione().indexOf("#")));
 			if(asm.getApplicazione().endsWith(" ")){
-			
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+							ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						 DmAlmConstants.TARGET_PROGETTO_SFERA,
-						 "E010 - Possibile presenza spazi in ASM PK:"+ asm.getDmalmAsmPk()+" ASM NAME: "+asm.getApplicazione(),
+						 "Possibile presenza spazi in ASM PK:"+ asm.getDmalmAsmPk()+" ASM NAME: "+asm.getApplicazione(),
 						 DmAlmConstants.ERRORE_SPAZI_NOME_ASM,
 						 DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, dataEsecuzione);
 				
