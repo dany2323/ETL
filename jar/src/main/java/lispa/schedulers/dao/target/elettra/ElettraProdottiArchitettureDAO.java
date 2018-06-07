@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target.elettra;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.template.StringTemplate;
 
 public class ElettraProdottiArchitettureDAO {
 	private static Logger logger = Logger
@@ -95,16 +97,17 @@ public class ElettraProdottiArchitettureDAO {
 				prodotti.add(bean);
 			}
 
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
 			if (rs != null) {
 				rs.close();
 			}
 			if (ps != null) {
 				ps.close();
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new DAOException(e);
-		} finally {
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
@@ -112,13 +115,51 @@ public class ElettraProdottiArchitettureDAO {
 
 		return prodotti;
 	}
+	
+	public DmalmElProdottiArchitetture getBeanFromTuple(ResultSet rs) throws SQLException
+	{
+		DmalmElProdottiArchitetture bean = new DmalmElProdottiArchitetture();
+
+		bean.setProdottoPk(rs.getInt("DMALM_PRODOTTO_PK"));
+		bean.setIdProdottoEdma(rs.getString("ID_PRODOTTO_EDMA"));
+		bean.setIdProdotto(rs.getString("ID_PRODOTTO"));
+		bean.setTipoOggetto(rs.getString("TIPO_OGGETTO"));
+		bean.setSigla(rs.getString("SIGLA"));
+		bean.setNome(rs.getString("NOME"));
+		bean.setDescrizioneProdotto(rs.getString("DS_PRODOTTO"));
+		bean.setAreaProdotto(rs.getString("AREA_PRODOTTO"));
+		bean.setResponsabileProdotto(rs
+				.getString("RESPONSABILE_PRODOTTO"));
+		bean.setAnnullato(rs.getString("ANNULLATO"));
+		bean.setDataAnnullamento(DateUtils.stringToDate(
+				rs.getString("DT_ANNULLAMENTO"), "yyyyMMdd"));
+		bean.setAmbitoManutenzione(rs.getString("AMBITO_MANUTENZIONE"));
+		bean.setAreaTematica(rs.getString("AREA_TEMATICA"));
+		bean.setBaseDatiEtl(rs.getString("BASE_DATI_ETL"));
+		bean.setBaseDatiLettura(rs.getString("BASE_DATI_LETTURA"));
+		bean.setBaseDatiScrittura(rs.getString("BASE_DATI_SCRITTURA"));
+		bean.setCategoria(rs.getString("CATEGORIA"));
+		bean.setFornituraRisorseEsterne(rs
+				.getString("FORNITURA_RISORSE_ESTERNE"));
+		bean.setCodiceAreaProdotto(rs.getString("CD_AREA_PRODOTTO"));
+		bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
+		bean.setUnitaOrganizzativaFk(rs.getInt("DMALM_UNITAORGANIZZATIVA_FK_01"));
+		bean.setPersonaleFk(rs.getInt("DMALM_PERSONALE_FK_02"));
+		//modificato per DM_ALM-224
+		bean.setAmbitoTecnologico(rs.getString("AMBITO_TECNOLOGICO"));
+		bean.setAmbitoManutenzioneDenom(rs.getString("AMBITO_MANUTENZIONE_DENOM"));
+		bean.setAmbitoManutenzioneCodice(rs.getString("AMBITO_MANUTENZIONE_CODICE"));
+		bean.setStato(rs.getString("STATO_PRODOTTO"));
+		
+		return bean;
+	}
 
 	public static List<Tuple> getProdotto(DmalmElProdottiArchitetture bean)
 			throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> prodotti = new ArrayList<Tuple>();
+		List<Tuple> prodotti = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -149,6 +190,7 @@ public class ElettraProdottiArchitettureDAO {
 
 		return prodotti;
 	}
+	
 
 	public static void insertProdotto(DmalmElProdottiArchitetture bean)
 			throws DAOException {
@@ -299,7 +341,8 @@ public class ElettraProdottiArchitettureDAO {
 							qDmalmElProdottiArchitetture.ambitoManutenzioneDenom,
 							qDmalmElProdottiArchitetture.ambitoManutenzioneCodice,
 							qDmalmElProdottiArchitetture.stato)
-					.values(bean.getProdottoPk(), bean.getIdProdottoEdma(),
+					.values(bean.getProdottoPk()==null?StringTemplate
+							.create("STG_PROD_ARCHITETTURE_SEQ.nextval"):bean.getProdottoPk(), bean.getIdProdottoEdma(),
 							bean.getIdProdotto(), bean.getTipoOggetto(),
 							bean.getSigla(), bean.getNome(),
 							bean.getDescrizioneProdotto(),

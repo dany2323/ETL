@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target.elettra;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.template.StringTemplate;
 
 public class ElettraModuliDAO {
 	private static Logger logger = Logger.getLogger(ElettraModuliDAO.class);
@@ -102,9 +104,9 @@ public class ElettraModuliDAO {
 	public static List<Tuple> getModulo(DmalmElModuli bean) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		ResultSet rs = null;
 		List<Tuple> moduli = new ArrayList<Tuple>();
-
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -120,6 +122,7 @@ public class ElettraModuliDAO {
 									.getIdModulo()))
 							.list(qDmalmElModuli.dataFineValidita.max())))
 					.list(qDmalmElModuli.all());
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
@@ -131,6 +134,46 @@ public class ElettraModuliDAO {
 
 		return moduli;
 	}
+	public static List<DmalmElModuli> getModuliByProdottoPk(int prodottoPk) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		ResultSet rs=null;
+		PreparedStatement ps=null;
+		List<DmalmElModuli> moduli = new ArrayList<>();
+		DmalmElModuli bean;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			String sql = QueryManager.getInstance().getQuery(
+					DmAlmConfigReaderProperties.SQL_MODULI_BY_PRODOTTO_PK);
+
+			ps = connection.prepareStatement(sql);
+			
+			ps.setInt(1, prodottoPk);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				bean=getBeanFromTuple(rs);
+				moduli.add(bean);
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return moduli;
+	}
+
 
 	public static void insertModulo(DmalmElModuli bean) throws DAOException {
 		ConnectionManager cm = null;
@@ -247,7 +290,8 @@ public class ElettraModuliDAO {
 							qDmalmElModuli.prodottoFk,
 							qDmalmElModuli.dataInizioValidita,
 							qDmalmElModuli.dataFineValidita)
-					.values(bean.getModuloPk(), bean.getIdModuloEdma(),
+					.values(bean.getModuloPk()==null?StringTemplate
+							.create("STG_MODULI_SEQ.nextval"):bean.getModuloPk(), bean.getIdModuloEdma(),
 							bean.getIdModuloEdmaPadre(), bean.getIdModulo(),
 							bean.getTipoOggetto(), bean.getSiglaProdotto(),
 							bean.getSiglaSottosistema(), bean.getSiglaModulo(),
@@ -307,5 +351,30 @@ public class ElettraModuliDAO {
 				cm.closeConnection(connection);
 			}
 		}
+	}
+
+	public static DmalmElModuli getBeanFromTuple(ResultSet rs) throws SQLException {
+		DmalmElModuli bean=new DmalmElModuli();
+		bean.setModuloPk(rs.getInt("DMALM_MODULO_PK"));
+		bean.setIdModuloEdma(rs.getString("ID_MODULO_EDMA"));
+		bean.setIdModuloEdmaPadre(rs.getString("ID_MODULO_EDMA_PADRE"));
+		bean.setIdModulo(rs.getString("ID_MODULO"));
+		bean.setTipoOggetto(rs.getString("TIPO_OGGETTO"));
+		bean.setSiglaProdotto(rs.getString("SIGLA_PRODOTTO"));
+		bean.setSiglaSottosistema(rs.getString("SIGLA_SOTTOSISTEMA"));
+		bean.setSiglaModulo(rs.getString("SIGLA_MODULO"));
+		bean.setNome(rs.getString("NOME"));
+		bean.setDescrizioneModulo(rs.getString("DS_MODULO"));
+		bean.setAnnullato(rs.getString("ANNULLATO"));
+		bean.setDataAnnullamento(rs.getTimestamp("DT_ANNULLAMENTO"));
+		bean.setResponsabile(rs.getString("RESPONSABILE"));
+		bean.setSottosistema(rs.getString("SOTTOSISTEMA"));
+		bean.setTecnologie(rs.getString("TECNOLOGIE"));
+		bean.setTipoModulo(rs.getString("TIPO_MODULO"));
+		bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
+		bean.setPersonaleFk(rs.getInt("DMALM_PERSONALE_FK_01"));
+		bean.setProdottoFk(rs.getInt("DMALM_PRODOTTO_FK_02"));
+
+		return bean;
 	}
 }

@@ -5,6 +5,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_ELETTRAFU
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import lispa.schedulers.bean.target.elettra.DmalmElFunzionalita;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElFunzionalita;
 import lispa.schedulers.utils.DateUtils;
@@ -27,6 +29,7 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.template.StringTemplate;
 
 public class ElettraFunzionalitaDAO {
 
@@ -80,6 +83,50 @@ public class ElettraFunzionalitaDAO {
 				bean.setTipiElaborazione(rs.getString("TIPI_ELABORAZIONE"));
 				bean.setDmalmModuloFk01(rs.getInt("MODULO_FK"));
 
+				funzionalita.add(bean);
+			}
+
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return funzionalita;
+	}
+	
+	public static List<DmalmElFunzionalita> getFunzionalitaByModuloPk(Integer moduloPk, Timestamp dataEsecuzione) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		DmalmElFunzionalita bean = null;
+
+		List<DmalmElFunzionalita> funzionalita = new ArrayList<>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = QueryManager.getInstance().getQuery(
+					DmAlmConfigReaderProperties.SQL_ELETTRAFUNZIONALITA_BY_MODULO_PK);
+
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, moduloPk);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				bean = getBeanFromTuple(rs);
 				funzionalita.add(bean);
 			}
 
@@ -294,7 +341,8 @@ public class ElettraFunzionalitaDAO {
 							dmalmElFunzionalita.dtInizioValidita,
 							dmalmElFunzionalita.dtFineValidita,
 							dmalmElFunzionalita.dmalmModuloFk01)
-					.values(bean.getFunzionalitaPk(),
+					.values(bean.getFunzionalitaPk()==null?StringTemplate
+							.create("STG_FUNZIONALITA_SEQ.nextval"):bean.getFunzionalitaPk(),
 							bean.getIdFunzionalitaEdma(),
 							bean.getIdEdmaPadre(), bean.getIdFunzionalita(),
 							bean.getTipoOggetto(), bean.getSiglaProdotto(),
@@ -377,4 +425,32 @@ public class ElettraFunzionalitaDAO {
 			}
 		}
 	}
+
+	public static DmalmElFunzionalita getBeanFromTuple(ResultSet rs) throws SQLException {
+		
+		DmalmElFunzionalita bean= new DmalmElFunzionalita();
+
+		bean.setFunzionalitaPk(rs.getInt("DMALM_FUNZIONALITA_PK"));
+		bean.setIdFunzionalitaEdma(rs.getString("ID_FUNZIONALITA_EDMA"));
+		bean.setIdEdmaPadre(rs.getString("ID_EDMA_PADRE"));
+		bean.setIdFunzionalita(rs.getString("ID_FUNZIONALITA"));
+		bean.setTipoOggetto(rs.getString("TIPO_OGGETTO"));
+		bean.setSiglaProdotto(rs.getString("SIGLA_PRODOTTO"));
+		bean.setSiglaSottosistema(rs.getString("SIGLA_SOTTOSISTEMA"));
+		bean.setSiglaModulo(rs.getString("SIGLA_MODULO"));
+		bean.setSiglaFunzionalita(rs.getString("SIGLA_FUNZIONALITA"));
+		bean.setNome(rs.getString("NOME"));
+		bean.setDsFunzionalita(rs.getString("DS_FUNZIONALITA"));
+		bean.setAnnullato(rs.getString("ANNULLATO"));
+		bean.setDtAnnullamento(rs.getTimestamp("DT_ANNULLAMENTO"));
+		bean.setCategoria(rs.getString("CATEGORIA"));
+		bean.setLinguaggi(rs.getString("LINGUAGGI"));
+		bean.setTipiElaborazione(rs.getString("TIPI_ELABORAZIONE"));
+		bean.setDmalmModuloFk01(rs.getInt("DMALM_MODULO_FK_01"));
+		
+		return bean;
+		
+	}
+
+
 }
