@@ -184,9 +184,17 @@ public class RecoverManager {
 
 			String separator = ";";
 
+			// disabilito le FK per poi effettuare le truncate
+						qm.executeMultipleStatementsFromFile(
+								DmAlmConstants.DISABLE_FK_CONST_TABLES, separator); //TODO 
+
 			// cancella tutto il contenuto delle tabelle target
 			qm.executeMultipleStatementsFromFile(
 					DmAlmConstants.DELETE_TARGET_TABLES, separator); //TODO 
+
+			// riabilito le FK
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.ENABLE_FK_CONST_TABLES, separator); //TODO 
 
 			// inserisce il contenuto delle tabelle di backup nelle tabelle
 			// target

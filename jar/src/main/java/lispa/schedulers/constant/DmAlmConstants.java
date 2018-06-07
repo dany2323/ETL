@@ -174,6 +174,8 @@ public final class DmAlmConstants {
 	public static final String TRUNCATE_BACKUP_TABLES = "truncate_backup_tables.sql";
 	public static final String TRUNCATE_BACKUP_MPS_TABLES = "truncate_backup_mps_tables.sql";
 	public static final String TRUNCATE_MPS_TABLES = "truncate_mps_tables.sql";
+	public static final String DISABLE_FK_CONST_TABLES = "disable_fk_const_tables.sql";
+	public static final String ENABLE_FK_CONST_TABLES = "enable_fk_const_tables.sql";
 	public static final String DELETE_TARGET_TABLES = "delete_target_tables.sql";
 	public static final String RECOVER_TARGET = "recover_target.sql";
 	public static final String DELETE_TARGET_MPS_TABLES = "delete_target_mps_tables.sql";
