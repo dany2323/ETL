@@ -5,6 +5,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_ELETTRAPE
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -607,7 +608,7 @@ public class ElettraPersonaleDAO {
 		return resPersonalePk;
 	}
 	
-	public static Integer getPersonalePkByNomeCognome(String nome, String cognome) throws DAOException {
+	public static Integer getPersonalePkByNomeCognome(String nome, String cognome) throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -631,12 +632,7 @@ public class ElettraPersonaleDAO {
 				resPersonalePk = rs.getInt("PERSONALE_PK");
 			}
 			
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
+			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
@@ -645,6 +641,13 @@ public class ElettraPersonaleDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
 		} finally {
+			
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
