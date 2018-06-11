@@ -650,6 +650,7 @@ public class ElettraPersonaleDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
 		} finally {
+			
 			if (rs != null) {
 				rs.close();
 			}

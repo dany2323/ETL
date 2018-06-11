@@ -10,6 +10,7 @@ import java.util.List;
 
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -17,6 +18,7 @@ import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
@@ -40,6 +42,7 @@ public class DmAlmAsmDAO {
 	private static QDmalmAsmProdotto asmprodotto = QDmalmAsmProdotto.dmalmAsmProdotto;
 	private static QDmalmAsmProdottiArchitetture asmProdottiArchitetture = QDmalmAsmProdottiArchitetture.qDmalmAsmProdottiArchitetture;
 	private static QDmalmElProdottiArchitetture elettraProdotto = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
 	public static List<DmalmAsm> getAllAsm(Timestamp dataEsecuzione)
@@ -1012,8 +1015,8 @@ public class DmAlmAsmDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmAsm> ret = new ArrayList<DmalmAsm>();
-		List<Tuple> t = new ArrayList<Tuple>();
+		List<DmalmAsm> ret = new ArrayList<>();
+		List<Tuple> t = new ArrayList<>();
 
 		try {
 			// caso x.y.z (prodotto.modulo.funzionalita)
@@ -1075,8 +1078,11 @@ public class DmAlmAsmDAO {
 					}
 				} else {
 					// caso x (prodotto)
-					temp = siglaPrj.split("\\.");
-					siglaPrj = temp[0];
+					List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(siglaPrj);
+					if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
+						temp = siglaPrj.split("\\.");
+						siglaPrj = temp[0];
+					}
 					
 					query = new SQLQuery(connection, dialect);
 						
