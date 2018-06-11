@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -24,7 +23,8 @@ import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
@@ -34,34 +34,30 @@ public class SissHistoryRevisionDAO {
 
 	private static Logger logger = Logger.getLogger(SissHistoryRevisionDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision.revision;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
+//	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision.revision;
+//	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 	private static QSissHistoryRevision stgRevisions = QSissHistoryRevision.sissHistoryRevision;
-
-
+	private static QDmalmCurrentRevision fonteRevisions = QDmalmCurrentRevision.currentRevision; // QDmalmCurrentRevision.re
+	private static QDmalmCurrentSubterraUriMap fonteSubterraUriMap = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+	
 	public static long getMaxRevision() throws Exception
 	{
 
 		ConnectionManager cm = null;
-		Connection pgConnection = null;
-
+		Connection oracle = null;
 
 		List<Long> max = new ArrayList<Long>();
+		
 		try{
 
 			cm 	   = ConnectionManager.getInstance();
-			pgConnection = cm.getConnectionSISSHistory();
+			oracle = cm.getConnectionOracle();
 
 			Timestamp lastValid = DateUtils.addSecondsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -3600);
+			SQLTemplates dialect 				 = new HSQLDBTemplates();
+			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
-			SissHistoryRevision  fonteRevisions  = SissHistoryRevision.revision;
-
-			PostgresTemplates dialect 				 = new PostgresTemplates(){ {
-				setPrintSchema(true);
-			}};
-			SQLQuery query 						 = new SQLQuery(pgConnection, dialect); 
-
-			max = query.from(fonteRevisions).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.castToNum(Long.class).max());
+			max = query.from(fonteRevisions).where(fonteRevisions.cRepo.eq(DmAlmConstants.REPOSITORY_SISS)).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.max());
 
 			if(max == null || max.size() == 0 || max.get(0) == null)
 			{
@@ -82,7 +78,7 @@ public class SissHistoryRevisionDAO {
 		}
 		finally
 		{
-			if(cm != null) cm.closeConnection(pgConnection);
+			if(cm != null) cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
@@ -128,13 +124,11 @@ public class SissHistoryRevisionDAO {
 
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        pgConn = null;
 		List<Tuple>       revisions = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			pgConn = cm.getConnectionSISSCurrent();
 			revisions = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
@@ -144,11 +138,12 @@ public class SissHistoryRevisionDAO {
 				setPrintSchema(true);
 			}};
 
-			SQLQuery query 		 = new SQLQuery(pgConn, dialect); 
+			SQLQuery query 		 = new SQLQuery(connOracle, dialect); 
 
 			revisions = query.from(fonteRevisions)
 					.join(fonteSubterraUriMap)
-					.on(fonteRevisions.cUri.castToNum(Long.class).eq(fonteSubterraUriMap.cId))
+					.on(fonteRevisions.cUri.eq(fonteSubterraUriMap.cId))
+					.where(fonteRevisions.cRepo.eq(DmAlmConstants.REPOSITORY_SISS))
 					.where(fonteRevisions.cCreated.gt(minRevision))
 					.where(fonteRevisions.cName.castToNum(Long.class).loe(maxRevision))
 					.list(
@@ -156,7 +151,7 @@ public class SissHistoryRevisionDAO {
 							fonteRevisions.cAuthor,
 							fonteRevisions.cCreated,
 							fonteRevisions.cDeleted,
-							fonteRevisions.cInternalcommit,
+							fonteRevisions.cInternalCommit,
 							StringTemplate.create("0 as c_is_local"),
 							fonteRevisions.cMessage,
 							fonteRevisions.cName,
@@ -168,8 +163,6 @@ public class SissHistoryRevisionDAO {
 			
 //			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
-			int size_counter = 0;
-			
 			
 				for(Tuple row : revisions) {
 
@@ -181,7 +174,6 @@ public class SissHistoryRevisionDAO {
 						dateValue = StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
 					}
 					
-					size_counter++;
 					new SQLInsertClause(connOracle, dialect, stgRevisions)
 						.columns(
 							stgRevisions.cPk,
@@ -234,7 +226,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(pgConn);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 
@@ -250,7 +241,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 	
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QSissHistoryRevision stgRevisions = QSissHistoryRevision.sissHistoryRevision;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
 			new SQLDeleteClause(connection, dialect, stgRevisions).where(stgRevisions.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
 			connection.commit();
 		}

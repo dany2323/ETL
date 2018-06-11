@@ -123,7 +123,7 @@ public class SissCurrentWorkitemLinkedDAO {
 							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " +  fonteWorkitemLinked.fkUriWorkitem + ") as fk_workitem")
 							));
 
-			logger.debug("fillSissCurrentWorkitemLinked - cfworkitems.sizw: "
+			logger.debug("fillSissCurrentWorkitemLinked - cfworkitems.size: "
 					+ cfworkitems.size());
 
 			Iterator<Tuple> i = cfworkitems.iterator();

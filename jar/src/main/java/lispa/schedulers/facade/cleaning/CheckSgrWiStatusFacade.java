@@ -53,7 +53,7 @@ public class CheckSgrWiStatusFacade implements Runnable {
 
 			for (Tuple row : sireWorkitems) {
 				String record = "repository: SIRE, cType: " + row.get(sireHistoryWorkitem.cType) + "§ cId: " + row.get(sireHistoryWorkitem.cId) + ", cStatus: " + row.get(sireHistoryWorkitem.cStatus); 
-				logger.debug(record);
+//				logger.debug(record);
 				
 				ErroriCaricamentoDAO.insert(
 						DmAlmConstants.FONTE_SGR_SIRE_HISTORY_WORKITEM,
@@ -66,7 +66,7 @@ public class CheckSgrWiStatusFacade implements Runnable {
 			
 			for (Tuple row : sissWorkitems) {
 				String record = "repository: SISS, cType: " + row.get(sissHistoryWorkitem.cType) + ", cId: " + row.get(sissHistoryWorkitem.cId) + ", cStatus: " + row.get(sissHistoryWorkitem.cStatus); 
-				logger.debug(record);
+//				logger.debug(record);
 				
 				ErroriCaricamentoDAO.insert(
 						DmAlmConstants.FONTE_SGR_SISS_HISTORY_WORKITEM,

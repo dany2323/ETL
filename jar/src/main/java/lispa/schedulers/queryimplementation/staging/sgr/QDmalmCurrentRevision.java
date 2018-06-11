@@ -41,7 +41,7 @@ public class QDmalmCurrentRevision extends com.mysema.query.sql.RelationalPathBa
     
     public final StringPath cMessage = createString("C_MESSAGE");
     
-    public final StringPath cName = createString("C_NAME");
+    public final NumberPath<Long> cName = createNumber("C_NAME", Long.class);
     
     public final StringPath cRepositoryname = createString("C_REPOSITORYNAME");
     

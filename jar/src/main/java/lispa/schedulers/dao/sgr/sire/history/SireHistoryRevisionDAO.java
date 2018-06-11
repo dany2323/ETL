@@ -12,7 +12,8 @@ import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
@@ -34,34 +35,31 @@ public class SireHistoryRevisionDAO {
 
 	private static Logger logger = Logger.getLogger(SireHistoryRevisionDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
+//	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
+//	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 	private static QSireHistoryRevision stgRevisions = QSireHistoryRevision.sireHistoryRevision;
-
+	private static QDmalmCurrentRevision fonteRevisions = QDmalmCurrentRevision.currentRevision; // QDmalmCurrentRevision.re
+	private static QDmalmCurrentSubterraUriMap fonteSubterraUriMap = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 	public static long getMaxRevision() throws Exception
 	{
 
 		ConnectionManager cm = null;
-		Connection pgConnection = null;
+		Connection oracle = null;
 
 
 		List<Long> max = new ArrayList<Long>();
 		try{
 
 			cm 	   = ConnectionManager.getInstance();
-			pgConnection = cm.getConnectionSIREHistory();
+			oracle = cm.getConnectionOracle();
 
 			Timestamp lastValid = DateUtils.addSecondsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -3600);
 
-			SireHistoryRevision  fonteRevisions  = SireHistoryRevision.revision;
+			SQLTemplates dialect 				 = new HSQLDBTemplates();
+			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
-			PostgresTemplates dialect 				 = new PostgresTemplates(){ {
-				setPrintSchema(true);
-			}};
-			SQLQuery query 						 = new SQLQuery(pgConnection, dialect); 
-
-			max = query.from(fonteRevisions).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.castToNum(Long.class).max());
+			max = query.from(fonteRevisions).where(fonteRevisions.cRepo.eq(DmAlmConstants.REPOSITORY_SIRE)).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.castToNum(Long.class).max());
 
 			if(max == null || max.size() == 0 || max.get(0) == null)
 			{
@@ -82,7 +80,7 @@ public class SireHistoryRevisionDAO {
 		}
 		finally
 		{
-			if(cm != null) cm.closeConnection(pgConnection);
+			if(cm != null) cm.closeConnection(oracle);
 		}
 		return max.get(0).longValue();
 	}
@@ -127,13 +125,11 @@ public class SireHistoryRevisionDAO {
 
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        pgConnection = null;
 		List<Tuple>       revisions = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			pgConnection = cm.getConnectionSIRECurrent();
 			revisions = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
@@ -145,19 +141,20 @@ public class SireHistoryRevisionDAO {
 				}
 			};
 
-			SQLQuery query 		 = new SQLQuery(pgConnection, dialect); 
+			SQLQuery query 		 = new SQLQuery(connOracle, dialect); 
 
 			revisions = query.from(fonteRevisions)
 					.join(fonteSubterraUriMap)
-					.on(fonteRevisions.cUri.castToNum(Long.class).eq(fonteSubterraUriMap.cId))
+					.on(fonteRevisions.cUri.eq(fonteSubterraUriMap.cId))
+					.where(fonteRevisions.cRepo.eq(DmAlmConstants.REPOSITORY_SIRE))
 					.where(fonteRevisions.cCreated.gt(minRevision))
-					.where(fonteRevisions.cName.castToNum(Long.class).loe(maxRevision))
+					.where(fonteRevisions.cName.loe(maxRevision))
 					.list(
 							fonteSubterraUriMap.cPk,
 							fonteRevisions.cAuthor,
 							fonteRevisions.cCreated,
 							fonteRevisions.cDeleted,
-							fonteRevisions.cInternalcommit,
+							fonteRevisions.cInternalCommit,
 							StringTemplate.create("0 as c_is_local"),
 							fonteRevisions.cMessage,
 							fonteRevisions.cName,
@@ -169,9 +166,7 @@ public class SireHistoryRevisionDAO {
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 //			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 
-			int batch_size_counter = 0;
 			for(Tuple row : revisions) {
-				batch_size_counter++;
 				
 				Object[] vals = row.toArray();
 				
@@ -234,7 +229,6 @@ public class SireHistoryRevisionDAO {
 		}
 		finally {
 			if(cm != null) cm.closeConnection(connOracle);
-			if(cm != null) cm.closeConnection(pgConnection);
 		}
 
 	}

@@ -17,7 +17,7 @@ extends TestCase
 	
 //		Logger logger = Logger.getLogger(DmAlmFillTarget.class); 
 		
-		Timestamp dataEsecuzione = DateUtils.stringToTimestamp("2015-02-17 21:00:00", "yyyy-MM-dd HH:mm:00");
+		Timestamp dataEsecuzione = DateUtils.stringToTimestamp("2018-06-05 15:17:00", "yyyy-MM-dd HH:mm:00");
 		
 		
 		
