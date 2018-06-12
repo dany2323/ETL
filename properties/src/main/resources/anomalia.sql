@@ -102,7 +102,7 @@ SELECT
 	FROM 
 	DMALM_SISS_HISTORY_WORKITEM hw 
 		left join DMALM_SISS_HISTORY_USER cu on  hw.FK_AUTHOR = cu.C_PK
-		left join dmalm_sire_history_project hp on hw.FK_PROJECT = hp.c_pk
+		left join dmalm_siss_history_project hp on hw.FK_PROJECT = hp.c_pk
 				left join dmalm_stato_workitem st
 					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template
 						left join DMALM_PROJECT p 
