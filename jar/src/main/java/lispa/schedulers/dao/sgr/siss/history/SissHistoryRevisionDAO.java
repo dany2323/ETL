@@ -145,7 +145,7 @@ public class SissHistoryRevisionDAO {
 					.on(fonteRevisions.cUri.eq(fonteSubterraUriMap.cId))
 					.where(fonteRevisions.cRepo.eq(DmAlmConstants.REPOSITORY_SISS))
 					.where(fonteRevisions.cCreated.gt(minRevision))
-					.where(fonteRevisions.cName.castToNum(Long.class).loe(maxRevision))
+					.where(fonteRevisions.cName.loe(maxRevision))
 					.list(
 							fonteSubterraUriMap.cPk,
 							fonteRevisions.cAuthor,

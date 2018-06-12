@@ -12,6 +12,8 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.utils.DateUtils;
 
+import java.sql.Timestamp;
+
 import org.apache.log4j.Logger;
 
 public class TestSISSHistoryProject extends TestCase {
@@ -21,6 +23,8 @@ public class TestSISSHistoryProject extends TestCase {
 		try {
 			Log4JConfiguration.inizialize();
 			long maxRevisions = SissHistoryRevisionDAO.getMaxRevision();
+			Timestamp minRevision = SissHistoryRevisionDAO.getMinRevision();
+			SissHistoryRevisionDAO.fillSissHistoryRevision(minRevision, maxRevisions);
 			logger.debug(maxRevisions);
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
