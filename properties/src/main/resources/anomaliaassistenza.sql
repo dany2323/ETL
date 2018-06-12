@@ -106,7 +106,7 @@ UNION ALL
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk
 				left join DMALM_SISS_HISTORY_USER hu on hw.fk_author = hu.c_pk
-				    left join dmalm_sire_history_project hp on hw.FK_PROJECT = hp.c_pk
+				    left join dmalm_siss_history_project hp on hw.FK_PROJECT = hp.c_pk
 					left join dmalm_stato_workitem st
 					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template
 							left join DMALM_USER u
