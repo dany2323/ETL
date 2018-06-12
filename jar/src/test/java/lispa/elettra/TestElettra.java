@@ -59,7 +59,7 @@ public class TestElettra extends TestCase{
 			Log4JConfiguration.inizialize();
 			ConnectionManager.getInstance().getConnectionOracle();
 			
-			System.out.println(ElettraPersonaleDAO.getPersonalePk());
+			//System.out.println(ElettraPersonaleDAO.getPersonalePk());
 			
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
