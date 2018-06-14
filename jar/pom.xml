@@ -108,6 +108,10 @@
 							<addClasspath>true</addClasspath>
 							<mainClass>lispa.schedulers.action.DmAlmETL</mainClass>
 						</manifest>
+						<manifestEntries>
+						<TimeStampVersion>${timestamp}</TimeStampVersion>
+						<SVNRevisionId>123456</SVNRevisionId>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
