@@ -403,10 +403,9 @@ public class CheckAnnullamentiElettraFacade {
 				DmalmElUnitaOrganizzative bean=ElettraUnitaOrganizzativeDAO.getBeanFromTuple(rs);
 				
 				ElettraFunzionalitaDAO.updateDataFineValidita(dataEsecuzione, bean.getUnitaOrganizzativaPk());
-				
 				bean.setUnitaOrganizzativaPk(null);
 				bean.setAnnullato("SI");
-				
+				bean.setDataAnnullamento(bean.getDataFineValidita());
 				ElettraUnitaOrganizzativeDAO.insertUnitaOrganizzativaUpdate(dataEsecuzione, bean);
 			}
 

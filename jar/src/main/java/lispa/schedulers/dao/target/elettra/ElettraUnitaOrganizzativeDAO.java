@@ -312,7 +312,7 @@ public class ElettraUnitaOrganizzativeDAO {
 							unita.getDescrizioneUOSuperiore(),
 							unita.getCodiceEnte(), unita.getCodiceVisibilita(),
 							unita.getDataCaricamento(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999(), null, null)
+							DateUtils.setDtFineValidita9999(), unita.getAnnullato(), unita.getDataAnnullamento())
 					.execute();
 
 			connection.commit();
@@ -528,9 +528,9 @@ public class ElettraUnitaOrganizzativeDAO {
 		bean.setCodiceVisibilita(rs.getString("CD_VISIBILITA"));
 		bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
 		bean.setAnnullato(rs.getString("ANNULLATO"));
-
+		bean.setDataFineValidita(rs.getTimestamp("DT_FINE_VALIDITA"));
 		
-		return null;
+		return bean;
 	}
 
 }
