@@ -86,6 +86,12 @@ public class QDmalmReleaseItOds extends com.mysema.query.sql.RelationalPathBase<
     
     public final StringPath typeRelease = createString("TYPE_RELEASE");
     
+    public final StringPath motivoSospensione = createString("MOTIVO_SOSPENSIONE");
+    
+    public final NumberPath<Integer> counterQf = createNumber("COUNTER_QF", Integer.class);
+    
+    public final NumberPath<Integer> giorniQf = createNumber("GIORNI_QF", Integer.class);
+    
     public final com.mysema.query.sql.PrimaryKey<DmalmReleaseItOds> sysC0023776 = createPrimaryKey(dmalmReleaseItPk);
 
     public QDmalmReleaseItOds(String variable) {

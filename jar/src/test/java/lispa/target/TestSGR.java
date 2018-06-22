@@ -322,16 +322,17 @@ public class TestSGR extends TestCase
 
 	}
 
-	public static void testRecoverStg() throws PropertiesReaderException {
+	public void testRecoverAll() throws PropertiesReaderException {
 		Log4JConfiguration.inizialize();
 
-		logger.info("*** Eseguo Test testRecoverStg **** ");
+		logger.info("*** Eseguo Test testRecoverAll **** ");
 
 		DataEsecuzione.getInstance().setDataEsecuzione(
-				DateUtils.stringToTimestamp("2015-06-24 21:00:00.0",
+				DateUtils.stringToTimestamp("2018-04-09 20:40:00.0",
 						"yyyy-MM-dd HH:mm:00"));
 
 		RecoverManager.getInstance().startRecoverStaging();
+		RecoverManager.getInstance().startRecoverTarget();
 
 	}
 

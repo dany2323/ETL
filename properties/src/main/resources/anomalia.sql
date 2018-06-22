@@ -3,7 +3,7 @@ SELECT
 	hw.c_uri as URI_WI,
 	hw.SIRE_HISTORY_WORKITEM_PK as DMALM_ANOMALIA_PRODOTTO_PK,
 	hw.C_PK as STG_PK,
-	nvl(p.DMALM_PROJECT_PK, 0) as DMALM_PROJECT_FK_02, 
+	nvl((SELECT MAX(DMALM_PROJECT_PK) FROM DMALM_PROJECT p WHERE p.ID_PROJECT= hp.c_id AND hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SIRE') , 0) as DMALM_PROJECT_FK_02, 
 	nvl(u.DMALM_USER_PK, 0) as DMALM_USER_FK_06,
 	hw.C_ID as IDENTIFICATIVO_ANOMALIA,  
 	NVL(hw.C_RESOLVEDON, {ts '9999-12-31 00:00:00'}) as DATA_RISOLUZIONE_ANOMALIA,
@@ -45,11 +45,11 @@ SELECT
 	FROM 
 	DMALM_SIRE_HISTORY_WORKITEM hw 
 			  left join DMALM_SIRE_HISTORY_USER cu on  hw.FK_AUTHOR = cu.C_PK
-	left join DMALM_SIRE_HISTORY_PROJECT cp on hw.FK_PROJECT = cp.C_PK
-	left join dmalm_stato_workitem st
-					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and cp.template = st.template
+			  left join dmalm_sire_history_project hp on hw.FK_PROJECT = hp.c_pk
+				left join dmalm_stato_workitem st
+					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template
 						left join DMALM_PROJECT p 
-						on p.ID_PROJECT = cp.c_id and hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SIRE' 
+						on p.ID_PROJECT = hp.c_id and hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SIRE' 
 							left join DMALM_USER u
 							on u.ID_USER = cu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SIRE'
 	WHERE  hw.c_type = 'anomalia' 
@@ -60,7 +60,7 @@ SELECT
 	hw.c_uri as URI_WI,
 	hw.SISS_HISTORY_WORKITEM_PK as DMALM_ANOMALIA_PRODOTTO_PK,
 	hw.C_PK as STG_PK,
-	nvl(p.DMALM_PROJECT_PK, 0) as DMALM_PROJECT_FK_02, 
+	nvl((SELECT MAX(DMALM_PROJECT_PK) FROM DMALM_PROJECT p WHERE p.ID_PROJECT= hp.c_id AND hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SISS') , 0) as DMALM_PROJECT_FK_02, 
 	nvl(u.DMALM_USER_PK, 0) as DMALM_USER_FK_06,
 	hw.C_ID as IDENTIFICATIVO_ANOMALIA,
 	NVL(hw.C_RESOLVEDON, {ts '9999-12-31 00:00:00'}) as DATA_RISOLUZIONE_ANOMALIA,
@@ -102,11 +102,11 @@ SELECT
 	FROM 
 	DMALM_SISS_HISTORY_WORKITEM hw 
 		left join DMALM_SISS_HISTORY_USER cu on  hw.FK_AUTHOR = cu.C_PK
-		left join DMALM_SISS_HISTORY_PROJECT cp on hw.FK_PROJECT = cp.C_PK
+		left join dmalm_siss_history_project hp on hw.FK_PROJECT = hp.c_pk
 				left join dmalm_stato_workitem st
-					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and cp.template = st.template
+					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template
 						left join DMALM_PROJECT p 
-						on p.ID_PROJECT = cp.c_id and hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SISS' 
+						on p.ID_PROJECT = hp.c_id and hw.c_updated between p.DT_INIZIO_VALIDITA and p.DT_FINE_VALIDITA and p.ID_REPOSITORY = 'SISS' 
 							left join DMALM_USER u
 							on u.ID_USER = cu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SISS'
 	WHERE hw.c_type = 'anomalia'

@@ -3,12 +3,14 @@ package lispa.schedulers.utils;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
-
+import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.ErrorManager;
 
 public class StringUtils {
 	
@@ -197,6 +199,19 @@ public class StringUtils {
 		} else {
 			return input;
 		}
+	}
+	
+	public static List<String> getLogFromStoredProcedureByTimestamp(String nameStoredProcedure) {
+		Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
+		UtilsDAO util = new UtilsDAO();
+		java.util.List<String> stringArray = null;
+		try {
+			stringArray = util.getLogFromStoredProcedureByTimestamp(nameStoredProcedure, dataEsecuzione);
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		}
+		
+		return stringArray;
 	}
 
 }

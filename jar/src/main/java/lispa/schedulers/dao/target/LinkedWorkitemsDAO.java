@@ -53,6 +53,7 @@ import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.DefaultMapper;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -68,7 +69,7 @@ public class LinkedWorkitemsDAO {
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
 	// TUTTE LE TABELLE FATTO
-
+	
 	private static QDmalmDifettoProdotto difetto = QDmalmDifettoProdotto.dmalmDifettoProdotto;
 	private static QDmalmAnomaliaProdotto anomalia = QDmalmAnomaliaProdotto.dmalmAnomaliaProdotto;
 	private static QDmalmProgettoSviluppoSvil progettoSviluppoSvil = QDmalmProgettoSviluppoSvil.dmalmProgettoSviluppoSvil;
@@ -1334,7 +1335,7 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.where(link.fkWiPadre.eq(fkWiFiglio))
-					.where(link.tipoWiPadre.in("release", "testcase", "task", "anomalia")
+					.where(link.tipoWiPadre.in("release", "testcase", "task", "anomalia", "documento")
 					.and(link.tipoWiFiglio.in("testcase", "task", "anomalia", "defect")))
 					.where(link.ruolo.isNotNull())
 					.orderBy(link.fkWiFiglio.asc())
@@ -1371,10 +1372,9 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.join(releaseIT)
-					.on(releaseIT.cdReleaseIt.eq(link.codiceWiPadre)
-						.and(releaseIT.idRepository.eq(link.idRepositoryPadre)))
-					.where(link.tipoWiPadre.eq("release_it"))
-					.where(link.tipoWiFiglio.eq("build").or(link.tipoWiFiglio.eq("taskit")))
+					.on((releaseIT.cdReleaseIt.eq(link.codiceWiFiglio).or(releaseIT.cdReleaseIt.eq(link.codiceWiPadre))))
+					.where(link.tipoWiPadre.in("release_it","build"))
+					.where(link.tipoWiFiglio.in("release_it","taskit"))
 					.where(link.ruolo.isNotNull())
 					.where(releaseIT.rankStatoReleaseIt.eq(new Double("1")))
 					.where(releaseIT.dtCreazioneReleaseIt.goe(dataInizioFiliera))
@@ -1383,7 +1383,6 @@ public class LinkedWorkitemsDAO {
 					.orderBy(link.fkWiFiglio.asc())
 					.list(Projections.bean(DmalmLinkedWorkitems.class, link.all()));
 			
-			connection.commit();
 		} catch (Exception e) {
 
 			throw new DAOException(e);
@@ -1414,9 +1413,10 @@ public class LinkedWorkitemsDAO {
 			resultList = query
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem.getFkWiFiglio()))
-					.where(link.tipoWiPadre.in("build", "taskit")
+					.where(link.tipoWiPadre.in("taskit","release_it")
 					.and(link.tipoWiFiglio.in("taskit", "defect")))
 					.where(link.ruolo.isNotNull())
+					.where(link.codiceProjectFiglio.notIn(new SQLSubQuery().from(project).where(project.cTemplate.ne("IT")).list(project.idProject)))
 					.orderBy(link.fkWiFiglio.asc())
 					.list(Projections.bean(DmalmLinkedWorkitems.class,
 							link.all()));
@@ -1685,7 +1685,7 @@ public class LinkedWorkitemsDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 			
-			resultList = query
+			resultList = query.distinct()
 					.from(link)
 					.where(link.fkWiPadre.eq(linkedWorkitem))
 					.where(link.tipoWiFiglio.eq("documento"))

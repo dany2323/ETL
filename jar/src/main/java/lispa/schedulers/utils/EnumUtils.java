@@ -24,6 +24,8 @@ import lispa.schedulers.utils.enums.CF_rqd;
 import lispa.schedulers.utils.enums.CF_sman;
 import lispa.schedulers.utils.enums.CF_sottoprogramma;
 import lispa.schedulers.utils.enums.CF_srqs;
+import lispa.schedulers.utils.enums.CF_sup;
+import lispa.schedulers.utils.enums.CF_role_values;
 import lispa.schedulers.utils.enums.CF_task;
 import lispa.schedulers.utils.enums.CF_taskit;
 import lispa.schedulers.utils.enums.CF_testcase;
@@ -106,6 +108,9 @@ public class EnumUtils {
 		case "sottoprogramma":	
 			CF_enum = CF_sottoprogramma.values();
 			break;
+		case "sup":
+			CF_enum= CF_sup.values();
+			break;
 		case "srqs":	
 			CF_enum = CF_srqs.values();
 			break;
@@ -124,6 +129,7 @@ public class EnumUtils {
 		case "classificatore":	
 			CF_enum = CF_classificatore.values();
 			break;
+			
 		default:
 			CF_enum = null;
 		}
@@ -222,6 +228,46 @@ public class EnumUtils {
 
 		return template;
 	}
-	
+	//
+	public static String getCustomFieldValue(Workitem_Type type,String customFieldId,String idValue) {
+		
+		Enum<?>[] CF_values = null;
+		List<String> custom_fields_values = new ArrayList<String>();
+		switch (type)
+		{
+			case defect:	//DM_ALM-289 Commento 4
+							if(customFieldId.equals("role"))
+							{
+								if(idValue.contains(" "))
+									idValue=idValue.split(" ")[0];
+								if(idValue.contains("SVI"))
+									idValue="SV";
+								CF_values=CF_role_values.values();
+								for(Enum <?> enumCf: CF_values)
+								{
+									if(enumCf.toString().equals(idValue))
+										return idValue;
+								}
+								return null;
+							}
+			case task:  	//DM_ALM-289 Commento 4
+							if(customFieldId.equals("role"))
+							{
+								if(idValue.contains(" "))
+									idValue=idValue.split(" ")[0];
+								if(idValue.contains("SVI"))
+									idValue="SV";
+								CF_values=CF_role_values.values();
+								for(Enum <?> enumCf: CF_values)
+								{
+									if(enumCf.toString().equals(idValue))
+										return idValue;
+								}
+								return null;
+							}
+		}
+		return null;
+		
+	}
 
 }
