@@ -134,7 +134,7 @@ public class ElettraModuliDAO {
 
 		return moduli;
 	}
-	public static List<DmalmElModuli> getModuliByProdottoPk(int prodottoPk) throws DAOException {
+	public static List<DmalmElModuli> getModuliByProdottoPk(int prodottoPk) throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		ResultSet rs=null;
@@ -166,6 +166,10 @@ public class ElettraModuliDAO {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
 		} finally {
+			if(rs!=null)
+				rs.close();
+			if(ps!=null)
+				ps.close();
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}

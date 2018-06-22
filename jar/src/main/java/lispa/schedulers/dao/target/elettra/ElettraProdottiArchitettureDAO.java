@@ -116,7 +116,7 @@ public class ElettraProdottiArchitettureDAO {
 		return prodotti;
 	}
 	
-	public DmalmElProdottiArchitetture getBeanFromTuple(ResultSet rs) throws SQLException
+	public static DmalmElProdottiArchitetture getBeanFromTuple(ResultSet rs) throws SQLException
 	{
 		DmalmElProdottiArchitetture bean = new DmalmElProdottiArchitetture();
 

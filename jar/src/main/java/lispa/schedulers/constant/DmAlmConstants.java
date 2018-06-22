@@ -319,7 +319,7 @@ public final class DmAlmConstants {
 	public static final String ELETTRA_ANN_MODULO_LOGICAMENTE = "getannullamenti_logicamente_el_modulo.sql";
 	public static final String ELETTRA_ANN_PRODOTTO = "getannullamenti_el_prodotto.sql";
 	public static final String ELETTRA_ANN_PRODOTTO_FISICAMENTE= "getannullamenti_el_prodotto_fisicamente.sql";
-
+	public static final String ELETTRA_ANN_PRODOTTO_LOGICAMENTE="getannullamenti_el_prodotto_logico.sql";
 	// MESSAGGI ERRORE
 	// PRODOTTO
 	public static final String PRODOTTO_SIGLA_DUPLICATA = "Sigla Prodotto duplicata";

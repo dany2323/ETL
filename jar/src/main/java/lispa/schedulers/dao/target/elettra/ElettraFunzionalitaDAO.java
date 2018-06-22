@@ -104,7 +104,7 @@ public class ElettraFunzionalitaDAO {
 		return funzionalita;
 	}
 	
-	public static List<DmalmElFunzionalita> getFunzionalitaByModuloPk(Integer moduloPk, Timestamp dataEsecuzione) throws DAOException {
+	public static List<DmalmElFunzionalita> getFunzionalitaByModuloPk(Integer moduloPk, Timestamp dataEsecuzione) throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -130,16 +130,17 @@ public class ElettraFunzionalitaDAO {
 				funzionalita.add(bean);
 			}
 
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
 			if (rs != null) {
 				rs.close();
 			}
 			if (ps != null) {
 				ps.close();
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new DAOException(e);
-		} finally {
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
