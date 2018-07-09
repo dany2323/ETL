@@ -674,7 +674,7 @@ public class DmAlmFillTarget {
 					// Prodotto Oreste
 					//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
 					// ProdottiArchitetture Elettra
-					CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, false);
+					//CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, false);
 					
 					// step 2 crea fk Asm/UO (Edma)
 					// Struttura Organizzativa Edma
