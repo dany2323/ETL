@@ -95,7 +95,7 @@ public class ConnectionManager {
 
 		loadProps();
 
-		DriverManager.setLoginTimeout(10);
+		DriverManager.setLoginTimeout(100);
 
 		connectionOraclePool = new LinkedList<Connection>();
 
