@@ -174,22 +174,29 @@ public class CheckProjectStorFacade {
 							p.getDtInizioValidita(), -1);
 					List<DmalmProject> pHistory = ProjectSgrCmDAO
 							.getHistoryProject(idProject, repo, dataChiusura);
-					if (pHistory != null) {
+					if (pHistory != null && (type.equals(Workitem_Type.anomalia ) || type.equals(Workitem_Type.defect))) {
 						for (DmalmProject history : pHistory) {
 							try {
 								cm = ConnectionManager.getInstance();
 								conn = cm.getConnectionOracle();
 
 								SQLQuery query = new SQLQuery(conn, dialect);
-
 								switch (type.name()) {
 								case "anomalia":
 									QDmalmAnomaliaProdotto anomalia2 = new QDmalmAnomaliaProdotto(
 											"anomalia2");
+									QDmalmAnomaliaProdotto anomalia3 = new QDmalmAnomaliaProdotto(
+											"anomalia3");
 									pk = query
 											.from(anomalia)
 											.where(anomalia.dmalmProjectFk02.eq(history
 													.getDmalmProjectPk()))
+											.where(anomalia.cdAnomalia.notIn(new SQLSubQuery()
+													.from(anomalia3)
+													.where(anomalia3.cdAnomalia.eq(anomalia.cdAnomalia))
+													.where(anomalia3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
+													.list(anomalia3.cdAnomalia)))
+											.where(anomalia.dtStoricizzazione.loe(p.getDtInizioValidita()))
 											.where(anomalia.dtStoricizzazione
 													.in(new SQLSubQuery()
 															.from(anomalia2)
@@ -206,11 +213,13 @@ public class CheckProjectStorFacade {
 										for (Integer i : pk) {
 											DmalmAnomaliaProdotto a = AnomaliaProdottoDAO
 													.getAnomaliaProdotto(i);
+											
 											if (a != null) {
 												boolean exist = AnomaliaProdottoDAO
 														.checkEsistenzaAnomalia(
 																a, p);
 												if (!exist) {
+													System.out.println("Pk"+i+" CD_ANOMALIA"+a.getCdAnomalia()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
 													if (a.getRankStatoAnomalia() == 1) {
 														AnomaliaProdottoDAO
 																.updateRankFlagUltimaSituazione(
@@ -226,7 +235,7 @@ public class CheckProjectStorFacade {
 															.getDmalmProjectPk());
 													AnomaliaProdottoDAO
 															.insertAnomaliaProdottoUpdate(
-																	dataEsecuzione,
+																	p.getDtInizioValidita(),
 																	a, false);
 												}
 											}
@@ -236,10 +245,17 @@ public class CheckProjectStorFacade {
 								case "defect":
 									QDmalmDifettoProdotto difetto2 = new QDmalmDifettoProdotto(
 											"difetto2");
+									QDmalmDifettoProdotto difetto3 = new QDmalmDifettoProdotto(
+													"difetto3");
 									pk = query
 											.from(difetto)
 											.where(difetto.dmalmProjectFk02.eq(history
 													.getDmalmProjectPk()))
+											.where(difetto.cdDifetto.notIn(new SQLSubQuery()
+													.from(difetto3)
+													.where(difetto3.cdDifetto.eq(difetto.cdDifetto))
+													.where(difetto3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
+													.list(difetto3.cdDifetto)))
 											.where(difetto.dtStoricizzazione
 													.in(new SQLSubQuery()
 															.from(difetto2)
@@ -255,10 +271,12 @@ public class CheckProjectStorFacade {
 										for (Integer i : pk) {
 											DmalmDifettoProdotto d = DifettoDAO
 													.getDifetto(i);
+
 											if (d != null) {
 												boolean exist = DifettoDAO
 														.checkEsistenzaDifetto(
 																d, p);
+												System.out.println("Pk"+pk+" CD_DIFETTO"+d.getCdDifetto()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
 												if (!exist) {
 													if (d.getRankStatoDifetto() == 1) {
 														DifettoDAO

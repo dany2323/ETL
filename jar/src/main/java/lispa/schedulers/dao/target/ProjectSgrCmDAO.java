@@ -1803,14 +1803,13 @@ public class ProjectSgrCmDAO {
 		List<Tuple> projects = new ArrayList<Tuple>();
 		List<DmalmProject> ret = new ArrayList<DmalmProject>();
 		try {
-
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			projects = query.from(proj).where(proj.idProject.eq(idProject))
-					.where(proj.dtFineValidita.eq(dataChiusura))
+					//.where(proj.dtFineValidita.eq(dataChiusura))
 					.where(proj.idRepository.eq(repo)).list(proj.all());
 
 		} catch (Exception e) {
@@ -1937,7 +1936,8 @@ public class ProjectSgrCmDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			projects = query.from(proj)
-					.where(proj.dtCaricamento.eq(dataEsecuzione))
+					//.where(proj.dtCaricamento.eq(dataEsecuzione))
+					//.where(proj.idProject.eq("RSA366"))
 					.orderBy(proj.idRepository.asc(), proj.idProject.asc(),proj.dtInizioValidita.asc())
 					.list(proj.all());
 

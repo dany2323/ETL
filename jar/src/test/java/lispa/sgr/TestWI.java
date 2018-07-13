@@ -34,6 +34,7 @@ import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.fatti.DifettoDAO;
 import lispa.schedulers.facade.cleaning.CheckAnnullamentiElettraFacade;
+import lispa.schedulers.facade.cleaning.CheckProjectStorFacade;
 import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProjectElFacade;
 import lispa.schedulers.facade.sfera.CheckLinkAsmSferaUnitaOrganizzativaFacade;
 import lispa.schedulers.facade.target.CostruzioneFilieraTemplateIntTecnicaFacade;
@@ -72,11 +73,12 @@ public class TestWI extends TestCase {
 	public void testProvenienzaDifetto(){
 		try {
 			Log4JConfiguration.inizialize();
-
-			
-			CheckAnnullamentiElettraFacade.execute(
+			//DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2016-02-28 21:00:00","yyyy-MM-dd HH:mm:00"));
+			//CheckProjectStorFacade.execute();
+			RecoverManager.getInstance().startRecoverTarget();
+			/*CheckAnnullamentiElettraFacade.execute(
 					DataEsecuzione.getInstance().setDataEsecuzione(
-							DateUtils.stringToTimestamp("2018-05-30 22:40:00","yyyy-MM-dd HH:mm:00")));
+							DateUtils.stringToTimestamp("2018-05-17 22:40:00","yyyy-MM-dd HH:mm:00")));*/
 			//CheckLinkAsmSferaUnitaOrganizzativaFacade.execute(DateUtils.stringToTimestamp("2018-02-01 20:40:00",
 			//		"yyyy-MM-dd HH:mm:00"));
 			//CheckLinkAsmSferaProjectElFacade.execute();
