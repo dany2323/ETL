@@ -203,9 +203,7 @@ public class ClassificatoreDAO {
 				bean.setRmResponsabiliProgetto(getCustomFieldInString(
 						rsClass.getString("STG_PK"), rsClass.getString("ID_REPOSITORY"),
 						"RMrespProgetto"));
-				bean.setProgettoInDeroga(getBooleanCustomFieldInString(
-						rsClass.getString("STG_PK"), rsClass.getString("ID_REPOSITORY"),
-						"riferimenti"));
+				bean.setProgettoInDeroga(rsClass.getBoolean("PROGETTO_IN_DEROGA"));
 				bean.setAssigneeProgettoItInDeroga(getCustomFieldInString(
 						rsClass.getString("STG_PK"), rsClass.getString("ID_REPOSITORY"),
 						"assegneeITderoga"));

@@ -20,7 +20,8 @@ SELECT 'SIRE' as ID_REPOSITORY,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_CLASSIF,
 		hw.codice as CODICE,
 		hw.c_severity as SEVERITY,
-		hw.c_priority as PRIORITY
+		hw.c_priority as PRIORITY,
+		NVL((select distinct cf.c_boolean_value from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = hw.C_PK and cf.c_name = 'progettoDeroga'),0) as PROGETTO_IN_DEROGA 
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -54,8 +55,9 @@ SELECT 'SISS' as ID_REPOSITORY,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_CLASSIF,
 		hw.codice as CODICE,
 		hw.c_severity as SEVERITY,
-		hw.c_priority as PRIORITY
-		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
+		hw.c_priority as PRIORITY,
+        NVL((select distinct cf.c_boolean_value from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = hw.C_PK and cf.c_name = 'progettoDeroga'),0) as PROGETTO_IN_DEROGA 
+        from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 
 				on hw.fk_author = hu.c_pk
