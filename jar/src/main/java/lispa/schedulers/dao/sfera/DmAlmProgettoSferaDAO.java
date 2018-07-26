@@ -352,11 +352,14 @@ public class DmAlmProgettoSferaDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			asmFk = query.from(QDmalmAsm.dmalmAsm).where(asm.idAsm.eq(id))
-					.where(asm.dataFineValidita.goe(dt_modifica))
-					.where(asm.dataInizioValidita.loe(dt_modifica))
+					.orderBy(asm.dataFineValidita.desc())
 					.list(asm.dmalmAsmPk).get(0);
 
-		} catch (Exception e) {
+		}catch (IndexOutOfBoundsException e){
+			asmFk=-1;
+		}
+		
+		catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
