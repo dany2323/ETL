@@ -1936,8 +1936,7 @@ public class ProjectSgrCmDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			projects = query.from(proj)
-					//.where(proj.dtCaricamento.eq(dataEsecuzione))
-					//.where(proj.idProject.eq("RSA366"))
+					.where(proj.dtCaricamento.eq(dataEsecuzione))
 					.orderBy(proj.idRepository.asc(), proj.idProject.asc(),proj.dtInizioValidita.asc())
 					.list(proj.all());
 

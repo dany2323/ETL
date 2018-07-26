@@ -174,7 +174,7 @@ public class CheckProjectStorFacade {
 							p.getDtInizioValidita(), -1);
 					List<DmalmProject> pHistory = ProjectSgrCmDAO
 							.getHistoryProject(idProject, repo, dataChiusura);
-					if (pHistory != null && (type.equals(Workitem_Type.anomalia ) || type.equals(Workitem_Type.defect))) {
+					if (pHistory != null) {
 						for (DmalmProject history : pHistory) {
 							try {
 								cm = ConnectionManager.getInstance();
