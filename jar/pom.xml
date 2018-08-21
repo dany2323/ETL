@@ -19,19 +19,9 @@
 
 	<dependencies>
 		<dependency>
-		    <groupId>commons-codec</groupId>
-		    <artifactId>commons-codec</artifactId>
-		    <version>1.10</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-		</dependency>
-		<dependency>
 			<groupId>org.tmatesoft.svnkit</groupId>
 			<artifactId>svnkit</artifactId>
-			<version>1.7.4-v1</version>
+			<version>1.9.3</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -46,7 +36,7 @@
 		<dependency>
 			<groupId>com.oracle.jdbc</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
+			<version>11.1.0.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -56,12 +46,12 @@
 		<dependency>
 			<groupId>com.mysema.querydsl</groupId>
 			<artifactId>querydsl-sql</artifactId>
-			<version>3.2.4</version>
+			<version>3.7.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mysema.querydsl</groupId>
 			<artifactId>querydsl-sql-codegen</artifactId>
-			<version>3.2.4</version>
+			<version>3.7.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
