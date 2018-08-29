@@ -23,13 +23,14 @@ import com.mysema.query.Tuple;
 
 public class ClassificatoreFacade {
 
+	ClassificatoreFacade() {}
 private static Logger logger = Logger.getLogger(PeiFacade.class);
 	
-	public static void execute (Timestamp dataEsecuzione) throws Exception , DAOException {	
+	public static void execute (Timestamp dataEsecuzione) throws Exception{	
 		
-		List <DmalmClassificatore> stg_class_dem = new ArrayList<DmalmClassificatore>();
-		List <DmalmClassificatore> stg_class = new ArrayList<DmalmClassificatore>();
-		List <Tuple> target_class = new ArrayList<Tuple>();
+		List <DmalmClassificatore> stgClassDem = new ArrayList<>();
+		List <DmalmClassificatore> stgClass = new ArrayList<>();
+		List <Tuple> targetClass = new ArrayList<>();
 		QDmalmClassificatore c = QDmalmClassificatore.dmalmClassificatore;
 		int righeNuove = 0;
 		int righeModificate = 0;
@@ -42,18 +43,18 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 		
 		try{
-			stg_class_dem = ClassificatoreDAO.getAllClassDem(dataEsecuzione);
-			stg_class = ClassificatoreDAO.getAllClass(dataEsecuzione);
+			stgClassDem = ClassificatoreDAO.getAllClassDem(dataEsecuzione);
+			stgClass = ClassificatoreDAO.getAllClass(dataEsecuzione);
 
 			ClassificatoreOdsDAO.delete();
 			
-			logger.debug("START -> Popolamento CLASSIFICATORE ODS, "+stg_class_dem.size()+ " Classificatore demand");
-			ClassificatoreOdsDAO.insert(stg_class_dem, dataEsecuzione);
-			logger.debug("STOP -> Popolamento CLASSIFICATORE DEMAND ODS, "+stg_class_dem.size()+ " Classificatore demand");
+			logger.debug("START -> Popolamento CLASSIFICATORE ODS, "+stgClassDem.size()+ " Classificatore demand");
+			ClassificatoreOdsDAO.insert(stgClassDem);
+			logger.debug("STOP -> Popolamento CLASSIFICATORE DEMAND ODS, "+stgClassDem.size()+ " Classificatore demand");
 			
-			logger.debug("START -> Popolamento CLASSIFICATORE ODS, "+stg_class.size()+ " Classificatore");
-			ClassificatoreOdsDAO.insert(stg_class, dataEsecuzione);
-			logger.debug("STOP -> Popolamento CLASSIFICATORE DEMAND ODS, "+stg_class.size()+ " Classificatore");
+			logger.debug("START -> Popolamento CLASSIFICATORE ODS, "+stgClass.size()+ " Classificatore");
+			ClassificatoreOdsDAO.insert(stgClass);
+			logger.debug("STOP -> Popolamento CLASSIFICATORE DEMAND ODS, "+stgClass.size()+ " Classificatore");
 			
 			List<DmalmClassificatore> x = ClassificatoreOdsDAO.getAll();
 
@@ -61,9 +62,9 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 				
 				temp = classificatore;
 				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
-				target_class = ClassificatoreDAO.getClassificatore(classificatore);
+				targetClass = ClassificatoreDAO.getClassificatore(classificatore);
 				// se non trovo almento un record, inserisco il project nel target
-				if(target_class.size()==0)
+				if(targetClass.isEmpty())
 				{ 
 					righeNuove++;
 					classificatore.setDtCambioStatoClassif(classificatore.getDtModificaClassif());
@@ -71,7 +72,7 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 				} else {
 					boolean modificato = false;
 					
-					for (Tuple row : target_class) {
+					for (Tuple row : targetClass) {
 						
 						if(row !=null)
 						{
@@ -140,7 +141,7 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 								// STORICIZZO
 								righeModificate++;								
 								// aggiorno la data di fine validita sul record corrente								
-								ClassificatoreDAO.updateRank(classificatore, new Double(0));
+								ClassificatoreDAO.updateRank(classificatore,Double.valueOf(0));
 
 								// inserisco un nuovo record
 								ClassificatoreDAO.insertClassUpdate(dataEsecuzione, classificatore, true);	
@@ -157,20 +158,11 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 			}
 			
 			
-		}catch (DAOException e) 
+		}catch (Exception e) 
 		{
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(temp));
 			logger.error(e.getMessage(), e);
-			
-			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
-		}
-		catch(Exception e)
-		{
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(LogUtils.objectToString(temp));
-			logger.error(e.getMessage(), e);
-			
 			
 			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
 		}

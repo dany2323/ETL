@@ -103,6 +103,7 @@ public class CheckAnnullamentiElettraFacade {
 				funz.setAnnullato(DmAlmConstants.ANNULLATO_FISICAMENTE_ELETTRA);
 				funz.setNome(nome);
 				funz.setFunzionalitaPk(null);
+				funz.setDtAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraFunzionalitaDAO.insertFunzionalitaUpdate(dataEsecuzione, funz);		
 				
 			}
@@ -163,7 +164,7 @@ public class CheckAnnullamentiElettraFacade {
 				modulo.setAnnullato(DmAlmConstants.ANNULLATO_FISICAMENTE_ELETTRA);
 				modulo.setNome(nome);
 				modulo.setModuloPk(null);
-				
+				modulo.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraModuliDAO.insertModuloUpdate(dataEsecuzione, modulo);
 			}
 			
@@ -226,6 +227,7 @@ public class CheckAnnullamentiElettraFacade {
 				prodottoBean.setAnnullato(DmAlmConstants.ANNULLATO_FISICAMENTE_ELETTRA);
 				prodottoBean.setNome(nome);
 				prodottoBean.setProdottoPk(null);
+				prodottoBean.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraProdottiArchitettureDAO.insertProdottoUpdate(dataEsecuzione,prodottoBean);
 				
 				
@@ -276,6 +278,7 @@ public class CheckAnnullamentiElettraFacade {
 				modulo.setNome(nome);
 				modulo.setAnnullato(DmAlmConstants.ANNULLATO_FISICAMENTE_ELETTRA);
 				modulo.setModuloPk(null);
+				modulo.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraModuliDAO.insertModuloUpdate(dataEsecuzione, modulo);
 				
 			}
@@ -310,6 +313,7 @@ public class CheckAnnullamentiElettraFacade {
 				funz.setAnnullato(DmAlmConstants.ANNULLATO_FISICAMENTE_ELETTRA);
 				funz.setNome(nome);
 				funz.setFunzionalitaPk(null);
+				funz.setDtAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraFunzionalitaDAO.insertFunzionalitaUpdate(dataEsecuzione, funz);
 				
 			}
@@ -405,7 +409,7 @@ public class CheckAnnullamentiElettraFacade {
 				ElettraFunzionalitaDAO.updateDataFineValidita(dataEsecuzione, bean.getUnitaOrganizzativaPk());
 				bean.setUnitaOrganizzativaPk(null);
 				bean.setAnnullato("SI");
-				bean.setDataAnnullamento(bean.getDataFineValidita());
+				bean.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraUnitaOrganizzativeDAO.insertUnitaOrganizzativaUpdate(dataEsecuzione, bean);
 			}
 
@@ -451,6 +455,7 @@ public class CheckAnnullamentiElettraFacade {
 				
 				bean.setAnnullato("SI");
 				bean.setPersonalePk(null);
+				bean.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraPersonaleDAO.insertPersonaleUpdate(dataEsecuzione,bean);
 			}
 
