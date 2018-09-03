@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -25,6 +26,8 @@ import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
 import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzative;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.oreste.ProdottiArchitettureDAO;
+import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmProdottoDAO;
 import lispa.schedulers.dao.target.elettra.ElettraFunzionalitaDAO;
 import lispa.schedulers.dao.target.elettra.ElettraModuliDAO;
@@ -149,7 +152,7 @@ public class CheckAnnullamentiElettraFacade {
 				
 				DmalmElModuli modulo=ElettraModuliDAO.getBeanFromTuple(rs);
 				
-				checkAnnullaFunzionalitaDiModulo(modulo, dataEsecuzione);
+				checkAnnullaFunzionalitaDiModulo(modulo, dataEsecuzione,dataEsecuzione);
 				
 				ElettraModuliDAO.updateDataFineValidita(dataEsecuzione, modulo.getModuloPk());
 				
@@ -212,7 +215,23 @@ public class CheckAnnullamentiElettraFacade {
 			while (rs.next()) {
 				
 				prodottoBean= new ElettraProdottiArchitettureDAO().getBeanFromTuple(rs);
-				checkAnnullaModuliDiProdotto(prodottoBean,dataEsecuzione);
+				
+				Date dataAnnullamento=DateUtils.addSecondsToTimestamp(dataEsecuzione,-1);
+				
+				
+				List <String> applicazioni=ProdottiArchitettureDAO.getAsmByProductPk(prodottoBean.getProdottoPk());
+				if(applicazioni!=null && applicazioni.size()>0){
+					for(String app:applicazioni){
+						if(app.contains(DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE) || app.contains(DmAlmConstants.SFERA_ANNULLATO_FISICAMENTE)){
+							Date date=DateUtils.getDataAnnullamento(app, logger);
+							if(date!=null){
+								dataAnnullamento=date;
+							}
+						}
+					}
+				}
+				
+				checkAnnullaModuliDiProdotto(prodottoBean,dataEsecuzione,dataAnnullamento);
 
 				ElettraProdottiArchitettureDAO.updateDataFineValidita(dataEsecuzione, prodottoBean.getProdottoPk());
 				
@@ -227,7 +246,7 @@ public class CheckAnnullamentiElettraFacade {
 				prodottoBean.setAnnullato(DmAlmConstants.ANNULLATO_FISICAMENTE_ELETTRA);
 				prodottoBean.setNome(nome);
 				prodottoBean.setProdottoPk(null);
-				prodottoBean.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
+				prodottoBean.setDataAnnullamento(dataAnnullamento);
 				ElettraProdottiArchitettureDAO.insertProdottoUpdate(dataEsecuzione,prodottoBean);
 				
 				
@@ -255,7 +274,7 @@ public class CheckAnnullamentiElettraFacade {
 
 	}
 
-	private static void checkAnnullaModuliDiProdotto(DmalmElProdottiArchitetture prodottoBean,Timestamp dataEsecuzione) {
+	private static void checkAnnullaModuliDiProdotto(DmalmElProdottiArchitetture prodottoBean,Timestamp dataEsecuzione, Date dataAnnullamento) {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		format.setLenient(false);
@@ -264,7 +283,7 @@ public class CheckAnnullamentiElettraFacade {
 			List <DmalmElModuli> moduli=ElettraModuliDAO.getModuliByProdottoPk(prodottoBean.getProdottoPk());
 			for(DmalmElModuli modulo:moduli)
 			{
-				checkAnnullaFunzionalitaDiModulo(modulo,dataEsecuzione);
+				checkAnnullaFunzionalitaDiModulo(modulo,dataEsecuzione,dataAnnullamento);
 
 				ElettraModuliDAO.updateDataFineValidita(dataEsecuzione, modulo.getModuloPk());
 				
@@ -278,7 +297,7 @@ public class CheckAnnullamentiElettraFacade {
 				modulo.setNome(nome);
 				modulo.setAnnullato(DmAlmConstants.ANNULLATO_FISICAMENTE_ELETTRA);
 				modulo.setModuloPk(null);
-				modulo.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
+				modulo.setDataAnnullamento(dataAnnullamento);
 				ElettraModuliDAO.insertModuloUpdate(dataEsecuzione, modulo);
 				
 			}
@@ -289,7 +308,7 @@ public class CheckAnnullamentiElettraFacade {
 		
 	}
 
-	private static void checkAnnullaFunzionalitaDiModulo(DmalmElModuli modulo, Timestamp dataEsecuzione) {
+	private static void checkAnnullaFunzionalitaDiModulo(DmalmElModuli modulo, Timestamp dataEsecuzione, Date dataAnnullamento) {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		format.setLenient(false);
@@ -313,7 +332,7 @@ public class CheckAnnullamentiElettraFacade {
 				funz.setAnnullato(DmAlmConstants.ANNULLATO_FISICAMENTE_ELETTRA);
 				funz.setNome(nome);
 				funz.setFunzionalitaPk(null);
-				funz.setDtAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
+				funz.setDtAnnullamento(new Timestamp(dataAnnullamento.getTime()));
 				ElettraFunzionalitaDAO.insertFunzionalitaUpdate(dataEsecuzione, funz);
 				
 			}
@@ -406,7 +425,7 @@ public class CheckAnnullamentiElettraFacade {
 			while (rs.next()) {
 				DmalmElUnitaOrganizzative bean=ElettraUnitaOrganizzativeDAO.getBeanFromTuple(rs);
 				
-				ElettraFunzionalitaDAO.updateDataFineValidita(dataEsecuzione, bean.getUnitaOrganizzativaPk());
+				ElettraUnitaOrganizzativeDAO.updateDataFineValidita(dataEsecuzione, bean.getUnitaOrganizzativaPk());
 				bean.setUnitaOrganizzativaPk(null);
 				bean.setAnnullato("SI");
 				bean.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));

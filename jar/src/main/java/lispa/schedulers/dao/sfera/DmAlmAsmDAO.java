@@ -807,6 +807,49 @@ public class DmAlmAsmDAO {
 		return asmList;
 	}
 
+	public static List<Tuple> getAsmAnnullataProdotto(Integer prodottoPk)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> asmList = new ArrayList<Tuple>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			// tutte le Asm non associate a Prodotto (si escude il recod DUMMY:
+			// dmalmAsmPk = 0)
+			asmList = query
+					.from(asm)
+					.leftJoin(asmProdottiArchitetture)
+					.on(asmProdottiArchitetture.dmalmAsmPk.eq(asm.dmalmAsmPk)
+							.and(asmProdottiArchitetture.dtFineValidita
+									.eq(DateUtils.setDtFineValidita9999())))
+					.where(asmProdottiArchitetture.dmalmProdottoPk.eq(prodottoPk))
+					.where(asm.dataFineValidita.eq(DateUtils
+							.setDtFineValidita9999()))
+					.where(asm.dmalmAsmPk.ne(new Integer(0)))
+					.where(asmProdottiArchitetture.dmalmProdottoPk.isNull().or(
+							(asmProdottiArchitetture.dmalmProdottoPk.eq(0))))
+					.list(asm.applicazione, asm.dmalmAsmPk,
+							asmProdottiArchitetture.dmalmProdottoPk,
+							asmProdottiArchitetture.dmalmAsmPk,
+							asmProdottiArchitetture.dtInizioValidita,
+							asmProdottiArchitetture.dtFineValidita);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return asmList;
+	}
 	public static List<Tuple> getAllAsmStrutturaOrganizzativa()
 			throws DAOException {
 		ConnectionManager cm = null;

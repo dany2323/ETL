@@ -190,7 +190,38 @@ public class ElettraProdottiArchitettureDAO {
 
 		return prodotti;
 	}
-	
+	public static List<Integer> getAllTargetProdottoAnnullati()
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Integer> prodotti = new ArrayList<>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			prodotti = query
+					.from(qDmalmElProdottiArchitetture)
+					.where(qDmalmElProdottiArchitetture.annullato.eq("SI"))
+					.list(qDmalmElProdottiArchitetture.prodottoPk);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+		
+		List <DmalmElProdottiArchitetture> prodottiList=new ArrayList<DmalmElProdottiArchitetture>();
+
+		
+		return prodotti;
+	}
 
 	public static void insertProdotto(DmalmElProdottiArchitetture bean)
 			throws DAOException {
@@ -286,6 +317,33 @@ public class ElettraProdottiArchitettureDAO {
 					.set(qDmalmElProdottiArchitetture.dataFineValidita,
 							DateUtils.addSecondsToTimestamp(dataFineValidita,
 									-1)).execute();
+
+			connection.commit();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
+	public static void updateDataAnnullamento(Timestamp dataAnnullamento,
+			Integer prodottoPk) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect,
+					qDmalmElProdottiArchitetture)
+					.where(qDmalmElProdottiArchitetture.prodottoPk
+							.eq(prodottoPk))
+					.set(qDmalmElProdottiArchitetture.dataAnnullamento,dataAnnullamento).execute();
 
 			connection.commit();
 		} catch (Exception e) {

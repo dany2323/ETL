@@ -167,6 +167,7 @@ public class CheckProjectStorFacade {
 				ConnectionManager cm = null;
 				Connection conn = null;
 				List<Integer> pk = new ArrayList<Integer>();
+				logger.info("Storicizzo type: "+type);
 				for (DmalmProject p : pNew) {
 					String idProject = p.getIdProject();
 					String repo = p.getIdRepository();
@@ -219,7 +220,7 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaAnomalia(
 																a, p);
 												if (!exist) {
-													System.out.println("Pk"+i+" CD_ANOMALIA"+a.getCdAnomalia()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
+													//System.out.println("Pk"+i+" CD_ANOMALIA"+a.getCdAnomalia()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
 													if (a.getRankStatoAnomalia() == 1) {
 														AnomaliaProdottoDAO
 																.updateRankFlagUltimaSituazione(
@@ -276,7 +277,7 @@ public class CheckProjectStorFacade {
 												boolean exist = DifettoDAO
 														.checkEsistenzaDifetto(
 																d, p);
-												System.out.println("Pk"+pk+" CD_DIFETTO"+d.getCdDifetto()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
+												//System.out.println("Pk"+pk+" CD_DIFETTO"+d.getCdDifetto()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
 												if (!exist) {
 													if (d.getRankStatoDifetto() == 1) {
 														DifettoDAO

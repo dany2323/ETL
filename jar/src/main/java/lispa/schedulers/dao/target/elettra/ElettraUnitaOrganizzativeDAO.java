@@ -25,6 +25,7 @@ import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzative;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzative;
@@ -213,10 +214,10 @@ public class ElettraUnitaOrganizzativeDAO {
 							unita.getCodiceEnte(),
 							unita.getCodiceVisibilita(),
 							unita.getDataCaricamento(),
-							DateUtils.setDtInizioValidita1900(),
+							DataEsecuzione.getInstance().getDataEsecuzione(),
 							(unita.getDataFineValiditaEdma() != null ? unita
 									.getDataFineValiditaEdma() : DateUtils
-									.setDtFineValidita9999()), null, null)
+									.setDtFineValidita9999()), "NO", null)
 					.execute();
 
 			connection.commit();

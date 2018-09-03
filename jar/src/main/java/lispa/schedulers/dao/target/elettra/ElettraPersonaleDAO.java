@@ -255,7 +255,7 @@ public class ElettraPersonaleDAO {
 							personale.getIdentificatore(),
 							personale.getIndirizzoEmail(),
 							personale.getInterno(), personale.getMatricola(),
-							personale.getNome(), personale.getNote(), null,
+							personale.getNome(), personale.getNote(), personale.getAnnullato(),
 							null,
 							0, 0).execute();
 
@@ -336,7 +336,7 @@ public class ElettraPersonaleDAO {
 							personale.getNome(), 
 							personale.getNote(), 
 							personale.getAnnullato(),
-							null,
+							personale.getDataAnnullamento(),
 							personale.getUnitaOrganizzativaFk(),
 							personale.getUnitaOrganizzativaFlatFk()).execute();
 
