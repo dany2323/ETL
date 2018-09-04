@@ -342,8 +342,7 @@ public class ElettraFunzionalitaDAO {
 							dmalmElFunzionalita.dtInizioValidita,
 							dmalmElFunzionalita.dtFineValidita,
 							dmalmElFunzionalita.dmalmModuloFk01)
-					.values(bean.getFunzionalitaPk()==null?StringTemplate
-							.create("STG_FUNZIONALITA_SEQ.nextval"):bean.getFunzionalitaPk(),
+					.values(StringTemplate.create("STG_FUNZIONALITA_SEQ.nextval"),
 							bean.getIdFunzionalitaEdma(),
 							bean.getIdEdmaPadre(), bean.getIdFunzionalita(),
 							bean.getTipoOggetto(), bean.getSiglaProdotto(),
