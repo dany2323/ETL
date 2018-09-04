@@ -1,4 +1,4 @@
-SELECT 'SIRE' as ID_REPOSITORY,
+SELECT * FROM (SELECT 'SIRE' as ID_REPOSITORY,
 		hw.c_uri as URI_WI, 
 		hw.sire_history_workitem_pk as DMALM_CLASSIFICATORE_PK,
 		hw.c_pk as STG_PK, 
@@ -26,11 +26,11 @@ SELECT 'SIRE' as ID_REPOSITORY,
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
 				on hw.fk_author = hu.c_pk
-					left join dmalm_stato_workitem st
-					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template 
+					left join dmalm_stato_workitem st 
+					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template  
 							left join DMALM_USER u 
-							on u.ID_USER = hu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SIRE'
-		where hw.c_type = 'classificatore'
+							on u.ID_USER = hu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SIRE' 
+		where hw.c_type = 'classificatore' 
 		and hw.data_caricamento = ? 
 UNION ALL  
 SELECT 'SISS' as ID_REPOSITORY,
@@ -50,7 +50,7 @@ SELECT 'SISS' as ID_REPOSITORY,
 		hw.c_title as TITOLO_CLASSIFICATORE,
 		nvl(
 			hw.c_resolvedon
-			, TO_TIMESTAMP('31-12-9999 00:00:00','DD-MM-YYYY HH24:MI:SS')
+			, TO_TIMESTAMP('31-12-9999 00:00:00','DD-MM-YYYY HH24:MI:SS') 
 		) as  DT_RISOLUZIONE_CLASSIF,
 		hw.c_resolution as MOTIVO_RISOLUZIONE_CLASSIF,
 		hw.codice as CODICE,
@@ -60,11 +60,12 @@ SELECT 'SISS' as ID_REPOSITORY,
         from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 
-				on hw.fk_author = hu.c_pk
-					left join dmalm_stato_workitem st
+				on hw.fk_author = hu.c_pk 
+					left join dmalm_stato_workitem st 
 					on st.ORIGINE_STATO = hw.c_type and hw.c_status = st.CD_STATO and hp.template = st.template 
-							left join DMALM_USER u
-							on u.ID_USER = hu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SISS'
-		where hw.c_type = 'classificatore'
-		and hw.data_caricamento = ? 
+							left join DMALM_USER u 
+							on u.ID_USER = hu.c_id and hw.c_updated between u.DT_INIZIO_VALIDITA and u.DT_FINE_VALIDITA and u.ID_REPOSITORY = 'SISS' 
+		where hw.c_type = 'classificatore' 
+		and hw.data_caricamento = ? ) 
+		ORDER BY DT_MODIFICA_CLASSIF ASC 
 		

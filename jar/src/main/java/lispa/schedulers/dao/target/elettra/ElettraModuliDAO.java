@@ -294,8 +294,8 @@ public class ElettraModuliDAO {
 							qDmalmElModuli.prodottoFk,
 							qDmalmElModuli.dataInizioValidita,
 							qDmalmElModuli.dataFineValidita)
-					.values(bean.getModuloPk()==null?StringTemplate
-							.create("STG_MODULI_SEQ.nextval"):bean.getModuloPk(), bean.getIdModuloEdma(),
+					.values(StringTemplate
+							.create("STG_MODULI_SEQ.nextval"), bean.getIdModuloEdma(),
 							bean.getIdModuloEdmaPadre(), bean.getIdModulo(),
 							bean.getTipoOggetto(), bean.getSiglaProdotto(),
 							bean.getSiglaSottosistema(), bean.getSiglaModulo(),

@@ -399,8 +399,8 @@ public class ElettraProdottiArchitettureDAO {
 							qDmalmElProdottiArchitetture.ambitoManutenzioneDenom,
 							qDmalmElProdottiArchitetture.ambitoManutenzioneCodice,
 							qDmalmElProdottiArchitetture.stato)
-					.values(bean.getProdottoPk()==null?StringTemplate
-							.create("STG_PROD_ARCHITETTURE_SEQ.nextval"):bean.getProdottoPk(), bean.getIdProdottoEdma(),
+					.values(StringTemplate
+							.create("STG_PROD_ARCHITETTURE_SEQ.nextval"), bean.getIdProdottoEdma(),
 							bean.getIdProdotto(), bean.getTipoOggetto(),
 							bean.getSigla(), bean.getNome(),
 							bean.getDescrizioneProdotto(),
