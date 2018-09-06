@@ -448,7 +448,7 @@ public class RichiestaSupportoDAO {
 			}
 			
 
-		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
+		    ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.registerOutParameter(1, OracleTypes.CURSOR);
 			ocs.setInt(2, pk_proj);
 			ocs.execute();
@@ -485,7 +485,7 @@ public class RichiestaSupportoDAO {
 				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
 				bean.setAnnullato(rs.getString("ANNULLATO"));
 				bean.setDataAnnullamento(rs.getTimestamp("DATA_ANNULLAMENTO"));
-				bean.setDataStoricizzazione(rs.getTimestamp("DATA_STORICIZZAZIONE"));
+				bean.setDataStoricizzazione(rs.getTimestamp("DT_STORICIZZAZIONE"));
 				bean.setCodiceArea(rs.getString("CODICE_AREA"));
 				bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
 				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
