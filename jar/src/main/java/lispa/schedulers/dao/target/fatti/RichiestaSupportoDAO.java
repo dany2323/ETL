@@ -376,7 +376,7 @@ public class RichiestaSupportoDAO {
 			//return the result set
             rs = (ResultSet)ocs.getObject(1);
             
-			logger.debug("Query Eseguita!");
+			
 			while (rs.next()) {
 				// Elabora il risultato
 				bean = new DmalmRichiestaSupporto();
@@ -405,7 +405,7 @@ public class RichiestaSupportoDAO {
 				bean.setPriorityRichSupporto(rs.getString("PRIORITY_RICH_SUPPORTO"));
 				bean.setAnnullato(rs.getString("ANNULLATO"));
 				bean.setDataAnnullamento(rs.getTimestamp("DATA_ANNULLAMENTO"));
-				bean.setDataStoricizzazione(rs.getTimestamp("DATA_STORICIZZAZIONE"));
+				bean.setDataStoricizzazione(rs.getTimestamp("DT_STORICIZZAZIONE"));
 				bean.setCodiceArea(rs.getString("CODICE_AREA"));
 				bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
 				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
@@ -529,7 +529,9 @@ public class RichiestaSupportoDAO {
 			connection.commit();
 
 		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
+			//ErrorManager.getInstance().exceptionOccurred(true, e);
+			if(richiesta!=null)
+				logger.info("Attenzione, non sono riuscito ad eliminare item con PK "+richiesta.getDmalmRichiestaSupportoPk());
 
 		} finally {
 			if (cm != null)

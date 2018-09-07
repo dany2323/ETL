@@ -30,6 +30,7 @@ import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.queryimplementation.target.QDmalmFilieraTemplateAssFunzionale;
 import lispa.schedulers.queryimplementation.target.QDmalmFilieraTemplateSviluppo;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.enums.Workitem_Type;
 
 import org.apache.log4j.Logger;
 
@@ -81,19 +82,19 @@ public class CostruzioneFilieraTemplateAssFunzionaleFacade {
 			// ricaricata
 			// nuovamente
 
-//			FilieraTemplateAssFunzionaleDAO.delete();
-//			FilieraTemplateDocumentiDAO.delete(DmAlmConstants.ASSISTENZA);
-//
-//			// creazione filiera template Demand
-//			List<DmalmLinkedWorkitems> startWorkitemsList = LinkedWorkitemsDAO
-//					.getStartWorkitemsTemplateAssFunzionale(dataInizioFiliera);
-//			logger.debug("CostruzioneFilieraTemplateAssFunzionaleFacade - lista.size: "
-//					+ startWorkitemsList.size());
-//
-//			if (startWorkitemsList.size() > 0) {
-//				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
-//						insertedWorkitemsList);
-//			}
+			FilieraTemplateAssFunzionaleDAO.delete();
+			FilieraTemplateDocumentiDAO.delete(DmAlmConstants.ASSISTENZA);
+
+			// creazione filiera template Demand
+			List<DmalmLinkedWorkitems> startWorkitemsList = LinkedWorkitemsDAO
+					.getStartWorkitemsTemplateAssFunzionale(dataInizioFiliera);
+			logger.debug("CostruzioneFilieraTemplateAssFunzionaleFacade - lista.size: "
+					+ startWorkitemsList.size());
+
+			if (startWorkitemsList.size() > 0) {
+				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
+						insertedWorkitemsList);
+			}
 			
 			//Gestisci i Work Item orfani
 			getWorkItemAssistenzaFuoriFiliera(dataInizioFiliera);
@@ -193,7 +194,7 @@ public class CostruzioneFilieraTemplateAssFunzionaleFacade {
 						1,
 						assistenza.getDmalmAnomaliaAssPk(),
 						assistenza.getCdAnomaliaAss(),
-						"srqs",
+						Workitem_Type.anomalia_assistenza,
 						assistenza.getIdRepository(),
 						assistenza.getUri(),
 						getDmalmCodiceProgetto(assistenza.getDmalmProjectFk02()),
@@ -221,7 +222,7 @@ public class CostruzioneFilieraTemplateAssFunzionaleFacade {
 						1,
 						richiestaGestione.getDmalmRichiestaGestPk(),
 						richiestaGestione.getCdRichiestaGest(),
-						"release",
+						Workitem_Type.richiesta_gestione,
 						richiestaGestione.getIdRepository(),
 						richiestaGestione.getUri(),
 						getDmalmCodiceProgetto(richiestaGestione.getDmalmProjectFk02()),
