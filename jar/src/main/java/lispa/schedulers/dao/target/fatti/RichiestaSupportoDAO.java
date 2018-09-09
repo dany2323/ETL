@@ -552,14 +552,15 @@ public class RichiestaSupportoDAO {
 
 			connection.setAutoCommit(false);
 			
-			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.CHECK_ESISTENZA_RICH_SUPPORTO", 2);
+			String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.CHECK_ESISTENZA_RICH_SUPPORTO", 2);
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
 //		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
 //		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
 		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
-			ocs.setObject(1, structObj);
-			ocs.setInt(2, p.getDmalmProjectPk());
+		    	ocs.registerOutParameter(1, OracleTypes.VARCHAR);
+			ocs.setObject(2, structObj);
+			ocs.setInt(3, p.getDmalmProjectPk());
 			ocs.execute();
 			
 			flag = ocs.getString(1);

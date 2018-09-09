@@ -3,6 +3,8 @@ package lispa.schedulers.dao;
 import java.sql.Array;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -66,5 +68,69 @@ public class UtilsDAO {
 		}
 		
 		return stringArray;
+	}
+	
+	public static Integer getSequenceNextval(String sequenceName) throws Exception {
+	
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		Integer seqId = 0;
+		
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			String sqlSequenceName = "select "+sequenceName+" from dual";
+			ps = connection.prepareStatement(sqlSequenceName);
+		   
+			ResultSet rs = ps.executeQuery(sqlSequenceName);
+			if (rs.next()) {
+				seqId = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+		
+		return seqId;
+	}
+	
+	public static Integer getMaxValueByTable(String tableName, String fieldName) throws Exception {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		Integer maxValue = 0;
+		
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			String sqlMaxValue = "select max("+fieldName+") from "+tableName;
+			ps = connection.prepareStatement(sqlMaxValue);
+		   
+			ResultSet rs = ps.executeQuery(sqlMaxValue);
+			if (rs.next()) {
+				maxValue = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+		
+		return maxValue;
 	}
 }

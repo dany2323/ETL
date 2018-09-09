@@ -26,6 +26,7 @@ import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
 import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzative;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.dao.oreste.ProdottiArchitettureDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmProdottoDAO;
@@ -426,7 +427,8 @@ public class CheckAnnullamentiElettraFacade {
 				DmalmElUnitaOrganizzative bean=ElettraUnitaOrganizzativeDAO.getBeanFromTuple(rs);
 				
 				ElettraUnitaOrganizzativeDAO.updateDataFineValidita(dataEsecuzione, bean.getUnitaOrganizzativaPk());
-				bean.setUnitaOrganizzativaPk(null);
+				Integer maxValue = UtilsDAO.getMaxValueByTable(DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE, "DMALM_UNITA_ORG_PK")+1;
+				bean.setUnitaOrganizzativaPk(maxValue);
 				bean.setAnnullato("SI");
 				bean.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraUnitaOrganizzativeDAO.insertUnitaOrganizzativaUpdate(dataEsecuzione, bean);
@@ -473,7 +475,8 @@ public class CheckAnnullamentiElettraFacade {
 				ElettraPersonaleDAO.updateDataFineValidita(dataEsecuzione, bean);
 				
 				bean.setAnnullato("SI");
-				bean.setPersonalePk(null);
+				Integer maxValue = UtilsDAO.getMaxValueByTable(DmAlmConstants.TARGET_ELETTRA_PERSONALE, "DMALM_PERSONALE_PK")+1;
+				bean.setPersonalePk(maxValue);
 				bean.setDataAnnullamento(DateUtils.addSecondsToTimestamp(dataEsecuzione,-1));
 				ElettraPersonaleDAO.insertPersonaleUpdate(dataEsecuzione,bean);
 			}
