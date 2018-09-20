@@ -11,6 +11,7 @@ import java.util.List;
 import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdottiArchitetture;
@@ -281,7 +282,7 @@ public class ElettraProdottiArchitettureDAO {
 							bean.getDataCaricamento(),
 							bean.getUnitaOrganizzativaFk(),
 							bean.getPersonaleFk(),
-							DateUtils.setDtInizioValidita1900(),
+							DataEsecuzione.getInstance().getDataEsecuzione(),
 							DateUtils.setDtFineValidita9999(),
 							bean.getAmbitoTecnologico(),
 							bean.getAmbitoManutenzioneDenom(),
