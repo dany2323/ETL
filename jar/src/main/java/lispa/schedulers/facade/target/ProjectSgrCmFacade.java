@@ -107,7 +107,7 @@ public class ProjectSgrCmFacade {
 								modificato = true;
 							}
 
-							if (modificato) {
+							if (modificato && dataEsecuzione.compareTo(row.get(proj.dtInizioValidita))>0) {
 								logger.debug("Project modified");
 								righeModificate++;
 								if(project.getAnnullato()==null){
@@ -237,7 +237,7 @@ public class ProjectSgrCmFacade {
 								.get(proj.nomeCompletoProject));
 						bean.setDtCaricamento(dataEsecuzione);
 
-						if(bean.getAnnullato()==null)
+						if(bean.getAnnullato()==null && dataEsecuzione.compareTo(row.get(proj.dtInizioValidita))>0)
 						{
 						// STORICIZZO
 						// aggiorno la data di fine validita sul record

@@ -14,6 +14,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MailUtil;
 import lispa.schedulers.utils.StringUtils;
 
@@ -35,7 +36,8 @@ public class DmAlmETL {
 
 	public static void main(String[] args) throws PropertiesReaderException {
 		Log4JConfiguration.inizialize();
-
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-07-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+		
 		String ambiente = DmAlmConfigReader.getInstance().getProperty(
 				DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 

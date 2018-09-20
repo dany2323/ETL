@@ -242,7 +242,7 @@ public class ProgettoSferaFacade {
 								modificato = true;
 							}
 
-							if (modificato) {
+							if (modificato && dataEsecuzione.compareTo(row.get(progetto.dataInizioValidita))>0) {
 								righeModificate++;
 
 								// STORICIZZO

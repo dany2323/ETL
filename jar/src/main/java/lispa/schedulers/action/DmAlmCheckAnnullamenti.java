@@ -26,18 +26,18 @@ public class DmAlmCheckAnnullamenti {
 			if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
 
 				// se errore non eseguo gli step successivi
-				if (!ErrorManager.getInstance().hasError()) {
-					logger.debug("START CheckAnnullamentiSGRCMFacade");
-					CheckAnnullamentiSGRCMFacade.execute();
-					logger.debug("STOP CheckAnnullamentiSGRCMFacade");
-				}
+//				if (!ErrorManager.getInstance().hasError()) {
+//					logger.debug("START CheckAnnullamentiSGRCMFacade");
+//					CheckAnnullamentiSGRCMFacade.execute();
+//					logger.debug("STOP CheckAnnullamentiSGRCMFacade");
+//				}
 
 				// se errore non eseguo gli step successivi
-				if (!ErrorManager.getInstance().hasError()) {
-					logger.debug("START CheckAnnullamentiEdmaFacade");
-					CheckAnnullamentiEdmaFacade.execute();
-					logger.debug("STOP CheckAnnullamentiEdmaFacade");
-				}
+//				if (!ErrorManager.getInstance().hasError()) {
+//					logger.debug("START CheckAnnullamentiEdmaFacade");
+//					CheckAnnullamentiEdmaFacade.execute();
+//					logger.debug("STOP CheckAnnullamentiEdmaFacade");
+//				}
 
 				// se errore non eseguo gli step successivi
 				if (!ErrorManager.getInstance().hasError()) {
@@ -48,11 +48,11 @@ public class DmAlmCheckAnnullamenti {
 			}
 
 			// CHECK ANNULLAMENTI DI SFERA
-			if (ExecutionManager.getInstance().isExecutionSfera()) {
-				logger.debug("START CheckAnnullamentiSferaFacade");
-				CheckAnnullamentiSferaFacade.execute();
-				logger.debug("STOP CheckAnnullamentiSferaFacade");
-			}
+//			if (ExecutionManager.getInstance().isExecutionSfera()) {
+//				logger.debug("START CheckAnnullamentiSferaFacade");
+//				CheckAnnullamentiSferaFacade.execute();
+//				logger.debug("STOP CheckAnnullamentiSferaFacade");
+//			}
 		} catch (DAOException e) {
 			logger.error(e.getMessage(), e);
 		} catch (SQLException e) {

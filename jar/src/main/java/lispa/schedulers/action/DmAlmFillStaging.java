@@ -120,12 +120,13 @@ public class DmAlmFillStaging {
 				 */
 
 				// SIRE
-				sire = new Thread(new SGRCMSireRunnable(logger,
-						dataEsecuzioneDeleted));
+				logger.info("Salto Staging fonte SGRCM");
+//				sire = new Thread(new SGRCMSireRunnable(logger,
+//						dataEsecuzioneDeleted));
 
 				// SISS
-				siss = new Thread(new SGRCMSissRunnable(logger,
-						dataEsecuzioneDeleted));
+//				siss = new Thread(new SGRCMSissRunnable(logger,
+//						dataEsecuzioneDeleted));
 
 				//edma.start();
 				//edma.join();
@@ -157,8 +158,8 @@ public class DmAlmFillStaging {
 				}
 
 				// SGR_CM parte dolo dopo il completamento di EDMA e ORESTE
-				siss.start();
-				siss.join();
+//				siss.start();
+//				siss.join();
 
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
@@ -168,8 +169,8 @@ public class DmAlmFillStaging {
 					return;
 				}
 
-				sire.start();
-				sire.join();
+//				sire.start();
+//				sire.join();
 
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {
@@ -179,8 +180,8 @@ public class DmAlmFillStaging {
 					return;
 				}
 
-				FillCurrentWorkitems.delete(logger);
-				FillCurrentWorkitems.execute(logger);
+//				FillCurrentWorkitems.delete(logger);
+//				FillCurrentWorkitems.execute(logger);
 
 				if (lispa.schedulers.manager.ErrorManager.getInstance()
 						.hasError()) {

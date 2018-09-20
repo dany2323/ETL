@@ -456,7 +456,6 @@ public class RichiestaSupportoDAO {
 			//return the result set
             rs = (ResultSet)ocs.getObject(1);
             
-			logger.debug("Query Eseguita!");
 			while (rs.next()) {
 				// Elabora il risultato
 				DmalmRichiestaSupporto bean = new DmalmRichiestaSupporto();

@@ -211,7 +211,7 @@ public class AsmFacade {
 								modificato = true;
 							}
 
-							if (modificato) {
+							if (modificato && dataEsecuzione.compareTo(row.get(asm.dataInizioValidita))>0) {
 								righeModificate++;
 
 								// STORICIZZO

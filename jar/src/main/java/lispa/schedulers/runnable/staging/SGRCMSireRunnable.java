@@ -25,12 +25,13 @@ public class SGRCMSireRunnable implements Runnable {
 	@Override
 	public void run() {
 		logger.info("START FillStagingSgrCmSire");
-				
+		logger.info("START Current SIRE");
 		// SIRE CURRENT
 		FillSGRCMFacade.delete(REPOSITORY_SIRE, SCHEMA_CURRENT, logger, dataEsecuzioneDeleted);
 		FillSGRCMFacade.execute(REPOSITORY_SIRE, SCHEMA_CURRENT, logger);
-		
-		// SIRE HISTORY
+		logger.info("STOP Current SIRE");
+
+//		// SIRE HISTORY
 		FillSGRCMFacade.delete(REPOSITORY_SIRE, SCHEMA_HISTORY, logger, dataEsecuzioneDeleted);
 		FillSGRCMFacade.execute(REPOSITORY_SIRE, SCHEMA_HISTORY, logger);
 		

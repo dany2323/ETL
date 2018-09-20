@@ -20,7 +20,7 @@ public class QDmalmAnomaliaProdotto extends com.mysema.query.sql.RelationalPathB
 
     private static final long serialVersionUID = -1899584881;
 
-    public static final QDmalmAnomaliaProdotto dmalmAnomaliaProdotto = new QDmalmAnomaliaProdotto("DMALM_ANOMALIA_PRODOTTO");
+    public static final QDmalmAnomaliaProdotto dmalmAnomaliaProdotto = new QDmalmAnomaliaProdotto("T_DMALM_ANOMALIA_PRODOTTO");
 
     public final StringPath annullato = createString("ANNULLATO");
 

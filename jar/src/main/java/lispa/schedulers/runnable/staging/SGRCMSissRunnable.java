@@ -25,14 +25,14 @@ public class SGRCMSissRunnable implements Runnable {
 	@Override
 	public void run() {
 		logger.info("START FillStagingSgrCmSiss");
-		
+		logger.info("START Current SISS");
 		// SISS CURRENT
 		FillSGRCMFacade.delete(REPOSITORY_SISS, SCHEMA_CURRENT, logger, dataEsecuzioneDeleted);
 		FillSGRCMFacade.execute(REPOSITORY_SISS, SCHEMA_CURRENT, logger);
-		
+		logger.info("STOP Current SISS");
 		// SISS HISTORY
-		FillSGRCMFacade.delete(REPOSITORY_SISS, SCHEMA_HISTORY, logger, dataEsecuzioneDeleted);
-		FillSGRCMFacade.execute(REPOSITORY_SISS, SCHEMA_HISTORY, logger);
+//		FillSGRCMFacade.delete(REPOSITORY_SISS, SCHEMA_HISTORY, logger, dataEsecuzioneDeleted);
+//		FillSGRCMFacade.execute(REPOSITORY_SISS, SCHEMA_HISTORY, logger);
 		
 		logger.info("STOP FillStagingSgrCmSiss");
 	}

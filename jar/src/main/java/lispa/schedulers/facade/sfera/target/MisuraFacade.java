@@ -144,7 +144,7 @@ public class MisuraFacade {
 								modificato = true;
 							}
 
-							if (modificato) {
+							if (modificato && dataEsecuzione.compareTo(row.get(misura.dataStoricizzazione))>0) {
 								righeModificate++;
 
 								// STORICIZZO

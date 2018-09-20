@@ -163,6 +163,7 @@ public class CheckProjectStorFacade {
 			throws DAOException, PropertiesReaderException {
 		try {
 
+			Timestamp dataStoricizzazione;
 			for (Workitem_Type type : Workitem_Type.values()) {
 				ConnectionManager cm = null;
 				Connection conn = null;
@@ -186,18 +187,10 @@ public class CheckProjectStorFacade {
 								case "anomalia":
 									QDmalmAnomaliaProdotto anomalia2 = new QDmalmAnomaliaProdotto(
 											"anomalia2");
-									QDmalmAnomaliaProdotto anomalia3 = new QDmalmAnomaliaProdotto(
-											"anomalia3");
 									pk = query
 											.from(anomalia)
 											.where(anomalia.dmalmProjectFk02.eq(history
 													.getDmalmProjectPk()))
-											.where(anomalia.cdAnomalia.notIn(new SQLSubQuery()
-													.from(anomalia3)
-													.where(anomalia3.cdAnomalia.eq(anomalia.cdAnomalia))
-													.where(anomalia3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
-													.list(anomalia3.cdAnomalia)))
-											.where(anomalia.dtStoricizzazione.loe(p.getDtInizioValidita()))
 											.where(anomalia.dtStoricizzazione
 													.in(new SQLSubQuery()
 															.from(anomalia2)
@@ -221,23 +214,30 @@ public class CheckProjectStorFacade {
 																a, p);
 												if (!exist) {
 													//System.out.println("Pk"+i+" CD_ANOMALIA"+a.getCdAnomalia()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
-													if (a.getRankStatoAnomalia() == 1) {
-														AnomaliaProdottoDAO
-																.updateRankFlagUltimaSituazione(
-																		a,
-																		new Double(
-																				0),
-																		new Short(
-																				"0"));
+													if(dataEsecuzione.compareTo(a.getDtStoricizzazione())>0){
+														if (a.getRankStatoAnomalia() == 1) {
+															AnomaliaProdottoDAO
+																	.updateRankFlagUltimaSituazione(
+																			a,
+																			new Double(
+																					0),
+																			new Short(
+																					"0"));
 													}
-													a.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													a.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													AnomaliaProdottoDAO
-															.insertAnomaliaProdottoUpdate(
-																	p.getDtInizioValidita(),
-																	a, false);
+														
+														a.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														a.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														AnomaliaProdottoDAO
+																.insertAnomaliaProdottoUpdate(
+																		dataEsecuzione,
+																		a, false);
+													}else{
+														a.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														AnomaliaProdottoDAO.updateDmalmAnomaliaProdotto(a);
+													}
 												}
 											}
 										}
@@ -246,17 +246,10 @@ public class CheckProjectStorFacade {
 								case "defect":
 									QDmalmDifettoProdotto difetto2 = new QDmalmDifettoProdotto(
 											"difetto2");
-									QDmalmDifettoProdotto difetto3 = new QDmalmDifettoProdotto(
-													"difetto3");
 									pk = query
 											.from(difetto)
 											.where(difetto.dmalmProjectFk02.eq(history
 													.getDmalmProjectPk()))
-											.where(difetto.cdDifetto.notIn(new SQLSubQuery()
-													.from(difetto3)
-													.where(difetto3.cdDifetto.eq(difetto.cdDifetto))
-													.where(difetto3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
-													.list(difetto3.cdDifetto)))
 											.where(difetto.dtStoricizzazione
 													.in(new SQLSubQuery()
 															.from(difetto2)
@@ -279,23 +272,29 @@ public class CheckProjectStorFacade {
 																d, p);
 												//System.out.println("Pk"+pk+" CD_DIFETTO"+d.getCdDifetto()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
 												if (!exist) {
-													if (d.getRankStatoDifetto() == 1) {
+													if(dataEsecuzione.compareTo(d.getDtStoricizzazione())>0){
+														if (d.getRankStatoDifetto() == 1) {
+															DifettoDAO
+																	.updateRankFlagUltimaSituazione(
+																			d,
+																			new Double(
+																					0),
+																			new Short(
+																					"0"));
+														}
+														d.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														DifettoDAO
-																.updateRankFlagUltimaSituazione(
-																		d,
-																		new Double(
-																				0),
-																		new Short(
-																				"0"));
+																.insertDifettoProdottoUpdate(
+																		dataEsecuzione,
+																		d, false);
+													}else{
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														DifettoDAO.updateDmalmDifettoProdotto(d);
 													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													DifettoDAO
-															.insertDifettoProdottoUpdate(
-																	dataEsecuzione,
-																	d, false);
 												}
 											}
 										}
@@ -329,21 +328,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaProgetto(
 																pss, p);
 												if (!exist) {
-													if (pss.getRankStatoProgSvilS() == 1) {
+													if(dataEsecuzione.compareTo(pss.getDtStoricizzazione())>0){
+														if (pss.getRankStatoProgSvilS() == 1) {
+															ProgettoSviluppoSviluppoDAO
+																	.updateRank(
+																			pss,
+																			new Double(
+																					0));
+														}
+														pss.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														pss.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ProgettoSviluppoSviluppoDAO
-																.updateRank(
-																		pss,
-																		new Double(
-																				0));
+																.insertProgettoSviluppoSvilUpdate(
+																		dataEsecuzione,
+																		pss, false);
+													}else{
+														pss.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ProgettoSviluppoSviluppoDAO.updateProgettoSviluppoSvil(pss);
 													}
-													pss.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													pss.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgettoSviluppoSviluppoDAO
-															.insertProgettoSviluppoSvilUpdate(
-																	dataEsecuzione,
-																	pss, false);
 												}
 											}
 										}
@@ -377,21 +382,28 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaDocumento(
 																d, p);
 												if (!exist) {
-													if (d.getRankStatoDocumento() == 1) {
+													if(dataEsecuzione.compareTo(d.getDtStoricizzazione())>0){
+														if (d.getRankStatoDocumento() == 1) {
+															DocumentoDAO
+																	.updateRank(
+																			d,
+																			new Double(
+																					0));
+														}
+														d.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														DocumentoDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
+																.insertDocumentoUpdate(
+																		dataEsecuzione,
+																		d, false);
 													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													DocumentoDAO
-															.insertDocumentoUpdate(
-																	dataEsecuzione,
-																	d, false);
+													else{
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														DocumentoDAO.updateDocumento(d);
+													}
 												}
 											}
 										}
@@ -424,21 +436,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaManutenzione(
 																m, p);
 												if (!exist) {
-													if (m.getRankStatoManutenzione() == 1) {
+													if(dataEsecuzione.compareTo(m.getDtStoricizzazione())>0){
+														if (m.getRankStatoManutenzione() == 1) {
+															ManutenzioneDAO
+																	.updateRank(
+																			m,
+																			new Double(
+																					0));
+														}
+														m.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														m.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ManutenzioneDAO
-																.updateRank(
-																		m,
-																		new Double(
-																				0));
+																.insertManutenzioneUpdate(
+																		dataEsecuzione,
+																		m, false);
+													}else{
+														m.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ManutenzioneDAO.updateManutenzione(m);
 													}
-													m.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													m.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ManutenzioneDAO
-															.insertManutenzioneUpdate(
-																	dataEsecuzione,
-																	m, false);
 												}
 											}
 										}
@@ -472,19 +490,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaTestCase(
 																t, p);
 												if (!exist) {
-													if (t.getRankStatoTestcase() == 1) {
-														TestCaseDAO.updateRank(
-																t,
-																new Double(0));
+													if(dataEsecuzione.compareTo(t.getDtStoricizzazione())>0){
+														if (t.getRankStatoTestcase() == 1) {
+															TestCaseDAO.updateRank(
+																	t,
+																	new Double(0));
+														}
+														t.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														t.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														TestCaseDAO
+																.insertTestCaseUpdate(
+																		dataEsecuzione,
+																		t, false);
+													}else{
+														t.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														TestCaseDAO.updateTestCase(t);
+														
 													}
-													t.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													t.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													TestCaseDAO
-															.insertTestCaseUpdate(
-																	dataEsecuzione,
-																	t, false);
+														
 												}
 											}
 										}
@@ -516,17 +542,23 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaTask(t,
 																p);
 												if (!exist) {
-													if (t.getRankStatoTask() == 1) {
-														TaskDAO.updateRank(t,
-																new Double(0));
+													if(dataEsecuzione.compareTo(t.getDtStoricizzazione())>0){
+														if (t.getRankStatoTask() == 1) {
+															TaskDAO.updateRank(t,
+																	new Double(0));
+														}
+														t.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														t.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														TaskDAO.insertTaskUpdate(
+																dataEsecuzione, t,
+																false);
+													}else{
+														t.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														TaskDAO.updateTask(t);
 													}
-													t.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													t.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													TaskDAO.insertTaskUpdate(
-															dataEsecuzione, t,
-															false);
 												}
 											}
 										}
@@ -560,21 +592,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaRelease(
 																r, p);
 												if (!exist) {
-													if (r.getRankStatoReleasediprog() == 1) {
+													if(dataEsecuzione.compareTo(r.getDtStoricizzazione())>0){
+														if (r.getRankStatoReleasediprog() == 1) {
+															ReleaseDiProgettoDAO
+																	.updateRank(
+																			r,
+																			new Double(
+																					0));
+														}
+														r.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ReleaseDiProgettoDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
+																.insertReleaseDiProgettoUpdate(
+																		dataEsecuzione,
+																		r, false);
+													}else {
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ReleaseDiProgettoDAO.updateReleaseDiProgetto(r);
 													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ReleaseDiProgettoDAO
-															.insertReleaseDiProgettoUpdate(
-																	dataEsecuzione,
-																	r, false);
 												}
 											}
 										}
@@ -607,21 +645,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaProgramma(
 																d, p);
 												if (!exist) {
-													if (d.getRankStatoProgramma() == 1) {
+													if(dataEsecuzione.compareTo(d.getDtStoricizzazione())>0){
+														if (d.getRankStatoProgramma() == 1) {
+															ProgrammaDAO
+																	.updateRank(
+																			d,
+																			new Double(
+																					0));
+														}
+														d.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ProgrammaDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
+																.insertProgrammaUpdate(
+																		dataEsecuzione,
+																		d, false);
+													}else {
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ProgrammaDAO.updateProgramma(d);
 													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgrammaDAO
-															.insertProgrammaUpdate(
-																	dataEsecuzione,
-																	d, false);
 												}
 											}
 										}
@@ -655,21 +699,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaSottoProgramma(
 																s, p);
 												if (!exist) {
-													if (s.getRankStatoSottoprogramma() == 1) {
+													if(dataEsecuzione.compareTo(s.getDtStoricizzazione())>0){
+														if (s.getRankStatoSottoprogramma() == 1) {
+															SottoprogrammaDAO
+																	.updateRank(
+																			s,
+																			new Double(
+																					0));
+														}
+														s.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														s.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														SottoprogrammaDAO
-																.updateRank(
-																		s,
-																		new Double(
-																				0));
+																.insertSottoprogrammaUpdate(
+																		dataEsecuzione,
+																		s, false);
+													}else{
+														s.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														SottoprogrammaDAO.updateSottoprogramma(s);
 													}
-													s.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													s.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													SottoprogrammaDAO
-															.insertSottoprogrammaUpdate(
-																	dataEsecuzione,
-																	s, false);
 												}
 											}
 										}
@@ -702,21 +752,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaProgetto(
 																d, p);
 												if (!exist) {
-													if (d.getRankStatoProgettoDemand() == 1) {
+													if(dataEsecuzione.compareTo(d.getDtStoricizzazione())>0){
+														if (d.getRankStatoProgettoDemand() == 1) {
+															ProgettoDemandDAO
+																	.updateRank(
+																			d,
+																			new Double(
+																					0));
+														}
+														d.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ProgettoDemandDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
+																.insertProgettoDemandUpdate(
+																		dataEsecuzione,
+																		d, false);
+													}else {
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ProgettoDemandDAO.updateProgettoDemand(d);
 													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgettoDemandDAO
-															.insertProgettoDemandUpdate(
-																	dataEsecuzione,
-																	d, false);
 												}
 											}
 										}
@@ -749,21 +805,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaProgetto(
 																d, p);
 												if (!exist) {
-													if (d.getRankStatoProgSvilD() == 1) {
+													if(dataEsecuzione.compareTo(d.getDtStoricizzazione())>0){
+														if (d.getRankStatoProgSvilD() == 1) {
+															ProgettoSviluppoDemandDAO
+																	.updateRank(
+																			d,
+																			new Double(
+																					0));
+														}
+														d.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ProgettoSviluppoDemandDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
+																.insertProgettoSviluppoDemUpdate(
+																		dataEsecuzione,
+																		d, false);
+													} else {
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ProgettoSviluppoDemandDAO.updateProgettoSviluppoDem(d);
 													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgettoSviluppoDemandDAO
-															.insertProgettoSviluppoDemUpdate(
-																	dataEsecuzione,
-																	d, false);
 												}
 											}
 										}
@@ -796,21 +858,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaRichiesta(
 																r, p);
 												if (!exist) {
-													if (r.getRankStatoRichManutenzione() == 1) {
+													if(dataEsecuzione.compareTo(r.getDtStoricizzazione())>0){
+														if (r.getRankStatoRichManutenzione() == 1) {
+															RichiestaManutenzioneDAO
+																	.updateRank(
+																			r,
+																			new Double(
+																					0));
+														}
+														r.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														RichiestaManutenzioneDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
+																.insertRichiestaManutenzioneUpdate(
+																		dataEsecuzione,
+																		r, false);
+													}else{
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														RichiestaManutenzioneDAO.updateRichiestaManutenzione(r);
 													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													RichiestaManutenzioneDAO
-															.insertRichiestaManutenzioneUpdate(
-																	dataEsecuzione,
-																	r, false);
 												}
 											}
 										}
@@ -841,17 +909,23 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaFase(f,
 																p);
 												if (!exist) {
-													if (f.getRankStatoFase() == 1) {
-														FaseDAO.updateRank(f,
-																new Double(0));
+													if(dataEsecuzione.compareTo(f.getDtStoricizzazione())>0){
+														if (f.getRankStatoFase() == 1) {
+															FaseDAO.updateRank(f,
+																	new Double(0));
+														}
+														f.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														f.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														FaseDAO.insertFaseUpdate(
+																dataEsecuzione, f,
+																false);
+													} else{
+														f.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														FaseDAO.updateFase(f);
 													}
-													f.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													f.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													FaseDAO.insertFaseUpdate(
-															dataEsecuzione, f,
-															false);
 												}
 											}
 										}
@@ -881,17 +955,23 @@ public class CheckProjectStorFacade {
 												boolean exist = PeiDAO
 														.checkEsistenzaPei(f, p);
 												if (!exist) {
-													if (f.getRankStatoPei() == 1) {
-														PeiDAO.updateRank(f,
-																new Double(0));
+													if(dataEsecuzione.compareTo(f.getDtStoricizzazione())>0){
+														if (f.getRankStatoPei() == 1) {
+															PeiDAO.updateRank(f,
+																	new Double(0));
+														}
+														f.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														f.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														PeiDAO.insertPeiUpdate(
+																dataEsecuzione, f,
+																false);
+													} else{
+														f.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														PeiDAO.updatePei(f);
 													}
-													f.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													f.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													PeiDAO.insertPeiUpdate(
-															dataEsecuzione, f,
-															false);
 												}
 											}
 
@@ -925,21 +1005,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaProgetto(
 																d, p);
 												if (!exist) {
-													if (d.getRankStatoProgettoEse() == 1) {
+													if(dataEsecuzione.compareTo(d.getDtStoricizzazione())>0){
+														if (d.getRankStatoProgettoEse() == 1) {
+															ProgettoEseDAO
+																	.updateRank(
+																			d,
+																			new Double(
+																					0));
+														}
+														d.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ProgettoEseDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
+																.insertProgettoEseUpdate(
+																		dataEsecuzione,
+																		d, false);
+													}else{
+														d.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ProgettoEseDAO.updateProgettoEse(d);
 													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgettoEseDAO
-															.insertProgettoEseUpdate(
-																	dataEsecuzione,
-																	d, false);
 												}
 											}
 										}
@@ -968,25 +1054,31 @@ public class CheckProjectStorFacade {
 											DmalmReleaseIt r = ReleaseItDAO
 													.getReleaseIt(i);
 											if (r != null) {
-												boolean exist = ReleaseItDAO
-														.checkEsistenzaRelease(
-																r, p);
-												if (!exist) {
-													if (r.getRankStatoReleaseIt() == 1) {
+												if(dataEsecuzione.compareTo(r.getDtStoricizzazione())>0){
+													boolean exist = ReleaseItDAO
+															.checkEsistenzaRelease(
+																	r, p);
+													if (!exist) {
+														if (r.getRankStatoReleaseIt() == 1) {
+															ReleaseItDAO
+																	.updateRank(
+																			r,
+																			new Double(
+																					0));
+														}
+														r.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ReleaseItDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
+																.insertReleaseItUpdate(
+																		dataEsecuzione,
+																		r, false);
 													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
+												}else{
 													r.setDmalmProjectFk02(p
 															.getDmalmProjectPk());
-													ReleaseItDAO
-															.insertReleaseItUpdate(
-																	dataEsecuzione,
-																	r, false);
+													ReleaseItDAO.updateReleaseIt(r);
 												}
 											}
 										}
@@ -1018,17 +1110,23 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaBuild(b,
 																p);
 												if (!exist) {
-													if (b.getRankStatoBuild() == 1) {
-														BuildDAO.updateRank(b,
-																new Double(0));
+													if(dataEsecuzione.compareTo(b.getDtStoricizzazione())>0){
+														if (b.getRankStatoBuild() == 1) {
+															BuildDAO.updateRank(b,
+																	new Double(0));
+														}
+														b.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														b.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														BuildDAO.insertBuildUpdate(
+																dataEsecuzione, b,
+																false);
+													} else{
+														b.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														BuildDAO.updateBuild(b);
 													}
-													b.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													b.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													BuildDAO.insertBuildUpdate(
-															dataEsecuzione, b,
-															false);
 												}
 											}
 										}
@@ -1061,18 +1159,25 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaTask(t,
 																p);
 												if (!exist) {
-													if (t.getRankStatoTaskIt() == 1) {
-														TaskItDAO.updateRank(t,
-																new Double(0));
+													
+													if(dataEsecuzione.compareTo(t.getDtStoricizzazione())>0){
+														if (t.getRankStatoTaskIt() == 1) {
+															TaskItDAO.updateRank(t,
+																	new Double(0));
+														}
+														t.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														t.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														TaskItDAO
+																.insertTaskItUpdate(
+																		dataEsecuzione,
+																		t, false);
+													} else {
+														t.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														TaskItDAO.updateTaskIt(t);
 													}
-													t.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													t.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													TaskItDAO
-															.insertTaskItUpdate(
-																	dataEsecuzione,
-																	t, false);
 												}
 											}
 										}
@@ -1105,21 +1210,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaRichiesta(
 																r, p);
 												if (!exist) {
-													if (r.getRankStatoRichiestaGest() == 1) {
+													if(dataEsecuzione.compareTo(r.getDtStoricizzazione())>0){
+														if (r.getRankStatoRichiestaGest() == 1) {
+															RichiestaGestioneDAO
+																	.updateRank(
+																			r,
+																			new Double(
+																					0));
+														}
+														r.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														RichiestaGestioneDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
+																.insertRichiestaGestioneUpdate(
+																		dataEsecuzione,
+																		r, false);
+													} else {
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														RichiestaGestioneDAO.updateTask(r);
 													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													RichiestaGestioneDAO
-															.insertRichiestaGestioneUpdate(
-																	dataEsecuzione,
-																	r, false);
 												}
 											}
 										}
@@ -1152,21 +1263,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaAnomalia(
 																a, p);
 												if (!exist) {
-													if (a.getRankStatoAnomaliaAss() == 1) {
+													if(dataEsecuzione.compareTo(a.getDtStoricizzazione())>0){
+														if (a.getRankStatoAnomaliaAss() == 1) {
+															AnomaliaAssistenzaDAO
+																	.updateRank(
+																			a,
+																			new Double(
+																					0));
+														}
+														a.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														a.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														AnomaliaAssistenzaDAO
-																.updateRank(
-																		a,
-																		new Double(
-																				0));
+																.insertAnomaliaAssistenzaUpdate(
+																		dataEsecuzione,
+																		a, false);
+													} else {
+														a.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														AnomaliaAssistenzaDAO.updateAnomaliaAssistenza(a);
 													}
-													a.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													a.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													AnomaliaAssistenzaDAO
-															.insertAnomaliaAssistenzaUpdate(
-																	dataEsecuzione,
-																	a, false);
 												}
 											}
 										}
@@ -1199,21 +1316,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaRelease(
 																r, p);
 												if (!exist) {
-													if (r.getRankStatoRelServizi() == 1) {
+													if(dataEsecuzione.compareTo(r.getDtStoricizzazione())>0){
+														if (r.getRankStatoRelServizi() == 1) {
+															ReleaseServiziDAO
+																	.updateRank(
+																			r,
+																			new Double(
+																					0));
+														}
+														r.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ReleaseServiziDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
+																.insertReleaseServiziUpdate(
+																		dataEsecuzione,
+																		r, false);
+													}else {
+														r.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ReleaseServiziDAO.updateReleaseServizi(r);
 													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ReleaseServiziDAO
-															.insertReleaseServiziUpdate(
-																	dataEsecuzione,
-																	r, false);
 												}
 											}
 										}
@@ -1247,21 +1370,27 @@ public class CheckProjectStorFacade {
 														.checkEsistenzaClassificatore(
 																c, p);
 												if (!exist) {
-													if (c.getRankStatoClassificatore() == 1) {
+													if(dataEsecuzione.compareTo(c.getDtStoricizzazione())>0){
+														if (c.getRankStatoClassificatore() == 1) {
+															ClassificatoreDAO
+																	.updateRank(
+																			c,
+																			new Double(
+																					0));
+														}
+														c.setDtStoricizzazione(p
+																.getDtInizioValidita());
+														c.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
 														ClassificatoreDAO
-																.updateRank(
-																		c,
-																		new Double(
-																				0));
+																.insertClassUpdate(
+																		dataEsecuzione,
+																		c, false);
+													}else {
+														c.setDmalmProjectFk02(p
+																.getDmalmProjectPk());
+														ClassificatoreDAO.updateClass(c);
 													}
-													c.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													c.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ClassificatoreDAO
-															.insertClassUpdate(
-																	dataEsecuzione,
-																	c, false);
 												}
 											}
 										}
@@ -1277,12 +1406,17 @@ public class CheckProjectStorFacade {
 										if (r != null) {
 											boolean exist = RichiestaSupportoDAO.checkEsistenzaRichiestaSupporto(r, p);
 											if (!exist) {
-												if (r.getRankStatoRichSupporto() == 1) {
-													RichiestaSupportoDAO.updateRank(r, new Double(0));
+												if(dataEsecuzione.compareTo(r.getDataStoricizzazione())>0){
+													if (r.getRankStatoRichSupporto() == 1) {
+														RichiestaSupportoDAO.updateRank(r, new Double(0));
+													}
+													r.setDataStoricizzazione(p.getDtInizioValidita());
+													r.setDmalmProjectFk02(p.getDmalmProjectPk());
+													RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, r, false);
+												} else {
+													r.setDmalmProjectFk02(p.getDmalmProjectPk());
+													RichiestaSupportoDAO.updateRichiestaSupporto(r);
 												}
-												r.setDataStoricizzazione(p.getDtInizioValidita());
-												r.setDmalmProjectFk02(p.getDmalmProjectPk());
-												RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, r, false);
 											}
 										}
 									}

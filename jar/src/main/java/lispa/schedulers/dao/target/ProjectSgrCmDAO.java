@@ -1325,7 +1325,7 @@ public class ProjectSgrCmDAO {
 			relListSire = querySire
 					.from(proj)
 					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.setDtFineValidita9999()).or(proj.dtInizioValidita.goe(dataEsecuzione)))
 					.where(proj.idRepository.eq(DmAlmConstants.REPOSITORY_SIRE))
 					.where(proj.idProject.notIn(new SQLSubQuery()
 							.from(qSireHistoryProject)
@@ -1340,7 +1340,7 @@ public class ProjectSgrCmDAO {
 			relListSiss = querySiss
 					.from(proj)
 					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.setDtFineValidita9999()).or(proj.dtInizioValidita.goe(dataEsecuzione)))
 					.where(proj.idRepository.eq(DmAlmConstants.REPOSITORY_SISS))
 					.where(proj.idProject.notIn(new SQLSubQuery()
 							.from(qSissHistoryProject)
@@ -1809,7 +1809,7 @@ public class ProjectSgrCmDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			projects = query.from(proj).where(proj.idProject.eq(idProject))
-					//.where(proj.dtFineValidita.eq(dataChiusura))
+					.where(proj.dtFineValidita.eq(dataChiusura))
 					.where(proj.idRepository.eq(repo)).list(proj.all());
 
 		} catch (Exception e) {
@@ -1936,8 +1936,8 @@ public class ProjectSgrCmDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			projects = query.from(proj)
-					.where(proj.dtCaricamento.eq(dataEsecuzione))
-					.orderBy(proj.idRepository.asc(), proj.idProject.asc(),proj.dtInizioValidita.asc())
+					.where(proj.dtInizioValidita.goe(dataEsecuzione))
+					.orderBy(proj.dtInizioValidita.asc())
 					.list(proj.all());
 
 		} catch (Exception e) {
