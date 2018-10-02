@@ -157,7 +157,7 @@ public class StgElUnitaOrganizzativeDAO {
 					.values(StringTemplate
 							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
 							DmAlmConstants.ROOT_UO, DmAlmConstants.ROOT_UO,
-							DataEsecuzione.getInstance().getDataEsecuzione(),
+							DateUtils.setDtInizioValidita1900(),
 							DateUtils.setDtFineValidita9999(),
 							DmAlmConstants.ROOT_UO_DESC, null, null, null, 1,
 							null, null, 0, 0, 0, DmAlmConstants.ROOT_UO,
