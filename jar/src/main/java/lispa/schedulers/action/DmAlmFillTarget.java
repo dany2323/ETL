@@ -452,13 +452,13 @@ public class DmAlmFillTarget {
 					}
 					
 					// DM_ALM-350
-					logger.info("START RichiestaSupporto.execute "
+					/*logger.info("START RichiestaSupporto.execute "
 							+ new Date());
 					if (!alreadyExecuted(DmAlmConstants.TARGET_RICHIESTA_SUPPORTO)) {
 						RichiestaSupportoFacade.execute(dataEsecuzione);
 					} else {
 						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
+					}*/
 					// FINE DM_ALM-350
 	
 					if (ErrorManager.getInstance().hasError()) {

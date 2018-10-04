@@ -124,7 +124,7 @@ public class QDmalmAsm extends com.mysema.query.sql.RelationalPathBase<DmalmAsm>
     
     public final StringPath fip15LivelloCura = createString("FIP15_LV_CURA_GRAF_INT_UT_ASM");
     
-    public final StringPath errori = createString("ERRORI");
+    //public final StringPath errori = createString("ERRORI");
 
     public final com.mysema.query.sql.PrimaryKey<DmalmAsm> sysC0037829 = createPrimaryKey(dmalmAsmPk);
 

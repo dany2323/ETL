@@ -24,7 +24,7 @@ public class RichiestaSupportoDAO {
 	private static Logger logger = Logger.getLogger(RichiestaSupportoDAO.class);
 
 	public static List<DmalmRichiestaSupporto> getAllRichiestaSupporto(
-			Timestamp dataEsecuzione) throws Exception {
+			Timestamp dataEsecuzione) {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -81,12 +81,6 @@ public class RichiestaSupportoDAO {
 				richieste.add(bean);
 			}
 
-			if (rs != null) {
-				rs.close();
-			}
-			if (cs != null) {
-				cs.close();
-			}
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
@@ -95,8 +89,29 @@ public class RichiestaSupportoDAO {
 
 		} finally {
 			
+			if(cs!=null){
+				try {
+					cs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			if (cm != null) {
-				cm.closeConnection(connection);
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -173,6 +188,13 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			if(rs!=null)
+				try {
+					rs.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			if(ocs!=null)
 				try {
 					ocs.close();
@@ -266,6 +288,7 @@ public class RichiestaSupportoDAO {
 					e.printStackTrace();
 				}
 			}
+				
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
@@ -354,7 +377,7 @@ public class RichiestaSupportoDAO {
 	}
 
 	public static DmalmRichiestaSupporto getRichiestaSupporto(Integer pk)
-			throws DAOException {
+			{
 		
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -415,15 +438,34 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			if(rs!=null)
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			if(ocs!=null)
+				try {
+					ocs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			if (cm != null)
-				cm.closeConnection(connection);
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 
 		return bean;
 	}
 	
 	public static List<DmalmRichiestaSupporto> getRichiestaSupporto(Integer pk_proj, Integer typeQuery)
-			throws DAOException {
+			{
 		
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -447,7 +489,7 @@ public class RichiestaSupportoDAO {
 					break;
 			}
 			
-
+			
 		    ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.registerOutParameter(1, OracleTypes.CURSOR);
 			ocs.setInt(2, pk_proj);
@@ -495,8 +537,28 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			
+			if(rs!=null)
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			if(ocs!=null)
+				try {
+					ocs.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			if (cm != null)
-				cm.closeConnection(connection);
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 
 		return richieste;
@@ -504,7 +566,7 @@ public class RichiestaSupportoDAO {
 	
 
 	public static void updateWIRichiestaSupportoDeleted(DmalmRichiestaSupporto richiesta, Timestamp dataEsecuzione)
-			throws DAOException {
+			{
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -533,8 +595,20 @@ public class RichiestaSupportoDAO {
 				logger.info("Attenzione, non sono riuscito ad eliminare item con PK "+richiesta.getDmalmRichiestaSupportoPk());
 
 		} finally {
+			if(ocs!=null)
+				try {
+					ocs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			if (cm != null)
-				cm.closeConnection(connection);
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 	}
 	
@@ -568,6 +642,14 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
+			if(ocs!=null){
+				try {
+					ocs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}

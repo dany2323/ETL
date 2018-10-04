@@ -72,6 +72,7 @@ import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
+import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.manager.RecoverManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
@@ -111,7 +112,11 @@ public class TestWI extends TestCase {
 			}
 			final Timestamp dataEsecuzioneDeleted = DateUtils
 					.getAddDayToDate(-days);
+			QueryManager qm = QueryManager.getInstance();
 			
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_RANK_FATTI,
+					DmAlmConstants.M_SEPARATOR);
 			//loadWiAndCustomFieldInStaging("classificatore", 0L, 2000000L);
 //			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-09-04 11:47:00","yyyy-MM-dd HH:mm:00"));
 //

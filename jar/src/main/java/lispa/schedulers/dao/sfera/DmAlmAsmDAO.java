@@ -1174,44 +1174,44 @@ public class DmAlmAsmDAO {
 		return ret;
 	}
 
-	public static void updateErrorColumn(Tuple row, String error) throws DAOException {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		List<Tuple> asmList = new ArrayList<>();
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-			
-			
-			SQLQuery query = new SQLQuery(connection, dialect);
-			
-			asmList = query.from(asm)
-					.where(asm.idAsm.eq(row.get(asm.idAsm)))
-					.where(asm.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
-					.list(asm.all());
-			for(Tuple tuple:asmList){
-				
-				String errors= tuple.get(asm.errori);
-				errors+=error+";";
-				
-				new SQLUpdateClause(connection, dialect, asm)
-				.where(asm.idAsm.eq(row.get(asm.idAsm)))
-				.where(asm.dataFineValidita.eq(DateUtils
-						.setDtFineValidita9999()))
-				.set(asm.errori,errors);
-			}
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}finally{
-			
-			if(cm!=null)
-				cm.closeConnection(connection);
-		}
-		
-		
-	}
+//	public static void updateErrorColumn(Tuple row, String error) throws DAOException {
+//		ConnectionManager cm = null;
+//		Connection connection = null;
+//
+//		List<Tuple> asmList = new ArrayList<>();
+//
+//		try {
+//			cm = ConnectionManager.getInstance();
+//			connection = cm.getConnectionOracle();
+//			
+//			
+//			SQLQuery query = new SQLQuery(connection, dialect);
+//			
+//			asmList = query.from(asm)
+//					.where(asm.idAsm.eq(row.get(asm.idAsm)))
+//					.where(asm.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
+//					.list(asm.all());
+//			for(Tuple tuple:asmList){
+//				
+//				String errors= tuple.get(asm.errori);
+//				errors+=error+";";
+//				
+//				new SQLUpdateClause(connection, dialect, asm)
+//				.where(asm.idAsm.eq(row.get(asm.idAsm)))
+//				.where(asm.dataFineValidita.eq(DateUtils
+//						.setDtFineValidita9999()))
+//				.set(asm.errori,errors);
+//			}
+//			
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			logger.error(e.getMessage());
+//		}finally{
+//			
+//			if(cm!=null)
+//				cm.closeConnection(connection);
+//		}
+//		
+//		
+//	}
 }
