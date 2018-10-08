@@ -5,21 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
-import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLUpdateClause;
-
-import lispa.schedulers.bean.target.DmalmProdotto;
 import lispa.schedulers.bean.target.elettra.DmalmElFunzionalita;
 import lispa.schedulers.bean.target.elettra.DmalmElModuli;
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
@@ -28,8 +22,6 @@ import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzative;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.dao.oreste.ProdottiArchitettureDAO;
-import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
-import lispa.schedulers.dao.sfera.DmAlmAsmProdottoDAO;
 import lispa.schedulers.dao.target.elettra.ElettraFunzionalitaDAO;
 import lispa.schedulers.dao.target.elettra.ElettraModuliDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
@@ -37,28 +29,18 @@ import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.target.elettra.QDmalmElAmbienteTecnologicoClassificatori;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElFunzionalita;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElModuli;
-import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
-import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
-import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzative;
 import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.StringUtils;
 
 public class CheckAnnullamentiElettraFacade {
 	private static Logger logger = Logger.getLogger(CheckAnnullamentiElettraFacade.class);
 
 	private static SQLTemplates dialect = new HSQLDBTemplates();
-	private static QDmalmElPersonale personale = QDmalmElPersonale.qDmalmElPersonale;
-	private static QDmalmElUnitaOrganizzative unitaOrganizzativa = QDmalmElUnitaOrganizzative.qDmalmElUnitaOrganizzative;
-	private static QDmalmElAmbienteTecnologicoClassificatori ambienteTecnologicoClassificatori = QDmalmElAmbienteTecnologicoClassificatori.qDmalmElAmbienteTecnologicoClassificatori;
 	private static QDmalmElFunzionalita funzionalita = QDmalmElFunzionalita.qDmalmElFunzionalita;
 	private static QDmalmElModuli moduli = QDmalmElModuli.qDmalmElModuli;
-	private static QDmalmElProdottiArchitetture prodotti = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 
 	public static void execute(Timestamp dataEsecuzione) throws DAOException, SQLException {
 
@@ -346,64 +328,64 @@ public class CheckAnnullamentiElettraFacade {
 		
 	}
 
-	private static void checkAnnullamentiElModulo(Connection conn, List<Integer> listIdProdotti,
-			String tipoAnnullamento, Timestamp dataOggi) throws DAOException {
+//	private static void checkAnnullamentiElModulo(Connection conn, List<Integer> listIdProdotti,
+//			String tipoAnnullamento, Timestamp dataOggi) throws DAOException {
+//
+//		try {
+//			List<Integer> listIdModuli = new ArrayList<Integer>();
+//			SimpleDateFormat formatDate = new SimpleDateFormat("YYYYMMDD");
+//			String dataCaricamento = formatDate.format(dataOggi);
+//
+//			for (Integer id : listIdProdotti) {
+//				new SQLUpdateClause(conn, dialect, moduli).where(moduli.prodottoFk.eq(id))
+//						.set(moduli.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
+//						.set(moduli.annullato, tipoAnnullamento).set(moduli.dataAnnullamento, dataOggi).execute();
+//
+//				logger.debug("UPDATE "+moduli+" SET "+moduli.nome+"= #"+tipoAnnullamento+"##"+dataCaricamento+"#"+id
+//						+" AND "+moduli.annullato+" = "+tipoAnnullamento+ " AND "+moduli.dataAnnullamento+" = "+dataOggi
+//						+" WHERE "+moduli.prodottoFk+" = "+id);
+//				
+//				SQLQuery query = new SQLQuery(conn, dialect);
+//				List<Integer> listModuliPk = query.from(moduli).where(moduli.prodottoFk.eq(id)).list(moduli.moduloPk);
+//				listIdModuli.addAll(listModuliPk);
+//				
+//			}
+//			conn.commit();
+//			
+//			if (listIdModuli.size() > 0) {
+//				checkAnnullamentiElFunzionalita(conn, listIdModuli, tipoAnnullamento, dataOggi);
+//			}
+//		} catch (Exception e) {
+//			logger.error(e.getMessage(), e);
+//			ErrorManager.getInstance().exceptionOccurred(true, e);
+//		}
+//	}
 
-		try {
-			List<Integer> listIdModuli = new ArrayList<Integer>();
-			SimpleDateFormat formatDate = new SimpleDateFormat("YYYYMMDD");
-			String dataCaricamento = formatDate.format(dataOggi);
-
-			for (Integer id : listIdProdotti) {
-				new SQLUpdateClause(conn, dialect, moduli).where(moduli.prodottoFk.eq(id))
-						.set(moduli.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
-						.set(moduli.annullato, tipoAnnullamento).set(moduli.dataAnnullamento, dataOggi).execute();
-
-				logger.debug("UPDATE "+moduli+" SET "+moduli.nome+"= #"+tipoAnnullamento+"##"+dataCaricamento+"#"+id
-						+" AND "+moduli.annullato+" = "+tipoAnnullamento+ " AND "+moduli.dataAnnullamento+" = "+dataOggi
-						+" WHERE "+moduli.prodottoFk+" = "+id);
-				
-				SQLQuery query = new SQLQuery(conn, dialect);
-				List<Integer> listModuliPk = query.from(moduli).where(moduli.prodottoFk.eq(id)).list(moduli.moduloPk);
-				listIdModuli.addAll(listModuliPk);
-				
-			}
-			conn.commit();
-			
-			if (listIdModuli.size() > 0) {
-				checkAnnullamentiElFunzionalita(conn, listIdModuli, tipoAnnullamento, dataOggi);
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		}
-	}
-
-	private static void checkAnnullamentiElFunzionalita(Connection conn, List<Integer> listIdModuli,
-			String tipoAnnullamento, Timestamp dataOggi) throws DAOException {
-
-		try {
-
-			SimpleDateFormat formatDate = new SimpleDateFormat("YYYYMMDD");
-			String dataCaricamento = formatDate.format(dataOggi);
-			for (Integer id : listIdModuli) {
-
-				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.dmalmModuloFk01.eq(id))
-					.set(funzionalita.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
-					.set(funzionalita.annullato, tipoAnnullamento).set(funzionalita.dtAnnullamento, dataOggi)
-					.execute();
-				
-				logger.debug("UPDATE "+funzionalita+" SET "+funzionalita.nome+"= #"+tipoAnnullamento+"##"+dataCaricamento+"#"+id
-						+" AND "+funzionalita.annullato+" = "+tipoAnnullamento+ " AND "+funzionalita.dtAnnullamento+" = "+dataOggi
-						+" WHERE "+funzionalita.dmalmModuloFk01+" = "+id);
-			}
-			conn.commit();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		}
-	}
+//	private static void checkAnnullamentiElFunzionalita(Connection conn, List<Integer> listIdModuli,
+//			String tipoAnnullamento, Timestamp dataOggi) throws DAOException {
+//
+//		try {
+//
+//			SimpleDateFormat formatDate = new SimpleDateFormat("YYYYMMDD");
+//			String dataCaricamento = formatDate.format(dataOggi);
+//			for (Integer id : listIdModuli) {
+//
+//				new SQLUpdateClause(conn, dialect, funzionalita).where(funzionalita.dmalmModuloFk01.eq(id))
+//					.set(funzionalita.nome, "#"+tipoAnnullamento+"##"+dataCaricamento+"#"+id)
+//					.set(funzionalita.annullato, tipoAnnullamento).set(funzionalita.dtAnnullamento, dataOggi)
+//					.execute();
+//				
+//				logger.debug("UPDATE "+funzionalita+" SET "+funzionalita.nome+"= #"+tipoAnnullamento+"##"+dataCaricamento+"#"+id
+//						+" AND "+funzionalita.annullato+" = "+tipoAnnullamento+ " AND "+funzionalita.dtAnnullamento+" = "+dataOggi
+//						+" WHERE "+funzionalita.dmalmModuloFk01+" = "+id);
+//			}
+//			conn.commit();
+//
+//		} catch (Exception e) {
+//			logger.error(e.getMessage(), e);
+//			ErrorManager.getInstance().exceptionOccurred(true, e);
+//		}
+//	}
 
 	public static void checkAnnullamentiElUnitaOrganizzativa(Timestamp dataEsecuzione)
 			throws DAOException, SQLException {

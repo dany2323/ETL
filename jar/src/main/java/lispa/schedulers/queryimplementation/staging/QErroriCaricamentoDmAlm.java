@@ -34,6 +34,8 @@ public class QErroriCaricamentoDmAlm extends com.mysema.query.sql.RelationalPath
 
     public final StringPath recordErrore = createString("RECORD_ERRORE");
     
+    public final NumberPath<Integer> pkTarget = createNumber("PK_TARGET", Integer.class);
+    
     public final NumberPath<Integer> errorePk = createNumber("ERRORE_PK", Integer.class);
 
     public final com.mysema.query.sql.PrimaryKey<ErroriCaricamentoDmAlm> erroriCaricamentoDmAlmPk = createPrimaryKey(dataCaricamento, entitaTarget);

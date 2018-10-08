@@ -472,7 +472,10 @@ public final class DmAlmConstants {
 	public static final String SFERA_ANNULLATO_FISICAMENTE = "ANNULLATO FISICAMENTE";
 	public static final String SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH = "#ANNULLATO LOGICAMENTE##";
 	public static final String SFERA_ANNULLATO_FISICAMENTE_STARTSWITH = "#ANNULLATO FISICAMENTE##";
-
+	public static final String PK_TARGET_ASM = "DMALM_ASM_PK";
+	public static final String PK_TARGET_MISURA = "DMALM_MISURA_PK";
+	public static final String PK_TARGET_PROGETTO_SFERA = "DMALM_PROGETTO_SFERA_PK";
+	
 	//MPS
 	public static final String MPS_PATH = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PATH);
 	public static final String MPS_PREFISSO_AMBIENTE = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PREFISSO_AMBIENTE);

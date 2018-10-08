@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -471,5 +474,43 @@ public class MisuraUtils {
 				.get(dmalmAsm.fip15LivelloCura));
 
 		return asm;
+	}
+	
+	/* metodo che restituisce la chiave primaria della tabella target
+	 * collegata alla tabella di staging della Misura
+	 */
+	
+	public static Integer getPkTarget(String nomeCampoPk, String tabellaTarget, Integer idProgettoStgMisura) throws DAOException, SQLException {
+		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Integer pkValue = 0;
+		String querySql = "SELECT MAX("+nomeCampoPk+") FROM "+tabellaTarget+" WHERE ID_PROGETTO = ? AND DT_FINE_VALIDITA = ?";
+		
+		try {
+			conn = cm.getConnectionOracle();
+			ps = conn.prepareStatement(querySql);
+			ps.setInt(1, idProgettoStgMisura);
+			ps.setTimestamp(2, DateUtils.setDtFineValidita9999());
+			rs = ps.executeQuery();
+			if(rs.next())
+				pkValue = rs.getInt(1);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+			if (cm != null) {
+				cm.closeConnection(conn);
+			}
+		}
+		
+			
+		return pkValue;
 	}
 }
