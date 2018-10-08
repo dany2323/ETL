@@ -193,8 +193,8 @@ public final class DmAlmConstants {
 	//File .sql cancellazione associazioni non più valide tabella dmalm_user_roles_sgr
 	public static final String DELETE_OLD_USER_ROLES = "delete_old_user_roles.sql";
 	
-	public static final String ANNULLATO_LOGICAMENTE = "#ANNULLATO_LOGICAMENTE##";
-	public static final String ANNULLATO_FISICAMENTE = "#ANNULLATO_FISICAMENTE##";
+	public static final String ANNULLATO_LOGICAMENTE = "#ANNULLATO LOGICAMENTE##";
+	public static final String ANNULLATO_FISICAMENTE = "#ANNULLATO FISICAMENTE##";
 	public static final String UO_NON_TROVATA = "Non trovata";
 	public static final String UO_SUFFIX = "LI";
 	public static final String UO_IT = "LIA362";
@@ -314,10 +314,12 @@ public final class DmAlmConstants {
 	public static final String ELETTRA_ANN_AMBTEC_CLASSIF = "getannullamenti_el_ambtec_classif.sql";
 	public static final String ELETTRA_ANN_PERSONALE = "getannullamenti_el_personale.sql";
 	public static final String ELETTRA_ANN_FUNZIONALITA = "getannullamenti_el_funzionalita.sql";
+	public static final String ELETTRA_ANN_FUNZIONALITA_LOGICAMENTE = "getannullamenti_logicamente_el_funzionalita.sql";
 	public static final String ELETTRA_ANN_MODULO = "getannullamenti_el_modulo.sql";
+	public static final String ELETTRA_ANN_MODULO_LOGICAMENTE = "getannullamenti_logicamente_el_modulo.sql";
 	public static final String ELETTRA_ANN_PRODOTTO = "getannullamenti_el_prodotto.sql";
 	public static final String ELETTRA_ANN_PRODOTTO_FISICAMENTE= "getannullamenti_el_prodotto_fisicamente.sql";
-
+	public static final String ELETTRA_ANN_PRODOTTO_LOGICAMENTE="getannullamenti_el_prodotto_logico.sql";
 	// MESSAGGI ERRORE
 	// PRODOTTO
 	public static final String PRODOTTO_SIGLA_DUPLICATA = "Sigla Prodotto duplicata";
@@ -430,6 +432,8 @@ public final class DmAlmConstants {
 
 	public static final String ENABLER = "enable";
 	public static final String ANNULLATO_LOGICAMENTE_ELETTRA="ANNULLATO LOGICAMENTE";
+	public static final String ANNULLATO_FISICAMENTE_ELETTRA="SI";
+
 	public static final String UNMARKED = "UNMARKED";
 	
 	public static final String PROJECT_PATH_SUFFIX = "/.polarion/polarion-project.xml";
@@ -467,7 +471,8 @@ public final class DmAlmConstants {
 	public static final String SFERA_ANNULLATO_LOGICAMENTE = "ANNULLATO LOGICAMENTE";
 	public static final String SFERA_ANNULLATO_FISICAMENTE = "ANNULLATO FISICAMENTE";
 	public static final String SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH = "#ANNULLATO LOGICAMENTE##";
-	
+	public static final String SFERA_ANNULLATO_FISICAMENTE_STARTSWITH = "#ANNULLATO FISICAMENTE##";
+
 	//MPS
 	public static final String MPS_PATH = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PATH);
 	public static final String MPS_PREFISSO_AMBIENTE = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PREFISSO_AMBIENTE);
@@ -584,7 +589,7 @@ public final class DmAlmConstants {
 	public static String FLAG_ASM_IN_MANUTENZIONE_NON_PERMESSO="ESF054 - APP-ATT:FLAG_ASM_IN_MANUTENZIONE - Valore non permesso : ";
 	public static String COD_DIREZIONE_DEMAND_OBBLIGATORIO="ESF055 - APP-ATT:COD_DIREZIONE_DEMAND e' obbligatorio ";
 	public static String FORNITORE_MPP_NON_VALORIZZATO_SVILUPPO="ESF056 - PRJ-ATT:FORNITORE_MPP non e' valorizzabile per progetti di tipo 'Sviluppo' oppure 'Manutenzione evolutiva'";
-	public static String FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE="ESF0058 - PRJ-ATT:FORNITORE_SVILUPPO_MEV non e' valorizzabile per progetti di tipo 'Baseline'";
+	public static String FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE="ESF058 - PRJ-ATT:FORNITORE_SVILUPPO_MEV non e' valorizzabile per progetti di tipo 'Baseline'";
 	public static String COD_RDI_NO_PATTERN="ESF059 - PRJ-ATT: COD_ RDI non rispetta il pattern predefinito ";
 	public static String MP_PERCENT_CICLO_DI_VITA="ESF061 - PRJ-ATT:MP_PERCENT_CICLO_DI_VITA non e' valorizzabile per progetti di tipo 'Baseline'";
 	public static String MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO="ESF062 - PRJ-ATT:MP_PERCENT_CICLO_DI_VITA - Valore non permesso : ";

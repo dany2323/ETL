@@ -126,71 +126,124 @@ public class CheckSGRSIREProjectFacade implements Runnable {
 		int target_index = 0;
 		boolean is_match_false;
 		for (Template_Type template : Template_Type.values()) {
-			switch (template) {
-			case SVILUPPO:
-				try {
-					List<Tuple> projects = SireHistoryProjectDAO
-							.getProjectbyTemplate(template);
-					List<String> c_names = SireHistoryProjectDAO
-							.getProjectsC_Name(projects);
-					for (String c_name : c_names) {
-						if (c_name != null) {
-							is_match_false = !StringUtils.matchRegex(
-									c_name.trim(),
-									DmalmRegex.REGEXPATTERNSVILUPPO);
-							if (is_match_false) {
-								ErroriCaricamentoDAO
-										.insert(DmAlmConstants.FONTE_SGR_SIRE_CURRENT_PROJECT,
-												DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT,
-												c_name + " {" + template + "}",
-												DmAlmConstants.SGR_PROJECT_CNAME_MALFORMED,
-												DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-												dataEsecuzione);
-								errori_formattazione++;
+			if(template!=null){
+				switch (template) {
+				case SVILUPPO:
+					try {
+						List<Tuple> projects = SireHistoryProjectDAO
+								.getProjectbyTemplate(template);
+						List<String> c_names = SireHistoryProjectDAO
+								.getProjectsC_Name(projects);
+						for (String c_name : c_names) {
+							if (c_name != null) {
+								is_match_false = !StringUtils.matchRegex(
+										c_name.trim(),
+										DmalmRegex.REGEXPATTERNSVILUPPO);
+								if (is_match_false) {
+									ErroriCaricamentoDAO
+											.insert(DmAlmConstants.FONTE_SGR_SIRE_CURRENT_PROJECT,
+													DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT,
+													c_name + " {" + template + "}",
+													DmAlmConstants.SGR_PROJECT_CNAME_MALFORMED,
+													DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+													dataEsecuzione);
+									errori_formattazione++;
+								}
 							}
 						}
+					} catch (Exception e) {
+						logger.debug(e.toString());
 					}
-				} catch (Exception e) {
-					logger.debug(e.toString());
-				}
-
-				break;
-			case DEMAND:
-				try {
-
-					List<Tuple> projects = SireHistoryProjectDAO
-							.getProjectbyTemplate(template);
-					for (Tuple progetto : projects) {
-						String c_name = progetto.get(stgProjects.cName);
-						if (c_name != null) {
-							split = StringUtils.splitByRegex(c_name.trim(), "\\.");
-							String uo = split[0];
-							is_match_false = !StringUtils.matchRegex(uo.trim(),
-									DmalmRegex.REGEXPATTERNDEMAND);
-							if (split.length == 1 || is_match_false) {
-								errori_formattazione++;
+	
+					break;
+				case DEMAND:
+					try {
+	
+						List<Tuple> projects = SireHistoryProjectDAO
+								.getProjectbyTemplate(template);
+						for (Tuple progetto : projects) {
+							String c_name = progetto.get(stgProjects.cName);
+							if (c_name != null) {
+								split = StringUtils.splitByRegex(c_name.trim(), "\\.");
+								String uo = split[0];
+								is_match_false = !StringUtils.matchRegex(uo.trim(),
+										DmalmRegex.REGEXPATTERNDEMAND);
+								if (split.length == 1 || is_match_false) {
+									errori_formattazione++;
+									/*
+									 * se non matcha il regex specifico aumento il
+									 * numero di errori e trovo un' ipotetica UO
+									 * parsando il path in C_Location l'informazione
+									 * viene salvata in Record_errore
+									 */
+									c_location = progetto.get(stgProjects.cLocation);
+									c_locationToArray = StringUtils.splitByRegex(
+											c_location, "\\/");
+									target_index = StringUtils.getCloserIndex(
+											c_locationToArray, path_marker,
+											DmalmRegex.REGEXPATTERNDEMAND);
+									target = c_locationToArray[target_index];
+									if (StringUtils.matchRegex(
+											StringUtils.splitByRegex(target, "\\.")[0],
+											DmalmRegex.REGEXPATTERNDEMAND))
+										target = StringUtils
+												.splitByRegex(target, "\\.")[0];
+									ErroriCaricamentoDAO
+											.insert(DmAlmConstants.FONTE_SGR_SIRE_CURRENT_PROJECT,
+													DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT,
+													c_name
+															+ " {"
+															+ template
+															+ "}  Unità organizzativa : LI"
+															+ target,
+													DmAlmConstants.SGR_PROJECT_CNAME_MALFORMED,
+													DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+													dataEsecuzione);
+								}
+							}
+						}
+					} catch (Exception e) {
+						logger.debug(e.toString());
+	
+					}
+					break;
+				case IT:
+					break;
+				case SERDEP:
+					try {
+						List<Tuple> projects = SireHistoryProjectDAO
+								.getProjectbyTemplate(template);
+						for (Tuple progetto : projects) {
+							String c_tracker = progetto
+									.get(stgProjects.cTrackerprefix);
+							is_match_false = !StringUtils
+									.matchRegex(c_tracker.trim(),
+											DmalmRegex.REGEXPATTERNSERDEP);
+							if (is_match_false) {
 								/*
 								 * se non matcha il regex specifico aumento il
 								 * numero di errori e trovo un' ipotetica UO
-								 * parsando il path in C_Location l'informazione
-								 * viene salvata in Record_errore
+								 * parsando il path l'informazione viene salvata in
+								 * Record_errore
 								 */
+								errori_formattazione++;
 								c_location = progetto.get(stgProjects.cLocation);
 								c_locationToArray = StringUtils.splitByRegex(
 										c_location, "\\/");
 								target_index = StringUtils.getCloserIndex(
 										c_locationToArray, path_marker,
-										DmalmRegex.REGEXPATTERNDEMAND);
+										DmalmRegex.REGEXPATTERNSERDEP);
 								target = c_locationToArray[target_index];
-								if (StringUtils.matchRegex(
+								if (StringUtils.findRegex(
 										StringUtils.splitByRegex(target, "\\.")[0],
-										DmalmRegex.REGEXPATTERNDEMAND))
+										DmalmRegex.REGEXPATTERNSERDEP)) {
 									target = StringUtils
 											.splitByRegex(target, "\\.")[0];
+								}
 								ErroriCaricamentoDAO
 										.insert(DmAlmConstants.FONTE_SGR_SIRE_CURRENT_PROJECT,
 												DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT,
-												c_name
+												c_tracker
 														+ " {"
 														+ template
 														+ "}  Unità organizzativa : LI"
@@ -198,94 +251,43 @@ public class CheckSGRSIREProjectFacade implements Runnable {
 												DmAlmConstants.SGR_PROJECT_CNAME_MALFORMED,
 												DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 												dataEsecuzione);
+	
 							}
 						}
+					} catch (Exception e) {
+						logger.debug(e.toString());
+	
 					}
-				} catch (Exception e) {
-					logger.debug(e.toString());
-
-				}
-				break;
-			case IT:
-				break;
-			case SERDEP:
-				try {
-					List<Tuple> projects = SireHistoryProjectDAO
-							.getProjectbyTemplate(template);
-					for (Tuple progetto : projects) {
-						String c_tracker = progetto
-								.get(stgProjects.cTrackerprefix);
-						is_match_false = !StringUtils
-								.matchRegex(c_tracker.trim(),
-										DmalmRegex.REGEXPATTERNSERDEP);
-						if (is_match_false) {
-							/*
-							 * se non matcha il regex specifico aumento il
-							 * numero di errori e trovo un' ipotetica UO
-							 * parsando il path l'informazione viene salvata in
-							 * Record_errore
-							 */
-							errori_formattazione++;
-							c_location = progetto.get(stgProjects.cLocation);
-							c_locationToArray = StringUtils.splitByRegex(
-									c_location, "\\/");
-							target_index = StringUtils.getCloserIndex(
-									c_locationToArray, path_marker,
-									DmalmRegex.REGEXPATTERNSERDEP);
-							target = c_locationToArray[target_index];
-							if (StringUtils.findRegex(
-									StringUtils.splitByRegex(target, "\\.")[0],
-									DmalmRegex.REGEXPATTERNSERDEP)) {
-								target = StringUtils
-										.splitByRegex(target, "\\.")[0];
+					break;
+				case ASSISTENZA:
+					try {
+						List<Tuple> projects = SireHistoryProjectDAO
+								.getProjectbyTemplate(template);
+	
+						for (Tuple progetto : projects) {
+							String c_name = progetto.get(stgProjects.cName);
+							is_match_false = !StringUtils.matchRegex(c_name.trim(),
+									DmalmRegex.REGEXPATTERNASSISTENZA);
+							if (is_match_false) {
+								errori_formattazione++;
+								ErroriCaricamentoDAO
+										.insert(DmAlmConstants.FONTE_SGR_SIRE_CURRENT_PROJECT,
+												DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT,
+												c_name + " {" + template + "}",
+												DmAlmConstants.SGR_PROJECT_CNAME_MALFORMED,
+												DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+												dataEsecuzione);
 							}
-							ErroriCaricamentoDAO
-									.insert(DmAlmConstants.FONTE_SGR_SIRE_CURRENT_PROJECT,
-											DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT,
-											c_tracker
-													+ " {"
-													+ template
-													+ "}  Unità organizzativa : LI"
-													+ target,
-											DmAlmConstants.SGR_PROJECT_CNAME_MALFORMED,
-											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											dataEsecuzione);
-
+	
 						}
+					} catch (Exception e) {
+						logger.debug(e.toString());
+	
 					}
-				} catch (Exception e) {
-					logger.debug(e.toString());
-
+					break;
+				default:
+					break;
 				}
-				break;
-			case ASSISTENZA:
-				try {
-					List<Tuple> projects = SireHistoryProjectDAO
-							.getProjectbyTemplate(template);
-
-					for (Tuple progetto : projects) {
-						String c_name = progetto.get(stgProjects.cName);
-						is_match_false = !StringUtils.matchRegex(c_name.trim(),
-								DmalmRegex.REGEXPATTERNASSISTENZA);
-						if (is_match_false) {
-							errori_formattazione++;
-							ErroriCaricamentoDAO
-									.insert(DmAlmConstants.FONTE_SGR_SIRE_CURRENT_PROJECT,
-											DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT,
-											c_name + " {" + template + "}",
-											DmAlmConstants.SGR_PROJECT_CNAME_MALFORMED,
-											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											dataEsecuzione);
-						}
-
-					}
-				} catch (Exception e) {
-					logger.debug(e.toString());
-
-				}
-				break;
-			default:
-				break;
 			}
 
 		}

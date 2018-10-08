@@ -5,7 +5,6 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_TARGET_
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -451,7 +450,7 @@ public class DmAlmFillTarget {
 					} else {
 						logger.info("Entità già elaborata per la data di esecuzione ");
 					}
-					/*
+					
 					// DM_ALM-350
 					logger.info("START RichiestaSupporto.execute "
 							+ new Date());
@@ -459,7 +458,7 @@ public class DmAlmFillTarget {
 						RichiestaSupportoFacade.execute(dataEsecuzione);
 					} else {
 						logger.info("Entità già elaborata per la data di esecuzione ");
-					}*/
+					}
 					// FINE DM_ALM-350
 	
 					if (ErrorManager.getInstance().hasError()) {

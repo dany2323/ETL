@@ -19,6 +19,7 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.template.StringTemplate;
 
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
 import lispa.schedulers.exception.DAOException;
@@ -31,6 +32,9 @@ import lispa.schedulers.utils.ConfigUtils;
 import lispa.schedulers.utils.DateUtils;
 
 public class ElettraPersonaleDAO {
+	private ElettraPersonaleDAO(){
+		
+	}
 	private static Logger logger = Logger.getLogger(ElettraPersonaleDAO.class);
 
 	private static SQLTemplates dialect = new HSQLDBTemplates();
@@ -92,16 +96,17 @@ public class ElettraPersonaleDAO {
 				personale.add(bean);
 			}
 
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
 			if (rs != null) {
 				rs.close();
 			}
 			if (ps != null) {
 				ps.close();
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new DAOException(e);
-		} finally {
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
@@ -234,7 +239,8 @@ public class ElettraPersonaleDAO {
 							personale.getCdVisibilita(),
 							personale.getCodiceFiscale(),
 							personale.getCognome(),
-							personale.getPersonalePk(),
+							personale.getPersonalePk()==null?StringTemplate
+									.create("STG_PERSONALE_SEQ.nextval"):personale.getPersonalePk(),
 							personale.getDataAttivazione(),
 							personale.getDataCaricamento(),
 							personale.getDataDisattivazione(),
@@ -249,7 +255,7 @@ public class ElettraPersonaleDAO {
 							personale.getIdentificatore(),
 							personale.getIndirizzoEmail(),
 							personale.getInterno(), personale.getMatricola(),
-							personale.getNome(), personale.getNote(), null,
+							personale.getNome(), personale.getNote(), personale.getAnnullato(),
 							null,
 							0, 0).execute();
 
@@ -311,7 +317,9 @@ public class ElettraPersonaleDAO {
 							personale.getCdSuperiore(),
 							personale.getCdVisibilita(),
 							personale.getCodiceFiscale(),
-							personale.getCognome(), personale.getPersonalePk(),
+							personale.getCognome(), 
+							personale.getPersonalePk()==null?StringTemplate
+									.create("STG_PERSONALE_SEQ.nextval"):personale.getPersonalePk(),
 							personale.getDataAttivazione(),
 							personale.getDataCaricamento(),
 							personale.getDataDisattivazione(),
@@ -327,8 +335,8 @@ public class ElettraPersonaleDAO {
 							personale.getMatricola(),
 							personale.getNome(), 
 							personale.getNote(), 
-							null,
-							null,
+							personale.getAnnullato(),
+							personale.getDataAnnullamento(),
 							personale.getUnitaOrganizzativaFk(),
 							personale.getUnitaOrganizzativaFlatFk()).execute();
 
@@ -566,7 +574,7 @@ public class ElettraPersonaleDAO {
 		}
 	}
 	
-	public static Integer getPersonalePk() throws DAOException {
+	public static Integer getPersonalePk() throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -586,12 +594,7 @@ public class ElettraPersonaleDAO {
 			rs.next();
 			resPersonalePk = rs.getInt("PERSONALE_PK")+1;
 			
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
+			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
@@ -600,6 +603,12 @@ public class ElettraPersonaleDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
 		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
@@ -654,5 +663,37 @@ public class ElettraPersonaleDAO {
 		}
 
 		return resPersonalePk;
+	}
+
+	public static DmalmElPersonale getBeanFromTuple(ResultSet rs) throws SQLException {
+		DmalmElPersonale bean= new DmalmElPersonale();
+		
+		bean.setPersonalePk(rs.getInt("DMALM_PERSONALE_PK"));
+		bean.setIdEdma(rs.getString("ID_EDMA"));
+		bean.setCodicePersonale(rs.getString("CD_PERSONALE"));
+		bean.setDataInizioValiditaEdma(rs
+				.getTimestamp("DT_INIZIO_VALIDITA_EDMA"));
+		bean.setDataFineValiditaEdma(rs
+				.getTimestamp("DT_FINE_VALIDITA_EDMA"));
+		bean.setDataAttivazione(rs.getTimestamp("DT_ATTIVAZIONE"));
+		bean.setDataDisattivazione(rs.getTimestamp("DT_DISATTIVAZIONE"));
+		bean.setNote(rs.getString("NOTE"));
+		bean.setInterno(rs.getInt("INTERNO"));
+		bean.setCodiceResponsabile(rs.getString("CD_RESPONSABILE"));
+		bean.setIndirizzoEmail(rs.getString("INDIRIZZO_EMAIL"));
+		bean.setNome(rs.getString("NOME"));
+		bean.setCognome(rs.getString("COGNOME"));
+		bean.setMatricola(rs.getString("MATRICOLA"));
+		bean.setCodiceFiscale(rs.getString("CODICE_FISCALE"));
+		bean.setIdentificatore(rs.getString("IDENTIFICATORE"));
+		bean.setIdGrado(rs.getInt("ID_GRADO"));
+		bean.setIdSede(rs.getInt("ID_SEDE"));
+		bean.setCdSuperiore(rs.getString("CD_SUPERIORE"));
+		bean.setCdEnte(rs.getString("CD_ENTE"));
+		bean.setCdVisibilita(rs.getString("CD_VISIBILITA"));
+		bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
+		bean.setAnnullato("NO");
+		return bean;
+		
 	}
 }

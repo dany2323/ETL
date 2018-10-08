@@ -33,7 +33,7 @@ public class CheckLinkAsmSferaUnitaOrganizzativaFacade {
 			logger.debug("START CheckLinkAsmSferaUnitaOrganizzativaFacade");
 
 			// tutte le asm nuove o quelle per le quali la FK Unità
-			// Organizzativa è variata
+			// Organizzativa è variata 
 			asmList = DmAlmAsmDAO.getAllAsmUnitaOrganizzativa();
 
 			logger.debug("asmList.size: " + asmList.size());

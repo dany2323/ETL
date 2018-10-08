@@ -1,7 +1,7 @@
 package lispa.schedulers.utils.enums;
 
 public enum Workitem_Type {
-	
+	anomalia,
 	documento,
 	testcase,
 	pei,
@@ -13,7 +13,6 @@ public enum Workitem_Type {
 	sottoprogramma,
 	programma,
 	taskit,
-	anomalia,
 	anomalia_assistenza,	
 	release_it,
 	sman,

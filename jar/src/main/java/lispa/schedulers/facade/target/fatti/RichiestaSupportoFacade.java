@@ -37,13 +37,13 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 
 		try	{
-			//staging_richieste  = RichiestaSupportoDAO.getAllRichiestaSupporto(dataEsecuzione);
+			staging_richieste  = RichiestaSupportoDAO.getAllRichiestaSupporto(dataEsecuzione);
 			
-			//RichiestaSupportoOdsDAO.delete();
+			RichiestaSupportoOdsDAO.delete();
 			
-			//logger.debug("START -> Popolamento Richiesta Supporto, "+staging_richieste.size()+ " richiese di supporto");
+			logger.debug("START -> Popolamento Richiesta Supporto, "+staging_richieste.size()+ " richiese di supporto");
 			
-			//RichiestaSupportoOdsDAO.insert(staging_richieste, dataEsecuzione);
+			RichiestaSupportoOdsDAO.insert(staging_richieste, dataEsecuzione);
 			
 			List<DmalmRichiestaSupporto> x = RichiestaSupportoOdsDAO.getAll();
 			
@@ -54,7 +54,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 				richieste_tmp = richiesta;
 				
 				target_richieste = RichiestaSupportoDAO.getRichiestaSupporto(richiesta);
-
+				
 				if(target_richieste.size()==0) {
 					righeNuove++;
 					richiesta.setDataCambioStatoRichSupp(richiesta.getDataModificaRecord());

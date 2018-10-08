@@ -2,7 +2,6 @@ package lispa.schedulers.dao.target;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
@@ -20,7 +19,7 @@ import com.mysema.query.types.Projections;
 
 public class ClassificatoreOdsDAO {
 
-
+	ClassificatoreOdsDAO(){}
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
 	private static QDmalmClassificatoreOds ods = QDmalmClassificatoreOds.dmalmClassificatore;
@@ -51,8 +50,7 @@ public class ClassificatoreOdsDAO {
 
 	}
 
-	public static void insert(List<DmalmClassificatore> stg,
-			Timestamp dataEsecuzione) throws DAOException, SQLException {
+	public static void insert(List<DmalmClassificatore> stg) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -66,7 +64,6 @@ public class ClassificatoreOdsDAO {
 			for (DmalmClassificatore classificatore : stg) {
 
 				new SQLInsertClause(connection, dialect, ods)
-
 						.columns(ods.cd_classificatore, ods.cf_ambito,
 								ods.cf_area, ods.cf_riferimenti,
 								ods.cf_scheda_servizio,
@@ -111,7 +108,7 @@ public class ClassificatoreOdsDAO {
 								classificatore.getDtModificaClassif(),
 								classificatore.getIdAutoreClassificatore(),
 								classificatore.getIdRepository(),
-								new Double(1),
+								Double.valueOf(1),
 								classificatore.getRankStatoClassifMese(),
 								classificatore.getStgPk(),
 								classificatore.getTitoloClassificatore(),
@@ -131,8 +128,6 @@ public class ClassificatoreOdsDAO {
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-			e.printStackTrace();
 			throw new DAOException(e);
 		} finally {
 			if (cm != null)
@@ -167,8 +162,6 @@ public class ClassificatoreOdsDAO {
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-			e.printStackTrace();
 			throw new DAOException(e);
 		} finally {
 			if (cm != null)

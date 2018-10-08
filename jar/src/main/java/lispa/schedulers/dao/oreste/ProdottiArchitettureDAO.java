@@ -16,6 +16,7 @@ import lispa.schedulers.queryimplementation.fonte.oreste.OresteDmAlmProdottiArch
 import lispa.schedulers.queryimplementation.staging.oreste.QStgProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
+import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
@@ -37,7 +38,9 @@ public class ProdottiArchitettureDAO {
 			.getLogger(ProdottiArchitettureDAO.class);
 	private static QDmalmElProdottiArchitetture dmalmElProdArc = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 	private static QDmalmAsmProdottiArchitetture dmalmAsmProdArch = QDmalmAsmProdottiArchitetture.qDmalmAsmProdottiArchitetture;
+	private static QDmalmAsm dmalmAsm = QDmalmAsm.dmalmAsm;
 	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
+	
 	public static long fillProdottiArchitetture() throws Exception {
 
 		ConnectionManager cm = null;
@@ -583,6 +586,37 @@ public class ProdottiArchitettureDAO {
 		return prodotti;
 	}
 
+	public static List<String> getAsmByProductPk(Integer productPk)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<String> applicazioni = new ArrayList<String>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			// tutti i Prodotti Aperti non associati ad una Asm  (escluso il tappo prodottoPk = 0)
+			applicazioni = query.distinct()
+					.from(dmalmAsmProdArch)
+					.join(dmalmAsm)
+					.on(dmalmAsm.dmalmAsmPk.eq(dmalmAsmProdArch.dmalmAsmPk))
+					.where(dmalmAsmProdArch.dmalmProdottoPk.eq(productPk))
+					.list(dmalmAsm.applicazione);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+		return applicazioni;
+	}
+
+	
 	public static void closeProductArchDuplicate() throws DAOException {
 		try {
 			QueryManager qm = null;

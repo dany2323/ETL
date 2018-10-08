@@ -254,7 +254,7 @@ public class CheckSferaMisureFacade implements Runnable {
 				return errore;
 			if((row.get(stgMisura.idAsm) != null))
 					idAsmAlreadyChecked.add(row.get(stgMisura.idAsm));
-			if (row.get(stgMisura.idAsm) == null
+			/*if (row.get(stgMisura.idAsm) == null
 					|| row.get(stgMisura.idAsm) == 0) {
 				errore++;
 				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
@@ -263,7 +263,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.IDAPP_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
-			}
+			}*/
 
 			if (row.get(stgMisura.applicazione) == null
 					|| row.get(stgMisura.applicazione).isEmpty()) {
@@ -288,9 +288,9 @@ public class CheckSferaMisureFacade implements Runnable {
 							.startsWith(
 									DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH)
 					&& !(row.get(stgMisura.permissions).equals(
-							"Admin (RESPAPP);Admin (READWRITE);")
-						|| row.get(stgMisura.permissions).equals(
-								"Admin (READWRITE);Admin (RESPAPP);")))  {
+							StringUtils.getMaskedValue("Admin (RESPAPP);Admin (READWRITE);"))
+						|| (row.get(stgMisura.permissions).equals(
+								StringUtils.getMaskedValue("Admin (READWRITE);Admin (RESPAPP);"))))) {
 				errore++;
 				ErroriCaricamentoDAO.insert(
 						DmAlmConstants.FONTE_MISURA,
@@ -728,7 +728,7 @@ public class CheckSferaMisureFacade implements Runnable {
 			Timestamp dataEsecuzione) {
 		int errore = 0;
 		try {
-
+			/*
 			if (row.get(stgMisura.idProgetto) == null
 					|| row.get(stgMisura.idProgetto) == 0) {
 				errore++;
@@ -738,7 +738,8 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.IDPRJ_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
-			}
+			}*/
+			/*
 			if (row.get(stgMisura.idMsr) == null
 					|| row.get(stgMisura.idMsr) == 0) {
 				errore++;
@@ -748,7 +749,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.IDMEA_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						dataEsecuzione);
-			}
+			}*/
 
 			if (row.get(stgMisura.nomeProgetto) == null
 					|| row.get(stgMisura.nomeProgetto).isEmpty()) {
