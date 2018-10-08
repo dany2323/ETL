@@ -480,13 +480,13 @@ public class MisuraUtils {
 	 * collegata alla tabella di staging della Misura
 	 */
 	
-	public static Integer getPkTarget(String nomeCampoPk, String tabellaTarget, Integer idProgettoStgMisura) throws DAOException, SQLException {
+	public static Integer getPkTarget(String nomeCampoPk, String tabellaTarget, String idTabellaAsm, Integer idProgettoStgMisura) throws DAOException, SQLException {
 		
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Integer pkValue = 0;
-		String querySql = "SELECT MAX("+nomeCampoPk+") FROM "+tabellaTarget+" WHERE ID_PROGETTO = ? AND DT_FINE_VALIDITA = ?";
+		String querySql = "SELECT MAX("+nomeCampoPk+") FROM "+tabellaTarget+" WHERE "+idTabellaAsm+" = ? AND DT_FINE_VALIDITA = ?";
 		
 		try {
 			conn = cm.getConnectionOracle();

@@ -82,7 +82,7 @@ public class CheckLinkSferaSgrCmFacade {
 								"Progetto nome errato impossibile cercare link Sfera/Wi: "
 										+ WI_modified,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, Integer.parseInt(String.valueOf(progetto.get(prog.idProgetto)))),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, Integer.parseInt(String.valueOf(progetto.get(prog.idProgetto)))),
 								dataEsecuzione);
 					}
 	
@@ -109,7 +109,7 @@ public class CheckLinkSferaSgrCmFacade {
 									//		+ nomeprog,
 											+ MisuraUtils.ProgettoSferaToString(progetto),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, Integer.parseInt(String.valueOf(progetto.get(prog.idProgetto)))),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, Integer.parseInt(String.valueOf(progetto.get(prog.idProgetto)))),
 									dataEsecuzione);
 						} else {
 							if (sviWiTupla.size() != 0) {
@@ -169,7 +169,7 @@ public class CheckLinkSferaSgrCmFacade {
 															.ProgettoSferaToString(progetto)+ " stato WI:"+ errSvi.get(progSv.cdProgSvilS)+" resolved ("+progSv.dtRisoluzioneProgSvilS+")",
 													DmAlmConstants.NO_CORR_STATO_WI_MISURA,
 													DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-													MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, Integer.parseInt(String.valueOf(progetto.get(prog.idProgetto)))),
+													MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, Integer.parseInt(String.valueOf(progetto.get(prog.idProgetto)))),
 													dataEsecuzione);
 								}
 							}
@@ -187,7 +187,7 @@ public class CheckLinkSferaSgrCmFacade {
 															+ errMan.get(man.dtRisoluzioneManutenzione)
 															+ ")  e lo stato della MISURA SFERA",
 													DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-													MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, Integer.parseInt(String.valueOf(progetto.get(prog.idProgetto)))),
+													MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, Integer.parseInt(String.valueOf(progetto.get(prog.idProgetto)))),
 													dataEsecuzione);
 								}
 							}

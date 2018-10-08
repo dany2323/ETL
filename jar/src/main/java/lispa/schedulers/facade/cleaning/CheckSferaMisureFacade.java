@@ -119,7 +119,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										MisuraUtils.MisuraToString(row),
 										"APP-ATT:INDICATORE_ALM_PER_VALIDAZIONE_ASM non e' valorizzato correttamente",
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 										dataEsecuzione);
 					}
 				}
@@ -141,7 +141,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										MisuraUtils.MisuraToString(row),
 										"PRJ-ATT:INDICATORE_ALM_PER_VALIDAZ_PROGETTO_ASM non e' valorizzato correttamente",
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 										dataEsecuzione);
 					}
 				}
@@ -204,7 +204,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								"IdMea deve essere valorizzato ",
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 					}
 				}
@@ -274,7 +274,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.APPLICAZIONE_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -300,7 +300,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.PERMESSION_NON_PERMESSO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -312,7 +312,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.DENOMINAZIONE_ASM_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -324,7 +324,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.VAF_PREDEFINITO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			} else {
 				if (!row.get(stgMisura.vafPredefinito).equals("1")) {
@@ -336,7 +336,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							DmAlmConstants.VAF_PREDEFINITO_NON_PERMESSO
 									+ row.get(stgMisura.vafPredefinito),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 			}
@@ -349,7 +349,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.DATA_ULTIMO_AGGIORN_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -361,7 +361,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.NOME_AUTORE_ULTIMO_AGGIORN_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -373,7 +373,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.DATA_INIIZIO_VALIDITA_ASM,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -403,7 +403,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.DENOM_UTENTI_FINALI_ASM_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -426,7 +426,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.DENOM_UTENTI_FINALI_ASM_PATTERN
 								+ row.get(stgMisura.pAppDenomUtentiFinaliAsm),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -474,7 +474,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.FLAG_ASM_SERVIZIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			} else {
 				if (!row.get(stgMisura.pAppFlagServizioComune).equals("SI")
@@ -488,7 +488,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									DmAlmConstants.FLAG_ASM_SERVIZIO_COMUNE
 											+ row.get(stgMisura.pAppFlagServizioComune),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -502,7 +502,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.FLAG_ASM_DA_MISURARE_OBBLIGATORIO_FP,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			} else {
 				if (!row.get(stgMisura.pAppFlagMisurareSvimevFp).equals("SI")
@@ -516,7 +516,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									DmAlmConstants.FLAG_ASM_DA_MISURARE_VALORE_NON_PERMESSO
 											+ row.get(stgMisura.pAppFlagMisurareSvimevFp),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -530,7 +530,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.FLAG_ASM_DA_MISURARE_IN_FP_OBBLIGATORIO,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			} else {
 				if (!row.get(stgMisura.pAppFlagDamisurarePatrFp).equals("SI")
@@ -544,7 +544,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									DmAlmConstants.FLAG_ASM_DA_MISURARE_IN_FP_NO_PERMESSO
 											+ row.get(stgMisura.pAppFlagDamisurarePatrFp),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 
 				}
@@ -558,7 +558,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.FLAG_ASM_IN_MANUTENZIONE_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			} else {
 				if (!row.get(stgMisura.pAppFlagInManutenzione).equals("SI")
@@ -576,7 +576,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									DmAlmConstants.FLAG_ASM_IN_MANUTENZIONE_NON_PERMESSO
 											+ row.get(stgMisura.pAppFlagInManutenzione),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -589,7 +589,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.COD_DIREZIONE_DEMAND_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -602,7 +602,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.ACCOUNT_AUTORE_ULTIMO_AGGIORN,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -617,7 +617,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.UTILIZZATA_NON_PERMESSO
 								+ row.get(stgMisura.utilizzata),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -633,7 +633,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.PROPRIETA_LEGALE_NON_PERMESSO
 								+ row.get(stgMisura.proprietaLegale),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -649,7 +649,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.INCLUDE_DB_NON_PERMESSO
 								+ row.get(stgMisura.includiInDbPatrimonio),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -665,7 +665,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.DATA_ULTIMO_AGGIORN_FORMATO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -683,7 +683,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.DATA_INIIZIO_VALIDITA_ASM_FORMATO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -701,7 +701,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.DATA_FINE_VALIDITA_ASM_FORMATO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -715,7 +715,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.DATA_FINE_VALIDITA_ASM_MINORE_INIZIO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -732,7 +732,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										MisuraUtils.MisuraToString(row),
 										DmAlmConstants.DATA_ULTIMO_AGGIORN_SUP_CORRENTE,
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 										dataEsecuzione);
 					}
 				} else {
@@ -742,7 +742,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							MisuraUtils.MisuraToString(row),
 							"ERRORE SU DATA_ESECUZIONE ",
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 			}
@@ -789,7 +789,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.PROGETTO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -805,7 +805,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.AUDIT_MONITORE_NO_VAL_IN_BASELINE,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -821,7 +821,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.AUDIT_INDICE_VERIFICABILITA_NO_VAL_BASELINE,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -837,7 +837,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.COD_RDI_NO_PATTERN,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -854,7 +854,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.FORNITORE_MPP_NON_VALORIZZATO_SVILUPPO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -877,7 +877,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								"WARNING-Non possono esserci 2 Misure MPP di tipo diverso in uno stesso progetto PATR-",
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -912,7 +912,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -948,7 +948,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.MP_PERCENT_CICLO_DI_VITA,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -980,7 +980,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											DmAlmConstants.MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO
 													+ row.get(stgMisura.pPrjMpPercentCicloDiVita),
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 											dataEsecuzione);
 						}
 					} catch (Exception e) {
@@ -992,7 +992,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										DmAlmConstants.MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO
 												+ row.get(stgMisura.pPrjMpPercentCicloDiVita),
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 										dataEsecuzione);
 					}
 				}
@@ -1010,7 +1010,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_BASELINE,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1038,7 +1038,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_VALIDO
 													+ row.get(stgMisura.pPrjFccFattCorrezTotal),
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 											dataEsecuzione);
 						}
 					} catch (Exception e) {
@@ -1050,7 +1050,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_VALIDO
 												+ row.get(stgMisura.pPrjFccFattCorrezTotal),
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 										dataEsecuzione);
 					}
 				}
@@ -1084,7 +1084,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlApplicLgFpDwh),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1099,7 +1099,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_GIS_NO_PERMESSO
 								+ row.get(stgMisura.pPrjFlagApplLgFpGis),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1114,7 +1114,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_APPLICATIBILITA_LG_FP_EDMA_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlApplLgFpEdma),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1129,7 +1129,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_MWARE_NO_PERMESSO
 								+ row.get(stgMisura.pPrjFlagApplLgFpMware),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1144,7 +1144,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_SITIWEB
 								+ row.get(stgMisura.pPrjFlApplLgFpWeb),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1160,7 +1160,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo01),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1176,7 +1176,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo02),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1192,7 +1192,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlAmbTecTransBatRep),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1207,7 +1207,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_GIS_VALORE_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlagAmbTecnGis),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1222,7 +1222,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PORTALI_NON_PERMESSO
 								+ row.get(stgMisura.pPrjAmbTecnPortali),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1239,7 +1239,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PIAT_SPEC_ENT_NON_PERMESSO
 										+ row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr),
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -1255,7 +1255,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo01),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1271,7 +1271,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO
 								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo02),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 
 			}
@@ -1287,7 +1287,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						"progetto PATR- sfera non di tipo ‘Baseline’ ",
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1303,7 +1303,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						"progetto BAS - sfera non di tipo ‘Baseline’ ",
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1325,7 +1325,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									DmAlmConstants.DATA_SFERA_FORMATO_NON_CORRETTO
 											+ row.get(stgMisura.nomeProgetto),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 
@@ -1337,7 +1337,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									"Progetto - la data del progetto sfera e' 20130524 ",
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1361,7 +1361,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						"IdMea e' obbligatorio ",
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1374,7 +1374,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.PROGETTO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1386,7 +1386,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.MISURA_OBBLIGATORIA,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1398,7 +1398,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.APPROCIO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			} else {
 				if (!row.get(stgMisura.approccio).equals("Standard")
@@ -1411,7 +1411,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							DmAlmConstants.APPROCIO_VALORE_NON_PERMESSO
 									+ row.get(stgMisura.approccio),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 			}
@@ -1424,7 +1424,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.METODO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			} else {
 				if (!row.get(stgMisura.metodo).equals("FP IFPUG 4.3.1")
@@ -1437,7 +1437,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							DmAlmConstants.METODO_VALORE_NON_PERMESSO
 									+ row.get(stgMisura.metodo),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 			}
@@ -1450,7 +1450,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.STATO_MISURA_OBBLOGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1462,7 +1462,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.FP_PESATI_MIN_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1474,7 +1474,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.FP_PESATI_UFP_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1486,7 +1486,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.FP_PESATI_MAX_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1498,7 +1498,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.FP_NON_PESATI_MIN_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1510,7 +1510,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.FP_NON_PESATI_UFP_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1522,7 +1522,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.FP_NON_PESATI_MAX_E_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1536,7 +1536,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.UTENTE_MISURATORE_OBBLIGATORIO
 								+ row.get(stgMisura.utenteMisuratore),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1556,7 +1556,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							"Misura - nome misura PATR- errato : "
 									+ row.get(stgMisura.nomeProgetto),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 			}
@@ -1578,7 +1578,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							"Misura - nome misura BAS errato : "
 									+ row.get(stgMisura.nomeProgetto),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 			}
@@ -1599,7 +1599,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							"Misura - nome misura ST errato : "
 									+ row.get(stgMisura.tipoProgetto),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 			}
@@ -1620,7 +1620,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						"Misura - misura di tipo ‘B’ con metodo di misurazione errato : "
 								+ row.get(stgMisura.metodo),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1645,7 +1645,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									+ row.get(stgMisura.metodo)
 									+ row.get(stgMisura.approccio),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 				if (row.get(stgMisura.metodo).equals("FP IFPUG 4.3.1")
@@ -1659,7 +1659,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									+ row.get(stgMisura.metodo)
 									+ row.get(stgMisura.approccio),
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 			}
@@ -1682,7 +1682,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						"Misura mpp del fornitore in stato errato : "
 								+ row.get(stgMisura.statoMisura),
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1706,7 +1706,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						"Esistono misure PAT-00n-x (n > 2) ",
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1732,7 +1732,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								"Non possono esistere misure con nome 'PAT-00n-x'  con 'n' maggiore di 1 per il fornitore 'Lombardia Informatica Spa'",
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -1767,7 +1767,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							MisuraUtils.MisuraToString(row),
 							"Misura PAT-002-x mancante ",
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				} else {
 					for (Tuple t : misurePat002) {
@@ -1780,7 +1780,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											+ t.get(stgMisura.nomeMisura)
 											+ " in stato 'Completata' ",
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 						}
 					}
@@ -1820,7 +1820,7 @@ public class CheckSferaMisureFacade implements Runnable {
 												MisuraUtils.MisuraToString(row),
 												"Non posso esserci 2 misure mpp di tipo diverso in uno stesso progetto 'PATR-'",
 												DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-												MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+												MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 												dataEsecuzione);
 							}
 						}
@@ -1851,7 +1851,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									"Non possono esserci 2 misure mpp con lo stesso progressivo in uno stesso progetto 'PATR-', misura: "
 											+ t,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1875,7 +1875,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									"Non possono esserci ‘buchi’ nella numerazione delle misure MPP in uno stesso progetto 'PATR-'",
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1903,7 +1903,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									"Non possono esserci 2 misure mpp con lo stesso progressivo in uno stesso progetto 'Baseline Semplice', misura: "
 											+ t,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1928,7 +1928,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									"Non possono esserci ‘buchi’ nella numerazione delle misure in uno stesso progetto 'Baseline Semplice'",
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1956,7 +1956,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									"Non possono esserci 2 misure con lo stesso codice in uno stesso momento di misurazione di un progetto svil/man evolutiva, misura: "
 											+ t,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1984,7 +1984,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									"Non possono esserci 'buchi' nella numerazione delle misure in uno stesso momento di misurazione di un progetto svil/manut evolutiva",
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_MISURA, DmAlmConstants.TARGET_MISURA, DmAlmConstants.ID_TARGET_MISURA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -2042,7 +2042,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						"Formattazione del pattern di COD_ASM errato : "
 								+ datoInput,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 		} catch (Exception e) {
@@ -2081,7 +2081,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.COD_ASM_CONFINANTI_PATTERN
 								+ datoInput,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			} else {
 
@@ -2097,7 +2097,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											MisuraUtils.MisuraToString(row),
 											"Il COD_ASM confinanti non e' presente / attivo nell'insieme generale dei COD_ASM: Stringa vuota",
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 											dataEsecuzione);
 						} else {
 							if (!StgMisuraDAO.checkAsmValida(logger, row,
@@ -2110,7 +2110,7 @@ public class CheckSferaMisureFacade implements Runnable {
 												DmAlmConstants.COD_ASM_CONFINANTI_NON_PRESENTI
 														+ asm,
 												DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-												MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+												MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 												dataEsecuzione);
 							}
 						}
@@ -2149,7 +2149,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								DmAlmConstants.COD_ALTRE_ASM_NO_PATTERN
 										+ datoInput,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			} else {
 
@@ -2168,7 +2168,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											DmAlmConstants.COD_ALTRE_ASM_NON_PRESENTE
 													+ asm,
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 											dataEsecuzione);
 						}
 
@@ -2183,7 +2183,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											DmAlmConstants.COD_ALTRE_ASM_NO_CONFINANTI
 													+ asm,
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 											dataEsecuzione);
 						}
 					}
@@ -2217,7 +2217,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.DENOM_SIST_TERZEPARTI_CONFINANTI
 								+ datoInput,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			} else {
 
@@ -2236,7 +2236,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											DmAlmConstants.DENOM_SIST_TERZEPARTI_CONFINANTI_CODICE_ASM_VALIDE
 													+ asm,
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 											dataEsecuzione);
 						}
 					}
@@ -2267,7 +2267,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						DmAlmConstants.COD_FLUSS_IO_ASM
 								+ datoInput,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			} else {
 
@@ -2333,7 +2333,7 @@ public class CheckSferaMisureFacade implements Runnable {
 							"APP-ATT: COD_FLUSSI_IO_ASM non rispetta il pattern predefinito: "
 									+ errorePattern,
 							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+							MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 							dataEsecuzione);
 				}
 				if (!erroreDenom.isEmpty()) {
@@ -2345,7 +2345,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									DmAlmConstants.COD_FLUSSI_IO_ASM
 											+ erroreDenom,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, row.get(stgMisura.idProgetto)),
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_ASM, DmAlmConstants.TARGET_ASM, DmAlmConstants.ID_TARGET_ASM, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 

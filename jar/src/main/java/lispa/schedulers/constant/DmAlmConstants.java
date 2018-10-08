@@ -475,6 +475,9 @@ public final class DmAlmConstants {
 	public static final String PK_TARGET_ASM = "DMALM_ASM_PK";
 	public static final String PK_TARGET_MISURA = "DMALM_MISURA_PK";
 	public static final String PK_TARGET_PROGETTO_SFERA = "DMALM_PROGETTO_SFERA_PK";
+	public static final String ID_TARGET_ASM = "ID_ASM";
+	public static final String ID_TARGET_MISURA = "ID_MSR";
+	public static final String ID_TARGET_PROGETTO_SFERA = "ID_PROGETTO";
 	
 	//MPS
 	public static final String MPS_PATH = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PATH);
