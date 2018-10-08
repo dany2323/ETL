@@ -270,7 +270,7 @@ public class AsmFacade {
 						 "Possibile presenza spazi in ASM PK:"+ asm.getDmalmAsmPk()+" ASM NAME: "+asm.getApplicazione(),
 						 DmAlmConstants.ERRORE_SPAZI_NOME_ASM,
 						 DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						 MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, Integer.parseInt(String.valueOf(asm.getIdAsm()))), dataEsecuzione);
+						 MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, Integer.parseInt(String.valueOf(asm.getIdAsm()))), dataEsecuzione);
 				
 			}
 		}
