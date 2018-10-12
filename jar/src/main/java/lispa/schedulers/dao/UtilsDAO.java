@@ -83,7 +83,7 @@ public class UtilsDAO {
 			connection = cm.getConnectionOracle();
 			String sqlSequenceName = "select "+sequenceName+" from dual";
 			ps = connection.prepareStatement(sqlSequenceName);
-		   
+		    logger.debug("Ci sono "+ps.getResultSetConcurrency()+ "cursori aperti");
 			rs = ps.executeQuery(sqlSequenceName);
 			if (rs.next()) {
 				seqId = rs.getInt(1);

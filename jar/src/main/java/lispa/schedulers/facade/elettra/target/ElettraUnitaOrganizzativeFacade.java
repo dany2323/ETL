@@ -254,6 +254,9 @@ public class ElettraUnitaOrganizzativeFacade {
 				idUnitaOrganizzativaFlat = gestisciLista(idUnitaOrganizzativaFlat, nextUnitaOrganizzativeList,
 						insertedUnitaOrganizzativeList, dataEsecuzione);
 
+				inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
+						unitaOrganizzativa, dataEsecuzione);
+				
 				// tolgo l'item dalla lista per non averlo in un ramo diverso
 				// dal suo
 				insertedUnitaOrganizzativeList.remove(unitaOrganizzativa);
