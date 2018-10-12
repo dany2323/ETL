@@ -75,6 +75,7 @@ public class UtilsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
+		ResultSet rs=null;
 		Integer seqId = 0;
 		
 		try {
@@ -83,7 +84,7 @@ public class UtilsDAO {
 			String sqlSequenceName = "select "+sequenceName+" from dual";
 			ps = connection.prepareStatement(sqlSequenceName);
 		   
-			ResultSet rs = ps.executeQuery(sqlSequenceName);
+			rs = ps.executeQuery(sqlSequenceName);
 			if (rs.next()) {
 				seqId = rs.getInt(1);
 			}
@@ -94,6 +95,9 @@ public class UtilsDAO {
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
+			if(rs!=null){
+				rs.close();
+			}
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
