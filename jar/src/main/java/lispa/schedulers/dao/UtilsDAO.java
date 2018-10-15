@@ -97,6 +97,8 @@ public class UtilsDAO {
 		} finally {
 			if(rs!=null)
 				rs.close();
+			if(ps!=null)
+				ps.close();
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
