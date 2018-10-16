@@ -1,5 +1,6 @@
 package lispa.schedulers.facade.cleaning;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -14,7 +15,9 @@ import lispa.schedulers.dao.elettra.StgElModuliDAO;
 import lispa.schedulers.dao.elettra.StgElPersonaleDAO;
 import lispa.schedulers.dao.elettra.StgElProdottiDAO;
 import lispa.schedulers.dao.elettra.StgElUnitaOrganizzativeDAO;
+import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.queryimplementation.staging.elettra.QStgElFunzionalita;
 import lispa.schedulers.queryimplementation.staging.elettra.QStgElModuli;
 import lispa.schedulers.queryimplementation.staging.elettra.QStgElPersonale;
@@ -27,6 +30,9 @@ import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
 
 public class CheckElettraProdottiFacade implements Runnable {
 	private Logger logger;
@@ -79,6 +85,8 @@ public class CheckElettraProdottiFacade implements Runnable {
 
 			erroriNonBloccanti += checkElettraResponsabileProdotto(logger,
 					dataEsecuzione);
+			erroriNonBloccanti += checkElettraUOAssociate(logger,
+					dataEsecuzione);
 
 			EsitiCaricamentoDAO.insert(dataEsecuzione,
 					DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE,
@@ -96,6 +104,26 @@ public class CheckElettraProdottiFacade implements Runnable {
 
 		}
 		logger.debug("STOP CheckElettraProdottiFacade.execute");
+	}
+
+	public static int checkElettraUOAssociate(Logger logger, Timestamp dataEsecuzione) throws Exception {
+			
+		List <Tuple> prodotti=ElettraProdottiArchitettureDAO.getProdottiWithoutUO(dataEsecuzione);
+		int errori=0;
+		
+		for (Tuple row : prodotti) {
+
+			errori++;
+			ErroriCaricamentoDAO.insert(
+					DmAlmConstants.FONTE_ELETTRA_PRODOTTIARCHITETTURE,
+					DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE,
+					ElettraToStringUtils.prodottoToString(row),
+					DmAlmConstants.UO_NOT_VALID,
+					DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, dataEsecuzione);
+		}
+			
+		
+		return errori;
 	}
 
 	protected static int checkElettraSigleProdottoNull(Logger logger,

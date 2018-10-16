@@ -322,6 +322,9 @@ public final class DmAlmConstants {
 	public static final String ELETTRA_ANN_PRODOTTO_LOGICAMENTE="getannullamenti_el_prodotto_logico.sql";
 	// MESSAGGI ERRORE
 	// PRODOTTO
+	
+	
+	public static final String UO_NOT_VALID="ELE001 - Il codice dell'unità organizzativa non è valido";
 	public static final String PRODOTTO_SIGLA_DUPLICATA = "Sigla Prodotto duplicata";
 	public static final String PRODOTTO_SIGLA_NULL = "Sigla Prodotto is null";
 	public static final String PRODOTTO_NOME_DUPLICATO = "Nome Prodotto duplicato";

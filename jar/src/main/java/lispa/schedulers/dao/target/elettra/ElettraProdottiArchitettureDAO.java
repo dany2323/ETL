@@ -14,6 +14,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.staging.elettra.QStgElProdotti;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
@@ -190,6 +191,41 @@ public class ElettraProdottiArchitettureDAO {
 		}
 
 		return prodotti;
+	}
+	
+	public static List <Tuple> getProdottiWithoutUO (Timestamp dataEsecuzione){
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> prodotti = new ArrayList<>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			prodotti = query
+					.from(qDmalmElProdottiArchitetture)
+					.where(qDmalmElProdottiArchitetture.dataCaricamento.eq(dataEsecuzione))
+					.where(qDmalmElProdottiArchitetture.unitaOrganizzativaFk.eq(0))
+					.list(qDmalmElProdottiArchitetture.all());
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (cm != null) {
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		return prodotti;
+
 	}
 	public static List<Integer> getAllTargetProdottoAnnullati()
 			throws DAOException {
