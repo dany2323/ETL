@@ -12,6 +12,13 @@ public class DmalmElUnitaOrganizzativeFlat {
 	private Integer unitaOrganizzativaFk06;
 	private Integer unitaOrganizzativaFk07;
 	private Integer unitaOrganizzativaFk08;
+	private Integer unitaOrganizzativaFk09;
+	private Integer unitaOrganizzativaFk10;
+	private Integer unitaOrganizzativaFk11;
+	private Integer unitaOrganizzativaFk12;
+	private Integer unitaOrganizzativaFk13;
+	private Integer unitaOrganizzativaFk14;
+	private Integer unitaOrganizzativaFk15;
 	private String codiceArea01;
 	private String codiceArea02;
 	private String codiceArea03;
@@ -20,6 +27,13 @@ public class DmalmElUnitaOrganizzativeFlat {
 	private String codiceArea06;
 	private String codiceArea07;
 	private String codiceArea08;
+	private String codiceArea09;
+	private String codiceArea10;
+	private String codiceArea11;
+	private String codiceArea12;
+	private String codiceArea13;
+	private String codiceArea14;
+	private String codiceArea15;
 	private String descrizioneArea01;
 	private String descrizioneArea02;
 	private String descrizioneArea03;
@@ -28,6 +42,139 @@ public class DmalmElUnitaOrganizzativeFlat {
 	private String descrizioneArea06;
 	private String descrizioneArea07;
 	private String descrizioneArea08;
+	private String descrizioneArea09;
+	private String descrizioneArea10;
+	private String descrizioneArea11;
+	private String descrizioneArea12;
+	private String descrizioneArea13;
+	private String descrizioneArea14;
+	private String descrizioneArea15;
+	public Integer getUnitaOrganizzativaFk09() {
+		return unitaOrganizzativaFk09;
+	}
+	public void setUnitaOrganizzativaFk09(Integer unitaOrganizzativaFk09) {
+		this.unitaOrganizzativaFk09 = unitaOrganizzativaFk09;
+	}
+	public Integer getUnitaOrganizzativaFk10() {
+		return unitaOrganizzativaFk10;
+	}
+	public void setUnitaOrganizzativaFk10(Integer unitaOrganizzativaFk10) {
+		this.unitaOrganizzativaFk10 = unitaOrganizzativaFk10;
+	}
+	public Integer getUnitaOrganizzativaFk11() {
+		return unitaOrganizzativaFk11;
+	}
+	public void setUnitaOrganizzativaFk11(Integer unitaOrganizzativaFk11) {
+		this.unitaOrganizzativaFk11 = unitaOrganizzativaFk11;
+	}
+	public Integer getUnitaOrganizzativaFk12() {
+		return unitaOrganizzativaFk12;
+	}
+	public void setUnitaOrganizzativaFk12(Integer unitaOrganizzativaFk12) {
+		this.unitaOrganizzativaFk12 = unitaOrganizzativaFk12;
+	}
+	public Integer getUnitaOrganizzativaFk13() {
+		return unitaOrganizzativaFk13;
+	}
+	public void setUnitaOrganizzativaFk13(Integer unitaOrganizzativaFk13) {
+		this.unitaOrganizzativaFk13 = unitaOrganizzativaFk13;
+	}
+	public Integer getUnitaOrganizzativaFk14() {
+		return unitaOrganizzativaFk14;
+	}
+	public void setUnitaOrganizzativaFk14(Integer unitaOrganizzativaFk14) {
+		this.unitaOrganizzativaFk14 = unitaOrganizzativaFk14;
+	}
+	public Integer getUnitaOrganizzativaFk15() {
+		return unitaOrganizzativaFk15;
+	}
+	public void setUnitaOrganizzativaFk15(Integer unitaOrganizzativaFk15) {
+		this.unitaOrganizzativaFk15 = unitaOrganizzativaFk15;
+	}
+	public String getCodiceArea09() {
+		return codiceArea09;
+	}
+	public void setCodiceArea09(String codiceArea09) {
+		this.codiceArea09 = codiceArea09;
+	}
+	public String getCodiceArea10() {
+		return codiceArea10;
+	}
+	public void setCodiceArea10(String codiceArea10) {
+		this.codiceArea10 = codiceArea10;
+	}
+	public String getCodiceArea11() {
+		return codiceArea11;
+	}
+	public void setCodiceArea11(String codiceArea11) {
+		this.codiceArea11 = codiceArea11;
+	}
+	public String getCodiceArea12() {
+		return codiceArea12;
+	}
+	public void setCodiceArea12(String codiceArea12) {
+		this.codiceArea12 = codiceArea12;
+	}
+	public String getCodiceArea13() {
+		return codiceArea13;
+	}
+	public void setCodiceArea13(String codiceArea13) {
+		this.codiceArea13 = codiceArea13;
+	}
+	public String getCodiceArea14() {
+		return codiceArea14;
+	}
+	public void setCodiceArea14(String codiceArea14) {
+		this.codiceArea14 = codiceArea14;
+	}
+	public String getCodiceArea15() {
+		return codiceArea15;
+	}
+	public void setCodiceArea15(String codiceArea15) {
+		this.codiceArea15 = codiceArea15;
+	}
+	public String getDescrizioneArea09() {
+		return descrizioneArea09;
+	}
+	public void setDescrizioneArea09(String descrizioneArea09) {
+		this.descrizioneArea09 = descrizioneArea09;
+	}
+	public String getDescrizioneArea10() {
+		return descrizioneArea10;
+	}
+	public void setDescrizioneArea10(String descrizioneArea10) {
+		this.descrizioneArea10 = descrizioneArea10;
+	}
+	public String getDescrizioneArea11() {
+		return descrizioneArea11;
+	}
+	public void setDescrizioneArea11(String descrizioneArea11) {
+		this.descrizioneArea11 = descrizioneArea11;
+	}
+	public String getDescrizioneArea12() {
+		return descrizioneArea12;
+	}
+	public void setDescrizioneArea12(String descrizioneArea12) {
+		this.descrizioneArea12 = descrizioneArea12;
+	}
+	public String getDescrizioneArea13() {
+		return descrizioneArea13;
+	}
+	public void setDescrizioneArea13(String descrizioneArea13) {
+		this.descrizioneArea13 = descrizioneArea13;
+	}
+	public String getDescrizioneArea14() {
+		return descrizioneArea14;
+	}
+	public void setDescrizioneArea14(String descrizioneArea14) {
+		this.descrizioneArea14 = descrizioneArea14;
+	}
+	public String getDescrizioneArea15() {
+		return descrizioneArea15;
+	}
+	public void setDescrizioneArea15(String descrizioneArea15) {
+		this.descrizioneArea15 = descrizioneArea15;
+	}
 	private Date dataCaricamento;
 	private Date dataInizioValidita;
 	private Date dataFineValidita;

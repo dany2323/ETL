@@ -96,7 +96,34 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 			Integer uoFK08 = unitaOrganizzativaFlat.getUnitaOrganizzativaFk08();
 			String codice08 = unitaOrganizzativaFlat.getCodiceArea08();
 			String descrizione08 = unitaOrganizzativaFlat.getDescrizioneArea08();
-
+			
+			Integer uoFK09 = unitaOrganizzativaFlat.getUnitaOrganizzativaFk09();
+			String codice09 = unitaOrganizzativaFlat.getCodiceArea09();
+			String descrizione09 = unitaOrganizzativaFlat.getDescrizioneArea09();
+			
+			Integer uoFK10 = unitaOrganizzativaFlat.getUnitaOrganizzativaFk10();
+			String codice10 = unitaOrganizzativaFlat.getCodiceArea10();
+			String descrizione10 = unitaOrganizzativaFlat.getDescrizioneArea10();
+			
+			Integer uoFK11 = unitaOrganizzativaFlat.getUnitaOrganizzativaFk11();
+			String codice11 = unitaOrganizzativaFlat.getCodiceArea11();
+			String descrizione11 = unitaOrganizzativaFlat.getDescrizioneArea11();
+			
+			Integer uoFK12 = unitaOrganizzativaFlat.getUnitaOrganizzativaFk12();
+			String codice12 = unitaOrganizzativaFlat.getCodiceArea12();
+			String descrizione12 = unitaOrganizzativaFlat.getDescrizioneArea12();
+			
+			Integer uoFK13 = unitaOrganizzativaFlat.getUnitaOrganizzativaFk13();
+			String codice13 = unitaOrganizzativaFlat.getCodiceArea13();
+			String descrizione13 = unitaOrganizzativaFlat.getDescrizioneArea13();
+			
+			Integer uoFK14 = unitaOrganizzativaFlat.getUnitaOrganizzativaFk14();
+			String codice14 = unitaOrganizzativaFlat.getCodiceArea14();
+			String descrizione14 = unitaOrganizzativaFlat.getDescrizioneArea14();
+			
+			Integer uoFK15 = unitaOrganizzativaFlat.getUnitaOrganizzativaFk15();
+			String codice15 = unitaOrganizzativaFlat.getCodiceArea15();
+			String descrizione15 = unitaOrganizzativaFlat.getDescrizioneArea15();
 
 			if (uoFK01 == null) {
 				uoFK01 = new Integer(0);
@@ -139,7 +166,49 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 				codice08 = "Non presente";
 				descrizione08 = "Non presente";
 			}
-
+			
+			if (uoFK09 == null) {
+				uoFK09 = new Integer(0);
+				codice09 = "Non presente";
+				descrizione09 = "Non presente";
+			}
+			
+			if (uoFK10 == null) {
+				uoFK10 = new Integer(0);
+				codice10 = "Non presente";
+				descrizione10 = "Non presente";
+			}
+			
+			if (uoFK11 == null) {
+				uoFK11 = new Integer(0);
+				codice11 = "Non presente";
+				descrizione11 = "Non presente";
+			}
+			
+			if (uoFK12 == null) {
+				uoFK12 = new Integer(0);
+				codice12 = "Non presente";
+				descrizione12 = "Non presente";
+			}
+			
+			if (uoFK13 == null) {
+				uoFK13 = new Integer(0);
+				codice13 = "Non presente";
+				descrizione13 = "Non presente";
+			}
+			
+			if (uoFK14 == null) {
+				uoFK14 = new Integer(0);
+				codice14 = "Non presente";
+				descrizione14 = "Non presente";
+			}
+			
+			if (uoFK15 == null) {
+				uoFK15 = new Integer(0);
+				codice15 = "Non presente";
+				descrizione15 = "Non presente";
+			}
+			
 			new SQLInsertClause(connection, dialect, qDmalmElUnitaOrganizzativeFlat)
 								.columns(qDmalmElUnitaOrganizzativeFlat.idFlatPk,
 										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk01,
@@ -150,6 +219,13 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk06,
 										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk07,
 										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk08,
+										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk09,
+										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk10,
+										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk11,
+										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk12,
+										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk13,
+										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk14,
+										qDmalmElUnitaOrganizzativeFlat.unitaOrganizzativaFk15,
 										qDmalmElUnitaOrganizzativeFlat.codiceArea01,
 										qDmalmElUnitaOrganizzativeFlat.codiceArea02,
 										qDmalmElUnitaOrganizzativeFlat.codiceArea03,
@@ -158,6 +234,13 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 										qDmalmElUnitaOrganizzativeFlat.codiceArea06,
 										qDmalmElUnitaOrganizzativeFlat.codiceArea07,
 										qDmalmElUnitaOrganizzativeFlat.codiceArea08,
+										qDmalmElUnitaOrganizzativeFlat.codiceArea09,
+										qDmalmElUnitaOrganizzativeFlat.codiceArea10,
+										qDmalmElUnitaOrganizzativeFlat.codiceArea11,
+										qDmalmElUnitaOrganizzativeFlat.codiceArea12,
+										qDmalmElUnitaOrganizzativeFlat.codiceArea13,
+										qDmalmElUnitaOrganizzativeFlat.codiceArea14,
+										qDmalmElUnitaOrganizzativeFlat.codiceArea15,
 										qDmalmElUnitaOrganizzativeFlat.descrizioneArea01,
 										qDmalmElUnitaOrganizzativeFlat.descrizioneArea02,
 										qDmalmElUnitaOrganizzativeFlat.descrizioneArea03,
@@ -166,6 +249,13 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 										qDmalmElUnitaOrganizzativeFlat.descrizioneArea06,
 										qDmalmElUnitaOrganizzativeFlat.descrizioneArea07,
 										qDmalmElUnitaOrganizzativeFlat.descrizioneArea08,
+										qDmalmElUnitaOrganizzativeFlat.descrizioneArea09,
+										qDmalmElUnitaOrganizzativeFlat.descrizioneArea10,
+										qDmalmElUnitaOrganizzativeFlat.descrizioneArea11,
+										qDmalmElUnitaOrganizzativeFlat.descrizioneArea12,
+										qDmalmElUnitaOrganizzativeFlat.descrizioneArea13,
+										qDmalmElUnitaOrganizzativeFlat.descrizioneArea14,
+										qDmalmElUnitaOrganizzativeFlat.descrizioneArea15,
 										qDmalmElUnitaOrganizzativeFlat.dataCaricamento,
 										qDmalmElUnitaOrganizzativeFlat.dataInizioValidita,
 										qDmalmElUnitaOrganizzativeFlat.dataFineValidita)
@@ -178,6 +268,13 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 										uoFK06,
 										uoFK07,
 										uoFK08,
+										uoFK09,
+										uoFK10,
+										uoFK11,
+										uoFK12,
+										uoFK13,
+										uoFK14,
+										uoFK15,
 										codice01,
 										codice02,
 										codice03,
@@ -186,6 +283,13 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 										codice06,
 										codice07,
 										codice08,
+										codice09,
+										codice10,
+										codice11,
+										codice12,
+										codice13,
+										codice14,
+										codice15,
 										descrizione01,
 										descrizione02,
 										descrizione03,
@@ -194,6 +298,13 @@ public class ElettraUnitaOrganizzativeFlatDAO {
 										descrizione06,
 										descrizione07,
 										descrizione08,
+										descrizione09,
+										descrizione10,
+										descrizione11,
+										descrizione12,
+										descrizione13,
+										descrizione14,
+										descrizione15,
 										unitaOrganizzativaFlat.getDataCaricamento(),
 										unitaOrganizzativaFlat.getDataInizioValidita(),
 										unitaOrganizzativaFlat.getDataFineValidita())
