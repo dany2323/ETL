@@ -16,11 +16,61 @@ import org.apache.log4j.Logger;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.CURRENT_CURSOR_NUMBER;;
+
 
 public class UtilsDAO {
 	
 	private static Logger logger = Logger.getLogger(UtilsDAO.class);
 	
+	public static int getActualOpenCursor() {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		ResultSet rs=null;
+		PreparedStatement ps=null;
+		int result=-1;
+		try{
+			String query = QueryManager.getInstance().getQuery(CURRENT_CURSOR_NUMBER);
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			ps = connection.prepareStatement(query);
+
+			rs = ps.executeQuery();
+			
+			while(rs.next()){
+				result=rs.getInt(1);
+			}
+			return result;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(rs!=null)
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			if(ps!=null)
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			if(cm!=null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		return result;
+	}
 	public List<String> getLogFromStoredProcedureByTimestamp(String nameStoredProcedure, Timestamp dataEsecuzione) 
 		throws Exception {
 		
@@ -83,7 +133,7 @@ public class UtilsDAO {
 			connection = cm.getConnectionOracle();
 			String sqlSequenceName = "select "+sequenceName+" from dual";
 			ps = connection.prepareStatement(sqlSequenceName);
-		    logger.debug("Ci sono "+ps.getResultSetConcurrency()+ "cursori aperti");
+			logger.debug("Cursori attuali aperti: "+UtilsDAO.getActualOpenCursor());
 			rs = ps.executeQuery(sqlSequenceName);
 			if (rs.next()) {
 				seqId = rs.getInt(1);
@@ -98,6 +148,8 @@ public class UtilsDAO {
 			if(rs!=null){
 				rs.close();
 			}
+			if(ps!=null)
+				ps.close();
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
@@ -111,6 +163,7 @@ public class UtilsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
+		ResultSet rs=null;
 		Integer maxValue = 0;
 		
 		try {
@@ -118,8 +171,8 @@ public class UtilsDAO {
 			connection = cm.getConnectionOracle();
 			String sqlMaxValue = "select max("+fieldName+") from "+tableName;
 			ps = connection.prepareStatement(sqlMaxValue);
-		   
-			ResultSet rs = ps.executeQuery(sqlMaxValue);
+			logger.debug("Cursori attuali aperti: "+UtilsDAO.getActualOpenCursor());
+			rs = ps.executeQuery(sqlMaxValue);
 			if (rs.next()) {
 				maxValue = rs.getInt(1);
 			}
@@ -130,6 +183,10 @@ public class UtilsDAO {
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
+			if(rs!=null)
+				rs.close();
+			if(ps!=null)
+				ps.close();
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
