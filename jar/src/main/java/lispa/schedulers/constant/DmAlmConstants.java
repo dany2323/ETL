@@ -610,7 +610,7 @@ public final class DmAlmConstants {
 	public static String UTILIZZATA_NON_PERMESSO="ESF069 - UTILIZZATA - Valore non permesso : ";
 	public static String PROPRIETA_LEGALE_NON_PERMESSO="ESF070 - Proprietà legale - Valore non permesso : ";
 	public static String INCLUDE_DB_NON_PERMESSO="ESF071 - Includi nel database di patrimonio - Valore non permesso : ";
-	public static String FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO="ESF072 - PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_- DWH - Valore non permesso :";
+	/*public static String FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO="ESF072 - PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_- DWH - Valore non permesso :";
 	public static String FLAG_APPLICABILITA_LG_FP_GIS_NO_PERMESSO="ESF073 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_GIS - Valore non permesso : ";
 	public static String FLAG_APPLICATIBILITA_LG_FP_EDMA_NON_PERMESSO="ESF074 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_EDMA - Valore non permesso : ";
 	public static String FLAG_APPLICABILITA_LG_FP_MWARE_NO_PERMESSO="ESF075 - PRJ-ATT:FLAG_APPLICABILITA_LG_FP_MWARE - Valore non permesso : ";
@@ -621,7 +621,7 @@ public final class DmAlmConstants {
 	public static String FLAG_AMBITO_TECNOLOGICO_PORTALI_NON_PERMESSO="ESF081 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_PORTALI - Valore non permesso : ";
 	public static String FLAG_AMBITO_TECNOLOGICO_PIAT_SPEC_ENT_NON_PERMESSO="ESF082 - PRJ-ATT:FLAG_ AMBITO_TECNOLOGICO_ PIATTAF_ SPECIAL_ ENTERPRISE - Valore non permesso : ";
 	public static String FLAG_AMBITO_TECNOLOGICO_FUTURO_NON_PERMESSO="ESF083 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-01 - Valore non permesso : ";
-	public static String FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO="ESF084 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-02 - Valore non permesso : ";
+	public static String FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO="ESF084 - PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-02 - Valore non permesso : ";*/
 	public static String MANCATA_CORRISPONDENZA_SFERA_WI="ESF087 - Mancata corrispondenza tra PROGETTO SFERA e relativo workitem SGR_CM ";
 	public static String NO_CORR_STATO_WI_MISURA="ESF088 - Mancata corrispondenza tra lo STATO dei WI e lo stato della MISURA SFERA";
 	public static String PERMESSION_NON_PERMESSO="ESF089 - PERMISSIONS  valore non permesso ";
