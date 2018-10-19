@@ -256,7 +256,7 @@ public class DmAlmMisuraDAO {
 		QDmalmProgettoSfera progetto = QDmalmProgettoSfera.dmalmProgettoSfera;
 		ConnectionManager cm = null;
 		Connection connection = null;
-		int progettoFk = 0;
+		List<Integer> progettoFk =null;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -268,7 +268,13 @@ public class DmAlmMisuraDAO {
 					.where(progetto.dataFineValidita.goe(dt_modifica))
 					.where(progetto.dataInizioValidita.loe(dt_modifica))
 					.orderBy(progetto.dataInizioValidita.desc())
-					.list(progetto.dmalmProgettoSferaPk).get(0);
+					.list(progetto.dmalmProgettoSferaPk);
+			if(progettoFk.size()>0)
+				return progettoFk.get(0);
+			else{
+				logger.info("Attenzione, con idProgetto"+idProg+ "Dt modifica "+dt_modifica+ " non trovo progetto sfera");
+				return 0;
+			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -280,7 +286,7 @@ public class DmAlmMisuraDAO {
 			}
 		}
 		
-		return progettoFk;
+		return 0;
 	}
 
 	public static List<Tuple> getMisura(DmalmMisura misure) throws DAOException {

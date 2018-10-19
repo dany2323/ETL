@@ -62,6 +62,7 @@ public class DmAlmConfigReaderProperties
 	public static final String SQL_ELETTRAUNITAORGANIZZATIVE  				= "elettraunitaorganizzative.sql";
 	public static final String SQL_ELETTRACLASSIFICATORI 					= "elettraclassificatori.sql";
 	public static final String SQL_ELETTRAMODULI 							= "elettramoduli.sql";
+	public static final String SQL_MODULI_BY_PRODOTTO_PK = "elettramoduli_by_prodotto_pk.sql"; //Per gli annullati fisici
 	public static final String SQL_ELETTRAPERSONALE							= "elettrapersonale.sql";
 	public static final String SQL_ELETTRAPRODOTTIARCHITETTURE				= "elettraprodottiarchitetture.sql";
 	public static final String SQL_ELETTRAFUNZIONALITA						= "elettrafunzionalita.sql";
@@ -292,4 +293,6 @@ public class DmAlmConfigReaderProperties
 	public static final String SQL_STG_VERBALIES = "stg_mps_verbali.sql";
 	public static final String SQL_STG_RILASCI_VERBALIES = "stg_mps_rilasci_verbali.sql";
 	public static final String SQL_STG_RILASCIES = "stg_mps_rilasci.sql";
+
+	public static final String SQL_ELETTRAFUNZIONALITA_BY_MODULO_PK = "funzionalita_by_modulo_pk.sql";
 }

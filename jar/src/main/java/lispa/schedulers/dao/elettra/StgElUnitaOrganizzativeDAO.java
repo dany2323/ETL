@@ -17,6 +17,7 @@ import lispa.schedulers.utils.NumberUtils;
 import lispa.schedulers.utils.StringUtils;
 
 import org.apache.log4j.Logger;
+import org.h2.mvstore.DataUtils;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;

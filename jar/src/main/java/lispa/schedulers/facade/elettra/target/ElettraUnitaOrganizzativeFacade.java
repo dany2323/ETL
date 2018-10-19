@@ -205,7 +205,7 @@ public class ElettraUnitaOrganizzativeFacade {
 		}
 	}
 	
-	private static void fillElettraUnitaOrganizzativeFlat(Timestamp dataEsecuzione) {
+	public static void fillElettraUnitaOrganizzativeFlat(Timestamp dataEsecuzione) {
 		try {
 			logger.info("START fillElettraUnitaOrganizzativeFlat");
 			
@@ -250,10 +250,13 @@ public class ElettraUnitaOrganizzativeFacade {
 				// se ho dei figli salvo il wi nella lista degli inseriti e
 				// continuo il ciclo
 				insertedUnitaOrganizzativeList.add(unitaOrganizzativa);
-
+				idUnitaOrganizzativaFlat++;
+				inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
+						unitaOrganizzativa, dataEsecuzione);
 				idUnitaOrganizzativaFlat = gestisciLista(idUnitaOrganizzativaFlat, nextUnitaOrganizzativeList,
 						insertedUnitaOrganizzativeList, dataEsecuzione);
-
+				
+				
 				// tolgo l'item dalla lista per non averlo in un ramo diverso
 				// dal suo
 				insertedUnitaOrganizzativeList.remove(unitaOrganizzativa);

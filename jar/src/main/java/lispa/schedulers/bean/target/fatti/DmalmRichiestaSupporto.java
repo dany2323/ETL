@@ -4,8 +4,7 @@ import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.SQLInput;
 import java.sql.SQLOutput;
-
-import com.mysema.query.types.template.StringTemplate;
+import lispa.schedulers.dao.UtilsDAO;
 
 public class DmalmRichiestaSupporto implements SQLData {
 
@@ -286,13 +285,14 @@ public class DmalmRichiestaSupporto implements SQLData {
 		this.dataCaricamento = dataCaricamento;
 	}
 
-	public Object[] getObject(DmalmRichiestaSupporto richiesta, boolean flag) {
+	public Object[] getObject(DmalmRichiestaSupporto richiesta, boolean flag) throws Exception {
+		
+		Integer seqId = UtilsDAO.getSequenceNextval("HISTORY_WORKITEM_SEQ.nextval");
 		
 		Object[] objRichSupp = new Object[COUNT_COLUMN];
 		objRichSupp[0] = richiesta.getIdRepository();
 		objRichSupp[1] = richiesta.getUriRichiestaSupporto();
-		objRichSupp[2] = (flag == true ? richiesta.getDmalmRichiestaSupportoPk() : 
-			StringTemplate.create("HISTORY_WORKITEM_SEQ.nextval"));
+		objRichSupp[2] = (flag == true ? richiesta.getDmalmRichiestaSupportoPk() : seqId);
 		objRichSupp[3] = richiesta.getStgPk();
 		objRichSupp[4] = richiesta.getDmalmProjectFk02();
 		objRichSupp[5] = richiesta.getDmalmUserFk06();

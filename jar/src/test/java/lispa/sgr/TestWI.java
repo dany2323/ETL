@@ -3,6 +3,7 @@ package lispa.sgr;
 import static lispa.schedulers.constant.DmAlmConstants.DEFAULT_DAY_DELETE;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_RETRY;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING_DAY_DELETE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -19,29 +20,57 @@ import junit.framework.TestCase;
 import lispa.schedulers.action.DmAlmETL;
 import lispa.schedulers.action.DmAlmFiliere;
 import lispa.schedulers.action.DmAlmFillStaging;
+import lispa.schedulers.bean.staging.elettra.StgElProdotti;
 import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.bean.target.sfera.DmalmAsmProdottiArchitetture;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
+import lispa.schedulers.dao.elettra.StgElPersonaleDAO;
+import lispa.schedulers.dao.elettra.StgElProdottiDAO;
+import lispa.schedulers.dao.elettra.StgElUnitaOrganizzativeDAO;
 import lispa.schedulers.dao.oreste.ProdottiArchitettureDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmProdottiArchitettureDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.DifettoProdottoOdsDAO;
 import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
+import lispa.schedulers.dao.target.elettra.ElettraFunzionalitaDAO;
+import lispa.schedulers.dao.target.elettra.ElettraModuliDAO;
+import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.fatti.DifettoDAO;
+import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.cleaning.CheckAnnullamentiElettraFacade;
+import lispa.schedulers.facade.cleaning.CheckProjectStorFacade;
+import lispa.schedulers.facade.elettra.StagingElettraFacade;
+import lispa.schedulers.facade.elettra.target.ElettraFunzionalitaFacade;
+import lispa.schedulers.facade.elettra.target.ElettraModuliFacade;
+import lispa.schedulers.facade.elettra.target.ElettraPersonaleFacade;
+import lispa.schedulers.facade.elettra.target.ElettraProdottiArchitettureFacade;
+import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
+import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProdottiArchFacade;
+import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProdottoFacade;
 import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProjectElFacade;
+import lispa.schedulers.facade.sfera.CheckLinkAsmSferaStrutturaOrganizzativaFacade;
 import lispa.schedulers.facade.sfera.CheckLinkAsmSferaUnitaOrganizzativaFacade;
+import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
+import lispa.schedulers.facade.sfera.target.AsmFacade;
+import lispa.schedulers.facade.sfera.target.MisuraFacade;
+import lispa.schedulers.facade.sfera.target.ProgettoSferaFacade;
+import lispa.schedulers.facade.target.CostruzioneFilieraTemplateAssFunzionaleFacade;
 import lispa.schedulers.facade.target.CostruzioneFilieraTemplateIntTecnicaFacade;
 import lispa.schedulers.facade.target.ProjectSgrCmFacade;
+import lispa.schedulers.facade.target.fatti.ClassificatoreFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaSupportoFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
@@ -71,289 +100,124 @@ public class TestWI extends TestCase {
 	public void testProvenienzaDifetto(){
 		try {
 			Log4JConfiguration.inizialize();
-
-			Timestamp dataEsecuzione=DateUtils.stringToTimestamp("22-05-2018 10:40:00", "dd-MM-yyyy HH:mm:ss");
-
+			//DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-07-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+			int days;
+			try {
+				days = Integer.parseInt(DmAlmConfigReader.getInstance()
+						.getProperty(DMALM_STAGING_DAY_DELETE));
+			} catch (PropertiesReaderException | NumberFormatException e) {
+				days = DEFAULT_DAY_DELETE;
+				logger.debug(e.getMessage(), e);
+			}
+			final Timestamp dataEsecuzioneDeleted = DateUtils
+					.getAddDayToDate(-days);
 			
-			logger.debug("START CheckLinkAsmSferaProdottiArchFacade");
+			//loadWiAndCustomFieldInStaging("classificatore", 0L, 2000000L);
+//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-09-04 11:47:00","yyyy-MM-dd HH:mm:00"));
+//
+//			ClassificatoreFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+			
+			//CostruzioneFilieraTemplateAssFunzionaleFacade.execute();
+//			StgMisuraFacade.deleteStgMisura(logger, dataEsecuzioneDeleted);
+//			StgMisuraFacade.FillStgMisura();
+//			
+//			AsmFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+//			
+//			// step 1 crea legami Asm/Prodotto
+//			// Prodotto Oreste
+//			CheckLinkAsmSferaProdottoFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione(), false);
+//			// ProdottiArchitetture Elettra
+//			//CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, false);
+//			
+//			// step 2 crea fk Asm/UO (Edma)
+//			// Struttura Organizzativa Edma
+//			CheckLinkAsmSferaStrutturaOrganizzativaFacade
+//					.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+//
+//			// step 3 crea i nuovi legami per eventuali asm storicizzate da
+//			// CheckLinkAsmSferaStrutturaOrganizzativaFacade
+//			// Prodotto Oreste
+//			//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
+//			// ProdottiArchitetture Elettra
+//			CheckLinkAsmSferaProdottiArchFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione(), false);
+//
+//			// step 4 crea fk Asm/UO (Elettra)
+//			// Unità Organizzativa Elettra
+//			CheckLinkAsmSferaUnitaOrganizzativaFacade
+//					.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+//
+//			// step 5 crea i nuovi legami per eventuali asm storicizzate da
+//			// CheckLinkAsmSferaUnitaOrganizzativaFacade
+//			// Prodotto Oreste
+//			//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, true);
+//			// ProdottiArchitetture Elettra
+//			CheckLinkAsmSferaProdottiArchFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione(), true);
+//			
+//			ProgettoSferaFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
 
-			boolean asmLegataTappo = false;
-			String[] multiAsm = null;
-			String unitaOrganizzativa = null;
-			String unitaOrganizzativaDoppia = null;
-			List<Tuple> asmList = new ArrayList<Tuple>();
-			List<Tuple> productList = new ArrayList<Tuple>();
-			List<String> asmLinkedList = new ArrayList<String>();
-			List<Tuple> prodLink = new ArrayList<Tuple>();
+			//MisuraFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
 
-			/**
-			 * step 1 - Chiusura associazioni Prodotti chiusi: leggo tutte le
-			 * relazioni "aperte" che hanno un puntamento ad un prodotto chiuso
-			 * (è stato storicizzato il prodotto ma non la asm), queste
-			 * relazioni le chiudo; lo step 3 partendo dalla Asm creerà una
-			 * relazione nuova verso il prodotto "aperto"
-			 */
-
-			// tutti i Prodotti chiusi con relazione ad Asm ancora aperta
-			asmList = DmAlmAsmProdottiArchitettureDAO
-					.getAllRelationsToCloseCauseProductsClosed();
-
-			// update DataFineValidita su tabella relazione
-			for (Tuple asmProductRow : asmList) {
-				if (asmProductRow != null) {
-					DmalmAsmProdottiArchitetture relazione = new DmalmAsmProdottiArchitetture();
-					relazione.setDmalmAsmPk(asmProductRow
-							.get(qDmalmAsmProdottiArchitetture.dmalmAsmPk));
-					relazione
-							.setDmalmProdottoPk(asmProductRow
-									.get(qDmalmAsmProdottiArchitetture.dmalmProdottoPk));
-					relazione
-							.setDataInizioValidita(asmProductRow
-									.get(qDmalmAsmProdottiArchitetture.dtInizioValidita));
-					relazione
-							.setDataFineValidita(asmProductRow
-									.get(qDmalmElProdottiArchitetture.dataFineValidita));
-
-					logger.debug("update AsmProdottiArchitetture chiusura DataFineValidita per Prodotto chiuso - dmalmAsmPk: "
-							+ relazione.getDmalmAsmPk()
-							+ ", dmalmProdottoPk: "
-							+ relazione.getDmalmProdottoPk()
-							+ ", dataInizioValidita: "
-							+ relazione.getDataInizioValidita()
-							+ ", dataFineValidita: "
-							+ relazione.getDataFineValidita());
-
-					DmAlmAsmProdottiArchitettureDAO
-							.closeRelAsmProdottiArchitetture(relazione);
-				}
-			}
-
-			/** step 2 - Chiusura associazioni Asm chiuse */
-
-			// legge tutte le asm chiuse con associazioni aperte da chiudere
-			asmList = DmAlmAsmDAO.getAllRelationsToCloseCauseAsmsClosed();
-
-			// update DataFineValidita su tabella relazione
-			for (Tuple asmProductRow : asmList) {
-				if (asmProductRow != null) {
-					DmalmAsmProdottiArchitetture relazione = new DmalmAsmProdottiArchitetture();
-					relazione.setDmalmAsmPk(asmProductRow
-							.get(qDmalmAsmProdottiArchitetture.dmalmAsmPk));
-					relazione
-							.setDmalmProdottoPk(asmProductRow
-									.get(qDmalmAsmProdottiArchitetture.dmalmProdottoPk));
-					relazione
-							.setDataInizioValidita(asmProductRow
-									.get(qDmalmAsmProdottiArchitetture.dtInizioValidita));
-					relazione.setDataFineValidita(asmProductRow
-							.get(dmalmAsm.dataFineValidita));
-
-					logger.debug("update AsmProdottiArchitetture chiusura DataFineValidita per Asm Chiusa - dmalmAsmPk: "
-							+ relazione.getDmalmAsmPk()
-							+ ", dmalmProdottoPk: "
-							+ relazione.getDmalmProdottoPk()
-							+ ", dataInizioValidita: "
-							+ relazione.getDataInizioValidita()
-							+ ", dataFineValidita: "
-							+ relazione.getDataFineValidita());
-
-					DmAlmAsmProdottiArchitettureDAO
-							.closeRelAsmProdottiArchitetture(relazione);
-				}
-			}
-
-			/** step 3 - Associazione Asm Aperte con Prodotto Aperto */
-
-			// legge tutte le asm non associate
-			asmList = DmAlmAsmDAO.getAllAsmToLinkWithProductArchitecture();
-
-			// insert su tabella relazione
-			for (Tuple asmRow : asmList) {
-				if (asmRow != null) {
-					String applicazione = asmRow.get(dmalmAsm.applicazione);
-
-					// toglie #ANNULLATO LOGICAMENTE##
-					if (applicazione
-							.startsWith(DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE_STARTSWITH)) {
-						applicazione = applicazione.substring(33,
-								applicazione.length());
-					}
-
-					// gestione multi applicazione
-					asmLegataTappo = false;
-					unitaOrganizzativa = "";
-					unitaOrganizzativaDoppia = "";
-					asmLinkedList = new ArrayList<String>();
-					multiAsm = applicazione.split("\\.\\.");
-
-					for (String asmName : multiAsm) {
-						List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(asmName);
-						if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
-							// toglie eventuali moduli dopo il nome Asm
-							if (asmName.contains(".")) {
-								asmName = asmName
-										.substring(0, asmName.indexOf("."));
-							}
-						}
-						// scarta nomi duplicati
-						if (!asmLinkedList.contains(asmName)) {
-							asmLinkedList.add(asmName);
-
-							// ricerca Prodotto per Asm (Applicazione = Sigla)
-							productList = ElettraProdottiArchitettureDAO
-									.getProductByAcronym(asmName);
-
-							if (productList.size() == 0) {
-								if (asmRow
-										.get(qDmalmAsmProdottiArchitetture.dmalmProdottoPk) == null
-										&& !asmLegataTappo) {
-									logger.info("Asm da legare al tappo Prodotto: "
-											+ asmName
-											+ ", applicazione: "
-											+ asmRow.get(dmalmAsm.applicazione));
-
-									asmLegataTappo = true;
-
-									DmalmAsmProdottiArchitetture relazione = new DmalmAsmProdottiArchitetture();
-									relazione.setDmalmAsmPk(asmRow
-											.get(dmalmAsm.dmalmAsmPk));
-									relazione.setDmalmProdottoPk(0);
-
-									DmAlmAsmProdottiArchitettureDAO
-											.insertRelAsmProdottiArchitetture(
-													dataEsecuzione, relazione);
-								}
-
-								logger.info("Errore gestito - Nessun Prodotto per asmName: "
-										+ asmName
-										+ ", applicazione: "
-										+ asmRow.get(dmalmAsm.applicazione));
-
-								
-							} else {
-								for (Tuple productRow : productList) {
-									if (productRow != null) {
-										if (unitaOrganizzativa
-												.equalsIgnoreCase("")) {
-											unitaOrganizzativa = productRow
-													.get(qDmalmElProdottiArchitetture.unitaOrganizzativaFk)
-													.toString();
-										} else {
-											if (!unitaOrganizzativa
-													.equalsIgnoreCase(productRow
-															.get(qDmalmElProdottiArchitetture.unitaOrganizzativaFk)
-															.toString())) {
-												unitaOrganizzativaDoppia = productRow
-														.get(qDmalmElProdottiArchitetture.unitaOrganizzativaFk)
-														.toString();
-											}
-										}
-
-										if (asmRow
-												.get(qDmalmAsmProdottiArchitetture.dmalmProdottoPk) != null) {
-											DmalmAsmProdottiArchitetture relazione = new DmalmAsmProdottiArchitetture();
-											relazione.setDmalmAsmPk(asmRow
-													.get(dmalmAsm.dmalmAsmPk));
-											relazione
-													.setDmalmProdottoPk(asmRow
-															.get(qDmalmAsmProdottiArchitetture.dmalmProdottoPk));
-											relazione
-													.setDataInizioValidita(asmRow
-															.get(qDmalmAsmProdottiArchitetture.dtInizioValidita));
-											relazione
-													.setDataFineValidita(DateUtils
-															.addSecondsToTimestamp(
-																	dataEsecuzione,
-																	-1));
-
-											logger.debug("update AsmProdotto chiusura relazione Tappo per Asm legata a nuovo Prodotto - dmalmAsmPk: "
-													+ relazione.getDmalmAsmPk()
-													+ ", dmalmProdottoSeq: "
-													+ relazione
-															.getDmalmProdottoPk()
-													+ ", dataInizioValidita: "
-													+ relazione
-															.getDataInizioValidita()
-													+ ", dataFineValidita: "
-													+ relazione
-															.getDataFineValidita());
-
-											DmAlmAsmProdottiArchitettureDAO
-													.closeRelAsmProdottiArchitetture(relazione);
-										}
-
-										DmalmAsmProdottiArchitetture relazione = new DmalmAsmProdottiArchitetture();
-										relazione.setDmalmAsmPk(asmRow
-												.get(dmalmAsm.dmalmAsmPk));
-										relazione
-												.setDmalmProdottoPk(productRow
-														.get(qDmalmElProdottiArchitetture.prodottoPk));
-
-										DmAlmAsmProdottiArchitettureDAO
-												.insertRelAsmProdottiArchitetture(
-														dataEsecuzione,
-														relazione);
-									}
-								}
-							}
-						}
-
-						// Nei casi di Asm multiple se nell'asociazione
-						// Asm/Prodotto riscontro che i prodotti associati sono
-						// relativi ad U.O. diverse segnalo l'incongruenza
-						if (!unitaOrganizzativaDoppia.equalsIgnoreCase("")) {
-							logger.info("Errore gestito - Asm associata a più U.O. applicazione: "
-									+ asmRow.get(dmalmAsm.applicazione)
-									+ ", U.O. 1: "
-									+ unitaOrganizzativa
-									+ ", U.O. 2: " + unitaOrganizzativaDoppia);
-
-							ErroriCaricamentoDAO
-									.insert(DmAlmConstants.FONTE_MISURA,
-											DmAlmConstants.WRONG_LINK_ASM_UNITAORGANIZZATIVA,
-											"APPLICAZIONE: "
-													+ asmRow.get(dmalmAsm.applicazione)
-													+ ", U.O 1: "
-													+ unitaOrganizzativa
-													+ ", U.O 2: "
-													+ unitaOrganizzativaDoppia,
-											DmAlmConstants.WRONG_LINK_ASM_PRODOTTO,
-											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											dataEsecuzione);
-						}
-
-					} // multi asm
-				}
-			}
-
-			/* Step 4 - Collegamento prodotti non associati alle ASM */
-
-			prodLink = ProdottiArchitettureDAO.getAllProductArchToLinkWithAsm();
-			if (prodLink.size() > 0) {
-				for (Tuple row : prodLink) {
-					logger.info("Collego il prodotto "
-							+ row.get(qDmalmElProdottiArchitetture.prodottoPk)
-							+ " al tappo ASM");
-					
-					DmalmAsmProdottiArchitetture relazione = new DmalmAsmProdottiArchitetture();
-					relazione.setDmalmAsmPk(0);
-					relazione.setDmalmProdottoPk(row
-							.get(qDmalmElProdottiArchitetture.prodottoPk));
-
-					DmAlmAsmProdottiArchitettureDAO
-							.insertRelAsmProdottiArchitetture(dataEsecuzione,
-									relazione);
-				}
-			}
-
-			/*
-			 * Step 5 chiusura prodotti architetture che hanno già una relazione
-			 * con ASM
-			 */
-			ProdottiArchitettureDAO.closeProductArchDuplicate();
-
-			logger.debug("STOP CheckLinkAsmSferaProdottiArchFacade");
-	
+//			if (ErrorManager.getInstance().hasError()) {
+//				RecoverManager.getInstance().startRecoverTarget();
+//				RecoverManager.getInstance().startRecoverStaging();
+//
+//				// MPS
+//				if (ExecutionManager.getInstance().isExecutionMps())
+//					RecoverManager.getInstance().startRecoverStgMps();
+//
+//				return;
+//			}
+			//Carica Elettrra nellos taging
+//			StagingElettraFacade.executeStaging(dataEsecuzioneDeleted);
+//			ElettraFunzionalitaFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+//			//Carica le UO
+//			StgElUnitaOrganizzativeDAO.fillStaging();
+//			ElettraUnitaOrganizzativeFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+//			
+			//StgElProdottiDAO.fillStaging();
+			//ElettraProdottiArchitettureFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+			//StgElPersonaleDAO.fillStaging();
+			//ElettraPersonaleFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+			
+			//Annulla le UO
+			
+			//CheckAnnullamentiElettraFacade.execute(DateUtils.stringToTimestamp("2018-07-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+			//Aggiorna le UO
+//			ProjectSgrCmFacade.storicizzaProjectElettra(DateUtils.stringToTimestamp("2018-07-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+//			//Storicizza i WI figli dei project per cambio UO
+//			CheckProjectStorFacade.execute();
+//			
+//			//Aggiorna 
+//			ProjectSgrCmFacade.aggiornaUOFlatProject();
+//			
+//			
+//			//Triplice
+//			CheckLinkAsmSferaProjectElFacade.execute();
+			
+			//Annulla Elettra
+			//CheckAnnullamentiElettraFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+			
+			//Date di annullamento dei prodotti
+//			List <Integer> prodottiAnnullati=ElettraProdottiArchitettureDAO.getAllTargetProdottoAnnullati();
+//			
+//			for(Integer prod:prodottiAnnullati){
+//				List <String> applicazioni=ProdottiArchitettureDAO.getAsmByProductPk(prod);
+//				if(applicazioni!=null && applicazioni.size()>0){
+//					for(String app:applicazioni){
+//						if(app.contains(DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE) || app.contains(DmAlmConstants.SFERA_ANNULLATO_FISICAMENTE)){
+//							Date dataAnnullamento=DateUtils.getDataAnnullamento(app, logger);
+//							logger.info("Prodotto PK:"+prod+" Data annullamento :"+dataAnnullamento);
+//							if(dataAnnullamento!=null){
+//								ElettraProdottiArchitettureDAO.updateDataAnnullamento(new Timestamp(dataAnnullamento.getTime()), prod);
+//							}
+//						}
+//					}
+//				}
+//			}
+			
+			//DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2016-02-28 21:00:00","yyyy-MM-dd HH:mm:00"));
+			//CheckProjectStorFacade.execute();
+			//RecoverManager.getInstance().startRecoverTarget();
 			
 			//CheckLinkAsmSferaUnitaOrganizzativaFacade.execute(DateUtils.stringToTimestamp("2018-02-01 20:40:00",
 			//		"yyyy-MM-dd HH:mm:00"));
@@ -499,20 +363,20 @@ public class TestWI extends TestCase {
 	}
 
 	private void loadWiAndCustomFieldInStaging(String typeWi,long minRev, long maxRev) throws Exception {
-		Map<Workitem_Type, Long> minRevisionsByType = SissHistoryWorkitemDAO
+		Map<Workitem_Type, Long> minRevisionsByType = SireHistoryWorkitemDAO
 				.getMinRevisionByType();
 		// Drop degli indici prima dell'elaborazione di HISTORY_WORKITEM e
 		// HISTORY_CF_WORKITEM
-		logger.debug("START DROP SISS INDEXES");
+		logger.debug("START DROP SIRE INDEXES");
 		//SissHistoryWorkitemDAO.dropIndexes();
-		logger.debug("STOP DROP SISS INDEXES");
+		logger.debug("STOP DROP SIRE INDEXES");
 
 		retry = Integer.parseInt(DmAlmConfigReader.getInstance()
 				.getProperty(DMALM_DEADLOCK_RETRY));
 		wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 				.getProperty(DMALM_DEADLOCK_WAIT));
 
-		logger.debug("START SissHistoryWorkitem - numero wi: "
+		logger.debug("START SireHistoryWorkitem - numero wi: "
 				+ Workitem_Type.values().length);
 
 		Workitem_Type type = null;
@@ -522,7 +386,7 @@ public class TestWI extends TestCase {
 			}
 		}
 
-		logger.debug("START TYPE: SISS " + type.toString());
+		logger.debug("START TYPE: SIRE " + type.toString());
 		int tentativi = 0;
 		ErrorManager.getInstance().resetDeadlock();
 		ErrorManager.getInstance().resetCFDeadlock();
@@ -537,99 +401,99 @@ public class TestWI extends TestCase {
 			minRevisionsByType.put(type, i);
 			long j=i+10000;
 			logger.info("Carico da rev "+i+" a "+j);
-			SissHistoryWorkitemDAO.fillSissHistoryWorkitem(
+			SireHistoryWorkitemDAO.fillSireHistoryWorkitem(
 					minRevisionsByType, j, type);
 			inDeadLock = ErrorManager.getInstance().hasDeadLock();
 		
-//			if (!inDeadLock) {
-//				List<String> customFields = EnumUtils
-//						.getCFEnumerationByType(type);
-//	
-//				SissHistoryCfWorkitemDAO
-//				.fillSissHistoryCfWorkitemByWorkitemType(
-//						minRevisionsByType.get(type),
-//						j, type, customFields);
-//				cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
-//			}
-//	
-//			logger.debug("Fine tentativo " + tentativi + " - WI deadlock "
-//					+ inDeadLock + " - CF deadlock " + cfDeadlock);
-//	
-//			if (inDeadLock || cfDeadlock) {
-//				while (inDeadLock || cfDeadlock) {
-//	
-//					tentativi++;
-//	
-//					if (tentativi > retry) {
-//						logger.debug("Raggiunto limite tentativi: "
-//								+ tentativi);
-//						Exception e = new Exception("Deadlock detected");
-//						ErrorManager.getInstance().exceptionOccurred(true,
-//								e);
-//						return;
-//					}
-//	
-//					logger.debug("Errore, aspetto 3 minuti");
-//					logger.debug("Tentativo " + tentativi);
-//					TimeUnit.MINUTES.sleep(wait);
-//	
-//					if (inDeadLock) {
-//						SissHistoryWorkitemDAO.fillSissHistoryWorkitem(
-//								minRevisionsByType, j, type);
-//						inDeadLock = ErrorManager.getInstance()
-//								.hasDeadLock();
-//						if (!inDeadLock) {
-//							logger.debug("Non in deadlock -> provo i CF");
-//							List<String> customFields = EnumUtils
-//									.getCFEnumerationByType(type);
-//	
-//							SissHistoryCfWorkitemDAO
-//							.fillSissHistoryCfWorkitemByWorkitemType(
-//									minRevisionsByType.get(type),
-//									j, type,
-//									customFields);
-//							cfDeadlock = ErrorManager.getInstance()
-//									.hascfDeadLock();
-//							logger.debug("I CF sono in deadlock "
-//									+ cfDeadlock);
-//						}
-//					} else {
-//						if (cfDeadlock) {
-//							logger.debug("Scarico soltanto i CF");
-//	
-//							List<String> customFields = EnumUtils
-//									.getCFEnumerationByType(type);
-//	
-//							SissHistoryCfWorkitemDAO
-//							.fillSissHistoryCfWorkitemByWorkitemType(
-//									minRevisionsByType
-//									.get(type),
-//									j, type,
-//									customFields);
-//	
-//							cfDeadlock = ErrorManager.getInstance()
-//									.hascfDeadLock();
-//	
-//							logger.debug("I CF sono in deadlock "
-//									+ cfDeadlock);
-//						}
-//					}
-//				}
-//			}
+			if (!inDeadLock) {
+				List<String> customFields = EnumUtils
+						.getCFEnumerationByType(type);
+	
+				SireHistoryCfWorkitemDAO
+				.fillSireHistoryCfWorkitemByWorkitemType(
+						minRevisionsByType.get(type),
+						j, type, customFields);
+				cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
+			}
+	
+			logger.debug("Fine tentativo " + tentativi + " - WI deadlock "
+					+ inDeadLock + " - CF deadlock " + cfDeadlock);
+	
+			if (inDeadLock || cfDeadlock) {
+				while (inDeadLock || cfDeadlock) {
+	
+					tentativi++;
+	
+					if (tentativi > retry) {
+						logger.debug("Raggiunto limite tentativi: "
+								+ tentativi);
+						Exception e = new Exception("Deadlock detected");
+						ErrorManager.getInstance().exceptionOccurred(true,
+								e);
+						return;
+					}
+	
+					logger.debug("Errore, aspetto 3 minuti");
+					logger.debug("Tentativo " + tentativi);
+					TimeUnit.MINUTES.sleep(wait);
+	
+					if (inDeadLock) {
+						SireHistoryWorkitemDAO.fillSireHistoryWorkitem(
+								minRevisionsByType, j, type);
+						inDeadLock = ErrorManager.getInstance()
+								.hasDeadLock();
+						if (!inDeadLock) {
+							logger.debug("Non in deadlock -> provo i CF");
+							List<String> customFields = EnumUtils
+									.getCFEnumerationByType(type);
+	
+							SireHistoryCfWorkitemDAO
+							.fillSireHistoryCfWorkitemByWorkitemType(
+									minRevisionsByType.get(type),
+									j, type,
+									customFields);
+							cfDeadlock = ErrorManager.getInstance()
+									.hascfDeadLock();
+							logger.debug("I CF sono in deadlock "
+									+ cfDeadlock);
+						}
+					} else {
+						if (cfDeadlock) {
+							logger.debug("Scarico soltanto i CF");
+	
+							List<String> customFields = EnumUtils
+									.getCFEnumerationByType(type);
+	
+							SireHistoryCfWorkitemDAO
+							.fillSireHistoryCfWorkitemByWorkitemType(
+									minRevisionsByType
+									.get(type),
+									j, type,
+									customFields);
+	
+							cfDeadlock = ErrorManager.getInstance()
+									.hascfDeadLock();
+	
+							logger.debug("I CF sono in deadlock "
+									+ cfDeadlock);
+						}
+					}
+				}
+			}
 		}
-		logger.debug("START delete not matching CFs SISS");
-		SissHistoryCfWorkitemDAO.deleteNotMatchingCFS();
-		logger.debug("STOP delete not matching CFs SISS");
-
-		logger.debug("START Update CF SISS");
-		SissHistoryCfWorkitemDAO.updateCFonWorkItem();
-		logger.debug("STOP Update CF SISS");
+//		logger.debug("START delete not matching CFs SISS");
+//		SissHistoryCfWorkitemDAO.deleteNotMatchingCFS();
+//		logger.debug("STOP delete not matching CFs SISS");
+//
+//		logger.debug("START Update CF SISS");
+//		SissHistoryCfWorkitemDAO.updateCFonWorkItem();
+//		logger.debug("STOP Update CF SISS");
 
 		// Rebuild degli indici dopo l'elaborazione di HISTORY_WORKITEM e
 		// HISTORY_CF_WORKITEM
-		logger.debug("START REBUILD SISS INDEXES");
-		SissHistoryWorkitemDAO.rebuildIndexes();
-		logger.debug("STOP REBUILD SISS INDEXES");
+//		logger.debug("START REBUILD SISS INDEXES");
+//		SissHistoryWorkitemDAO.rebuildIndexes();
+//		logger.debug("STOP REBUILD SISS INDEXES");
 
 		ConnectionManager.getInstance().dismiss();
 	}

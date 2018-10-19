@@ -10,6 +10,7 @@ import java.util.List;
 
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -17,6 +18,7 @@ import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProdotto;
+import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
@@ -40,6 +42,7 @@ public class DmAlmAsmDAO {
 	private static QDmalmAsmProdotto asmprodotto = QDmalmAsmProdotto.dmalmAsmProdotto;
 	private static QDmalmAsmProdottiArchitetture asmProdottiArchitetture = QDmalmAsmProdottiArchitetture.qDmalmAsmProdottiArchitetture;
 	private static QDmalmElProdottiArchitetture elettraProdotto = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
 	public static List<DmalmAsm> getAllAsm(Timestamp dataEsecuzione)
@@ -804,6 +807,49 @@ public class DmAlmAsmDAO {
 		return asmList;
 	}
 
+	public static List<Tuple> getAsmAnnullataProdotto(Integer prodottoPk)
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> asmList = new ArrayList<Tuple>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			// tutte le Asm non associate a Prodotto (si escude il recod DUMMY:
+			// dmalmAsmPk = 0)
+			asmList = query
+					.from(asm)
+					.leftJoin(asmProdottiArchitetture)
+					.on(asmProdottiArchitetture.dmalmAsmPk.eq(asm.dmalmAsmPk)
+							.and(asmProdottiArchitetture.dtFineValidita
+									.eq(DateUtils.setDtFineValidita9999())))
+					.where(asmProdottiArchitetture.dmalmProdottoPk.eq(prodottoPk))
+					.where(asm.dataFineValidita.eq(DateUtils
+							.setDtFineValidita9999()))
+					.where(asm.dmalmAsmPk.ne(new Integer(0)))
+					.where(asmProdottiArchitetture.dmalmProdottoPk.isNull().or(
+							(asmProdottiArchitetture.dmalmProdottoPk.eq(0))))
+					.list(asm.applicazione, asm.dmalmAsmPk,
+							asmProdottiArchitetture.dmalmProdottoPk,
+							asmProdottiArchitetture.dmalmAsmPk,
+							asmProdottiArchitetture.dtInizioValidita,
+							asmProdottiArchitetture.dtFineValidita);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return asmList;
+	}
 	public static List<Tuple> getAllAsmStrutturaOrganizzativa()
 			throws DAOException {
 		ConnectionManager cm = null;
@@ -1012,8 +1058,8 @@ public class DmAlmAsmDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmAsm> ret = new ArrayList<DmalmAsm>();
-		List<Tuple> t = new ArrayList<Tuple>();
+		List<DmalmAsm> ret = new ArrayList<>();
+		List<Tuple> t = new ArrayList<>();
 
 		try {
 			// caso x.y.z (prodotto.modulo.funzionalita)
@@ -1075,8 +1121,11 @@ public class DmAlmAsmDAO {
 					}
 				} else {
 					// caso x (prodotto)
-					temp = siglaPrj.split("\\.");
-					siglaPrj = temp[0];
+					List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(siglaPrj);
+					if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
+						temp = siglaPrj.split("\\.");
+						siglaPrj = temp[0];
+					}
 					
 					query = new SQLQuery(connection, dialect);
 						
@@ -1123,5 +1172,46 @@ public class DmAlmAsmDAO {
 		}
 
 		return ret;
+	}
+
+	public static void updateErrorColumn(Tuple row, String error) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> asmList = new ArrayList<>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			
+			
+			SQLQuery query = new SQLQuery(connection, dialect);
+			
+			asmList = query.from(asm)
+					.where(asm.idAsm.eq(row.get(asm.idAsm)))
+					.where(asm.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.list(asm.all());
+			for(Tuple tuple:asmList){
+				
+				String errors= tuple.get(asm.errori);
+				errors+=error+";";
+				
+				new SQLUpdateClause(connection, dialect, asm)
+				.where(asm.idAsm.eq(row.get(asm.idAsm)))
+				.where(asm.dataFineValidita.eq(DateUtils
+						.setDtFineValidita9999()))
+				.set(asm.errori,errors);
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+		}finally{
+			
+			if(cm!=null)
+				cm.closeConnection(connection);
+		}
+		
+		
 	}
 }

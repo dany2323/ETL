@@ -421,8 +421,8 @@ public class SireHistoryProjectDAO {
 			connection = cm.getConnectionOracle();
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			SQLQuery query = new SQLQuery(connection, dialect);
-			QSissHistoryProject stgProjectA = QSissHistoryProject.sissHistoryProject;
-			QSissHistoryProject stgProjectB = QSissHistoryProject.sissHistoryProject;
+			QSireHistoryProject stgProjectA = QSireHistoryProject.sireHistoryProject;
+			QSireHistoryProject stgProjectB = QSireHistoryProject.sireHistoryProject;
 			projects = query
 					.from(stgProjectA)
 					.where(stgProjectA.cTemplate.eq(template.toString()))
