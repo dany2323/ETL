@@ -316,7 +316,6 @@ public class SireHistoryWorkitemDAO {
 							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSireHistory() + ".module where module.c_pk = fk_module) as fk_module"),
 							StringTemplate.create("0 as c_is_local"),
 							fonteHistoryWorkItems.cPriority,
-							fonteHistoryWorkItems.cAutosuspect,
 							fonteHistoryWorkItems.cResolution, 
 							fonteHistoryWorkItems.cCreated,
 							fonteHistoryWorkItems.cOutlinenumber,
@@ -357,11 +356,11 @@ public class SireHistoryWorkitemDAO {
 			for (Tuple hist : historyworkitems) {
 				
 				Object[] vals = hist.toArray();
-				String fkUriModule = vals[0] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[0].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[0].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkModule = fkUriModule != "" ? (fkUriModule +"%"+(vals[1] != null ? vals[1].toString() : "")) : "";
-				String fkUriProject = vals[8] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkProject = fkUriProject != "" ? (fkUriProject +"%"+(vals[9] != null ? vals[9].toString() : "")) : "";
-				String fkUriAuthor = vals[13] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[13].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[13].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkUriModule = hist.get(fonteHistoryWorkItems.fkUriModule) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriModule).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriModule).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkModule = fkUriModule != "" ? (fkUriModule +"%"+(hist.get(fonteHistoryWorkItems.fkModule)!= null ? hist.get(fonteHistoryWorkItems.fkModule).toString() : "")) : "";
+				String fkUriProject = vals[7] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriProject).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriProject).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkProject = fkUriProject != "" ? (fkUriProject +"%"+(hist.get(fonteHistoryWorkItems.fkUriProject) != null ? hist.get(fonteHistoryWorkItems.fkUriProject).toString() : "")) : "";
+				String fkUriAuthor = vals[12] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[12].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[12].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
 				String fkAuthor = fkUriAuthor != "" ? (fkUriAuthor +"%"+(vals[14] != null ? vals[14].toString() : "")) : "";
 				String cUri = vals[15] != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[15].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[15].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
 				String cPk = cUri != "" ? (cUri +"%"+(vals[22] != null ? vals[22].toString() : "")) : "";
@@ -374,7 +373,6 @@ public class SireHistoryWorkitemDAO {
 						stgWorkItems.fkModule, 
 						stgWorkItems.cIsLocal,
 						stgWorkItems.cPriority, 
-						stgWorkItems.cAutosuspect,
 						stgWorkItems.cResolution, 
 						stgWorkItems.cCreated,
 						stgWorkItems.cOutlinenumber,
@@ -410,7 +408,7 @@ public class SireHistoryWorkitemDAO {
 								fkModule,
 								vals[2],
 								vals[3],
-								vals[4],
+//								vals[4],
 								vals[5],
 								vals[6],
 								vals[7],

@@ -345,7 +345,7 @@ public class SissHistoryWorkitemDAO {
 							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".module where module.c_pk = fk_module) as fk_module"),
 							StringTemplate.create("0 as c_is_local"),
 							fonteHistoryWorkItems.cPriority,
-							fonteHistoryWorkItems.cAutosuspect,
+							StringTemplate.create("false"),
 							fonteHistoryWorkItems.cResolution, 
 							fonteHistoryWorkItems.cCreated,
 							fonteHistoryWorkItems.cOutlinenumber,
