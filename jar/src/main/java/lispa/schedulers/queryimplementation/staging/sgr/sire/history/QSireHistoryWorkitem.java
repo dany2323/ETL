@@ -31,9 +31,6 @@ public class QSireHistoryWorkitem extends com.mysema.query.sql.RelationalPathBas
 
     public static final QSireHistoryWorkitem sireHistoryWorkitem = new QSireHistoryWorkitem("DMALM_SIRE_HISTORY_WORKITEM");
 
-    //public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
-    public final NumberPath<Integer> cAutosuspect = createNumber("C_AUTOSUSPECT", Integer.class);
-
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 
     //public final BooleanPath cDeleted = createBoolean("C_DELETED");
