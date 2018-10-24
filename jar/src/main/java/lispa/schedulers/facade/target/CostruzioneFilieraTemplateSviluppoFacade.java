@@ -98,7 +98,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			
 			
 			// creazione secondo livello filiera template Sviluppo
-			startWorkitemsList = LinkedWorkitemsDAO
+			/*startWorkitemsList = LinkedWorkitemsDAO
 					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "sman", "release");
 			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
 					+ startWorkitemsList.size());
@@ -106,7 +106,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			if (startWorkitemsList.size() > 0) {
 				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
 						insertedWorkitemsList);
-			}
+			}*/
 			
 			// creazione altro secondo livello filiera template Sviluppo
 			startWorkitemsList = LinkedWorkitemsDAO
@@ -122,6 +122,16 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			// creazione altro secondo livello filiera template Sviluppo
 			startWorkitemsList = LinkedWorkitemsDAO
 					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "release", "defect");
+			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
+					+ startWorkitemsList.size());
+
+			if (startWorkitemsList.size() > 0) {
+				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
+						insertedWorkitemsList);
+			}
+			
+			startWorkitemsList = LinkedWorkitemsDAO
+					.getStartWorkitemsTemplateSviluppo(dataInizioFiliera, "release", "sman");
 			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - lista.size: "
 					+ startWorkitemsList.size());
 
@@ -207,6 +217,11 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
 				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
 				+ "and d.URI_ANOMALIA_PRODOTTO = t.URI_WI)";
+		String anomaliaQueryDummy = "select * from DMALM_ANOMALIA_PRODOTTO_DUMMY d "
+				+ "where not exists "
+				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+				+ "and d.URI_ANOMALIA_PRODOTTO = t.URI_WI)";
 		String taskQuery = "select * from DMALM_TASK d "
 				+ "where not exists "
 				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
@@ -222,7 +237,11 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
 				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
 				+ "and d.URI_DIFETTO_PRODOTTO = t.URI_WI)";
-		
+		String defectQueryDummy = "select * from DMALM_DIFETTO_PRODOTTO_DUMMY d "
+				+ "where not exists "
+				+ "(select 1 from DMALM_TEMPLATE_SVILUPPO t "
+				+ "where d.ID_REPOSITORY = t.ID_REPOSITORY "
+				+ "and d.URI_DIFETTO_PRODOTTO = t.URI_WI)";
 		
 		List<DmalmProgettoSviluppoSvil> resultListSrqs = new LinkedList<DmalmProgettoSviluppoSvil>();
 		List<DmalmReleaseDiProgetto> resultListRelease = new LinkedList<DmalmReleaseDiProgetto>();
@@ -296,6 +315,18 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				anomalia.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListAnomalia.add(anomalia);
 			}
+			logger.debug("Eseguto la seguente query: "+anomaliaQueryDummy);
+			ps = connection.prepareStatement(anomaliaQueryDummy);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				DmalmAnomaliaProdotto anomalia = new DmalmAnomaliaProdotto();
+				anomalia.setCdAnomalia(rs.getString("CD_ANOMALIA"));
+				anomalia.setDmalmAnomaliaProdottoPk(rs.getInt("DMALM_ANM_PROD_DUMMY_PK"));
+				anomalia.setIdRepository(rs.getString("ID_REPOSITORY"));
+				anomalia.setUri(rs.getString("URI_ANOMALIA_PRODOTTO"));
+				anomalia.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				resultListAnomalia.add(anomalia);
+			}
 			
 			logger.debug("Eseguto la seguente query: "+taskQuery);
 			ps = connection.prepareStatement(taskQuery);
@@ -330,6 +361,19 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				DmalmDifettoProdotto defect = new DmalmDifettoProdotto();
 				defect.setCdDifetto(rs.getString("CD_DIFETTO"));
 				defect.setDmalmDifettoProdottoPk(rs.getInt("DMALM_DIFETTO_PRODOTTO_PK"));
+				defect.setIdRepository(rs.getString("ID_REPOSITORY"));
+				defect.setUri(rs.getString("URI_DIFETTO_PRODOTTO"));
+				defect.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				resultListDefect.add(defect);
+			}
+			
+			logger.debug("Eseguto la seguente query: "+defectQueryDummy);
+			ps = connection.prepareStatement(defectQueryDummy);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				DmalmDifettoProdotto defect = new DmalmDifettoProdotto();
+				defect.setCdDifetto(rs.getString("CD_DIFETTO"));
+				defect.setDmalmDifettoProdottoPk(rs.getInt("DMALM_DIF_PROD_DUMMY_PK"));
 				defect.setIdRepository(rs.getString("ID_REPOSITORY"));
 				defect.setUri(rs.getString("URI_DIFETTO_PRODOTTO"));
 				defect.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
