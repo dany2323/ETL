@@ -486,13 +486,22 @@ public class MisuraUtils {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Integer pkValue = 0;
-		String querySql = "SELECT MAX("+nomeCampoPk+") FROM "+tabellaTarget+" WHERE "+idTabellaAsm+" = ? AND DT_FINE_VALIDITA = ?";
+		String querySql = "SELECT MAX("+nomeCampoPk+") FROM "+tabellaTarget+" WHERE "+idTabellaAsm+" = ? ";
+		if(tabellaTarget.equals(DmAlmConstants.TARGET_MISURA)) {
+			querySql += "AND RANK_STATO_MISURA = ?";
+		} else {
+			querySql += "AND DT_FINE_VALIDITA = ?";
+		}
 		
 		try {
 			conn = cm.getConnectionOracle();
 			ps = conn.prepareStatement(querySql);
 			ps.setInt(1, idProgettoStgMisura);
-			ps.setTimestamp(2, DateUtils.setDtFineValidita9999());
+			if(tabellaTarget.equals(DmAlmConstants.TARGET_MISURA)) {
+				ps.setInt(2, 1);
+			} else {
+				ps.setTimestamp(2, DateUtils.setDtFineValidita9999());
+			}
 			rs = ps.executeQuery();
 			if(rs.next())
 				pkValue = rs.getInt(1);
