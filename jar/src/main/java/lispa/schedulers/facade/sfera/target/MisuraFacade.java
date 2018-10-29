@@ -68,7 +68,7 @@ public class MisuraFacade {
 				// se non trovo almento un record, inserisco la nuova struttura
 				// organizzativa nel target
 
-				if (target.size() == 0 && misure.getNomeMisura().startsWith("UFFICIOSO-")) {
+				if (target.size() == 0 && !misure.getNomeMisura().startsWith("UFFICIOSO-")) {
 					righeNuove++;
 
 					DmAlmMisuraDAO.insertMisure(dataEsecuzione, misure);
