@@ -61,15 +61,6 @@ public class DmAlmETL {
 		logger.info("STOP DmAlmFillStaging.doWork()");
 
 		if (!RecoverManager.getInstance().isRecovered()) {
-			try {
-				ConnectionManager.getInstance().dismiss();
-			} catch (Exception e) {
-				logger.debug(e);
-			}
-
-			logger.info("START DmAlmCleaning.doWork()");
-			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
-			logger.info("STOP DmAlmCleaning.doWork()");
 
 			try {
 				ConnectionManager.getInstance().dismiss();
@@ -80,7 +71,17 @@ public class DmAlmETL {
 			logger.info("START DmAlmFillTarget.doWork()");
 			DmAlmFillTarget.doWork();
 			logger.info("STOP DmAlmFillTarget.doWork()");
+			
+			try {
+				ConnectionManager.getInstance().dismiss();
+			} catch (Exception e) {
+				logger.debug(e);
+			}
 
+			logger.info("START DmAlmCleaning.doWork()");
+			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
+			logger.info("STOP DmAlmCleaning.doWork()");
+			
 			// ATTIVITA' POST TARGET
 			// se non è stato eseguito il recover passo agli step successivi
 			if (!RecoverManager.getInstance().isRecovered()) {

@@ -95,6 +95,10 @@ public class DmAlmConfigReaderProperties
 	// SEQUENCE
 	public static final String SEQUENCE_DMALM_PROJECT_ROLES_SGR = "DM_ALM_PROJECT_ROLES_SGR_SEQ.nextval";
 		
+	//CURSORE
+	public static final String CURRENT_CURSOR_NUMBER = "getactualopencursor.sql";
+
+	
 	//AMBIENTE
 	public static final String DM_ALM_AMBIENTE = "dmalm.ambiente";
 	

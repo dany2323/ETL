@@ -25,6 +25,7 @@ import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.bean.target.sfera.DmalmAsmProdottiArchitetture;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
+import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.dao.elettra.StgElPersonaleDAO;
 import lispa.schedulers.dao.elettra.StgElProdottiDAO;
 import lispa.schedulers.dao.elettra.StgElUnitaOrganizzativeDAO;
