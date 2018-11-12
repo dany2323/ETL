@@ -238,33 +238,32 @@ public class ElettraUnitaOrganizzativeFacade {
 		for (DmalmElUnitaOrganizzative unitaOrganizzativa : unitaOrganizzativeList) {
 			List<DmalmElUnitaOrganizzative> nextUnitaOrganizzativeList = new LinkedList<>();
 
+			idUnitaOrganizzativaFlat++;
+			inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
+						unitaOrganizzativa, dataEsecuzione);
+			
 			// se il figlio è già presente nella catena non cerco ulteriori
 			// figli per evitare cicli infiniti
 			if (!figlioPresente(insertedUnitaOrganizzativeList, unitaOrganizzativa)) {
 				nextUnitaOrganizzativeList = ElettraUnitaOrganizzativeDAO.getNextUnitaOrganizzativeFlat(unitaOrganizzativa);
 			}
-
+			
 			if (nextUnitaOrganizzativeList.size() > 0) {
 				// se ho dei figli salvo il wi nella lista degli inseriti e
 				// continuo il ciclo
 				insertedUnitaOrganizzativeList.add(unitaOrganizzativa);
-				idUnitaOrganizzativaFlat++;
-				inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
-						unitaOrganizzativa, dataEsecuzione);
 				idUnitaOrganizzativaFlat = gestisciLista(idUnitaOrganizzativaFlat, nextUnitaOrganizzativeList,
 						insertedUnitaOrganizzativeList, dataEsecuzione);
-				
-				
+				idUnitaOrganizzativaFlat++;
+
+//				idUnitaOrganizzativaFlat++;
+//				inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
+//							unitaOrganizzativa, dataEsecuzione);
 				// tolgo l'item dalla lista per non averlo in un ramo diverso
 				// dal suo
 				insertedUnitaOrganizzativeList.remove(unitaOrganizzativa);
-			} else {
-				// altrimenti se non ho figli inserisco la lista e il wi corrente senza salvarlo
-				// nella lista in una nuova filiera
-				idUnitaOrganizzativaFlat++;
-				inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
-							unitaOrganizzativa, dataEsecuzione);
 			}
+			
 		}
 
 		return idUnitaOrganizzativaFlat;
@@ -560,10 +559,10 @@ public class ElettraUnitaOrganizzativeFacade {
         default:  break;
 		}
 
-		if(lastUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+		if(unitaOrganizzativaFlat.getDataInizioValidita()==null || lastUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
     		unitaOrganizzativaFlat.setDataInizioValidita(lastUnitaOrganizzativa.getDataInizioValidita());
     	}
-    	if(lastUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+    	if(unitaOrganizzativaFlat.getDataFineValidita()==null || lastUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
     		unitaOrganizzativaFlat.setDataFineValidita(lastUnitaOrganizzativa.getDataFineValidita());
     	}
 
