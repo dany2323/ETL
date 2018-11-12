@@ -8,6 +8,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,7 @@ import lispa.schedulers.action.DmAlmETL;
 import lispa.schedulers.action.DmAlmFiliere;
 import lispa.schedulers.action.DmAlmFillStaging;
 import lispa.schedulers.bean.staging.elettra.StgElProdotti;
+import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.bean.target.sfera.DmalmAsmProdottiArchitetture;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -43,6 +45,7 @@ import lispa.schedulers.dao.target.elettra.ElettraFunzionalitaDAO;
 import lispa.schedulers.dao.target.elettra.ElettraModuliDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
+import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.dao.target.fatti.DifettoDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.cleaning.CheckAnnullamentiElettraFacade;
@@ -74,6 +77,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
+import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
@@ -101,7 +105,7 @@ public class TestWI extends TestCase {
 	public void testProvenienzaDifetto(){
 		try {
 			Log4JConfiguration.inizialize();
-			//DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-07-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-11-08 23:40:00","yyyy-MM-dd HH:mm:00"));
 			int days;
 			try {
 				days = Integer.parseInt(DmAlmConfigReader.getInstance()
@@ -113,6 +117,18 @@ public class TestWI extends TestCase {
 			final Timestamp dataEsecuzioneDeleted = DateUtils
 					.getAddDayToDate(-days);
 			
+			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
+					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());
+			QDmalmProject proj = QDmalmProject.dmalmProject;
+//			HashMap<Tuple, Timestamp> 
+			for (Tuple row : listaProgettiNonMovimentati) {
+				
+				DmalmElUnitaOrganizzativeFlat UoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+				if(UoFlat != null && UoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
+					System.out.println("Attenzione, qualcosa non va su Proj "+row.get(proj.idProject));
+//					DataEsecuzione.getInstance().getDataEsecuzione()
+				}
+			}
 			//loadWiAndCustomFieldInStaging("classificatore", 0L, 2000000L);
 //			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-09-04 11:47:00","yyyy-MM-dd HH:mm:00"));
 //

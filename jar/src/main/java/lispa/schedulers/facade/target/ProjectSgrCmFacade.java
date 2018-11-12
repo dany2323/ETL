@@ -12,6 +12,7 @@ import com.mysema.query.Tuple;
 
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
+import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
@@ -23,6 +24,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.utils.BeanUtils;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
 
 public class ProjectSgrCmFacade {
@@ -263,16 +265,22 @@ public class ProjectSgrCmFacade {
 				QueryManager qm = QueryManager.getInstance();
 
 				logger.info("INIZIO Update Project UnitaOrganizzativaFlatFk");
-				
 				qm.executeMultipleStatementsFromFile(
 						DmAlmConstants.M_UPDATE_PROJECT_UOFLATFK,
 						DmAlmConstants.M_SEPARATOR);
-				
 				logger.info("FINE Update Project UnitaOrganizzativaFlatFk");
 			} catch (Exception e) {
 				//non viene emesso un errore bloccante in quanto la Fk è recuperabile dopo l'esecuzione
 				logger.error(e.getMessage(), e);
 			}
+			for (Tuple row : listaProgettiNonMovimentati) {
+			
+				DmalmElUnitaOrganizzativeFlat UoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+				if(UoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
+					System.out.println("Attenzione, qualcosa non va su Proj "+row.get(proj.idProject));
+				}
+			}
+			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(project_tmp));

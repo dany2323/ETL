@@ -22,6 +22,7 @@ import com.mysema.query.types.Projections;
 import com.mysema.query.types.template.StringTemplate;
 
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzative;
+import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
@@ -29,15 +30,19 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzative;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
 
 public class ElettraUnitaOrganizzativeDAO {
+	
+	private ElettraUnitaOrganizzativeDAO(){}
 	private static Logger logger = Logger
 			.getLogger(ElettraUnitaOrganizzativeDAO.class);
 
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 	private static QDmalmElUnitaOrganizzative qDmalmElUnitaOrganizzative = QDmalmElUnitaOrganizzative.qDmalmElUnitaOrganizzative;
+	private static QDmalmElUnitaOrganizzativeFlat qDmalmElUnitaOrganizzativeFlat = QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
 
 	/**
 	 * restituisce tutte le unità organizzative inserite alla data di
@@ -49,25 +54,19 @@ public class ElettraUnitaOrganizzativeDAO {
 	 */
 	public static List<DmalmElUnitaOrganizzative> getAllUnitaOrganizzative(
 			Timestamp dataEsecuzione) throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		
 		DmalmElUnitaOrganizzative bean = null;
-		List<DmalmElUnitaOrganizzative> unita = new ArrayList<DmalmElUnitaOrganizzative>();
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
+		List<DmalmElUnitaOrganizzative> unita = new ArrayList<>();		
+		
 			String sql = QueryManager.getInstance().getQuery(
 					DmAlmConfigReaderProperties.SQL_ELETTRAUNITAORGANIZZATIVE);
-			ps = connection.prepareStatement(sql);
+			try( ConnectionManager cm = ConnectionManager.getInstance();
+					Connection connection = cm.getConnectionOracle();
+					PreparedStatement ps = connection.prepareStatement(sql);
+					ResultSet rs = ps.executeQuery();
+					){
 
-			ps.setTimestamp(1, dataEsecuzione);
-
-			rs = ps.executeQuery();
-
+				ps.setTimestamp(1, dataEsecuzione);
 			while (rs.next()) {
 				bean = new DmalmElUnitaOrganizzative();
 
@@ -95,24 +94,12 @@ public class ElettraUnitaOrganizzativeDAO {
 				bean.setCodiceVisibilita(rs.getString("CD_VISIBILITA"));
 				bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
 				bean.setAnnullato("NO");
-
 				unita.add(bean);
-			}
-
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		} 
 
 		return unita;
 	}
@@ -123,7 +110,7 @@ public class ElettraUnitaOrganizzativeDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> strutture = new ArrayList<Tuple>();
+		List<Tuple> strutture = new ArrayList<>();
 
 		try {
 
@@ -221,7 +208,7 @@ public class ElettraUnitaOrganizzativeDAO {
 					.execute();
 
 			connection.commit();
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			logger.error("insertUnitaOrganizzativa - unita: "
 					+ LogUtils.objectToString(unita));
@@ -317,7 +304,7 @@ public class ElettraUnitaOrganizzativeDAO {
 					.execute();
 
 			connection.commit();
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
 		} finally {
@@ -373,7 +360,7 @@ public class ElettraUnitaOrganizzativeDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Integer> strutture = new ArrayList<Integer>();
+		List<Integer> strutture = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -399,14 +386,14 @@ public class ElettraUnitaOrganizzativeDAO {
 			}
 		}
 
-		return strutture.size() > 0 ? strutture.get(0) : 0;
+		return !strutture.isEmpty() ? strutture.get(0) : 0;
 	}
 	
 	public static List<DmalmElUnitaOrganizzative> getStartUnitaOrganizzativeFlat() throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<DmalmElUnitaOrganizzative>();
+		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -440,7 +427,7 @@ public class ElettraUnitaOrganizzativeDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<DmalmElUnitaOrganizzative>();
+		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -468,13 +455,45 @@ public class ElettraUnitaOrganizzativeDAO {
 
 		return resultList;
 	}
+	
+	public static DmalmElUnitaOrganizzativeFlat getUOFlatByPk(Integer pk) throws DAOException{
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<DmalmElUnitaOrganizzativeFlat> resultList = new LinkedList<>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			resultList = query
+					.from(qDmalmElUnitaOrganizzativeFlat)
+					.where(qDmalmElUnitaOrganizzativeFlat.idFlatPk.eq(pk))
+					.list(Projections.bean(DmalmElUnitaOrganizzativeFlat.class,
+							qDmalmElUnitaOrganizzativeFlat.all()));
+
+		} catch (Exception e) {
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return !resultList.isEmpty()?resultList.get(0):null;
+	}
 
 	public static List<DmalmElUnitaOrganizzative> getUnitaOrganizzativaTappo() throws DAOException,
 	SQLException { //Aggiunta per DM_ALM-313
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<DmalmElUnitaOrganizzative>();
+		List<DmalmElUnitaOrganizzative> resultList = new LinkedList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
