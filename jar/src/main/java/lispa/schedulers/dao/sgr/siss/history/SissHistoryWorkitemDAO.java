@@ -6,27 +6,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.constant.DmalmRegex;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.exception.PropertiesReaderException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.manager.DmAlmConfigReader;
-import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
-import lispa.schedulers.queryimplementation.target.QDmalmStatoWorkitem;
-import lispa.schedulers.utils.StringUtils;
-import lispa.schedulers.utils.enums.Workitem_Type;
 
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
@@ -51,6 +35,22 @@ import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.template.StringTemplate;
+
+import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.constant.DmalmRegex;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
+import lispa.schedulers.manager.DmAlmConfigReader;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
+import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
+import lispa.schedulers.queryimplementation.target.QDmalmStatoWorkitem;
+import lispa.schedulers.utils.StringUtils;
+import lispa.schedulers.utils.enums.Workitem_Type;
 
 public class SissHistoryWorkitemDAO {
 
@@ -114,7 +114,7 @@ public class SissHistoryWorkitemDAO {
 	public static Map<Workitem_Type, Long> getMinRevisionByType()
 			throws Exception {
 
-		HashMap<Workitem_Type, Long> map = new HashMap<Workitem_Type, Long>();
+		EnumMap<Workitem_Type, Long> map = new EnumMap<>(Workitem_Type.class);
 
 		SQLTemplates dialect = new HSQLDBTemplates();
 
@@ -138,7 +138,7 @@ public class SissHistoryWorkitemDAO {
 				if (max == null || max.size() == 0 || max.get(0) == null) {
 					map.put(type, 0L);
 				} else {
-					map.put(type, max.get(0).longValue());
+					map.put(type, Long.valueOf(max.get(0)));
 				}
 
 			}
@@ -340,7 +340,6 @@ public class SissHistoryWorkitemDAO {
 							.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 					.list(
-							//fonteHistoryWorkItems.all()
 							fonteHistoryWorkItems.fkUriModule,
 							StringTemplate.create("(select c_rev from " + lispa.schedulers.manager.DmAlmConstants.GetPolarionSchemaSissHistory() + ".module where module.c_pk = fk_module) as fk_module"),
 							StringTemplate.create("0 as c_is_local"),
@@ -383,17 +382,16 @@ public class SissHistoryWorkitemDAO {
 			int batch_size_counter = 0;
 
 			for (Tuple hist : historyworkitems) {
-				Object[] vals = hist.toArray();
-				String fkUriModule = hist.get(fonteHistoryWorkItems.fkUriModule) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriModule).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriModule).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkModule = fkUriModule != "" ? (fkUriModule +"%"+(hist.get(fonteHistoryWorkItems.fkModule)!= null ? hist.get(fonteHistoryWorkItems.fkModule).toString() : "")) : "";
-				String fkUriProject = hist.get(fonteHistoryWorkItems.fkUriProject) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriProject).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriProject).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkProject = fkUriProject != "" ? (fkUriProject +"%"+(hist.get(fonteHistoryWorkItems.fkUriProject) != null ? hist.get(fonteHistoryWorkItems.fkUriProject).toString() : "")) : "";
-				String fkUriAuthor = hist.get(fonteHistoryWorkItems.fkUriAuthor) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriAuthor).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriAuthor).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkAuthor = fkUriAuthor != "" ? (fkUriAuthor +"%"+(hist.get(fonteHistoryWorkItems.fkAuthor) != null ? hist.get(fonteHistoryWorkItems.fkAuthor).toString() : "")) : "";
-				String cUri = hist.get(fonteHistoryWorkItems.cUri) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.cUri).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.cUri).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
-				String cPk = cUri != "" ? (cUri +"%"+(hist.get(fonteHistoryWorkItems.cRev) != null ? hist.get(fonteHistoryWorkItems.cRev).toString() : "")) : "";
-				String fkUriTimepoint = hist.get(fonteHistoryWorkItems.fkUriTimepoint) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriTimepoint).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriTimepoint).toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") :"";
-				String fkTimepoint = fkUriTimepoint != "" ? (fkUriTimepoint +"%"+(hist.get(fonteHistoryWorkItems.fkTimepoint) != null ? hist.get(fonteHistoryWorkItems.fkTimepoint).toString() : "")) : "";
+				String fkUriModule = hist.get(fonteHistoryWorkItems.fkUriModule) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriModule)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriModule)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkModule = fkUriModule != "" ? (fkUriModule +"%"+(hist.get(fonteHistoryWorkItems.fkModule)!= null ? hist.get(fonteHistoryWorkItems.fkModule): "")) : "";
+				String fkUriProject = hist.get(fonteHistoryWorkItems.fkUriProject) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriProject)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriProject)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkProject = fkUriProject != "" ? (fkUriProject +"%"+(hist.get(fonteHistoryWorkItems.fkProject) != null ? hist.get(fonteHistoryWorkItems.fkProject): "")) : "";
+				String fkUriAuthor = hist.get(fonteHistoryWorkItems.fkUriAuthor) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriAuthor)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriAuthor)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkAuthor = fkUriAuthor != "" ? (fkUriAuthor +"%"+(hist.get(fonteHistoryWorkItems.fkAuthor) != null ? hist.get(fonteHistoryWorkItems.fkAuthor) : "")) : "";
+				String cUri = hist.get(fonteHistoryWorkItems.cUri) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.cUri)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.cUri)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
+				String cPk = cUri != "" ? (cUri +"%"+(hist.get(fonteHistoryWorkItems.cRev) != null ? hist.get(fonteHistoryWorkItems.cRev) : "")) : "";
+				String fkUriTimepoint = hist.get(fonteHistoryWorkItems.fkUriTimepoint) != null ? (queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriTimepoint)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(OracleConnection, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(hist.get(fonteHistoryWorkItems.fkUriTimepoint)))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
+				String fkTimepoint = fkUriTimepoint != "" ? (fkUriTimepoint +"%"+(hist.get(fonteHistoryWorkItems.fkTimepoint) != null ? hist.get(fonteHistoryWorkItems.fkTimepoint) : "")) : "";
 				
 				
 				batch_size_counter++;
