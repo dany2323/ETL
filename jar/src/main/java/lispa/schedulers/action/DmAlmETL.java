@@ -14,6 +14,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MailUtil;
 import lispa.schedulers.utils.StringUtils;
 
@@ -55,80 +56,80 @@ public class DmAlmETL {
 		logger.info("Esecuzione MPS: "
 				+ ExecutionManager.getInstance().isExecutionMps());
 
-		logger.info("START DmAlmFillStaging.doWork()");
-		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
-		logger.info("STOP DmAlmFillStaging.doWork()");
-
-		if (!RecoverManager.getInstance().isRecovered()) {
-			try {
-				ConnectionManager.getInstance().dismiss();
-			} catch (Exception e) {
-				logger.debug(e);
-			}
-
-			logger.info("START DmAlmCleaning.doWork()");
-			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
-			logger.info("STOP DmAlmCleaning.doWork()");
-
-			try {
-				ConnectionManager.getInstance().dismiss();
-			} catch (Exception e) {
-				logger.debug(e);
-			}
-
+//		logger.info("START DmAlmFillStaging.doWork()");
+//		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
+//		logger.info("STOP DmAlmFillStaging.doWork()");
+//
+//		if (!RecoverManager.getInstance().isRecovered()) {
+//			try {
+//				ConnectionManager.getInstance().dismiss();
+//			} catch (Exception e) {
+//				logger.debug(e);
+//			}
+//
+//			logger.info("START DmAlmCleaning.doWork()");
+//			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
+//			logger.info("STOP DmAlmCleaning.doWork()");
+//
+//			try {
+//				ConnectionManager.getInstance().dismiss();
+//			} catch (Exception e) {
+//				logger.debug(e);
+//			}
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-10-25 23:40:00","yyyy-MM-dd HH:mm:00"));
 			logger.info("START DmAlmFillTarget.doWork()");
 			DmAlmFillTarget.doWork();
 			logger.info("STOP DmAlmFillTarget.doWork()");
-
-			// ATTIVITA' POST TARGET
-			// se non è stato eseguito il recover passo agli step successivi
-			if (!RecoverManager.getInstance().isRecovered()) {
-				logger.info("START DmAlmCheckAnnullamenti.doWork()");
-				DmAlmCheckAnnullamenti.doWork();
-				logger.info("STOP DmAlmCheckAnnullamenti.doWork()");
-
-				// se errore non eseguo gli step successivi
-				if (!ErrorManager.getInstance().hasError()) {
-					logger.info("START DmAlmCheckLinkSferaSgrCmElettra.doWork()");
-					DmAlmCheckLinkSferaSgrCmElettra.doWork();
-					logger.info("STOP DmAlmCheckLinkSferaSgrCmElettra.doWork()");
-				}
-
-				// se errore non eseguo gli step successivi
-				if (!ErrorManager.getInstance().hasError()) {
-					logger.info("START DmAlmCheckChangedWorkitem.doWork()");
-					DmAlmCheckChangedWorkitem.doWork();
-					logger.info("STOP DmAlmCheckChangedWorkitem.doWork()");
-				}
-
-				// gestione esecuzione effettuata direttamente nel facade
-				CheckAnomaliaDifettoProdottoFacade.execute();
-
-				// Gestione delle filiere, gestione esecuzione effettuata direttamente nel facade
-				DmAlmFiliere.doWork();
-				
-				// pulizia tabelle esiti e errori caricamento
-				SvecchiamentoFacade.execute();
-
-				// se errore in uno degli step precedenti eseguo il ripristino
-				// di tutto
-				if (ErrorManager.getInstance().hasError()) {
-					// SFERA/ELETTRA/SGRCM
-					if (ExecutionManager.getInstance().isExecutionSfera()
-							|| ExecutionManager.getInstance()
-									.isExecutionElettraSgrcm()) {
-						RecoverManager.getInstance().startRecoverTarget();
-						RecoverManager.getInstance().startRecoverStaging();
-					}
-
-					// MPS
-					if (ExecutionManager.getInstance().isExecutionMps()) {
-						RecoverManager.getInstance().startRecoverTrgMps();
-						RecoverManager.getInstance().startRecoverStgMps();
-					}
-				}
-			}
-		}
+//
+//			// ATTIVITA' POST TARGET
+//			// se non è stato eseguito il recover passo agli step successivi
+//			if (!RecoverManager.getInstance().isRecovered()) {
+//				logger.info("START DmAlmCheckAnnullamenti.doWork()");
+//				DmAlmCheckAnnullamenti.doWork();
+//				logger.info("STOP DmAlmCheckAnnullamenti.doWork()");
+//
+//				// se errore non eseguo gli step successivi
+//				if (!ErrorManager.getInstance().hasError()) {
+//					logger.info("START DmAlmCheckLinkSferaSgrCmElettra.doWork()");
+//					DmAlmCheckLinkSferaSgrCmElettra.doWork();
+//					logger.info("STOP DmAlmCheckLinkSferaSgrCmElettra.doWork()");
+//				}
+//
+//				// se errore non eseguo gli step successivi
+//				if (!ErrorManager.getInstance().hasError()) {
+//					logger.info("START DmAlmCheckChangedWorkitem.doWork()");
+//					DmAlmCheckChangedWorkitem.doWork();
+//					logger.info("STOP DmAlmCheckChangedWorkitem.doWork()");
+//				}
+//
+//				// gestione esecuzione effettuata direttamente nel facade
+//				CheckAnomaliaDifettoProdottoFacade.execute();
+//
+//				// Gestione delle filiere, gestione esecuzione effettuata direttamente nel facade
+//				DmAlmFiliere.doWork();
+//				
+//				// pulizia tabelle esiti e errori caricamento
+//				SvecchiamentoFacade.execute();
+//
+//				// se errore in uno degli step precedenti eseguo il ripristino
+//				// di tutto
+//				if (ErrorManager.getInstance().hasError()) {
+//					// SFERA/ELETTRA/SGRCM
+//					if (ExecutionManager.getInstance().isExecutionSfera()
+//							|| ExecutionManager.getInstance()
+//									.isExecutionElettraSgrcm()) {
+//						RecoverManager.getInstance().startRecoverTarget();
+//						RecoverManager.getInstance().startRecoverStaging();
+//					}
+//
+//					// MPS
+//					if (ExecutionManager.getInstance().isExecutionMps()) {
+//						RecoverManager.getInstance().startRecoverTrgMps();
+//						RecoverManager.getInstance().startRecoverStgMps();
+//					}
+//				}
+//			}
+//		}
 		
 		if (!RecoverManager.getInstance().isRecovered()) {
 			List<String> listMessage = StringUtils.getLogFromStoredProcedureByTimestamp(DmAlmConstants.STORED_PROCEDURE_VERIFICA_ESITO_ETL);
