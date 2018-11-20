@@ -520,7 +520,7 @@ public class ProjectSgrCmDAO {
 							.setDtFineValidita9999()))
 					.set(proj.dtFineValidita,
 							DateUtils.addSecondsToTimestamp(
-									project.getcCreated(), -1)).execute();
+									dataFineValidita, -1)).execute();
 			
 			connection.commit();
 

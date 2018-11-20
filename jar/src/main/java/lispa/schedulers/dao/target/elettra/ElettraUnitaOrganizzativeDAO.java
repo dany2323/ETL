@@ -441,6 +441,8 @@ public class ElettraUnitaOrganizzativeDAO {
 					.from(qDmalmElUnitaOrganizzative)
 					.where(qDmalmElUnitaOrganizzative.codiceUOSuperiore.eq(unitaOrganizzativa.getCodiceArea()))
 					.where(qDmalmElUnitaOrganizzative.codiceArea.ne(unitaOrganizzativa.getCodiceArea()))
+//					.where(qDmalmElUnitaOrganizzative.dataFineValidita.goe(new Timestamp(unitaOrganizzativa.getDataFineValidita().getTime())))
+//					.where(qDmalmElUnitaOrganizzative.dataInizioValidita.loe(new Timestamp(unitaOrganizzativa.getDataInizioValidita().getTime())))
 					.orderBy(qDmalmElUnitaOrganizzative.codiceArea.asc(), qDmalmElUnitaOrganizzative.dataInizioValidita.asc())
 					.list(Projections.bean(DmalmElUnitaOrganizzative.class,
 							qDmalmElUnitaOrganizzative.all()));

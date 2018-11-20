@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
+import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
@@ -15,6 +16,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
 import lispa.schedulers.utils.BeanUtils;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -149,6 +151,16 @@ public class ElettraPersonaleFacade {
 			
 			logger.info("FINE Update Personale Elettra UnitaOrganizzativaFlatFk");
 			
+//			List<DM> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();
+//			
+//			for(Tuple row:allPersonaleRecord){
+//				DmalmElUnitaOrganizzativeFlat UOFlat = ElettraPersonaleDAO.getFlatUOByPk(row.get(qDmalmElPersonale.unitaOrganizzativaFlatFk));
+//				
+//				if(UOFlat.getDataFineValidita().before(row.get(qDmalmElPersonale.dataFineValidita))){
+//					System.out.println("Attenzione, qualcosa non va su personale "+row.get(qDmalmElPersonale.personalePk));
+//				}
+//
+//			}
 			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
