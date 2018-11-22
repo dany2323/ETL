@@ -65,19 +65,6 @@ public class TestWI extends TestCase {
 			final Timestamp dataEsecuzioneDeleted = DateUtils
 					.getAddDayToDate(-days);
 			
-			List<DmalmElPersonale> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();
-			
-			for(DmalmElPersonale row:allPersonaleRecord){
-				if(row.getUnitaOrganizzativaFlatFk()!=null){
-					DmalmElUnitaOrganizzativeFlat UOFlat = ElettraPersonaleDAO.getFlatUOByPk(row.getUnitaOrganizzativaFlatFk());
-//					System.out.println("Chiavi "+row.get(qDmalmElPersonale.personalePk));
-					if(UOFlat.getDataFineValidita().before(row.getDataFineValidita())){
-						System.out.println("Attenzione, qualcosa non va su personale "+row.getPersonalePk());
-						
-					}
-				}
-
-			}
 //			ElettraUnitaOrganizzativeFacade.fillElettraUnitaOrganizzativeFlat(DataEsecuzione.getInstance().getDataEsecuzione());
 //			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
 //					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());

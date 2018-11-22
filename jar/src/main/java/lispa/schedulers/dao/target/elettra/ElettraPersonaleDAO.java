@@ -763,6 +763,10 @@ public class ElettraPersonaleDAO {
 		bean.setCdVisibilita(rs.get(qDmalmElPersonale.cdVisibilita));
 		bean.setDataCaricamento(rs.get(qDmalmElPersonale.dataCaricamento));
 		bean.setAnnullato(rs.get(qDmalmElPersonale.annullato));
+		bean.setUnitaOrganizzativaFlatFk(rs.get(qDmalmElPersonale.unitaOrganizzativaFlatFk));
+		bean.setDataFineValidita(rs.get(qDmalmElPersonale.dataFineValidita));
+		bean.setCodiceResponsabile(rs.get(qDmalmElPersonale.codiceResponsabile));
+		bean.setUnitaOrganizzativaFk(rs.get(qDmalmElPersonale.unitaOrganizzativaFk));
 		return bean;
 		
 	}

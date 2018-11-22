@@ -12,6 +12,7 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
@@ -140,28 +141,33 @@ public class ElettraPersonaleFacade {
 			
 			//DMALM-237 associazione project Unità Organizzativa Flat
 			//ricarica il valore della Fk ad ogni esecuzione
+			updateFlatPersonale();
 			
-			QueryManager qm = QueryManager.getInstance();
+			//Storicizza il personale se DM_ALM-447
+			List<DmalmElPersonale> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();
+			int recordStoricizzati=0;
+			for(DmalmElPersonale row:allPersonaleRecord){
+				if(row.getUnitaOrganizzativaFlatFk()!=null){
+					DmalmElUnitaOrganizzativeFlat UOFlat = ElettraPersonaleDAO.getFlatUOByPk(row.getUnitaOrganizzativaFlatFk());
+//					System.out.println("Chiavi "+row.get(qDmalmElPersonale.personalePk));
+					if(UOFlat.getDataFineValidita().before(row.getDataFineValidita())){
+						System.out.println("Attenzione, qualcosa non va su personale "+row.getPersonalePk());
+						ElettraPersonaleDAO.updateDataFineValidita(
+								new Timestamp(DateUtils.addSecondsToDate(UOFlat.getDataFineValidita(),1).getTime()),
+								row.getPersonalePk());
 
-			logger.info("INIZIO Update Personale Elettra UnitaOrganizzativaFlatFk");
-			
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.M_UPDATE_PERSONALE_UOFLATFK,
-					DmAlmConstants.M_SEPARATOR);
-			
-			logger.info("FINE Update Personale Elettra UnitaOrganizzativaFlatFk");
-			
-//			List<DM> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();
-//			
-//			for(Tuple row:allPersonaleRecord){
-//				DmalmElUnitaOrganizzativeFlat UOFlat = ElettraPersonaleDAO.getFlatUOByPk(row.get(qDmalmElPersonale.unitaOrganizzativaFlatFk));
-//				
-//				if(UOFlat.getDataFineValidita().before(row.get(qDmalmElPersonale.dataFineValidita))){
-//					System.out.println("Attenzione, qualcosa non va su personale "+row.get(qDmalmElPersonale.personalePk));
-//				}
-//
-//			}
-			
+						// inserisco un nuovo record
+						row.setPersonalePk(null);
+						ElettraPersonaleDAO.insertPersonaleUpdate(
+								new Timestamp(DateUtils.addSecondsToDate(UOFlat.getDataFineValidita(),1).getTime()), row);
+						recordStoricizzati++;
+					}
+				}
+
+			}
+			if(recordStoricizzati>0){
+				updateFlatPersonale();
+			}
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(personaleTmp));
@@ -190,5 +196,18 @@ public class ElettraPersonaleFacade {
 			logger.info("STOP ElettraPersonaleFacade.execute");
 		}
 
+	}
+
+	private static void updateFlatPersonale() throws Exception {
+		QueryManager qm = QueryManager.getInstance();
+
+		logger.info("INIZIO Update Personale Elettra UnitaOrganizzativaFlatFk");
+		
+		qm.executeMultipleStatementsFromFile(
+				DmAlmConstants.M_UPDATE_PERSONALE_UOFLATFK,
+				DmAlmConstants.M_SEPARATOR);
+		
+		logger.info("FINE Update Personale Elettra UnitaOrganizzativaFlatFk");
+		
 	}
 }
