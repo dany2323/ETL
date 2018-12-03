@@ -24,6 +24,7 @@ import lispa.schedulers.queryimplementation.target.sfera.QDmalmProgettoSfera;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
+import lispa.schedulers.utils.MisuraUtils;
 
 import org.apache.log4j.Logger;
 
@@ -281,7 +282,8 @@ public class AsmFacade {
 						 DmAlmConstants.TARGET_PROGETTO_SFERA,
 						 "Possibile presenza spazi in ASM PK:"+ asm.getDmalmAsmPk()+" ASM NAME: "+asm.getApplicazione(),
 						 DmAlmConstants.ERRORE_SPAZI_NOME_ASM,
-						 DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, dataEsecuzione);
+						 DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, 
+						 MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, Integer.parseInt(String.valueOf(asm.getIdAsm()))), dataEsecuzione);
 				
 			}
 		}
