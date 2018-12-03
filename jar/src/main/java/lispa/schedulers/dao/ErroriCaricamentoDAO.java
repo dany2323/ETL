@@ -22,48 +22,48 @@ public class ErroriCaricamentoDAO {
 
 	private static Logger logger = Logger.getLogger(ErroriCaricamentoDAO.class);
 
-//	public static void insert(String sorgente, String target, String record,
-//			String motivoerrore, String flagerrore, Timestamp dataCaricamento)
-//			throws DAOException, SQLException {
-//
-//		ConnectionManager cm = null;
-//		Connection connection = null;
-//
-//		try {
-//			cm = ConnectionManager.getInstance();
-//			connection = cm.getConnectionOracle();
-//
-//			connection.setAutoCommit(false);
-//
-//			QErroriCaricamentoDmAlm qErroriCaricamento = QErroriCaricamentoDmAlm.erroriCaricamentoDmAlm;
-//
-//			SQLTemplates dialect = new HSQLDBTemplates();
-//
-//			new SQLInsertClause(connection, dialect, qErroriCaricamento)
-//					.columns(qErroriCaricamento.dataCaricamento,
-//							qErroriCaricamento.entitaSorgente,
-//							qErroriCaricamento.entitaTarget,
-//							qErroriCaricamento.recordErrore,
-//							qErroriCaricamento.motivoErrore,
-//							qErroriCaricamento.flagErrore,
-//							qErroriCaricamento.errorePk)
-//					.values(dataCaricamento, sorgente, target,
-//							StringUtils.truncate(record, 4000), motivoerrore,
-//							flagerrore,
-//							StringTemplate.create("ERRORI_SEQ.nextval"))
-//					.execute();
-//
-//			connection.commit();
-//
-//		} catch (Exception e) {
-//			logger.error(e.getMessage(), e);
-//
-//			throw new DAOException(e);
-//		} finally {
-//			if (cm != null)
-//				cm.closeConnection(connection);
-//		}
-//	}
+	public static void insert(String sorgente, String target, String record,
+			String motivoerrore, String flagerrore, Timestamp dataCaricamento)
+			throws DAOException, SQLException {
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			QErroriCaricamentoDmAlm qErroriCaricamento = QErroriCaricamentoDmAlm.erroriCaricamentoDmAlm;
+
+			SQLTemplates dialect = new HSQLDBTemplates();
+
+			new SQLInsertClause(connection, dialect, qErroriCaricamento)
+					.columns(qErroriCaricamento.dataCaricamento,
+							qErroriCaricamento.entitaSorgente,
+							qErroriCaricamento.entitaTarget,
+							qErroriCaricamento.recordErrore,
+							qErroriCaricamento.motivoErrore,
+							qErroriCaricamento.flagErrore,
+							qErroriCaricamento.errorePk)
+					.values(dataCaricamento, sorgente, target,
+							StringUtils.truncate(record, 4000), motivoerrore,
+							flagerrore,
+							StringTemplate.create("ERRORI_SEQ.nextval"))
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+	}
 
 	/*
 	 * metodo utilizzato per inserire la chiave primaria delle tabelle ASM
