@@ -47,7 +47,7 @@ public class ElettraPersonaleDAO {
 	private static QDmalmElUnitaOrganizzativeFlat qDmalmElUnitaOrganizzativeFlat = QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
 
 	public static List<DmalmElPersonale> getAllPersonale(
-			Timestamp dataEsecuzione) throws Exception {
+			Timestamp dataEsecuzione) throws DAOException, SQLException  {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement ps = null;

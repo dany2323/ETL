@@ -14,7 +14,6 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.staging.elettra.QStgElProdotti;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
@@ -37,15 +36,15 @@ public class ElettraProdottiArchitettureDAO {
 	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
 	private static QDmalmProjectProdottiArchitetture dmalmProjectProdotto = QDmalmProjectProdottiArchitetture.qDmalmProjectProdottiArchitetture;
 
+	private ElettraProdottiArchitettureDAO() {}
 	public static List<DmalmElProdottiArchitetture> getAllProdotti(
 			Timestamp dataEsecuzione) throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		DmalmElProdottiArchitetture bean = null;
-		List<DmalmElProdottiArchitetture> prodotti = new ArrayList<DmalmElProdottiArchitetture>();
+		List<DmalmElProdottiArchitetture> prodotti = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -55,65 +54,62 @@ public class ElettraProdottiArchitettureDAO {
 					.getInstance()
 					.getQuery(
 							DmAlmConfigReaderProperties.SQL_ELETTRAPRODOTTIARCHITETTURE);
+			try(PreparedStatement ps = connection.prepareStatement(sql);){
+				ps.setTimestamp(1, dataEsecuzione);
 
-			ps = connection.prepareStatement(sql);
-			ps.setTimestamp(1, dataEsecuzione);
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				bean = new DmalmElProdottiArchitetture();
-
-				bean.setProdottoPk(rs.getInt("DMALM_STG_PROD_ARCH_PK"));
-				bean.setIdProdottoEdma(rs.getString("ID_PRODOTTO_EDMA"));
-				bean.setIdProdotto(rs.getString("ID_PRODOTTO"));
-				bean.setTipoOggetto(rs.getString("TIPO_OGGETTO"));
-				bean.setSigla(rs.getString("SIGLA"));
-				bean.setNome(rs.getString("NOME"));
-				bean.setDescrizioneProdotto(rs.getString("DS_PRODOTTO"));
-				bean.setAreaProdotto(rs.getString("AREA_PRODOTTO"));
-				bean.setResponsabileProdotto(rs
-						.getString("RESPONSABILE_PRODOTTO"));
-				bean.setAnnullato(rs.getString("ANNULLATO"));
-				bean.setDataAnnullamento(DateUtils.stringToDate(
-						rs.getString("DT_ANNULLAMENTO"), "yyyyMMdd"));
-				bean.setAmbitoManutenzione(rs.getString("AMBITO_MANUTENZIONE"));
-				bean.setAreaTematica(rs.getString("AREA_TEMATICA"));
-				bean.setBaseDatiEtl(rs.getString("BASE_DATI_ETL"));
-				bean.setBaseDatiLettura(rs.getString("BASE_DATI_LETTURA"));
-				bean.setBaseDatiScrittura(rs.getString("BASE_DATI_SCRITTURA"));
-				bean.setCategoria(rs.getString("CATEGORIA"));
-				bean.setFornituraRisorseEsterne(rs
-						.getString("FORNITURA_RISORSE_ESTERNE"));
-				bean.setCodiceAreaProdotto(rs.getString("CD_AREA_PRODOTTO"));
-				bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
-				bean.setUnitaOrganizzativaFk(rs.getInt("UNITAORGANIZZATIVA_FK"));
-				bean.setPersonaleFk(rs.getInt("PERSONALE_FK"));
-				//modificato per DM_ALM-224
-				bean.setAmbitoTecnologico(rs.getString("AMBITO_TECNOLOGICO"));
-				bean.setAmbitoManutenzioneDenom(rs.getString("AMBITO_MANUTENZIONE_DENOM"));
-				bean.setAmbitoManutenzioneCodice(rs.getString("AMBITO_MANUTENZIONE_CODICE"));
-				bean.setStato(rs.getString("STATO_PRODOTTO"));
-				
-				
-				prodotti.add(bean);
+				rs = ps.executeQuery();
+	
+				while (rs.next()) {
+					bean = new DmalmElProdottiArchitetture();
+	
+					bean.setProdottoPk(rs.getInt("DMALM_STG_PROD_ARCH_PK"));
+					bean.setIdProdottoEdma(rs.getString("ID_PRODOTTO_EDMA"));
+					bean.setIdProdotto(rs.getString("ID_PRODOTTO"));
+					bean.setTipoOggetto(rs.getString("TIPO_OGGETTO"));
+					bean.setSigla(rs.getString("SIGLA"));
+					bean.setNome(rs.getString("NOME"));
+					bean.setDescrizioneProdotto(rs.getString("DS_PRODOTTO"));
+					bean.setAreaProdotto(rs.getString("AREA_PRODOTTO"));
+					bean.setResponsabileProdotto(rs
+							.getString("RESPONSABILE_PRODOTTO"));
+					bean.setAnnullato(rs.getString("ANNULLATO"));
+					bean.setDataAnnullamento(DateUtils.stringToDate(
+							rs.getString("DT_ANNULLAMENTO"), "yyyyMMdd"));
+					bean.setAmbitoManutenzione(rs.getString("AMBITO_MANUTENZIONE"));
+					bean.setAreaTematica(rs.getString("AREA_TEMATICA"));
+					bean.setBaseDatiEtl(rs.getString("BASE_DATI_ETL"));
+					bean.setBaseDatiLettura(rs.getString("BASE_DATI_LETTURA"));
+					bean.setBaseDatiScrittura(rs.getString("BASE_DATI_SCRITTURA"));
+					bean.setCategoria(rs.getString("CATEGORIA"));
+					bean.setFornituraRisorseEsterne(rs
+							.getString("FORNITURA_RISORSE_ESTERNE"));
+					bean.setCodiceAreaProdotto(rs.getString("CD_AREA_PRODOTTO"));
+					bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
+					bean.setUnitaOrganizzativaFk(rs.getInt("UNITAORGANIZZATIVA_FK"));
+					bean.setPersonaleFk(rs.getInt("PERSONALE_FK"));
+					//modificato per DM_ALM-224
+					bean.setAmbitoTecnologico(rs.getString("AMBITO_TECNOLOGICO"));
+					bean.setAmbitoManutenzioneDenom(rs.getString("AMBITO_MANUTENZIONE_DENOM"));
+					bean.setAmbitoManutenzioneCodice(rs.getString("AMBITO_MANUTENZIONE_CODICE"));
+					bean.setStato(rs.getString("STATO_PRODOTTO"));
+					
+					
+					prodotti.add(bean);
+				}
 			}
-
 			
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new DAOException(e);
-		} finally {
-			if (rs != null) {
-				rs.close();
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				throw new DAOException(e);
+			} finally {
+				if (rs != null) {
+					rs.close();
+				}
+				if (cm != null) {
+					cm.closeConnection(connection);
+				}
 			}
-			if (ps != null) {
-				ps.close();
-			}
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+			
 
 		return prodotti;
 	}
@@ -152,6 +148,59 @@ public class ElettraProdottiArchitettureDAO {
 		bean.setAmbitoManutenzioneDenom(rs.getString("AMBITO_MANUTENZIONE_DENOM"));
 		bean.setAmbitoManutenzioneCodice(rs.getString("AMBITO_MANUTENZIONE_CODICE"));
 		bean.setStato(rs.getString("STATO_PRODOTTO"));
+		
+		return bean;
+	}
+	
+	public static DmalmElProdottiArchitetture getBeanFromTuple(Tuple rs) 
+	{
+		
+		DmalmElProdottiArchitetture bean = new DmalmElProdottiArchitetture();
+
+		
+		bean.setProdottoPk(rs.get(qDmalmElProdottiArchitetture.prodottoPk));
+		bean.setIdProdottoEdma(rs.get(qDmalmElProdottiArchitetture.idProdottoEdma));
+		bean.setIdProdotto(rs.get(qDmalmElProdottiArchitetture.idProdotto));	
+		bean.setTipoOggetto(rs.get(qDmalmElProdottiArchitetture.tipoOggetto));
+		bean.setSigla(rs.get(qDmalmElProdottiArchitetture.sigla));
+		bean.setNome(rs.get(qDmalmElProdottiArchitetture.nome));
+		bean.setDescrizioneProdotto(rs.get(qDmalmElProdottiArchitetture.descrizioneProdotto));
+		bean.setAreaProdotto(rs.get(qDmalmElProdottiArchitetture.areaProdotto));
+		bean.setResponsabileProdotto(rs.get(qDmalmElProdottiArchitetture.responsabileProdotto));
+		
+		bean.setAnnullato(rs.get(qDmalmElProdottiArchitetture.annullato));
+		
+		bean.setDataAnnullamento(rs.get(qDmalmElProdottiArchitetture.dataAnnullamento));
+		bean.setAmbitoManutenzione(rs.get(qDmalmElProdottiArchitetture.ambitoManutenzione));
+		
+		bean.setAreaTematica(rs.get(qDmalmElProdottiArchitetture.areaTematica));
+		bean.setBaseDatiEtl(rs.get(qDmalmElProdottiArchitetture.baseDatiEtl));
+
+		bean.setBaseDatiLettura(rs.get(qDmalmElProdottiArchitetture.baseDatiLettura));
+		
+		bean.setBaseDatiScrittura(rs.get(qDmalmElProdottiArchitetture.baseDatiScrittura));
+
+		bean.setCategoria(rs.get(qDmalmElProdottiArchitetture.categoria));
+		
+		bean.setFornituraRisorseEsterne(rs.get(qDmalmElProdottiArchitetture.fornituraRisorseEsterne));
+		
+		bean.setCodiceAreaProdotto(rs.get(qDmalmElProdottiArchitetture.codiceAreaProdotto));
+		
+		bean.setDataCaricamento(rs.get(qDmalmElProdottiArchitetture.dataCaricamento));
+		
+		bean.setDataInizioValidita(rs.get(qDmalmElProdottiArchitetture.dataInizioValidita));
+		bean.setDataFineValidita(rs.get(qDmalmElProdottiArchitetture.dataFineValidita));
+
+		bean.setUnitaOrganizzativaFk(rs.get(qDmalmElProdottiArchitetture.unitaOrganizzativaFk));
+		
+		bean.setPersonaleFk(rs.get(qDmalmElProdottiArchitetture.personaleFk));
+		
+		bean.setAmbitoTecnologico(rs.get(qDmalmElProdottiArchitetture.ambitoTecnologico));
+		
+		bean.setAmbitoManutenzioneDenom(rs.get(qDmalmElProdottiArchitetture.ambitoManutenzioneDenom));
+
+		bean.setAmbitoManutenzioneCodice(rs.get(qDmalmElProdottiArchitetture.ambitoManutenzioneCodice));
+		bean.setStato(rs.get(qDmalmElProdottiArchitetture.stato));
 		
 		return bean;
 	}
@@ -218,8 +267,7 @@ public class ElettraProdottiArchitettureDAO {
 				try {
 					cm.closeConnection(connection);
 				} catch (DAOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e);
 				}
 			}
 			
@@ -253,9 +301,6 @@ public class ElettraProdottiArchitettureDAO {
 				cm.closeConnection(connection);
 			}
 		}
-		
-		List <DmalmElProdottiArchitetture> prodottiList=new ArrayList<DmalmElProdottiArchitetture>();
-
 		
 		return prodotti;
 	}
@@ -530,7 +575,7 @@ public class ElettraProdottiArchitettureDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> prodotti = new ArrayList<Tuple>();
+		List<Tuple> prodotti = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -561,7 +606,7 @@ public class ElettraProdottiArchitettureDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> prodotti = new ArrayList<Tuple>();
+		List<Tuple> prodotti = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -577,7 +622,7 @@ public class ElettraProdottiArchitettureDAO {
 					.on(dmalmProjectProdotto.dmalmProdottoPk
 							.eq(qDmalmElProdottiArchitetture.prodottoPk))
 					.where(qDmalmElProdottiArchitetture.prodottoPk
-							.ne(new Integer(0)))
+							.ne(Integer.valueOf(0)))
 					.where(qDmalmElProdottiArchitetture.dataFineValidita
 							.eq(DateUtils.setDtFineValidita9999()))
 					.where(dmalmProjectProdotto.dmalmProdottoPk.isNull())
@@ -593,4 +638,37 @@ public class ElettraProdottiArchitettureDAO {
 
 		return prodotti;
 	}
+	public static List<DmalmElProdottiArchitetture>  getAllTargetProdottoNotAnnullati() throws DAOException {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<Tuple> prodotti = new ArrayList<>();
+		List<DmalmElProdottiArchitetture> prodottiBean= new ArrayList<>();
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			prodotti = query
+					.from(qDmalmElProdottiArchitetture)
+					.where(qDmalmElProdottiArchitetture.annullato.isNull())
+					.list(qDmalmElProdottiArchitetture.all());
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+		for(Tuple row:prodotti) {
+			prodottiBean.add(getBeanFromTuple(row));
+		}
+		
+		return prodottiBean;
+	}
+
 }

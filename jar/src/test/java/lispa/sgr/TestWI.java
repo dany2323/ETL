@@ -6,6 +6,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOC
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING_DAY_DELETE;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -18,11 +19,17 @@ import junit.framework.TestCase;
 import lispa.schedulers.action.DmAlmETL;
 import lispa.schedulers.bean.target.DmalmPersonale;
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
+import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
+import lispa.schedulers.bean.target.sfera.DmalmAsm;
+import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
+import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
+import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
@@ -31,6 +38,7 @@ import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
@@ -49,11 +57,13 @@ public class TestWI extends TestCase {
 	private static QDmalmAsmProdottiArchitetture qDmalmAsmProdottiArchitetture = QDmalmAsmProdottiArchitetture.qDmalmAsmProdottiArchitetture;
 	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 	private static QDmalmElPersonale qDmalmElPersonale = QDmalmElPersonale.qDmalmElPersonale;
+	QDmalmAsm asm = QDmalmAsm.dmalmAsm;
+	private static QDmalmElUnitaOrganizzativeFlat flat= QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
 
 	public void testProvenienzaDifetto(){
 		try {
 			Log4JConfiguration.inizialize();
-			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-11-08 23:40:00","yyyy-MM-dd HH:mm:00"));
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-12-08 23:40:00","yyyy-MM-dd HH:mm:00"));
 			int days;
 			try {
 				days = Integer.parseInt(DmAlmConfigReader.getInstance()
@@ -65,6 +75,56 @@ public class TestWI extends TestCase {
 			final Timestamp dataEsecuzioneDeleted = DateUtils
 					.getAddDayToDate(-days);
 			
+			List<DmalmElProdottiArchitetture> allProdotti = ElettraProdottiArchitettureDAO.getAllTargetProdottoNotAnnullati();
+			
+			for(DmalmElProdottiArchitetture prodotti:allProdotti) {
+				
+				ElettraUnitaOrganizzativeDAO.getUOFlatByPk(prodotti.getUnitaOrgFlatFk());
+				
+			}
+			
+			
+//			List<DmalmElPersonale> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();
+//			int recordStoricizzati=0;
+//			ElettraUnitaOrganizzativeFacade.fillElettraUnitaOrganizzativeFlat(DataEsecuzione.getInstance().getDataEsecuzione());
+//			List<Tuple> activeAsm = DmAlmAsmDAO.gettAllAsmTargetActive();
+//			for(Tuple row:activeAsm){
+//				Tuple Flat= DmAlmAsmDAO.getUOFlatById(row.get(asm.unitaOrganizzativaFlatFk));
+//				DmalmAsm applicazioni = DmAlmAsmDAO.getBeanFromTuple(row);
+//				if(Flat.get(flat.dataFineValidita).before(row.get(asm.dataFineValidita))){
+//					// corrente
+//					System.out.println("ASM Da storicizzare "+applicazioni.getDmalmAsmPk());
+//					DmAlmAsmDAO.updateDataFineValidita(DateUtils.addSecondsToTimestamp(Flat.get(flat.dataFineValidita),1), applicazioni);
+////					DmAlmAsmDAO.updateDataFineValidita(
+////							new Timestamp(DateUtils.addSecondsToDate(Flat.get(flat.dataFineValidita).getTime())),1), DmAlmAsmDAO.getBeanFromTuple(row));
+//
+//					// inserisco un nuovo record
+//
+//					DmAlmAsmDAO.insertAsmUpdate(DateUtils.addSecondsToTimestamp(Flat.get(flat.dataFineValidita),1),
+//							applicazioni);
+//					
+//				}
+//			}
+//			for(DmalmElPersonale row:allPersonaleRecord){
+//				if(row.getUnitaOrganizzativaFlatFk()!=null){
+//					DmalmElUnitaOrganizzativeFlat UOFlat = ElettraPersonaleDAO.getFlatUOByPk(row.getUnitaOrganizzativaFlatFk());
+////					System.out.println("Chiavi "+row.get(qDmalmElPersonale.personalePk));
+//					if(UOFlat.getDataFineValidita().before(row.getDataFineValidita())){
+//						System.out.println("Attenzione, qualcosa non va su personale "+row.getPersonalePk());
+//						ElettraPersonaleDAO.updateDataFineValidita(
+//								new Timestamp(DateUtils.addSecondsToDate(UOFlat.getDataFineValidita(),1).getTime()),
+//								row.getPersonalePk());
+//
+//						// inserisco un nuovo record
+//						row.setPersonalePk(null);
+//						row.setDataCaricamento(DataEsecuzione.getInstance().getDataEsecuzione());
+//						ElettraPersonaleDAO.insertPersonaleUpdate(
+//								new Timestamp(DateUtils.addSecondsToDate(UOFlat.getDataFineValidita(),1).getTime()), row);
+//						recordStoricizzati++;
+//					}
+//				}
+//
+//			}
 //			ElettraUnitaOrganizzativeFacade.fillElettraUnitaOrganizzativeFlat(DataEsecuzione.getInstance().getDataEsecuzione());
 //			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
 //					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());
