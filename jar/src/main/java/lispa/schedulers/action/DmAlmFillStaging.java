@@ -199,7 +199,7 @@ public class DmAlmFillStaging {
 			// SFERA
 			if (ExecutionManager.getInstance().isExecutionSfera()) {
 				StgMisuraFacade.deleteStgMisura(logger, dataEsecuzioneDeleted);
-				StgMisuraFacade.FillStgMisura();
+				StgMisuraFacade.fillStgMisura();
 			}
 			
 			// Aggiunto checkpoint di recovery in data 19/04/17

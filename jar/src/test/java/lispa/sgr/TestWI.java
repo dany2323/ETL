@@ -23,6 +23,7 @@ import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
+import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
@@ -30,6 +31,7 @@ import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
+import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
@@ -63,7 +65,7 @@ public class TestWI extends TestCase {
 	public void testProvenienzaDifetto(){
 		try {
 			Log4JConfiguration.inizialize();
-			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-12-08 23:40:00","yyyy-MM-dd HH:mm:00"));
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-12-17 23:40:00","yyyy-MM-dd HH:mm:00"));
 			int days;
 			try {
 				days = Integer.parseInt(DmAlmConfigReader.getInstance()
@@ -75,13 +77,7 @@ public class TestWI extends TestCase {
 			final Timestamp dataEsecuzioneDeleted = DateUtils
 					.getAddDayToDate(-days);
 			
-			List<DmalmElProdottiArchitetture> allProdotti = ElettraProdottiArchitettureDAO.getAllTargetProdottoNotAnnullati();
-			
-			for(DmalmElProdottiArchitetture prodotti:allProdotti) {
-				
-				ElettraUnitaOrganizzativeDAO.getUOFlatByPk(prodotti.getUnitaOrgFlatFk());
-				
-			}
+			StgMisuraFacade.fillStgMisura();
 			
 			
 //			List<DmalmElPersonale> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();

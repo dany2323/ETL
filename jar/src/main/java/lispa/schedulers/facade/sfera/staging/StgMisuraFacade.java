@@ -23,21 +23,17 @@ public class StgMisuraFacade {
 	
 	private static Logger logger = Logger.getLogger(StgMisuraFacade.class); 
 	
-	public static void FillStgMisura() throws PropertiesReaderException {
+	private StgMisuraFacade() {}
+	public static void fillStgMisura() throws PropertiesReaderException {
 		try {
 			logger.debug("START FillStgMisura "+new Date());
 			StgMisuraDAO.FillStgMisura();
 			logger.debug("STOP FillStgMisura "+new Date());
 		}
-		catch (DAOException e) 
+		catch (SQLException | DAOException e) 
 		{
 			logger.error(e.getMessage(), e);
 		
-		}
-		catch(SQLException e)
-		{
-			logger.error(e.getMessage(), e);
-			
 		}
 		
 	}
@@ -52,10 +48,7 @@ public class StgMisuraFacade {
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		}
+		} 
 
 	}
 
