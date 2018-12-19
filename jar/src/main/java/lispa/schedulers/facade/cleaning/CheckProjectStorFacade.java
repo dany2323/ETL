@@ -1,5 +1,6 @@
 package lispa.schedulers.facade.cleaning;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
 import lispa.schedulers.bean.target.fatti.DmalmTask;
 import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
 import lispa.schedulers.bean.target.fatti.DmalmTestcase;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaAssistenzaDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaProdottoDAO;
@@ -166,8 +168,25 @@ public class CheckProjectStorFacade {
 			for (Workitem_Type type : Workitem_Type.values()) {
 				ConnectionManager cm = null;
 				Connection conn = null;
+				CallableStatement call = null;
 				List<Integer> pk = new ArrayList<Integer>();
 				logger.info("Storicizzo type: "+type);
+				if(type.name().equals("anomalia")) {
+					String sql = "{call "+ DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO+"}";
+					logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO);
+						cm = ConnectionManager.getInstance();
+						conn = cm.getConnectionOracle();
+						call = conn.prepareCall(sql);
+				        call.execute();
+				}
+				if(type.name().equals("defect")) {
+					String sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO+"}";
+					logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
+						cm = ConnectionManager.getInstance();
+						conn = cm.getConnectionOracle();
+						call = conn.prepareCall(sql);
+				        call.execute();
+				}
 				for (DmalmProject p : pNew) {
 					String idProject = p.getIdProject();
 					String repo = p.getIdRepository();
