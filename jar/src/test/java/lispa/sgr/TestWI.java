@@ -32,6 +32,7 @@ import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
 import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
+import lispa.schedulers.facade.sfera.target.MisuraFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
@@ -79,7 +80,7 @@ public class TestWI extends TestCase {
 			
 			StgMisuraFacade.fillStgMisura();
 			
-			
+			MisuraFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
 //			List<DmalmElPersonale> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();
 //			int recordStoricizzati=0;
 //			ElettraUnitaOrganizzativeFacade.fillElettraUnitaOrganizzativeFlat(DataEsecuzione.getInstance().getDataEsecuzione());
