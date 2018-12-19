@@ -47,6 +47,7 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.facade.calipso.staging.StagingCalipsoFacade;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
@@ -399,7 +400,7 @@ public class RecoverManager {
 			StgElFunzionalitaDAO.recoverElFunzionalita();
 			StgElAmbienteTecnologicoDAO.recoverElAmbienteTec();
 			StgElAmbienteTecnologicoClassificatoriDAO.recoverElAmbienteClass();
-
+			
 			// UTIL
 			logger.debug("START recover Util");
 			ErroriCaricamentoDAO.recoverErroriCaricamento();

@@ -106,6 +106,7 @@ public class DmAlmConfigReaderProperties
 	public static final String DM_ALM_ESECUZIONE_EDMA = "dmalm.esecuzione.edma";
 	public static final String DM_ALM_ESECUZIONE_SFERA = "dmalm.esecuzione.sfera";
 	public static final String DM_ALM_ESECUZIONE_MPS = "dmalm.esecuzione.mps";
+	public static final String DM_ALM_ESECUZIONE_CALIPSO = "dmalm.esecuzione.calipso";
 
 	// DATABASE DM_ALM ORACLE
 	public static final String DM_ALM_DRIVER_CLASS_NAME = "dmalm.driver_class_name";

@@ -136,6 +136,11 @@ public class DmAlmFillTarget {
 						logger.info("Entità già elaborata per la data di esecuzione: "
 								+ DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE);
 					}
+					// CALIPSO - Begin -Popolamento della tabella target DMALM_SCHEDA_SERVIZIO
+					// il caricamento è messo qui perchè poi i PRODOTTI e MODULI devono recuperare
+					// dati dalla tabella target DMALM_SCHEDA_SERVIZIO
+					
+					// END
 					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PERSONALE)) {
 						ElettraPersonaleFacade.execute(dataEsecuzione);
 					} else {

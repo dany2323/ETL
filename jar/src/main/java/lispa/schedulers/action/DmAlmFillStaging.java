@@ -6,6 +6,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING
 import java.sql.Timestamp;
 
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.calipso.staging.StagingCalipsoFacade;
 import lispa.schedulers.facade.elettra.StagingElettraFacade;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
@@ -155,7 +156,16 @@ public class DmAlmFillStaging {
 					RecoverManager.getInstance().startRecoverStaging();
 					return;
 				}
-
+				
+				// Calipso
+				StagingCalipsoFacade.executeStaging(dataEsecuzioneDeleted);
+				if (lispa.schedulers.manager.ErrorManager.getInstance()
+						.hasError()) {
+					logger.fatal("ERRORE: Inizio procedura di ripristino");
+					RecoverManager.getInstance().startRecoverStaging();
+					return;
+				}
+				
 				// SGR_CM parte dolo dopo il completamento di EDMA e ORESTE
 				siss.start();
 				siss.join();
