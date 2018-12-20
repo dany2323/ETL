@@ -78,8 +78,20 @@ public class TestWI extends TestCase {
 			List<DmalmElProdottiArchitetture> allProdotti = ElettraProdottiArchitettureDAO.getAllTargetProdottoNotAnnullati();
 			
 			for(DmalmElProdottiArchitetture prodotti:allProdotti) {
-				
-				ElettraUnitaOrganizzativeDAO.getUOFlatByPk(prodotti.getUnitaOrgFlatFk());
+				if(prodotti.getUnitaOrgFlatFk()!=null) {
+					DmalmElUnitaOrganizzativeFlat uoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(prodotti.getUnitaOrgFlatFk());
+					
+					if(uoFlat.getDataFineValidita().before(prodotti.getDataFineValidita())){
+						ElettraProdottiArchitettureDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()), prodotti.getProdottoPk());
+	
+						prodotti.setProdottoPk(null);
+						
+						ElettraProdottiArchitettureDAO.insertProdottoUpdate(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()), prodotti);
+						
+	
+						
+					}
+				}
 				
 			}
 			
