@@ -7,14 +7,17 @@ import java.util.Date;
 import java.util.List;
 
 import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
+import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
+import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.utils.BeanUtils;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
 
 import org.apache.log4j.Logger;
@@ -25,14 +28,15 @@ public class ElettraProdottiArchitettureFacade {
 	private static Logger logger = Logger
 			.getLogger(ElettraProdottiArchitettureFacade.class);
 
-	public static void execute(Timestamp dataEsecuzione) throws Exception,
-			DAOException {
+	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
+
+	private ElettraProdottiArchitettureFacade() {}
+	public static void execute(Timestamp dataEsecuzione) throws Exception {
 		if (ErrorManager.getInstance().hasError())
 			return;
 
-		List<DmalmElProdottiArchitetture> staging_prodotti = new ArrayList<DmalmElProdottiArchitetture>();
-		List<Tuple> target_prodotti = new ArrayList<Tuple>();
-		QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
+		List<DmalmElProdottiArchitetture> stagingProdotti = new ArrayList<>();
+		List<Tuple> targetProdotti = new ArrayList<>();
 
 		int righeNuove = 0;
 		int righeModificate = 0;
@@ -47,89 +51,28 @@ public class ElettraProdottiArchitettureFacade {
 		try {
 			logger.info("START ElettraProdottiArchitettureFacade.execute");
 
-			staging_prodotti = ElettraProdottiArchitettureDAO
+			stagingProdotti = ElettraProdottiArchitettureDAO
 					.getAllProdotti(dataEsecuzione);
 
-			for (DmalmElProdottiArchitetture prodotto : staging_prodotti) {
+			for (DmalmElProdottiArchitetture prodotto : stagingProdotti) {
 				prodottiArchitettureTmp = prodotto;
 				// Ricerco nel db target un record con siglaprodotto =
 				// prodotto.getSiglaProdotto e data fine validita 31/12/9999
-				target_prodotti = ElettraProdottiArchitettureDAO
+				targetProdotti = ElettraProdottiArchitettureDAO
 						.getProdotto(prodotto);
 
 				// se non trovo almento un record, inserisco il nuovo
 				// prodotto nel target
-				if (target_prodotti.size() == 0) {
+				if (targetProdotti.isEmpty()) {
 					righeNuove++;
 
 					ElettraProdottiArchitettureDAO.insertProdotto(prodotto);
 				} else {
-					boolean modificato = false;
-
-					for (Tuple row : target_prodotti) {
+					
+					for (Tuple row : targetProdotti) {
 						if (row != null) {
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.sigla),
-											prodotto.getSigla())) {
-								modificato = true;
-							}
-							if (BeanUtils.areDifferent(
-									row.get(qDmalmElProdottiArchitetture.nome),
-									prodotto.getNome())) {
-								modificato = true;
-							}
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.unitaOrganizzativaFk),
-											prodotto.getUnitaOrganizzativaFk())) {
-								modificato = true;
-							}
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.personaleFk),
-											prodotto.getPersonaleFk())) {
-								modificato = true;
-							}
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.sigla),
-											prodotto.getSigla())) {
-								modificato = true;
-							}
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.annullato),
-											prodotto.getAnnullato())) {
-								modificato = true;
-							}
-							//Modifica per DM_ALM-224
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.ambitoTecnologico),
-											prodotto.getAmbitoTecnologico())) {
-								modificato = true;
-							}
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.ambitoManutenzioneDenom),
-											prodotto.getAmbitoManutenzioneDenom())) {
-								modificato = true;
-							}
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.ambitoManutenzioneCodice),
-											prodotto.getAmbitoManutenzioneCodice())) {
-								modificato = true;
-							}
-							if (BeanUtils
-									.areDifferent(
-											row.get(qDmalmElProdottiArchitetture.stato),
-											prodotto.getStato())) {
-								modificato = true;
-							}
-
-							if (modificato) {
+							
+							if (somethingIsChange(row,prodotto)) {
 								righeModificate++;
 
 								// STORICIZZO
@@ -156,31 +99,17 @@ public class ElettraProdottiArchitettureFacade {
 				}
 			}
 			
-			//DMALM-216 associazione project Unità Organizzativa Flat
-			//ricarica il valore della Fk ad ogni esecuzione
+			recalculateFlat();
 			
-			QueryManager qm = QueryManager.getInstance();
+			checkFlatOnProdotti();
 
-			logger.info("INIZIO Update Prodotti Architetture UnitaOrganizzativaFlatFk");
-			
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.M_UPDATE_EL_PROD_ARCH_UOFLATFK,
-					DmAlmConstants.M_SEPARATOR);
-			
-			logger.info("FINE Update Prodotti Architetture UnitaOrganizzativaFlatFk");
-		
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(prodottiArchitettureTmp));
 			logger.error(e.getMessage(), e);
 
 			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(LogUtils.objectToString(prodottiArchitettureTmp));
-			logger.error(e.getMessage(), e);
-
-			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		
 		} finally {
 			dtFineCaricamento = new Date();
 
@@ -196,5 +125,99 @@ public class ElettraProdottiArchitettureFacade {
 
 			logger.info("STOP ElettraProdottiArchitettureFacade.execute");
 		}
+	}
+
+
+	private static void checkFlatOnProdotti() throws Exception {
+		
+		boolean modificato=false;
+		
+		List<DmalmElProdottiArchitetture> allProdotti = ElettraProdottiArchitettureDAO.getAllTargetProdottoNotAnnullati();
+		
+		for(DmalmElProdottiArchitetture prodotti:allProdotti) {
+			if(prodotti.getUnitaOrgFlatFk()!=null) {
+				DmalmElUnitaOrganizzativeFlat uoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(prodotti.getUnitaOrgFlatFk());
+				
+				if(uoFlat.getDataFineValidita().before(prodotti.getDataFineValidita())){
+					ElettraProdottiArchitettureDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()), prodotti.getProdottoPk());
+
+					prodotti.setProdottoPk(null);
+					
+					ElettraProdottiArchitettureDAO.insertProdottoUpdate(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()), prodotti);
+					
+					modificato=true;
+					
+				}
+			}
+		}
+		
+		if(modificato)
+			recalculateFlat();
+		
+		
+	}
+	private static boolean somethingIsChange(Tuple row, DmalmElProdottiArchitetture prodotto) {
+		
+		List <Boolean> conditionsList= new ArrayList<>();
+		
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.sigla),
+						prodotto.getSigla()));
+		
+		conditionsList.add(BeanUtils.areDifferent(
+					row.get(qDmalmElProdottiArchitetture.nome),
+					prodotto.getNome()));
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.unitaOrganizzativaFk),
+						prodotto.getUnitaOrganizzativaFk()));
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.personaleFk),
+						prodotto.getPersonaleFk()));
+		
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.sigla),
+						prodotto.getSigla()));
+		
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.annullato),
+						prodotto.getAnnullato()));
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.ambitoTecnologico),
+						prodotto.getAmbitoTecnologico()));
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.ambitoManutenzioneDenom),
+						prodotto.getAmbitoManutenzioneDenom()));
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.ambitoManutenzioneCodice),
+						prodotto.getAmbitoManutenzioneCodice()));
+		
+		conditionsList.add(BeanUtils
+				.areDifferent(
+						row.get(qDmalmElProdottiArchitetture.stato),
+						prodotto.getStato()));
+		
+		
+		return conditionsList.contains(true);
+		
+	}
+	private static void recalculateFlat() throws Exception {
+		QueryManager qm = QueryManager.getInstance();
+
+		logger.info("INIZIO Update Prodotti Architetture UnitaOrganizzativaFlatFk");
+		
+		qm.executeMultipleStatementsFromFile(
+				DmAlmConstants.M_UPDATE_EL_PROD_ARCH_UOFLATFK,
+				DmAlmConstants.M_SEPARATOR);
+		
+		logger.info("FINE Update Prodotti Architetture UnitaOrganizzativaFlatFk");
+
 	}
 }

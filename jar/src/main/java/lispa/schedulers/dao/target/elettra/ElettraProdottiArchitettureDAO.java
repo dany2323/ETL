@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -192,6 +193,8 @@ public class ElettraProdottiArchitettureDAO {
 		bean.setDataFineValidita(rs.get(qDmalmElProdottiArchitetture.dataFineValidita));
 
 		bean.setUnitaOrganizzativaFk(rs.get(qDmalmElProdottiArchitetture.unitaOrganizzativaFk));
+		
+		bean.setUnitaOrgFlatFk(rs.get(qDmalmElProdottiArchitetture.unitaOrgFlatFk));
 		
 		bean.setPersonaleFk(rs.get(qDmalmElProdottiArchitetture.personaleFk));
 		
@@ -653,7 +656,9 @@ public class ElettraProdottiArchitettureDAO {
 
 			prodotti = query
 					.from(qDmalmElProdottiArchitetture)
-					.where(qDmalmElProdottiArchitetture.annullato.isNull())
+					.where(qDmalmElProdottiArchitetture.nome.notLike("%ANNULLATO LOGICAMENTE%" ))
+					.where(qDmalmElProdottiArchitetture.nome.notLike("%ANNULLATO FISICAMENTE%"))
+					.where(qDmalmElProdottiArchitetture.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
 					.list(qDmalmElProdottiArchitetture.all());
 			
 		} catch (Exception e) {
