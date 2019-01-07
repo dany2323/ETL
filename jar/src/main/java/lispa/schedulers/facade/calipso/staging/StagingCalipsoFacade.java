@@ -3,7 +3,7 @@ package lispa.schedulers.facade.calipso.staging;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import lispa.schedulers.dao.calipso.StgCalipsoDAO;
+import lispa.schedulers.dao.calipso.StgCalipsoSchedaServizioDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ErrorManager;
@@ -37,7 +37,7 @@ public class StagingCalipsoFacade {
 
 		try {
 			logger.debug("START CALIPSO deleteStagingCalipso");
-			StgCalipsoDAO.deleteStaging(dataEsecuzioneDelete);
+			StgCalipsoSchedaServizioDAO.deleteStaging(dataEsecuzioneDelete);
 			logger.debug("STOP CALIPSO deleteStagingCalipso");
 
 		} catch (DAOException e) {
@@ -57,7 +57,7 @@ public class StagingCalipsoFacade {
 
 			logger.debug("START StagingCalipsoFacade.fillStaging");
 
-			StgCalipsoDAO.fillStaging();
+			StgCalipsoSchedaServizioDAO.fillStaging();
 			
 			logger.debug("STOP StagingCalipsoFacade.fillStaging");
 		} catch (DAOException e) {

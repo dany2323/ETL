@@ -18,6 +18,7 @@ import com.mysema.query.sql.SQLTemplates;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.calipso.target.CalipsoSchedaServizioFacade;
 import lispa.schedulers.facade.cleaning.CheckProjectStorFacade;
 import lispa.schedulers.facade.elettra.target.ElettraAmbienteTecnologicoClassificatoriFacade;
 import lispa.schedulers.facade.elettra.target.ElettraAmbienteTecnologicoFacade;
@@ -136,11 +137,6 @@ public class DmAlmFillTarget {
 						logger.info("Entità già elaborata per la data di esecuzione: "
 								+ DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE);
 					}
-					// CALIPSO - Begin -Popolamento della tabella target DMALM_SCHEDA_SERVIZIO
-					// il caricamento è messo qui perchè poi i PRODOTTI e MODULI devono recuperare
-					// dati dalla tabella target DMALM_SCHEDA_SERVIZIO
-					
-					// END
 					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PERSONALE)) {
 						ElettraPersonaleFacade.execute(dataEsecuzione);
 					} else {
@@ -185,7 +181,17 @@ public class DmAlmFillTarget {
 								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI);
 					}
 					// -- Elettra Fine ------------------------------------------
-	
+					
+					// CALIPSO - Begin
+					logger.info("START CalipsoSchedaServizioFacade.execute " + new Date());
+					if (!alreadyExecuted(DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO)) {
+						CalipsoSchedaServizioFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO);
+					}
+					// CALIPSO - End
+					
 					logger.info("START PersonaleEdmaFacade.execute " + new Date());
 					if (!alreadyExecuted(DmAlmConstants.TARGET_EDMA_PERSONALE)) {
 						PersonaleEdmaFacade.execute(dataEsecuzione);

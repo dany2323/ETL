@@ -12,8 +12,8 @@ import lispa.schedulers.utils.QueryUtils;
 import org.apache.log4j.Logger;
 
 
-public class StgCalipsoDAO {
-	private static Logger logger = Logger.getLogger(StgCalipsoDAO.class);
+public class StgCalipsoSchedaServizioDAO {
+	private static Logger logger = Logger.getLogger(StgCalipsoSchedaServizioDAO.class);
 
 	public static void deleteStaging(Timestamp dataEsecuzioneDelete)
 			throws DAOException, SQLException {
@@ -70,8 +70,12 @@ public class StgCalipsoDAO {
 
 			throw new DAOException(e);
 		} finally {
-			if (cm != null)
+			if (cs != null) {
+				cs.close();
+			}
+			if (cm != null) {
 				cm.closeConnection(connection);
+			}
 		}
 	}
 }

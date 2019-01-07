@@ -253,6 +253,9 @@ public final class DmAlmConstants {
 	public static final String TARGET_ELETTRA_UNITAORGANIZZATIVE = "DMALM_EL_UNITA_ORGANIZZATIVE";
 	public static final String TARGET_ELETTRA_PERSONALE = "DMALM_EL_PERSONALE";
 	
+	public static final String TARGET_CALIPSO_SCHEDA_SERVIZIO = "DMALM_CALIPSO_SCHEDA_SERVIZIO";
+	public static final String TARGET_CALIPSO_SCHEDA_SERVIZIO_STOR = "DMALM_CALIPSO_SCHED_SERVZ_STOR";
+	
 	public static final String TARGET_BUILD = "DMALM_BUILD";
 	public static final String TARGET_ANOMALIA = "DMALM_ANOMALIA_PRODOTTO";
 	public static final String TARGET_DIFETTO = "DMALM_DIFETTO_PRODOTTO";
