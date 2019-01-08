@@ -9,6 +9,7 @@ import java.sql.Types;
 import org.apache.log4j.Logger;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.QueryUtils;
 
 public class CalipsoSchedaServizioDAO {
@@ -21,18 +22,21 @@ public class CalipsoSchedaServizioDAO {
 		CallableStatement cs = null;
 		
 		try {
+			logger.info("START - CalipsoSchedaServizioDAO.insertSchedaServizio");
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
-			String sql = QueryUtils.getCallProcedure("CALIPSO.FILL_TARGET", 1);
+			String sql = QueryUtils.getCallProcedure("CALIPSO.FILL_TARGET", 2);
 
 			cs = connection.prepareCall(sql);
 			cs.setTimestamp(1, dataCaricamento);
+			cs.setTimestamp(2, DateUtils.setDtFineValidita9999());
 			cs.execute();
 			
 			connection.commit();
-
+			
+			logger.info("STOP - CalipsoSchedaServizioDAO.insertSchedaServizio");
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 

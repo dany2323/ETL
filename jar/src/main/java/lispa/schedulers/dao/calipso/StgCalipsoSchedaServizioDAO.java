@@ -8,6 +8,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.QueryUtils;
 import org.apache.log4j.Logger;
 
@@ -57,10 +58,11 @@ public class StgCalipsoSchedaServizioDAO {
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
-			String sql = QueryUtils.getCallProcedure("CALIPSO.FILL_STAGING", 1);
+			String sql = QueryUtils.getCallProcedure("CALIPSO.FILL_STAGING", 2);
 
 			cs = connection.prepareCall(sql);
 			cs.setTimestamp(1, dataCaricamento);
+			cs.setTimestamp(2, DateUtils.setDtFineValidita9999());
 			cs.execute();
 			
 			connection.commit();
