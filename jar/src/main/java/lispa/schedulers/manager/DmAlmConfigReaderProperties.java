@@ -300,4 +300,8 @@ public class DmAlmConfigReaderProperties
 	public static final String SQL_STG_RILASCIES = "stg_mps_rilasci.sql";
 
 	public static final String SQL_ELETTRAFUNZIONALITA_BY_MODULO_PK = "funzionalita_by_modulo_pk.sql";
+	
+	//CALIPSO
+	public static final String DMALM_CALIPSO_PATH = "dmalm.calipso.path";
+	public static final String DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL = "dmalm.calipso.scheda.servizio.excel";
 }
