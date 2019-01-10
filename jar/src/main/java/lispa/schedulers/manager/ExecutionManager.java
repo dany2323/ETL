@@ -11,6 +11,7 @@ public class ExecutionManager {
 	private boolean executionSfera;
 	private boolean executionElettraSgrcm;
 	private boolean executionMps;
+	private boolean executionCalipso;
 
 	private ExecutionManager() {
 		
@@ -47,6 +48,17 @@ public class ExecutionManager {
 			logger.error(e1.getMessage());
 			this.setExecutionMps(false);
 		}
+		
+		try {
+			this.setExecutionCalipso(DmAlmConfigReader
+					.getInstance()
+					.getProperty(
+							DmAlmConfigReaderProperties.DM_ALM_ESECUZIONE_CALIPSO)
+					.equalsIgnoreCase(DmAlmConstants.DM_ALM_ESECUZIONE));
+		} catch (NumberFormatException | PropertiesReaderException e1) {
+			logger.error(e1.getMessage());
+			this.setExecutionCalipso(false);
+		}
 	}
 
 	public synchronized static ExecutionManager getInstance() {
@@ -77,6 +89,14 @@ public class ExecutionManager {
 
 	public void setExecutionMps(boolean executionMps) {
 		this.executionMps = executionMps;
+	}
+	
+	public boolean isExecutionCalipso() {
+		return executionCalipso;
+	}
+
+	public void setExecutionCalipso(boolean executionCalipso) {
+		this.executionCalipso = executionCalipso;
 	}
 
 }

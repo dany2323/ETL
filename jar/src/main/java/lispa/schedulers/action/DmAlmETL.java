@@ -55,6 +55,9 @@ public class DmAlmETL {
 		
 		logger.info("Esecuzione MPS: "
 				+ ExecutionManager.getInstance().isExecutionMps());
+		
+		logger.info("Esecuzione CALIPSO: "
+				+ ExecutionManager.getInstance().isExecutionCalipso());
 
 		logger.info("START DmAlmFillStaging.doWork()");
 		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
@@ -117,8 +120,8 @@ public class DmAlmETL {
 				if (ErrorManager.getInstance().hasError()) {
 					// SFERA/ELETTRA/SGRCM
 					if (ExecutionManager.getInstance().isExecutionSfera()
-							|| ExecutionManager.getInstance()
-									.isExecutionElettraSgrcm()) {
+							|| ExecutionManager.getInstance().isExecutionElettraSgrcm()
+							|| ExecutionManager.getInstance().isExecutionCalipso()) {
 						RecoverManager.getInstance().startRecoverTarget();
 						RecoverManager.getInstance().startRecoverStaging();
 					}

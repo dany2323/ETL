@@ -3,6 +3,7 @@ package lispa.schedulers.manager;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
+import lispa.schedulers.dao.calipso.StgCalipsoSchedaServizioDAO;
 import lispa.schedulers.dao.edma.PersonaleDAO;
 import lispa.schedulers.dao.edma.UnitaOrganizzativaDAO;
 import lispa.schedulers.dao.elettra.StgElAmbienteTecnologicoClassificatoriDAO;
@@ -47,6 +48,7 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.facade.calipso.staging.StagingCalipsoFacade;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
@@ -325,7 +327,11 @@ public class RecoverManager {
 			// SFERA
 			logger.debug("START recover Sfera");
 			StgMisuraDAO.recoverStgMisura();
-
+			
+			// CALIPSO
+			logger.debug("START recover Calipso");
+			StgCalipsoSchedaServizioDAO.recoverStgCalipsoSchedaServizio();
+			
 			// SIRE CURRENT
 			logger.debug("START recover SIRE Current");
 			SireCurrentProjectDAO.recoverSireCurrentProject();
@@ -399,7 +405,7 @@ public class RecoverManager {
 			StgElFunzionalitaDAO.recoverElFunzionalita();
 			StgElAmbienteTecnologicoDAO.recoverElAmbienteTec();
 			StgElAmbienteTecnologicoClassificatoriDAO.recoverElAmbienteClass();
-
+			
 			// UTIL
 			logger.debug("START recover Util");
 			ErroriCaricamentoDAO.recoverErroriCaricamento();
