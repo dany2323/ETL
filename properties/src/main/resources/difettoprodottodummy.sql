@@ -17,7 +17,7 @@ insert into dmalm_difetto_prodotto_dummy
    join DMALM_STATO_WORKITEM sw on sw.DMALM_STATO_WORKITEM_PK = ap.DMALM_STATO_WORKITEM_FK_03 
    where ap.annullato is null
    and ap.rank_stato_difetto_mese = 1
-   and sw.CD_STATO <> 'chiuso'
+   and sw.(CD_STATO <> 'chiuso' and sw.CD_STATO <> 'chiuso_falso')
    and to_char(ap.dt_storicizzazione, 'yyyymm') = ?
    union all
    select distinct apd.cd_difetto
@@ -43,7 +43,7 @@ insert into dmalm_difetto_prodotto_dummy
    join DMALM_STATO_WORKITEM sw on sw.DMALM_STATO_WORKITEM_PK = ap.DMALM_STATO_WORKITEM_FK_03 
    where ap.annullato is null
    and ap.rank_stato_difetto_mese = 1
-   and sw.CD_STATO <> 'chiuso'
+   and (sw.CD_STATO <> 'chiuso' and sw.CD_STATO <> 'chiuso_falso')
    and to_char(ap.dt_storicizzazione, 'yyyymm') = ?
    union all
    select distinct apd.cd_difetto
