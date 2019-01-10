@@ -120,7 +120,8 @@ public class DmAlmFillTarget {
 			
 			boolean flag = false;
 			if (ExecutionManager.getInstance().isExecutionSfera()
-					|| ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
+					|| ExecutionManager.getInstance().isExecutionElettraSgrcm()
+					|| ExecutionManager.getInstance().isExecutionCalipso()) {
 				// preparo il target al Recover in caso di errori bloccanti:
 				// svuoto le tabelle di backup, effettuo il backup del target
 				// allo stato corrente (ultimo stato consistente)
@@ -181,16 +182,6 @@ public class DmAlmFillTarget {
 								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI);
 					}
 					// -- Elettra Fine ------------------------------------------
-					
-					// CALIPSO - Begin
-					logger.info("START CalipsoSchedaServizioFacade.execute " + new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO)) {
-						CalipsoSchedaServizioFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO);
-					}
-					// CALIPSO - End
 					
 					logger.info("START PersonaleEdmaFacade.execute " + new Date());
 					if (!alreadyExecuted(DmAlmConstants.TARGET_EDMA_PERSONALE)) {
@@ -726,6 +717,27 @@ public class DmAlmFillTarget {
 					}
 				}
 				
+				// CALIPSO
+				if (ExecutionManager.getInstance().isExecutionCalipso()) {
+					if (!alreadyExecuted(DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO)) {
+						CalipsoSchedaServizioFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO);
+					}
+					
+					if (ErrorManager.getInstance().hasError()) {
+						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverStaging();
+	
+						// MPS
+						if (ExecutionManager.getInstance().isExecutionMps())
+							RecoverManager.getInstance().startRecoverStgMps();
+	
+						return;
+					}
+				}
+				
 				// MPS
 				if (ExecutionManager.getInstance().isExecutionMps()) {
 					// eseguo il target solo se non è stato fatto il recover dello
@@ -745,7 +757,7 @@ public class DmAlmFillTarget {
 						}
 					}
 				}
-	
+				
 				// INSERISCO IL RECORD SENTINELLA SOLO SE ESPRESSAMENTE RICHIESTO DA
 				// FILE DI PROPERTIES
 				if (enableRecordSentinella) {

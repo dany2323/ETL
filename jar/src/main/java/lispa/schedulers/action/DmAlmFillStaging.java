@@ -15,8 +15,6 @@ import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.RecoverManager;
-import lispa.schedulers.runnable.staging.EdmaRunnable;
-import lispa.schedulers.runnable.staging.OresteRunnable;
 import lispa.schedulers.runnable.staging.SGRCMSireRunnable;
 import lispa.schedulers.runnable.staging.SGRCMSissRunnable;
 import lispa.schedulers.utils.DateUtils;
@@ -157,15 +155,6 @@ public class DmAlmFillStaging {
 					return;
 				}
 				
-				// Calipso
-				StagingCalipsoFacade.executeStaging(dataEsecuzioneDeleted);
-				if (lispa.schedulers.manager.ErrorManager.getInstance()
-						.hasError()) {
-					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
-					return;
-				}
-				
 				// SGR_CM parte dolo dopo il completamento di EDMA e ORESTE
 				siss.start();
 				siss.join();
@@ -220,6 +209,17 @@ public class DmAlmFillStaging {
 				return;
 			}
 
+			//CALIPSO
+			if (ExecutionManager.getInstance().isExecutionCalipso()) {
+				StagingCalipsoFacade.executeStaging(dataEsecuzioneDeleted);
+				if (lispa.schedulers.manager.ErrorManager.getInstance()
+						.hasError()) {
+					logger.fatal("ERRORE: Inizio procedura di ripristino");
+					RecoverManager.getInstance().startRecoverStaging();
+					return;
+				}
+			}
+			
 			// MPS
 			if (ExecutionManager.getInstance().isExecutionMps()) {
 
@@ -245,6 +245,7 @@ public class DmAlmFillStaging {
 					logger.info("STOP: FillStaging MPS");
 				}
 			}
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 

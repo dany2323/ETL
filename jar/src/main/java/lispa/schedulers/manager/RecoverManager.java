@@ -3,6 +3,7 @@ package lispa.schedulers.manager;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
+import lispa.schedulers.dao.calipso.StgCalipsoSchedaServizioDAO;
 import lispa.schedulers.dao.edma.PersonaleDAO;
 import lispa.schedulers.dao.edma.UnitaOrganizzativaDAO;
 import lispa.schedulers.dao.elettra.StgElAmbienteTecnologicoClassificatoriDAO;
@@ -326,7 +327,11 @@ public class RecoverManager {
 			// SFERA
 			logger.debug("START recover Sfera");
 			StgMisuraDAO.recoverStgMisura();
-
+			
+			// CALIPSO
+			logger.debug("START recover Calipso");
+			StgCalipsoSchedaServizioDAO.recoverStgCalipsoSchedaServizio();
+			
 			// SIRE CURRENT
 			logger.debug("START recover SIRE Current");
 			SireCurrentProjectDAO.recoverSireCurrentProject();
