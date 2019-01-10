@@ -171,7 +171,7 @@ public class StagingCalipsoFacade {
 				switch(cell.getCachedFormulaResultType()) {
         				case NUMERIC: 
         					if(HSSFDateUtil.isCellDateFormatted(cell)) {
-        						SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yy");
+        						SimpleDateFormat format = new SimpleDateFormat("dd-mm-yy");
         						cellValue = String.valueOf(format.format(cell.getDateCellValue()));
         					} else {
         						cellValue = String.valueOf(cell.getNumericCellValue());
