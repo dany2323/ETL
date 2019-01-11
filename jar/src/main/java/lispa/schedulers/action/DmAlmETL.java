@@ -1,9 +1,13 @@
 package lispa.schedulers.action;
 
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING_DAY_DELETE;
+
 import java.sql.Timestamp;
 import java.util.List;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.calipso.staging.StagingCalipsoFacade;
+import lispa.schedulers.facade.calipso.target.CalipsoSchedaServizioFacade;
 import lispa.schedulers.facade.cleaning.CheckAnomaliaDifettoProdottoFacade;
 import lispa.schedulers.facade.target.SvecchiamentoFacade;
 import lispa.schedulers.manager.ConnectionManager;
@@ -14,6 +18,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MailUtil;
 import lispa.schedulers.utils.StringUtils;
 
