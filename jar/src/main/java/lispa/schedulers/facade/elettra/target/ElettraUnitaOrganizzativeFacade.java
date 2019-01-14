@@ -216,8 +216,8 @@ public class ElettraUnitaOrganizzativeFacade {
 			ElettraUnitaOrganizzativeFlatDAO.delete();
 			
 			List<DmalmElUnitaOrganizzative> startUnitaOrganizzativeList = ElettraUnitaOrganizzativeDAO.getStartUnitaOrganizzativeFlat();
-			
 			if (startUnitaOrganizzativeList.size() > 0) {
+				insertedUnitaOrganizzativeList.add(startUnitaOrganizzativeList.get(0));
 				idUnitaOrganizzativaFlat = gestisciLista(idUnitaOrganizzativaFlat, startUnitaOrganizzativeList,
 						insertedUnitaOrganizzativeList, dataEsecuzione);
 			}
@@ -235,37 +235,35 @@ public class ElettraUnitaOrganizzativeFacade {
 			List<DmalmElUnitaOrganizzative> unitaOrganizzativeList,
 			List<DmalmElUnitaOrganizzative> insertedUnitaOrganizzativeList, Timestamp dataEsecuzione) throws Exception {
 
-		for (DmalmElUnitaOrganizzative unitaOrganizzativa : unitaOrganizzativeList) {
-			List<DmalmElUnitaOrganizzative> nextUnitaOrganizzativeList = new LinkedList<>();
+		String unitaOrganizzativeFlat = "";
+		for (DmalmElUnitaOrganizzative insertedUnitaOrganizzativa : insertedUnitaOrganizzativeList) {
+			unitaOrganizzativeFlat+=insertedUnitaOrganizzativa.getCodiceArea() + ";";
+		}
+		
+		System.out.println("Flat: " + unitaOrganizzativeFlat);
+		
+		idUnitaOrganizzativaFlat++;
+		inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
+				 dataEsecuzione);
+		
+		
+		List<DmalmElUnitaOrganizzative> nextUnitaOrganizzativeList = new LinkedList<>();
 
-			idUnitaOrganizzativaFlat++;
-			inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
-						unitaOrganizzativa, dataEsecuzione);
+		nextUnitaOrganizzativeList = ElettraUnitaOrganizzativeDAO.getNextUnitaOrganizzativeFlat(insertedUnitaOrganizzativeList.get(insertedUnitaOrganizzativeList.size()-1));
+
 			
-			// se il figlio è già presente nella catena non cerco ulteriori
-			// figli per evitare cicli infiniti
-			if (!figlioPresente(insertedUnitaOrganizzativeList, unitaOrganizzativa)) {
-				nextUnitaOrganizzativeList = ElettraUnitaOrganizzativeDAO.getNextUnitaOrganizzativeFlat(unitaOrganizzativa);
-			}
-			
-			if (nextUnitaOrganizzativeList.size() > 0) {
-				// se ho dei figli salvo il wi nella lista degli inseriti e
-				// continuo il ciclo
+			for (DmalmElUnitaOrganizzative unitaOrganizzativa : nextUnitaOrganizzativeList) {
+				
 				insertedUnitaOrganizzativeList.add(unitaOrganizzativa);
+				
 				idUnitaOrganizzativaFlat = gestisciLista(idUnitaOrganizzativaFlat, nextUnitaOrganizzativeList,
 						insertedUnitaOrganizzativeList, dataEsecuzione);
 				idUnitaOrganizzativaFlat++;
+				
 
-//				idUnitaOrganizzativaFlat++;
-//				inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
-//							unitaOrganizzativa, dataEsecuzione);
-				// tolgo l'item dalla lista per non averlo in un ramo diverso
-				// dal suo
 				insertedUnitaOrganizzativeList.remove(unitaOrganizzativa);
 			}
-			
-		}
-
+	
 		return idUnitaOrganizzativaFlat;
 	}
 	
@@ -287,15 +285,13 @@ public class ElettraUnitaOrganizzativeFacade {
 	
 	private static void inserisciLista(Integer idUnitaOrganizzativaFlat,
 			List<DmalmElUnitaOrganizzative> insertedUnitaOrganizzativeList,
-			DmalmElUnitaOrganizzative lastUnitaOrganizzativa, Timestamp dataEsecuzione) throws Exception {
+			Timestamp dataEsecuzione) throws Exception {
 		
 		if(insertedUnitaOrganizzativeList.size() > 14) {
 			String unitaOrganizzativeFlat = "";
 			for (DmalmElUnitaOrganizzative insertedUnitaOrganizzativa : insertedUnitaOrganizzativeList) {
 				unitaOrganizzativeFlat+=insertedUnitaOrganizzativa.getCodiceArea() + ";";
-			}
-			unitaOrganizzativeFlat+=lastUnitaOrganizzativa.getCodiceArea();
-			
+			}			
 			Exception e= new Exception("Superato il limite di 15 Unita Organizzative Flat: " + unitaOrganizzativeFlat);
 			
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -323,108 +319,108 @@ public class ElettraUnitaOrganizzativeFacade {
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk02(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea02(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea02(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 3:
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk03(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea03(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea03(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 4:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk04(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea04(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea04(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 5:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk05(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea05(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea05(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 6:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk06(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea06(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea06(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 7:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk07(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea07(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea07(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 8:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk08(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea08(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea08(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 9:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk09(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea09(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea09(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 10:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk10(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea10(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea10(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 11:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk11(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea11(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea11(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
+//            	}
             	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
             	}
@@ -433,45 +429,45 @@ public class ElettraUnitaOrganizzativeFacade {
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk12(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea12(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea12(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 13:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk13(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea13(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea13(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 14:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk14(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea14(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea14(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             case 15:  
             	unitaOrganizzativaFlat.setUnitaOrganizzativaFk15(insertedUnitaOrganizzativa.getUnitaOrganizzativaPk());
             	unitaOrganizzativaFlat.setCodiceArea15(insertedUnitaOrganizzativa.getCodiceArea());
             	unitaOrganizzativaFlat.setDescrizioneArea15(insertedUnitaOrganizzativa.getDescrizioneArea());
-            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//            	if(insertedUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
             		unitaOrganizzativaFlat.setDataInizioValidita(insertedUnitaOrganizzativa.getDataInizioValidita());
-            	}
-            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
+//            	}
+//            	if(insertedUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
             		unitaOrganizzativaFlat.setDataFineValidita(insertedUnitaOrganizzativa.getDataFineValidita());
-            	}
+//            	}
                 break;
             default:  break;
 			}    
@@ -479,92 +475,92 @@ public class ElettraUnitaOrganizzativeFacade {
 		
 
 		contatore++;
-		
-		switch (contatore) {
-        case 1:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk01(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea01(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea01(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 2:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk02(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea02(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea02(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 3:
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk03(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea03(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea03(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 4:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk04(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea04(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea04(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 5:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk05(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea05(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea05(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 6:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk06(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea06(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea06(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 7:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk07(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea07(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea07(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 8:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk08(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea08(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea08(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 9:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk09(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea09(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea09(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 10:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk10(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea10(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea10(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 11:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk11(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea11(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea11(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 12:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk12(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea12(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea12(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 13:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk13(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea13(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea13(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 14:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk14(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea14(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea14(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        case 15:  
-        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk15(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
-        	unitaOrganizzativaFlat.setCodiceArea15(lastUnitaOrganizzativa.getCodiceArea());
-        	unitaOrganizzativaFlat.setDescrizioneArea15(lastUnitaOrganizzativa.getDescrizioneArea());
-            break;
-        default:  break;
-		}
-
-		if(unitaOrganizzativaFlat.getDataInizioValidita()==null || lastUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
-    		unitaOrganizzativaFlat.setDataInizioValidita(lastUnitaOrganizzativa.getDataInizioValidita());
-    	}
-    	if(unitaOrganizzativaFlat.getDataFineValidita()==null || lastUnitaOrganizzativa.getDataFineValidita().before(unitaOrganizzativaFlat.getDataFineValidita())) {
-    		unitaOrganizzativaFlat.setDataFineValidita(lastUnitaOrganizzativa.getDataFineValidita());
-    	}
+//		
+//		switch (contatore) {
+//        case 1:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk01(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea01(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea01(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 2:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk02(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea02(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea02(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 3:
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk03(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea03(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea03(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 4:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk04(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea04(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea04(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 5:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk05(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea05(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea05(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 6:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk06(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea06(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea06(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 7:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk07(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea07(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea07(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 8:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk08(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea08(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea08(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 9:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk09(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea09(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea09(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 10:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk10(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea10(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea10(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 11:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk11(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea11(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea11(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 12:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk12(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea12(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea12(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 13:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk13(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea13(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea13(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 14:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk14(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea14(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea14(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        case 15:  
+//        	unitaOrganizzativaFlat.setUnitaOrganizzativaFk15(lastUnitaOrganizzativa.getUnitaOrganizzativaPk());
+//        	unitaOrganizzativaFlat.setCodiceArea15(lastUnitaOrganizzativa.getCodiceArea());
+//        	unitaOrganizzativaFlat.setDescrizioneArea15(lastUnitaOrganizzativa.getDescrizioneArea());
+//            break;
+//        default:  break;
+//		}
+//
+//		if(unitaOrganizzativaFlat.getDataInizioValidita()==null || lastUnitaOrganizzativa.getDataInizioValidita().after(unitaOrganizzativaFlat.getDataInizioValidita())) {
+//    		unitaOrganizzativaFlat.setDataInizioValidita(lastUnitaOrganizzativa.getDataInizioValidita());
+//    	}
+//    	if(unitaOrganizzativaFlat.getDataFineValidita()==null || lastUnitaOrganizzativa.getDataFineValidita().after(unitaOrganizzativaFlat.getDataFineValidita())) {
+//    		unitaOrganizzativaFlat.setDataFineValidita(lastUnitaOrganizzativa.getDataFineValidita());
+//    	}
 
     	//se data fine < data inizio è una relazione inconsistente, non va inserita
     	if(!unitaOrganizzativaFlat.getDataFineValidita().before(unitaOrganizzativaFlat.getDataInizioValidita())) {

@@ -215,7 +215,7 @@ public class CheckAnnullamentiElettraFacade {
 			
 			while (rs.next()) {
 				
-				prodottoBean= new ElettraProdottiArchitettureDAO().getBeanFromTuple(rs);
+				prodottoBean= ElettraProdottiArchitettureDAO.getBeanFromTuple(rs);
 				
 				Date dataAnnullamento=DateUtils.addSecondsToTimestamp(dataEsecuzione,-1);
 				

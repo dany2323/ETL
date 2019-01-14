@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -19,15 +20,18 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.Projections;
 import com.mysema.query.types.template.StringTemplate;
 
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
+import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.utils.ConfigUtils;
 import lispa.schedulers.utils.DateUtils;
 
@@ -40,9 +44,10 @@ public class ElettraPersonaleDAO {
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
 	private static QDmalmElPersonale qDmalmElPersonale = QDmalmElPersonale.qDmalmElPersonale;
+	private static QDmalmElUnitaOrganizzativeFlat qDmalmElUnitaOrganizzativeFlat = QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
 
 	public static List<DmalmElPersonale> getAllPersonale(
-			Timestamp dataEsecuzione) throws Exception {
+			Timestamp dataEsecuzione) throws DAOException, SQLException  {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -120,7 +125,7 @@ public class ElettraPersonaleDAO {
 	{
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -387,6 +392,42 @@ public class ElettraPersonaleDAO {
 
 		return strutture;
 	}
+	
+	public static List<DmalmElPersonale> getAllPersonale()
+			throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		List <DmalmElPersonale> personale= new ArrayList<>();
+		List<Tuple> strutture = new ArrayList<Tuple>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			strutture = query
+					.from(qDmalmElPersonale)
+					.where(qDmalmElPersonale.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
+//					.where(qDmalmElPersonale.personalePk.eq(518848))
+					.list(qDmalmElPersonale.all());
+
+			for(Tuple row:strutture){
+				personale.add(getBeanFromTuple(row));
+				
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return personale;
+	}
+
 	
 
 	public static Tuple findByName(String name, String surname)
@@ -692,8 +733,74 @@ public class ElettraPersonaleDAO {
 		bean.setCdEnte(rs.getString("CD_ENTE"));
 		bean.setCdVisibilita(rs.getString("CD_VISIBILITA"));
 		bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
-		bean.setAnnullato("NO");
+		bean.setAnnullato(rs.getString("ANNULLATO"));
 		return bean;
+		
+	}
+	public static DmalmElPersonale getBeanFromTuple(Tuple rs) throws SQLException {
+		DmalmElPersonale bean= new DmalmElPersonale();
+		
+		bean.setPersonalePk(rs.get(qDmalmElPersonale.personalePk));
+		bean.setIdEdma(rs.get(qDmalmElPersonale.idEdma));
+		bean.setCodicePersonale(rs.get(qDmalmElPersonale.codicePersonale));
+		bean.setDataInizioValiditaEdma(rs.get(qDmalmElPersonale.dataInizioValiditaEdma));
+		bean.setDataFineValiditaEdma(rs.get(qDmalmElPersonale.dataFineValiditaEdma));
+		bean.setDataAttivazione(rs.get(qDmalmElPersonale.dataAttivazione));
+		bean.setDataDisattivazione(rs.get(qDmalmElPersonale.dataDisattivazione));
+		bean.setNote(rs.get(qDmalmElPersonale.note));
+		bean.setInterno(Integer.valueOf(rs.get(qDmalmElPersonale.interno)));
+		bean.setCodiceResponsabile(rs.get(qDmalmElPersonale.codicePersonale));
+		bean.setIndirizzoEmail(rs.get(qDmalmElPersonale.indirizzoEmail));
+		bean.setNome(rs.get(qDmalmElPersonale.nome));
+		bean.setCognome(rs.get(qDmalmElPersonale.cognome));
+		bean.setMatricola(rs.get(qDmalmElPersonale.matricola));
+		bean.setCodiceFiscale(rs.get(qDmalmElPersonale.codiceFiscale));
+		bean.setIdentificatore(rs.get(qDmalmElPersonale.identificatore));
+		bean.setIdGrado(rs.get(qDmalmElPersonale.idGrado));
+		bean.setIdSede(rs.get(qDmalmElPersonale.idSede));
+		bean.setCdSuperiore(rs.get(qDmalmElPersonale.cdSuperiore));
+		bean.setCdEnte(rs.get(qDmalmElPersonale.cdEnte));
+		bean.setCdVisibilita(rs.get(qDmalmElPersonale.cdVisibilita));
+		bean.setDataCaricamento(rs.get(qDmalmElPersonale.dataCaricamento));
+		bean.setAnnullato(rs.get(qDmalmElPersonale.annullato));
+		bean.setUnitaOrganizzativaFlatFk(rs.get(qDmalmElPersonale.unitaOrganizzativaFlatFk));
+		bean.setDataFineValidita(rs.get(qDmalmElPersonale.dataFineValidita));
+		bean.setCodiceResponsabile(rs.get(qDmalmElPersonale.codiceResponsabile));
+		bean.setUnitaOrganizzativaFk(rs.get(qDmalmElPersonale.unitaOrganizzativaFk));
+		return bean;
+		
+	}
+
+	public static DmalmElUnitaOrganizzativeFlat getFlatUOByPk(Integer integer) throws DAOException {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		List<DmalmElUnitaOrganizzativeFlat> resultList = new LinkedList<>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			resultList = query
+					.from(qDmalmElUnitaOrganizzativeFlat)
+					.where(qDmalmElUnitaOrganizzativeFlat.idFlatPk.eq(integer))
+					.list(Projections.bean(DmalmElUnitaOrganizzativeFlat.class,
+							qDmalmElUnitaOrganizzativeFlat.all()));
+
+		} catch (Exception e) {
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return !resultList.isEmpty()?resultList.get(0):null;
 		
 	}
 }

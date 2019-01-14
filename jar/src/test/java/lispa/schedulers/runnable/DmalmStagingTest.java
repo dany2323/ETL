@@ -424,7 +424,7 @@ public class DmalmStagingTest extends TestCase {
 
 			if (ExecutionManager.getInstance().isExecutionSfera()) {
 				StgMisuraFacade.deleteStgMisura(logger, dataEsecuzioneDeleted);
-				StgMisuraFacade.FillStgMisura();
+				StgMisuraFacade.fillStgMisura();
 			}
 
 			AsmFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());

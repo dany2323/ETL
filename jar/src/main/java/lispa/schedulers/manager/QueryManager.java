@@ -2,6 +2,7 @@ package lispa.schedulers.manager;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.CallableStatement;
@@ -64,7 +65,7 @@ public class QueryManager {
 
 	}
 
-	public synchronized String getQuery(String file) throws Exception {
+	public synchronized String getQuery(String file) {
 
 		String out = "";
 		String inputLine;
@@ -79,7 +80,7 @@ public class QueryManager {
 			}
 			
 			in.close();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 		}
 

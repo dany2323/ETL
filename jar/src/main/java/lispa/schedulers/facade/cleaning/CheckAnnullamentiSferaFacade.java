@@ -497,8 +497,7 @@ public class CheckAnnullamentiSferaFacade {
 										new Double(0));
 
 								// inserisco un nuovo record
-								DmAlmMisuraDAO.insertMisure(dataEsecuzione,
-										misuraRemoved);
+								DmAlmMisuraDAO.insertMisure(misuraRemoved);
 
 								totalMeasuresRemoved++;
 							}
