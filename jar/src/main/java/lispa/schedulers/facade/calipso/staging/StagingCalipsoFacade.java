@@ -16,8 +16,11 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.calipso.StgCalipsoSchedaServizioDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.utils.DateUtils;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.CellType;
@@ -113,7 +116,7 @@ public class StagingCalipsoFacade {
 	private static void putExcelCalipso() throws IOException, PropertiesReaderException {
 		
 		File file = new File(DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_PATH));
-		String deleteFile = "rm -r ";
+		String renameFile = "mv ";
 		String wgetFile = "wget ";
 		String chmod = "chmod 755 ";
 		String fileSourceCalipso = DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_SOURCE_PATH_FILE) + DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL);
@@ -121,7 +124,7 @@ public class StagingCalipsoFacade {
 		logger.debug("START StagingCalipsoFacade.putExcelCalipso");
 		
 		try {
-			Runtime.getRuntime().exec(deleteFile + fileCalipso).waitFor();
+			Runtime.getRuntime().exec(renameFile + fileCalipso + " " + fileCalipso + "." + DateUtils.dateToString(DataEsecuzione.getInstance().getDataEsecuzione(), "yyyy-MM-dd").replace("-", "_")).waitFor();
 			Runtime.getRuntime().exec(wgetFile + fileSourceCalipso, null, file).waitFor();
 			Runtime.getRuntime().exec(chmod + fileCalipso).waitFor();
 		} catch (InterruptedException e) {
