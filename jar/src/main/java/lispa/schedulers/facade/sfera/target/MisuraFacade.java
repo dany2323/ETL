@@ -32,8 +32,8 @@ public class MisuraFacade {
 
 		logger.info("START MisuraFacade.execute");
 
-		List<DmalmMisura> misureStg = new ArrayList<DmalmMisura>();
-		List<Tuple> target = new ArrayList<Tuple>();
+		List<DmalmMisura> misureStg = new ArrayList<>();
+		List<Tuple> target = new ArrayList<>();
 		QDmalmMisura misura = QDmalmMisura.dmalmMisura;
 
 		int righeNuove = 0;
@@ -71,7 +71,7 @@ public class MisuraFacade {
 				if (target.size() == 0 && !misure.getNomeMisura().startsWith("UFFICIOSO-")) {
 					righeNuove++;
 
-					DmAlmMisuraDAO.insertMisure(dataEsecuzione, misure);
+					DmAlmMisuraDAO.insertMisure(misure);
 
 					rinascitaFisicaMisura(dataEsecuzione, misure,
 							parApplicazione, misure.getProgettoSfera());
@@ -155,8 +155,7 @@ public class MisuraFacade {
 
 								// inserisco un nuovo record
 
-								DmAlmMisuraDAO.insertMisure(dataEsecuzione,
-										misure);
+								DmAlmMisuraDAO.insertMisure(misure);
 							} else {
 								// Aggiorno lo stesso
 								DmAlmMisuraDAO.updateMisura(misure);
@@ -390,11 +389,10 @@ public class MisuraFacade {
 						// aggiorno la data di fine validita sul record
 						// corrente
 						DmAlmMisuraDAO.updateRankMisura(misuraRinascita,
-								new Double(0));
+								Double.valueOf(0));
 
 						// inserisco un nuovo record
-						DmAlmMisuraDAO.insertMisure(dataEsecuzione,
-								misuraRinascita);
+						DmAlmMisuraDAO.insertMisure(misuraRinascita);
 
 					}
 				}

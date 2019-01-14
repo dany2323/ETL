@@ -583,7 +583,7 @@ public class UserRolesSgrDAO {
  * @throws DAOException
  * @throws SQLException
  */
-	public static void deleteUserRolesDeletedInPolarion(List<DmalmUserRolesSgr> usersRole)
+	public static void deleteUserRoles()
 			throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -600,11 +600,8 @@ public class UserRolesSgrDAO {
 
 			ps = connection.prepareStatement(sql);
 			
-			for (DmalmUserRolesSgr userRole : usersRole) {
-				ps.setInt(1, userRole.getDmalmUserRolesPk());
-
-				ps.executeUpdate();
-			}
+			ps.executeUpdate();
+			
 			
 			connection.commit();
 

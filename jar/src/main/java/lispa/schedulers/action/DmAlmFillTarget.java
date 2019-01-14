@@ -138,7 +138,7 @@ public class DmAlmFillTarget {
 						logger.info("Entità già elaborata per la data di esecuzione: "
 								+ DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE);
 					}
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PERSONALE)) {
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PERSONALE) && !(ErrorManager.getInstance().hasError())) {
 						ElettraPersonaleFacade.execute(dataEsecuzione);
 					} else {
 						logger.info("Entità già elaborata per la data di esecuzione: "

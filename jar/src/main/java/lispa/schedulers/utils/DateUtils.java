@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.queryimplementation.staging.QDmalmEsitiCaricamenti;
 
@@ -213,7 +214,7 @@ public class DateUtils {
 	}
 
 	public static Date addSecondsToDate(java.util.Date date, int seconds)
-			throws Exception {
+			{
 		GregorianCalendar gc = new GregorianCalendar();
 
 		gc.setTime(date);
@@ -244,11 +245,15 @@ public class DateUtils {
 		return new Timestamp(d.getTime());
 	}
 
-	public static Timestamp addSecondsToTimestamp(Timestamp t, int seconds)
-			throws Exception {
+	public static Timestamp addSecondsToTimestamp(Timestamp t, int seconds) throws DAOException
+			{
 		String s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(t);
 		Date d = stringToDate(s, "yyyy-MM-dd HH:mm:ss");
-		d = addSecondsToDate(d, seconds);
+		try {
+			d = addSecondsToDate(d, seconds);
+		} catch (Exception e) {
+			throw new DAOException("Impossibile convertire in data");
+		}
 		return new Timestamp(d.getTime());
 	}
 
@@ -328,11 +333,11 @@ public class DateUtils {
 
 	public static Timestamp getDataEsecuzione() {
 
-		String oggi_str = DateUtils.dateToString(new Date(),
+		String oggiStr = DateUtils.dateToString(new Date(),
 				"yyyy-MM-dd HH:mm:00");
-		Date today_dt = DateUtils.stringToDate(oggi_str, "yyyy-MM-dd HH:mm:00");
+		Date todayDt = DateUtils.stringToDate(oggiStr, "yyyy-MM-dd HH:mm:00");
 
-		Timestamp dataCaricamento = new Timestamp(today_dt.getTime());
+		Timestamp dataCaricamento = new Timestamp(todayDt.getTime());
 
 		return dataCaricamento;
 	}
