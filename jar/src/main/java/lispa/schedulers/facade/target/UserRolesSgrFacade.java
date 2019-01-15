@@ -120,9 +120,9 @@ public class UserRolesSgrFacade {
 				if (projectSVNPath != null) {
 					List<DmalmUserRolesSgr> userRolesGroupedByProjID = new ArrayList<DmalmUserRolesSgr>();
 					long revision = -1;
-					if(prj.get(project.cRev) != null) {
-						revision = prj.get(project.cRev);
-					}
+//					if(prj.get(project.cRev) != null) {
+//						revision = prj.get(project.cRev);
+//					}
 					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SISS)) {
 						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
 								prj.get(project.idProject), projectSVNPath,
@@ -136,28 +136,18 @@ public class UserRolesSgrFacade {
 								revision, prj.get(project.cCreated), 
 								repositorySire);
 					}
-					logger.info("START UserRolesSgrDAO.getUserRolesByProjectID");
-					List<DmalmUserRolesSgr> listaTarget = UserRolesSgrDAO.getUserRolesByProjectID(prj.get(project.idProject),
-							prj.get(project.idRepository));
-					logger.info("STOP UserRolesSgrDAO.getUserRolesByProjectID");
-					logger.info("Attualmente ci sono "+listaTarget.size()+" utenti-ruoli per questo progetto nella DMALM_USER_ROLES_SGR");
-
+					
 					List<DmalmUserRolesSgr> listaNuovi = new ArrayList<DmalmUserRolesSgr>();
 					List<DmalmUserRolesSgr> listaVecchi = new ArrayList<DmalmUserRolesSgr>();
 				
 					for(DmalmUserRolesSgr projectUserRole: userRolesGroupedByProjID){											
 						int fkProject=prj.get(project.dmalmProjectPrimaryKey);
-						if (listaTarget.size() == 0) {
+						
 							UserRolesSgrDAO.insertUserRole(projectUserRole, fkProject, dataEsecuzione);
 							righeNuove += 1;
-						} else {							
-							if(!presenteSuLista(projectUserRole, listaTarget)) {
-								listaNuovi.add(projectUserRole);
-							} else {
-								listaVecchi.add(projectUserRole);
-							}
+							
 						}
-					}
+					
 					
 					// nuovi UserRoles
 					for(DmalmUserRolesSgr projectUserRole: listaNuovi){	
