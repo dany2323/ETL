@@ -18,6 +18,7 @@ import java.util.List;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.utils.QueryUtils;
 
 import org.apache.log4j.Logger;
 
@@ -166,7 +167,7 @@ public class QueryManager {
 
 		for (String record : records) {
 			String[] splitRecord = record.split(":");
-			boolean flag = executeProcedure(splitRecord[0], splitRecord[1], dataEsecuzione);
+			boolean flag = executeStoredProcedure(splitRecord[0], splitRecord[1], dataEsecuzione);
 			if (!flag) {
 				return flag;
 			}
@@ -174,7 +175,7 @@ public class QueryManager {
 		return true;
 	}
 	
-	public synchronized boolean executeProcedure(String backupTable, String targetTable, 
+	public synchronized boolean executeStoredProcedure(String backupTable, String targetTable, 
 			Timestamp dataEsecuzione) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
@@ -186,7 +187,9 @@ public class QueryManager {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			
-			cstmt = conn.prepareCall("{? = call BACKUP_TARGET(?, ?, ?, ?)}");
+			String sql = QueryUtils.getCallFunction(DmAlmConstants.FUNCTION_BACKUP_TARGET, 4);
+			cstmt = conn.prepareCall(sql);
+			//cstmt = conn.prepareCall("{? = call BACKUP_TARGET(?, ?, ?, ?)}");
 			cstmt.registerOutParameter(1, Types.VARCHAR);
 			cstmt.setString(2, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
 			cstmt.setString(3, backupTable.trim());

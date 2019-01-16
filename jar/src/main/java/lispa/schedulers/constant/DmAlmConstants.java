@@ -633,6 +633,7 @@ public final class DmAlmConstants {
 	public static String STORED_PROCEDURE_VERIFICA_ESITO_ETL = "VERIFICA_ESITO_ETL";
 	public static String STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO = "STOR_ANOMALIA_PRODOTTO_BY_PROJ";
 	public static String STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO = "STOR_DIFETTO_PRODOTTO_BY_PROJ";
+	public static String FUNCTION_BACKUP_TARGET = "BACKUP_TARGET";
 	
 	// Calipso Sheet Name Scheda Servizio
 	public static String CALIPSO_SHEET_NAME_SCHEDA_SERVIZIO = "Portfolio_esteso";
