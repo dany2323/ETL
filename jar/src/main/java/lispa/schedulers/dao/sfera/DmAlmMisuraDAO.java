@@ -40,10 +40,12 @@ public class DmAlmMisuraDAO {
 	private static QDmalmProgettoSfera prog = QDmalmProgettoSfera.dmalmProgettoSfera;
 
 	private static QDmalmAsm asm = QDmalmAsm.dmalmAsm;
-	
+
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
-	private DmAlmMisuraDAO() {}
+	private DmAlmMisuraDAO() {
+	}
+
 	public static void delete() throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
@@ -70,31 +72,29 @@ public class DmAlmMisuraDAO {
 		}
 	}
 
-	public static List<DmalmMisura> getAllMisure(Timestamp dataEsecuzione)
-			throws DAOException {
+	public static List<DmalmMisura> getAllMisure(Timestamp dataEsecuzione) throws DAOException {
 		ConnectionManager cm = null;
 		DmalmMisura bean = null;
 		List<DmalmMisura> misure = new ArrayList<>();
-		String sql="";
+		String sql = "";
 		try {
 			cm = ConnectionManager.getInstance();
-			
-			sql = QueryManager.getInstance().getQuery(
-					DmAlmConfigReaderProperties.SQL_STG_MISURES);
+
+			sql = QueryManager.getInstance().getQuery(DmAlmConfigReaderProperties.SQL_STG_MISURES);
 		} catch (PropertiesReaderException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
 		}
-		if(sql.isEmpty())
+		if (sql.isEmpty())
 			return misure;
-		
-			try(Connection connection = cm.getConnectionOracle();
-					
-				PreparedStatement ps = connection.prepareStatement(sql);
-				ResultSet rs = ps.executeQuery();){
-				ps.setTimestamp(1, dataEsecuzione);
+
+		try (Connection connection = cm.getConnectionOracle();
+
+				PreparedStatement ps = connection.prepareStatement(sql);) {
+			ps.setTimestamp(1, dataEsecuzione);
+			try (ResultSet rs = ps.executeQuery();) {
 				logger.debug("Query Eseguita!");
-				
+
 				while (rs.next()) {
 					// Elabora il risultato
 					bean = new DmalmMisura();
@@ -132,10 +132,8 @@ public class DmAlmMisuraDAO {
 					bean.setD2Ufp(rs.getDouble("D_2_UFP"));
 					bean.setDataConsolidamento(rs.getTimestamp("DT_CONSOLIDAMENTO"));
 					bean.setDataCreazione(rs.getTimestamp("DT_CREAZIONE"));
-					bean.setDataFineVerificafp(rs
-							.getTimestamp("DT_FINE_VERIFICA_FP"));
-					bean.setDataInizioVerificaFp(rs
-							.getTimestamp("DT_INIZIO_VERIFICA_FP"));
+					bean.setDataFineVerificafp(rs.getTimestamp("DT_FINE_VERIFICA_FP"));
+					bean.setDataInizioVerificaFp(rs.getTimestamp("DT_INIZIO_VERIFICA_FP"));
 					bean.setDataRiferimento(rs.getTimestamp("DT_RIFERIMENTO"));
 					bean.setDmalmStgMisuraPk(rs.getInt("DMALM_STG_MISURA_PK"));
 					bean.setEifNum(rs.getDouble("EI_NUM"));
@@ -189,8 +187,7 @@ public class DmAlmMisuraDAO {
 					bean.setMpUfp(rs.getDouble("MP_UFP"));
 					bean.setNomeMisura(rs.getString("NOME_MISURA"));
 					bean.setNoteMsr(rs.getString("NOTE_MSR"));
-					bean.setPercentualeDiScostamento(rs
-							.getDouble("PERCENTUALE_DI_SCOSTAMENTO"));
+					bean.setPercentualeDiScostamento(rs.getDouble("PERCENTUALE_DI_SCOSTAMENTO"));
 					bean.setPfNum(rs.getDouble("PF_NUM"));
 					bean.setPfUfp(rs.getDouble("PF_UFP"));
 					bean.setPostVerAddCfp(rs.getInt("POST_VER_ADD_CFP"));
@@ -218,10 +215,10 @@ public class DmAlmMisuraDAO {
 					bean.setUtenteMisuratore(rs.getString("UTENTE_MISURATORE"));
 					bean.setValoreScostamento(rs.getDouble("VALORE_SCOSTAMENTO"));
 					bean.setVersioneMsr(rs.getString("VERSIONE_MSR"));
-					
+
 					// Uso il campo Annullato in quanto i campi applicazione non esiste
 					bean.setAnnullato(rs.getString("APPLICAZIONE"));
-					
+
 					bean.setDataModifica(dataEsecuzione);
 					bean.setDataStoricizzazione(bean.getDataModifica());
 					bean.setRankStatoMisura(Double.valueOf(1));
@@ -229,42 +226,37 @@ public class DmAlmMisuraDAO {
 					bean.setIdProgetto(rs.getShort("ID_PROGETTO"));
 					bean.setIdAsm(rs.getShort("ID_ASM"));
 					bean.setDataCaricamento(dataEsecuzione);
-					bean.setDmalmPrjFk(getProjectById(rs.getShort("ID_PROGETTO"),
-							dataEsecuzione));
+					bean.setDmalmPrjFk(getProjectById(rs.getShort("ID_PROGETTO"), dataEsecuzione));
 					misure.add(bean);
 				}
-			} catch (DAOException | SQLException e) {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-				logger.error(e.getMessage(), e);
 			}
-			
-		
+		} catch (DAOException | SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+		}
 
 		return misure;
 	}
 
-	public static Integer getProjectById(short idProg, Timestamp dtModifica)
-			throws DAOException {
+	public static Integer getProjectById(short idProg, Timestamp dtModifica) throws DAOException {
 		QDmalmProgettoSfera progetto = QDmalmProgettoSfera.dmalmProgettoSfera;
 		ConnectionManager cm = null;
 		Connection connection = null;
-		List<Integer> progettoFk =null;
+		List<Integer> progettoFk = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			SQLQuery query = new SQLQuery(connection, dialect);
-			progettoFk = query.from(QDmalmProgettoSfera.dmalmProgettoSfera)
-					.where(progetto.idProgetto.eq(idProg))
-					.where(progetto.dataFineValidita.goe(dtModifica))
-					.where(progetto.dataInizioValidita.loe(dtModifica))
-					.orderBy(progetto.dataInizioValidita.desc())
-					.list(progetto.dmalmProgettoSferaPk);
-			if(!progettoFk.isEmpty())
+			progettoFk = query.from(QDmalmProgettoSfera.dmalmProgettoSfera).where(progetto.idProgetto.eq(idProg))
+					.where(progetto.dataFineValidita.goe(dtModifica)).where(progetto.dataInizioValidita.loe(dtModifica))
+					.orderBy(progetto.dataInizioValidita.desc()).list(progetto.dmalmProgettoSferaPk);
+			if (!progettoFk.isEmpty())
 				return progettoFk.get(0);
-			else{
-				logger.info("Attenzione, con idProgetto"+idProg+ "Dt modifica "+dtModifica+ " non trovo progetto sfera");
+			else {
+				logger.info("Attenzione, con idProgetto" + idProg + "Dt modifica " + dtModifica
+						+ " non trovo progetto sfera");
 				return 0;
 			}
 
@@ -277,7 +269,7 @@ public class DmAlmMisuraDAO {
 				cm.closeConnection(connection);
 			}
 		}
-		
+
 		return 0;
 	}
 
@@ -294,12 +286,9 @@ public class DmAlmMisuraDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			misures = query.from(misura)
-					.where(misura.idAsm.eq(misure.getIdAsm()))
-					.where(misura.idProgetto.eq(misure.getIdProgetto()))
-					.where(misura.idMsr.eq(misure.getIdMsr()))
-					.where(misura.rankStatoMisura.eq(Double.valueOf(1)))
-					.list(misura.all());
+			misures = query.from(misura).where(misura.idAsm.eq(misure.getIdAsm()))
+					.where(misura.idProgetto.eq(misure.getIdProgetto())).where(misura.idMsr.eq(misure.getIdMsr()))
+					.where(misura.rankStatoMisura.eq(Double.valueOf(1))).list(misura.all());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -312,8 +301,7 @@ public class DmAlmMisuraDAO {
 		return misures;
 	}
 
-	public static void insertMisure(DmalmMisura misure)
-			throws DAOException, SQLException {
+	public static void insertMisure(DmalmMisura misure) throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -323,8 +311,7 @@ public class DmAlmMisuraDAO {
 
 			connection.setAutoCommit(false);
 
-			SQLInsertClause insert = new SQLInsertClause(connection, dialect,
-					misura);
+			SQLInsertClause insert = new SQLInsertClause(connection, dialect, misura);
 			insert.populate(misure).execute();
 
 			connection.commit();
@@ -332,7 +319,7 @@ public class DmAlmMisuraDAO {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			
+
 			throw e;
 		} finally {
 			if (cm != null) {
@@ -341,8 +328,7 @@ public class DmAlmMisuraDAO {
 		}
 	}
 
-	public static void updateRankMisura(DmalmMisura misure, Double double1)
-			throws DAOException {
+	public static void updateRankMisura(DmalmMisura misure, Double double1) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -352,10 +338,8 @@ public class DmAlmMisuraDAO {
 
 			connection.setAutoCommit(false);
 
-			new SQLUpdateClause(connection, dialect, misura)
-					.where(misura.idAsm.eq(misure.getIdAsm()))
-					.where(misura.idProgetto.eq(misure.getIdProgetto()))
-					.where(misura.idMsr.eq(misure.getIdMsr()))
+			new SQLUpdateClause(connection, dialect, misura).where(misura.idAsm.eq(misure.getIdAsm()))
+					.where(misura.idProgetto.eq(misure.getIdProgetto())).where(misura.idMsr.eq(misure.getIdMsr()))
 					.set(misura.rankStatoMisura, double1).execute();
 			connection.commit();
 		} catch (Exception e) {
@@ -378,134 +362,73 @@ public class DmAlmMisuraDAO {
 
 			connection.setAutoCommit(false);
 
-			new SQLUpdateClause(connection, dialect, misura)
-					.where(misura.idAsm.eq(misure.getIdAsm()))
-					.where(misura.idProgetto.eq(misure.getIdProgetto()))
-					.where(misura.idMsr.eq(misure.getIdMsr()))
-					.where(misura.rankStatoMisura.eq(Double.valueOf(1)))
-					.set(misura.a1Num, misure.getA1Num())
-					.set(misura.a1Ufp, misure.getA1Ufp())
-					.set(misura.a2Num, misure.getA2Num())
-					.set(misura.a2Ufp, misure.getA2Ufp())
-					.set(misura.adjmax, misure.getAdjmax())
-					.set(misura.adjmin, misure.getAdjmin())
-					.set(misura.adjufp, misure.getAdjufp())
-					.set(misura.ambito, misure.getAmbito())
-					.set(misura.approccio, misure.getApproccio())
-					.set(misura.b1Num, misure.getB1Num())
-					.set(misura.b1Ufp, misure.getB1Ufp())
-					.set(misura.b2Num, misure.getB2Num())
-					.set(misura.b2Ufp, misure.getB2Ufp())
-					.set(misura.b3Num, misure.getB3Num())
-					.set(misura.b3Ufp, misure.getB3Ufp())
-					.set(misura.b4Num, misure.getB4Num())
-					.set(misura.b4Ufp, misure.getB4Ufp())
-					.set(misura.b5Num, misure.getB5Num())
-					.set(misura.b5Ufp, misure.getB5Ufp())
-					.set(misura.bfpNum, misure.getBfpNum())
-					.set(misura.bfpUfp, misure.getBfpUfp())
-					.set(misura.c1Num, misure.getC1Num())
-					.set(misura.c1Ufp, misure.getC1Ufp())
-					.set(misura.c2Num, misure.getC2Num())
-					.set(misura.c2Ufp, misure.getC2Ufp())
-					.set(misura.confine, misure.getConfine())
-					.set(misura.crudNum, misure.getCrudNum())
-					.set(misura.crudUfp, misure.getCrudUfp())
-					.set(misura.d1Num, misure.getD1Num())
-					.set(misura.d1Ufp, misure.getD1Ufp())
-					.set(misura.d2Num, misure.getD2Num())
-					.set(misura.d2Ufp, misure.getD2Ufp())
-					.set(misura.dataConsolidamento,
-							misure.getDataConsolidamento())
+			new SQLUpdateClause(connection, dialect, misura).where(misura.idAsm.eq(misure.getIdAsm()))
+					.where(misura.idProgetto.eq(misure.getIdProgetto())).where(misura.idMsr.eq(misure.getIdMsr()))
+					.where(misura.rankStatoMisura.eq(Double.valueOf(1))).set(misura.a1Num, misure.getA1Num())
+					.set(misura.a1Ufp, misure.getA1Ufp()).set(misura.a2Num, misure.getA2Num())
+					.set(misura.a2Ufp, misure.getA2Ufp()).set(misura.adjmax, misure.getAdjmax())
+					.set(misura.adjmin, misure.getAdjmin()).set(misura.adjufp, misure.getAdjufp())
+					.set(misura.ambito, misure.getAmbito()).set(misura.approccio, misure.getApproccio())
+					.set(misura.b1Num, misure.getB1Num()).set(misura.b1Ufp, misure.getB1Ufp())
+					.set(misura.b2Num, misure.getB2Num()).set(misura.b2Ufp, misure.getB2Ufp())
+					.set(misura.b3Num, misure.getB3Num()).set(misura.b3Ufp, misure.getB3Ufp())
+					.set(misura.b4Num, misure.getB4Num()).set(misura.b4Ufp, misure.getB4Ufp())
+					.set(misura.b5Num, misure.getB5Num()).set(misura.b5Ufp, misure.getB5Ufp())
+					.set(misura.bfpNum, misure.getBfpNum()).set(misura.bfpUfp, misure.getBfpUfp())
+					.set(misura.c1Num, misure.getC1Num()).set(misura.c1Ufp, misure.getC1Ufp())
+					.set(misura.c2Num, misure.getC2Num()).set(misura.c2Ufp, misure.getC2Ufp())
+					.set(misura.confine, misure.getConfine()).set(misura.crudNum, misure.getCrudNum())
+					.set(misura.crudUfp, misure.getCrudUfp()).set(misura.d1Num, misure.getD1Num())
+					.set(misura.d1Ufp, misure.getD1Ufp()).set(misura.d2Num, misure.getD2Num())
+					.set(misura.d2Ufp, misure.getD2Ufp()).set(misura.dataConsolidamento, misure.getDataConsolidamento())
 					.set(misura.dataCreazione, misure.getDataCreazione())
-					.set(misura.dataFineVerificafp,
-							misure.getDataFineVerificafp())
+					.set(misura.dataFineVerificafp, misure.getDataFineVerificafp())
 					.set(misura.dataModifica, misure.getDataModifica())
-					.set(misura.dataInizioVerificaFp,
-							misure.getDataInizioVerificaFp())
-					.set(misura.dataRiferimento, misure.getDataRiferimento())
-					.set(misura.eiNum, misure.getEifNum())
-					.set(misura.eiUfp, misure.getEifUfp())
-					.set(misura.eifNum, misure.getEiNum())
-					.set(misura.eifUfp, misure.getEiUfp())
-					.set(misura.eoNum, misure.getEoNum())
-					.set(misura.eoUfp, misure.getEoUfp())
-					.set(misura.eqNum, misure.getEqNum())
-					.set(misura.eqUfp, misure.getEqUfp())
-					.set(misura.esperienza, misure.getEsperienza())
-					.set(misura.faseCicloDiVita, misure.getFaseCicloDiVita())
-					.set(misura.fonti, misure.getFonti())
+					.set(misura.dataInizioVerificaFp, misure.getDataInizioVerificaFp())
+					.set(misura.dataRiferimento, misure.getDataRiferimento()).set(misura.eiNum, misure.getEifNum())
+					.set(misura.eiUfp, misure.getEifUfp()).set(misura.eifNum, misure.getEiNum())
+					.set(misura.eifUfp, misure.getEiUfp()).set(misura.eoNum, misure.getEoNum())
+					.set(misura.eoUfp, misure.getEoUfp()).set(misura.eqNum, misure.getEqNum())
+					.set(misura.eqUfp, misure.getEqUfp()).set(misura.esperienza, misure.getEsperienza())
+					.set(misura.faseCicloDiVita, misure.getFaseCicloDiVita()).set(misura.fonti, misure.getFonti())
 					.set(misura.fpNonPesatiMax, misure.getFpNonPesatiMax())
 					.set(misura.fpNonPesatiMin, misure.getFpNonPesatiMin())
 					.set(misura.fpNonPesatiUfp, misure.getFpNonPesatiUfp())
-					.set(misura.fpPesatiMax, misure.getFpPesatiMax())
-					.set(misura.fpPesatiMin, misure.getFpPesatiMin())
-					.set(misura.fpPesatiUfp, misure.getFpPesatiUfp())
-					.set(misura.fuNum, misure.getFuNum())
-					.set(misura.fuUfp, misure.getFuUfp())
-					.set(misura.gdgNum, misure.getGdgNum())
-					.set(misura.gdgUfp, misure.getGdgUfp())
-					.set(misura.geiNum, misure.getGeifNum())
-					.set(misura.geiUfp, misure.getGeifUfp())
-					.set(misura.geifNum, misure.getGeiNum())
-					.set(misura.geifUfp, misure.getGeiUfp())
-					.set(misura.geoNum, misure.getGeoNum())
-					.set(misura.geoUfp, misure.getGeoUfp())
-					.set(misura.geqNum, misure.getGeqNum())
-					.set(misura.geqUfp, misure.getGeqUfp())
-					.set(misura.gilfNum, misure.getGilfNum())
-					.set(misura.gilfUfp, misure.getGilfUfp())
-					.set(misura.gpNum, misure.getGpNum())
-					.set(misura.gpUfp, misure.getGpUfp())
-					.set(misura.idMsr, misure.getIdMsr())
-					.set(misura.ifpNum, misure.getIfpNum())
-					.set(misura.ifpUfp, misure.getIfpUfp())
-					.set(misura.ilfNum, misure.getIlfNum())
-					.set(misura.ilfUfp, misure.getIlfUfp())
-					.set(misura.ldgNum, misure.getLdgNum())
-					.set(misura.ldgUfp, misure.getLdgUfp())
-					.set(misura.linkDocumentale, misure.getLinkDocumentale())
-					.set(misura.metodo, misure.getMetodo())
-					.set(misura.mfNum, misure.getMfNum())
-					.set(misura.mfUfp, misure.getMfUfp())
-					.set(misura.mldgNum, misure.getMldgNum())
-					.set(misura.mldgUfp, misure.getMldgUfp())
-					.set(misura.modello, misure.getModello())
-					.set(misura.mpNum, misure.getMpNum())
-					.set(misura.mpUfp, misure.getMpUfp())
-					.set(misura.nomeMisura, misure.getNomeMisura())
+					.set(misura.fpPesatiMax, misure.getFpPesatiMax()).set(misura.fpPesatiMin, misure.getFpPesatiMin())
+					.set(misura.fpPesatiUfp, misure.getFpPesatiUfp()).set(misura.fuNum, misure.getFuNum())
+					.set(misura.fuUfp, misure.getFuUfp()).set(misura.gdgNum, misure.getGdgNum())
+					.set(misura.gdgUfp, misure.getGdgUfp()).set(misura.geiNum, misure.getGeifNum())
+					.set(misura.geiUfp, misure.getGeifUfp()).set(misura.geifNum, misure.getGeiNum())
+					.set(misura.geifUfp, misure.getGeiUfp()).set(misura.geoNum, misure.getGeoNum())
+					.set(misura.geoUfp, misure.getGeoUfp()).set(misura.geqNum, misure.getGeqNum())
+					.set(misura.geqUfp, misure.getGeqUfp()).set(misura.gilfNum, misure.getGilfNum())
+					.set(misura.gilfUfp, misure.getGilfUfp()).set(misura.gpNum, misure.getGpNum())
+					.set(misura.gpUfp, misure.getGpUfp()).set(misura.idMsr, misure.getIdMsr())
+					.set(misura.ifpNum, misure.getIfpNum()).set(misura.ifpUfp, misure.getIfpUfp())
+					.set(misura.ilfNum, misure.getIlfNum()).set(misura.ilfUfp, misure.getIlfUfp())
+					.set(misura.ldgNum, misure.getLdgNum()).set(misura.ldgUfp, misure.getLdgUfp())
+					.set(misura.linkDocumentale, misure.getLinkDocumentale()).set(misura.metodo, misure.getMetodo())
+					.set(misura.mfNum, misure.getMfNum()).set(misura.mfUfp, misure.getMfUfp())
+					.set(misura.mldgNum, misure.getMldgNum()).set(misura.mldgUfp, misure.getMldgUfp())
+					.set(misura.modello, misure.getModello()).set(misura.mpNum, misure.getMpNum())
+					.set(misura.mpUfp, misure.getMpUfp()).set(misura.nomeMisura, misure.getNomeMisura())
 					.set(misura.noteMsr, misure.getNoteMsr())
-					.set(misura.percentualeDiScostamento,
-							misure.getPercentualeDiScostamento())
-					.set(misura.pfNum, misure.getPfNum())
-					.set(misura.pfUfp, misure.getPfUfp())
-					.set(misura.postVerAddCfp, misure.getPostVerAddCfp())
-					.set(misura.postVerChg, misure.getPostVerChg())
-					.set(misura.postVerDel, misure.getPostVerDel())
-					.set(misura.postVerFp, misure.getPostVerFp())
-					.set(misura.preVerAddCfp, misure.getPreVerAddCfp())
-					.set(misura.preVerChg, misure.getPreVerChg())
-					.set(misura.preVerDel, misure.getPreVerDel())
-					.set(misura.preVerFp, misure.getPreVerFp())
-					.set(misura.responsabile, misure.getResponsabile())
-					.set(misura.scopo, misure.getScopo())
-					.set(misura.statoMisura, misure.getStatoMisura())
-					.set(misura.tpNum, misure.getTpNum())
-					.set(misura.tpUfp, misure.getTpUfp())
-					.set(misura.ugdgNum, misure.getUgdgNum())
-					.set(misura.ugdgUfp, misure.getUgdgUfp())
-					.set(misura.ugepNum, misure.getUgepNum())
-					.set(misura.ugepUfp, misure.getUgepUfp())
-					.set(misura.ugoNum, misure.getUgoNum())
-					.set(misura.ugoUfp, misure.getUgoUfp())
-					.set(misura.ugpNum, misure.getUgpNum())
-					.set(misura.ugpUfp, misure.getUgpUfp())
-					.set(misura.utenteMisuratore, misure.getUtenteMisuratore())
-					.set(misura.valoreScostamento,
-							misure.getValoreScostamento())
+					.set(misura.percentualeDiScostamento, misure.getPercentualeDiScostamento())
+					.set(misura.pfNum, misure.getPfNum()).set(misura.pfUfp, misure.getPfUfp())
+					.set(misura.postVerAddCfp, misure.getPostVerAddCfp()).set(misura.postVerChg, misure.getPostVerChg())
+					.set(misura.postVerDel, misure.getPostVerDel()).set(misura.postVerFp, misure.getPostVerFp())
+					.set(misura.preVerAddCfp, misure.getPreVerAddCfp()).set(misura.preVerChg, misure.getPreVerChg())
+					.set(misura.preVerDel, misure.getPreVerDel()).set(misura.preVerFp, misure.getPreVerFp())
+					.set(misura.responsabile, misure.getResponsabile()).set(misura.scopo, misure.getScopo())
+					.set(misura.statoMisura, misure.getStatoMisura()).set(misura.tpNum, misure.getTpNum())
+					.set(misura.tpUfp, misure.getTpUfp()).set(misura.ugdgNum, misure.getUgdgNum())
+					.set(misura.ugdgUfp, misure.getUgdgUfp()).set(misura.ugepNum, misure.getUgepNum())
+					.set(misura.ugepUfp, misure.getUgepUfp()).set(misura.ugoNum, misure.getUgoNum())
+					.set(misura.ugoUfp, misure.getUgoUfp()).set(misura.ugpNum, misure.getUgpNum())
+					.set(misura.ugpUfp, misure.getUgpUfp()).set(misura.utenteMisuratore, misure.getUtenteMisuratore())
+					.set(misura.valoreScostamento, misure.getValoreScostamento())
 					.set(misura.versioneMsr, misure.getVersioneMsr())
-					.set(misura.progettoSfera, misure.getProgettoSfera())
-					.execute();
+					.set(misura.progettoSfera, misure.getProgettoSfera()).execute();
 
 			connection.commit();
 
@@ -519,8 +442,7 @@ public class DmAlmMisuraDAO {
 		}
 	}
 
-	public static void updateAnnullatoMisura(DmalmMisura misure)
-			throws DAOException {
+	public static void updateAnnullatoMisura(DmalmMisura misure) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -530,13 +452,11 @@ public class DmAlmMisuraDAO {
 
 			connection.setAutoCommit(false);
 
-			new SQLUpdateClause(connection, dialect, misura)
-					.where(misura.idAsm.eq(misure.getIdAsm()))
-					.where(misura.idProgetto.eq(misure.getIdProgetto()))
-					.where(misura.idMsr.eq(misure.getIdMsr()))
+			new SQLUpdateClause(connection, dialect, misura).where(misura.idAsm.eq(misure.getIdAsm()))
+					.where(misura.idProgetto.eq(misure.getIdProgetto())).where(misura.idMsr.eq(misure.getIdMsr()))
 					.where(misura.rankStatoMisura.eq(Double.valueOf(1)))
 					.set(misura.annullato, DmAlmConstants.SFERA_ANNULLATO_FISICAMENTE).execute();
-			
+
 			connection.commit();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -546,7 +466,7 @@ public class DmAlmMisuraDAO {
 			}
 		}
 	}
-	
+
 	public static List<Tuple> getMisuraByName(DmalmMisura msr, String parApplicazione, String parNomeProgetto)
 			throws DAOException {
 		ConnectionManager cm = null;
@@ -561,17 +481,12 @@ public class DmAlmMisuraDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			mis = query
-					.from(misura)
-					.join(prog).on(prog.dmalmProgettoSferaPk.eq(misura.dmalmPrjFk))
-					.join(asm).on(asm.dmalmAsmPk.eq(prog.dmalmAsmFk))
-					.where(misura.nomeMisura.eq(msr.getNomeMisura()))
+			mis = query.from(misura).join(prog).on(prog.dmalmProgettoSferaPk.eq(misura.dmalmPrjFk)).join(asm)
+					.on(asm.dmalmAsmPk.eq(prog.dmalmAsmFk)).where(misura.nomeMisura.eq(msr.getNomeMisura()))
 					.where(misura.annullato.eq(DmAlmConstants.SFERA_ANNULLATO_FISICAMENTE))
-					.where(misura.rankStatoMisura.eq(Double.valueOf(1)))
-					.where(prog.nomeProgetto.eq(parNomeProgetto))
-					.where(asm.applicazione.eq(parApplicazione))
-					.list(misura.all());
-					
+					.where(misura.rankStatoMisura.eq(Double.valueOf(1))).where(prog.nomeProgetto.eq(parNomeProgetto))
+					.where(asm.applicazione.eq(parApplicazione)).list(misura.all());
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -584,9 +499,8 @@ public class DmAlmMisuraDAO {
 
 		return mis;
 	}
-	
-	public static Integer getMisuraPk()
-			throws DAOException {
+
+	public static Integer getMisuraPk() throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		Integer resMisuraPk = 0;
@@ -594,16 +508,13 @@ public class DmAlmMisuraDAO {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			String sql = QueryManager.getInstance().getQuery(
-					DmAlmConfigReaderProperties.SFERA_MISURA_PK_NEXTVAL);
-			
+			String sql = QueryManager.getInstance().getQuery(DmAlmConfigReaderProperties.SFERA_MISURA_PK_NEXTVAL);
 
-			try(PreparedStatement ps = connection.prepareStatement(sql);
-				ResultSet rs = ps.executeQuery();){
+			try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery();) {
 				rs.next();
 				resMisuraPk = rs.getInt("MISURA_PK");
 			}
-		
+
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
@@ -618,9 +529,8 @@ public class DmAlmMisuraDAO {
 
 		return resMisuraPk;
 	}
-	
-	public static List<Tuple> checkLinkMisureSferaWi(Short idProgetto)
-			{
+
+	public static List<Tuple> checkLinkMisureSferaWi(Short idProgetto) {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -633,15 +543,11 @@ public class DmAlmMisuraDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			mis = query
-					.from(misura)
-					.where(misura.idProgetto.eq(idProgetto))
-					.where(misura.rankStatoMisura.eq(Double.valueOf(1)))
-					.where(misura.nomeMisura.notLike("%NOWI%"))
+			mis = query.from(misura).where(misura.idProgetto.eq(idProgetto))
+					.where(misura.rankStatoMisura.eq(Double.valueOf(1))).where(misura.nomeMisura.notLike("%NOWI%"))
 					.where(misura.annullato.notLike("ANNULLATO%"))
-					.where(misura.statoMisura.notIn("Consolidata", "Sospesa"))
-					.list(misura.all());
-					
+					.where(misura.statoMisura.notIn("Consolidata", "Sospesa")).list(misura.all());
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			ErrorManager.getInstance().exceptionOccurred(true, e);

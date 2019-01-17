@@ -63,38 +63,39 @@ public class ElettraUnitaOrganizzativeDAO {
 			try( ConnectionManager cm = ConnectionManager.getInstance();
 					Connection connection = cm.getConnectionOracle();
 					PreparedStatement ps = connection.prepareStatement(sql);
-					ResultSet rs = ps.executeQuery();
 					){
 
 				ps.setTimestamp(1, dataEsecuzione);
-			while (rs.next()) {
-				bean = new DmalmElUnitaOrganizzative();
-
-				bean.setUnitaOrganizzativaPk(rs
-						.getInt("DMALM_STG_UNITA_ORG_PK"));
-				bean.setIdEdma(rs.getString("ID_EDMA"));
-				bean.setCodiceArea(rs.getString("CD_AREA"));
-				bean.setDataInizioValiditaEdma(rs
-						.getTimestamp("DT_INIZIO_VALIDITA_EDMA"));
-				bean.setDataFineValiditaEdma(rs
-						.getTimestamp("DT_FINE_VALIDITA_EDMA"));
-				bean.setDescrizioneArea(rs.getString("DS_AREA_EDMA"));
-				bean.setDataAttivazione(rs.getTimestamp("DT_ATTIVAZIONE"));
-				bean.setDataDisattivazione(rs.getTimestamp("DT_DISATTIVAZIONE"));
-				bean.setNote(rs.getString("NOTE"));
-				bean.setInterno(rs.getShort("INTERNO"));
-				bean.setCodiceResponsabile(rs.getString("CD_RESPONSABILE_AREA"));
-				bean.setIndirizzoEmail(rs.getString("INDIRIZZO_EMAIL"));
-				bean.setIdTipologiaUfficio(rs.getInt("ID_TIPOLOGIA_UFFICIO"));
-				bean.setIdGradoUfficio(rs.getInt("ID_GRADO_UFFICIO"));
-				bean.setIdSede(rs.getInt("ID_SEDE"));
-				bean.setCodiceUOSuperiore(rs.getString("CD_UO_SUPERIORE"));
-				bean.setDescrizioneUOSuperiore(rs.getString("DS_UO_SUPERIORE"));
-				bean.setCodiceEnte(rs.getString("CD_ENTE"));
-				bean.setCodiceVisibilita(rs.getString("CD_VISIBILITA"));
-				bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
-				bean.setAnnullato("NO");
-				unita.add(bean);
+			try(ResultSet rs = ps.executeQuery();){
+				while (rs.next()) {
+					bean = new DmalmElUnitaOrganizzative();
+	
+					bean.setUnitaOrganizzativaPk(rs
+							.getInt("DMALM_STG_UNITA_ORG_PK"));
+					bean.setIdEdma(rs.getString("ID_EDMA"));
+					bean.setCodiceArea(rs.getString("CD_AREA"));
+					bean.setDataInizioValiditaEdma(rs
+							.getTimestamp("DT_INIZIO_VALIDITA_EDMA"));
+					bean.setDataFineValiditaEdma(rs
+							.getTimestamp("DT_FINE_VALIDITA_EDMA"));
+					bean.setDescrizioneArea(rs.getString("DS_AREA_EDMA"));
+					bean.setDataAttivazione(rs.getTimestamp("DT_ATTIVAZIONE"));
+					bean.setDataDisattivazione(rs.getTimestamp("DT_DISATTIVAZIONE"));
+					bean.setNote(rs.getString("NOTE"));
+					bean.setInterno(rs.getShort("INTERNO"));
+					bean.setCodiceResponsabile(rs.getString("CD_RESPONSABILE_AREA"));
+					bean.setIndirizzoEmail(rs.getString("INDIRIZZO_EMAIL"));
+					bean.setIdTipologiaUfficio(rs.getInt("ID_TIPOLOGIA_UFFICIO"));
+					bean.setIdGradoUfficio(rs.getInt("ID_GRADO_UFFICIO"));
+					bean.setIdSede(rs.getInt("ID_SEDE"));
+					bean.setCodiceUOSuperiore(rs.getString("CD_UO_SUPERIORE"));
+					bean.setDescrizioneUOSuperiore(rs.getString("DS_UO_SUPERIORE"));
+					bean.setCodiceEnte(rs.getString("CD_ENTE"));
+					bean.setCodiceVisibilita(rs.getString("CD_VISIBILITA"));
+					bean.setDataCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
+					bean.setAnnullato("NO");
+					unita.add(bean);
+				}
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
