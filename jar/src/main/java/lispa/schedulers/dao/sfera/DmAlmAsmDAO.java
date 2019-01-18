@@ -539,7 +539,6 @@ public class DmAlmAsmDAO {
 							asm.permissions, asm.proprietaLegale,
 							asm.utilizzata, asm.vafPredefinito,
 							asm.dataInizioValidita, asm.dataFineValidita,
-							asm.annullato, asm.strutturaOrganizzativaFk,
 							asm.unitaOrganizzativaFk,
 							asm.dtPrevistaProssimaMpp,
 							asm.fip01InizioEsercizio, asm.fip02IndiceQualita,
