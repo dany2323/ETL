@@ -598,8 +598,7 @@ public class DmAlmAsmDAO {
 							applicazioni.getFip11GradoQualitaCod(),
 							applicazioni.getFip12UtilizzoFramework(),
 							applicazioni.getFip13ComplessitaAlg(),
-							applicazioni.getFip15LivelloCura(),
-							applicazioni.getAnnullato(),applicazioni.getStrutturaOrganizzativaFk()).execute();
+							applicazioni.getFip15LivelloCura()).execute();
 
 			connection.commit();
 
