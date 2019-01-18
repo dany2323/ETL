@@ -133,7 +133,6 @@ public class UtilsDAO {
 			connection = cm.getConnectionOracle();
 			String sqlSequenceName = "select "+sequenceName+" from dual";
 			ps = connection.prepareStatement(sqlSequenceName);
-			logger.debug("Cursori attuali aperti: "+UtilsDAO.getActualOpenCursor());
 			rs = ps.executeQuery(sqlSequenceName);
 			if (rs.next()) {
 				seqId = rs.getInt(1);
@@ -171,7 +170,6 @@ public class UtilsDAO {
 			connection = cm.getConnectionOracle();
 			String sqlMaxValue = "select max("+fieldName+") from "+tableName;
 			ps = connection.prepareStatement(sqlMaxValue);
-			logger.debug("Cursori attuali aperti: "+UtilsDAO.getActualOpenCursor());
 			rs = ps.executeQuery(sqlMaxValue);
 			if (rs.next()) {
 				maxValue = rs.getInt(1);
