@@ -585,8 +585,6 @@ public class DmAlmAsmDAO {
 							applicazioni.getUtilizzata(),
 							applicazioni.getVafPredefinito(), dataEsecuzione,
 							DateUtils.setDtFineValidita9999(),
-							applicazioni.getAnnullato(),
-							applicazioni.getStrutturaOrganizzativaFk(),
 							applicazioni.getUnitaOrganizzativaFk(),
 							applicazioni.getDtPrevistaProssimaMpp(),
 							applicazioni.getFip01InizioEsercizio(),
@@ -598,7 +596,9 @@ public class DmAlmAsmDAO {
 							applicazioni.getFip11GradoQualitaCod(),
 							applicazioni.getFip12UtilizzoFramework(),
 							applicazioni.getFip13ComplessitaAlg(),
-							applicazioni.getFip15LivelloCura()).execute();
+							applicazioni.getFip15LivelloCura(),
+							applicazioni.getAnnullato(),
+							applicazioni.getStrutturaOrganizzativaFk()).execute();
 
 			connection.commit();
 
