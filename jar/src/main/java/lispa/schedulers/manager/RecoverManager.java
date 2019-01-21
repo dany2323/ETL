@@ -158,6 +158,21 @@ public class RecoverManager {
 
 	}
 
+	public synchronized void startRecoverTargetByProcedure() {
+		
+		logger.info("START RECOVER TARGET");
+		
+		try {
+			
+			QueryManager.getInstance().executeStoredProcedure();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		}
+
+		logger.info("STOP RECOVER TARGET");		
+	}
+
 	/**
 	 * Per quanto riguarda le tabelle target, non si può applicare lo stesso
 	 * ragionamento dell’area di staging. La procedura di ripristino quindi
