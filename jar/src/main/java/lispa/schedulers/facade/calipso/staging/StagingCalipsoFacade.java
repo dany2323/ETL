@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import lispa.schedulers.bean.staging.calipso.DmalmStgCalipsoSchedaServizio;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.calipso.StgCalipsoSchedaServizioDAO;
@@ -201,7 +203,7 @@ public class StagingCalipsoFacade {
 					switch(cell.getCachedFormulaResultTypeEnum()) {
 	        				case NUMERIC: 
 	        					if(HSSFDateUtil.isCellDateFormatted(cell)) {
-	        						SimpleDateFormat format = new SimpleDateFormat("dd-mm-yy");
+	        						SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", new Locale("it", "IT"));
 	        						cellValue = String.valueOf(format.format(cell.getDateCellValue()));
 	        					} else {
 	        						cellValue = String.valueOf(cell.getNumericCellValue());
@@ -216,7 +218,7 @@ public class StagingCalipsoFacade {
 					break;
 				case NUMERIC: 
 					if(HSSFDateUtil.isCellDateFormatted(cell)) {
-						SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yy");
+						SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", new Locale("it", "IT"));
 						cellValue = String.valueOf(format.format(cell.getDateCellValue()));
 					} else {
 						cellValue = String.valueOf(cell.getNumericCellValue());
