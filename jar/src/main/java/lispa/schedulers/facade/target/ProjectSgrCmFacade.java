@@ -142,6 +142,7 @@ public class ProjectSgrCmFacade {
 					}
 				}
 			}
+			updateFlatProject();
 
 			// verifica delle UO per i Project non scaricati in History
 			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
@@ -156,7 +157,7 @@ public class ProjectSgrCmFacade {
 
 			Integer strutturaOrgFk02;
 			Integer unitaOrganizzativaFk;
-
+			boolean modificato=false;
 			for (Tuple row : listaProgettiNonMovimentati) {
 				if (row != null) {
 					//Edma
@@ -202,7 +203,7 @@ public class ProjectSgrCmFacade {
 									unitaOrganizzativaFk)) {
 
 						righeModificate++;
-
+						modificato=true;
 						DmalmProject bean = new DmalmProject();
 
 						bean.setIdProject(row.get(proj.idProject));
@@ -259,17 +260,14 @@ public class ProjectSgrCmFacade {
 					}
 				}
 			}
-			
-			//DMALM-191 associazione project Unità Organizzativa Flat
-			//ricarica il valore della Fk ad ogni esecuzione
-			updateFlatProject();
-		
-			int recordModificati=0;
+			if(modificato)
+				updateFlatProject();
+			modificato=false;
 			for (Tuple row : listaProgettiNonMovimentati) {
 				
-				DmalmElUnitaOrganizzativeFlat UoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
-				if(UoFlat != null && UoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
-					recordModificati++;
+				DmalmElUnitaOrganizzativeFlat uoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+				if(uoFlat != null && uoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
+					modificato=true;
 					DmalmProject bean = new DmalmProject();
 
 					bean.setIdProject(row.get(proj.idProject));
@@ -282,7 +280,7 @@ public class ProjectSgrCmFacade {
 					bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
 					bean.setFlAttivo(row.get(proj.flAttivo));
 					bean.setPathProject(row.get(proj.pathProject));
-					bean.setDtInizioValidita(new Timestamp(DateUtils.addSecondsToDate(UoFlat.getDataFineValidita(), 1).getTime()));
+					bean.setDtInizioValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(), 1).getTime()));
 					bean.setcCreated(row.get(proj.cCreated));
 					bean.setServiceManagers(row.get(proj.serviceManagers));
 					bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
@@ -307,17 +305,16 @@ public class ProjectSgrCmFacade {
 							.get(proj.nomeCompletoProject));
 					bean.setDtCaricamento(DataEsecuzione.getInstance().getDataEsecuzione());
 
-					ProjectSgrCmDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(UoFlat.getDataFineValidita(),1).getTime()),
+					ProjectSgrCmDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
 							bean); 
 
 					// inserisco un nuovo record
-					ProjectSgrCmDAO.insertProjectUpdate(new Timestamp(DateUtils.addSecondsToDate(UoFlat.getDataFineValidita(),1).getTime()),
+					ProjectSgrCmDAO.insertProjectUpdate(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
 							bean, false);
-//					DataEsecuzione.getInstance().getDataEsecuzione()
 				}
 			}
 			
-			if(recordModificati>0){
+			if(modificato){
 				updateFlatProject();
 			}
 			
