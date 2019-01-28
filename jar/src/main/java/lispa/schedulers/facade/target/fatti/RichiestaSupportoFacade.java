@@ -152,9 +152,14 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 					}
 				}
 			}
-		}
-		catch (DAOException e) 
-		{
+		} catch (SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(richieste_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(richieste_tmp));
 			logger.error(e.getMessage(), e);

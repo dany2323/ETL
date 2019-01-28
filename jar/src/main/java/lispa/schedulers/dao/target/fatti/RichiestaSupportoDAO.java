@@ -24,7 +24,7 @@ public class RichiestaSupportoDAO {
 	private static Logger logger = Logger.getLogger(RichiestaSupportoDAO.class);
 
 	public static List<DmalmRichiestaSupporto> getAllRichiestaSupporto(
-			Timestamp dataEsecuzione) {
+			Timestamp dataEsecuzione)  throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -81,37 +81,19 @@ public class RichiestaSupportoDAO {
 				richieste.add(bean);
 			}
 
-		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
 			
 			if(cs!=null){
-				try {
 					cs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				rs.close();
 			}
 			if (cm != null) {
-				try {
-					cm.closeConnection(connection);
-				} catch (DAOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				cm.closeConnection(connection);
 			}
 		}
 
@@ -119,7 +101,7 @@ public class RichiestaSupportoDAO {
 	}
 
 	public static List<DmalmRichiestaSupporto> getRichiestaSupporto(
-			DmalmRichiestaSupporto richiesta) throws DAOException {
+			DmalmRichiestaSupporto richiesta) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -189,19 +171,9 @@ public class RichiestaSupportoDAO {
 
 		} finally {
 			if(rs!=null)
-				try {
-					rs.close();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				rs.close();
 			if(ocs!=null)
-				try {
-					ocs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				ocs.close();
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
@@ -211,7 +183,7 @@ public class RichiestaSupportoDAO {
 	}
 
 	public static void insertRichiestaSupporto(DmalmRichiestaSupporto richiesta, Timestamp dataEsecuzione)
-			throws DAOException {
+			throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -240,19 +212,14 @@ public class RichiestaSupportoDAO {
 
 		} finally {
 			if(ocs!=null)
-				try {
-					ocs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				ocs.close();
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
 	}
 
 	public static void updateRank(DmalmRichiestaSupporto richiesta, Double double1)
-			throws DAOException {
+			throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -279,14 +246,8 @@ public class RichiestaSupportoDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
-			if(ocs!=null)
-			{
-				try {
-					ocs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			if(ocs!=null) {
+				ocs.close();
 			}
 				
 			if (cm != null)
@@ -295,8 +256,7 @@ public class RichiestaSupportoDAO {
 	}
 
 	public static void insertRichiestaSupportoUpdate(Timestamp dataEsecuzione,
-			DmalmRichiestaSupporto richiesta, boolean pkValue)
-			throws DAOException {
+			DmalmRichiestaSupporto richiesta, boolean pkValue) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -326,19 +286,14 @@ public class RichiestaSupportoDAO {
 
 		} finally {
 			if(ocs!=null)
-				try {
-					ocs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				ocs.close();
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
 	}
 
 	public static void updateRichiestaSupporto(DmalmRichiestaSupporto richiesta)
-			throws DAOException {
+			throws DAOException, SQLException {
 		
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -365,19 +320,14 @@ public class RichiestaSupportoDAO {
 
 		} finally {
 			if(ocs!=null)
-				try {
-					ocs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				ocs.close();
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
 	}
 
 	public static DmalmRichiestaSupporto getRichiestaSupporto(Integer pk)
-			{
+			throws DAOException, SQLException {
 		
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -439,33 +389,18 @@ public class RichiestaSupportoDAO {
 
 		} finally {
 			if(rs!=null)
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				rs.close();
 			if(ocs!=null)
-				try {
-					ocs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				ocs.close();
 			if (cm != null)
-				try {
-					cm.closeConnection(connection);
-				} catch (DAOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				cm.closeConnection(connection);
 		}
 
 		return bean;
 	}
 	
 	public static List<DmalmRichiestaSupporto> getRichiestaSupporto(Integer pk_proj, Integer typeQuery)
-			{
+			throws DAOException, SQLException {
 		
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -539,26 +474,11 @@ public class RichiestaSupportoDAO {
 		} finally {
 			
 			if(rs!=null)
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				rs.close();
 			if(ocs!=null)
-				try {
-					ocs.close();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				ocs.close();
 			if (cm != null)
-				try {
-					cm.closeConnection(connection);
-				} catch (DAOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				cm.closeConnection(connection);
 		}
 
 		return richieste;
@@ -566,7 +486,7 @@ public class RichiestaSupportoDAO {
 	
 
 	public static void updateWIRichiestaSupportoDeleted(DmalmRichiestaSupporto richiesta, Timestamp dataEsecuzione)
-			{
+			throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -596,24 +516,14 @@ public class RichiestaSupportoDAO {
 
 		} finally {
 			if(ocs!=null)
-				try {
-					ocs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				ocs.close();
 			if (cm != null)
-				try {
-					cm.closeConnection(connection);
-				} catch (DAOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				cm.closeConnection(connection);
 		}
 	}
 	
 	public static boolean checkEsistenzaRichiestaSupporto(DmalmRichiestaSupporto richiesta,
-			DmalmProject p) throws DAOException{
+			DmalmProject p) throws DAOException, SQLException {
 		
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -643,12 +553,7 @@ public class RichiestaSupportoDAO {
 
 		} finally {
 			if(ocs!=null){
-				try {
-					ocs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				ocs.close();
 			}
 			if (cm != null) {
 				cm.closeConnection(connection);

@@ -1311,6 +1311,14 @@ public class CheckProjectStorFacade {
 
 								}
 
+							} catch (SQLException e) {
+								ErrorManager.getInstance().exceptionOccurred(
+										true, e);
+
+							} catch (DAOException e) {
+								ErrorManager.getInstance().exceptionOccurred(
+										true, e);
+
 							} catch (Exception e) {
 								ErrorManager.getInstance().exceptionOccurred(
 										true, e);
