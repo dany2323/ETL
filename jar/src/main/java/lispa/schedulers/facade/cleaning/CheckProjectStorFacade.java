@@ -3,16 +3,13 @@ package lispa.schedulers.facade.cleaning;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
-import lispa.schedulers.bean.target.fatti.DmalmAnomaliaProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmBuild;
 import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
-import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
 import lispa.schedulers.bean.target.fatti.DmalmFase;
 import lispa.schedulers.bean.target.fatti.DmalmManutenzione;
@@ -27,7 +24,6 @@ import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
-import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
 import lispa.schedulers.bean.target.fatti.DmalmTask;
 import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
@@ -35,10 +31,8 @@ import lispa.schedulers.bean.target.fatti.DmalmTestcase;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaAssistenzaDAO;
-import lispa.schedulers.dao.target.fatti.AnomaliaProdottoDAO;
 import lispa.schedulers.dao.target.fatti.BuildDAO;
 import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
-import lispa.schedulers.dao.target.fatti.DifettoDAO;
 import lispa.schedulers.dao.target.fatti.DocumentoDAO;
 import lispa.schedulers.dao.target.fatti.FaseDAO;
 import lispa.schedulers.dao.target.fatti.ManutenzioneDAO;
@@ -53,7 +47,6 @@ import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaManutenzioneDAO;
-import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
 import lispa.schedulers.dao.target.fatti.SottoprogrammaDAO;
 import lispa.schedulers.dao.target.fatti.TaskDAO;
 import lispa.schedulers.dao.target.fatti.TaskItDAO;
@@ -65,10 +58,8 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaAssistenza;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmManutenzione;
@@ -99,8 +90,8 @@ public class CheckProjectStorFacade {
 
 	private static Logger logger = Logger
 			.getLogger(CheckProjectStorFacade.class);
-	private static QDmalmDifettoProdotto difetto = QDmalmDifettoProdotto.dmalmDifettoProdotto;
-	private static QDmalmAnomaliaProdotto anomalia = QDmalmAnomaliaProdotto.dmalmAnomaliaProdotto;
+//	private static QDmalmDifettoProdotto difetto = QDmalmDifettoProdotto.dmalmDifettoProdotto;
+//	private static QDmalmAnomaliaProdotto anomalia = QDmalmAnomaliaProdotto.dmalmAnomaliaProdotto;
 	private static QDmalmProgettoSviluppoSvil progettoSviluppoSvil = QDmalmProgettoSviluppoSvil.dmalmProgettoSviluppoSvil;
 	private static QDmalmDocumento documento = QDmalmDocumento.dmalmDocumento;
 	private static QDmalmManutenzione manutenzione = QDmalmManutenzione.dmalmManutenzione;
@@ -184,6 +175,14 @@ public class CheckProjectStorFacade {
 				if(type.name().equals("defect")) {
 					String sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO+"}";
 					logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
+						cm = ConnectionManager.getInstance();
+						conn = cm.getConnectionOracle();
+						call = conn.prepareCall(sql);
+				        call.execute();
+				}
+				if(type.name().equals("sup")) {
+					String sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_RICHIESTA_SUPPORTO+"}";
+					logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_RICHIESTA_SUPPORTO);
 						cm = ConnectionManager.getInstance();
 						conn = cm.getConnectionOracle();
 						call = conn.prepareCall(sql);
@@ -1289,25 +1288,25 @@ public class CheckProjectStorFacade {
 									}
 									break;
 									
-								case "sup":
-									List<DmalmRichiestaSupporto> richieste = RichiestaSupportoDAO
-														.getRichiestaSupporto(history.getDmalmProjectPk(), 1);
-									for (DmalmRichiestaSupporto richiesta : richieste) {
-										DmalmRichiestaSupporto r = RichiestaSupportoDAO
-												.getRichiestaSupporto(richiesta.getDmalmRichiestaSupportoPk());
-										if (r != null) {
-											boolean exist = RichiestaSupportoDAO.checkEsistenzaRichiestaSupporto(r, p);
-											if (!exist) {
-												if (r.getRankStatoRichSupporto() == 1) {
-													RichiestaSupportoDAO.updateRank(r, new Double(0));
-												}
-												r.setDataStoricizzazione(p.getDtInizioValidita());
-												r.setDmalmProjectFk02(p.getDmalmProjectPk());
-												RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, r, false);
-											}
-										}
-									}
-									break;
+//								case "sup":
+//									List<DmalmRichiestaSupporto> richieste = RichiestaSupportoDAO
+//														.getRichiestaSupporto(history.getDmalmProjectPk(), 1);
+//									for (DmalmRichiestaSupporto richiesta : richieste) {
+//										DmalmRichiestaSupporto r = RichiestaSupportoDAO
+//												.getRichiestaSupporto(richiesta.getDmalmRichiestaSupportoPk());
+//										if (r != null) {
+//											boolean exist = RichiestaSupportoDAO.checkEsistenzaRichiestaSupporto(r, p);
+//											if (!exist) {
+//												if (r.getRankStatoRichSupporto() == 1) {
+//													RichiestaSupportoDAO.updateRank(r, new Double(0));
+//												}
+//												r.setDataStoricizzazione(p.getDtInizioValidita());
+//												r.setDmalmProjectFk02(p.getDmalmProjectPk());
+//												RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, r, false);
+//											}
+//										}
+//									}
+//									break;
 
 								}
 
