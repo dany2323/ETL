@@ -159,6 +159,8 @@ public class ConnectionManager {
 				if (!isAlive(c)) {
 					return getConnectionOracle();
 				}
+				
+				logger.debug("*** ConnectionManager - CONNESSIONE ORACLE *** "+c.getMetaData().getURL()+" "+c.getMetaData().getUserName());
 			} else {
 				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE ORACLE ***");
 
@@ -204,6 +206,7 @@ public class ConnectionManager {
 				if (!isAlive(c)) {
 					return getConnectionOracleFonteElettra();
 				}
+				logger.debug("*** ConnectionManager - CONNESSIONE ORACLE FONTE ELETTRA *** "+c.getMetaData().getURL()+" "+c.getMetaData().getUserName());
 			} else {
 				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE ORACLE FONTE ELETTRA ***");
 				
@@ -249,6 +252,7 @@ public class ConnectionManager {
 				if (!isAlive(c)) {
 					return getConnectionSIRECurrent();
 				}
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE CURRENT *** "+c.getMetaData().getURL()+" "+c.getMetaData().getUserName());
 			} else {
 				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE CURRENT ***");
 				
@@ -292,6 +296,7 @@ public class ConnectionManager {
 				if (!isAlive(c)) {
 					return getConnectionSIREHistory();
 				}
+				logger.debug("*** ConnectionManager - CONNESSIONE H2 SIRE HISTORY *** "+c.getMetaData().getURL()+" "+c.getMetaData().getUserName());
 			} else {
 				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE HISTORY ***");
 				
@@ -335,6 +340,7 @@ public class ConnectionManager {
 				if (!isAlive(c)) {
 					return getConnectionSISSCurrent();
 				}
+				logger.debug("*** ConnectionManager - CONNESSIONE H2 SISS CURRENT *** "+c.getMetaData().getURL()+" "+c.getMetaData().getUserName());
 			} else {
 				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SISS CURRENT ***");
 				
@@ -378,6 +384,7 @@ public class ConnectionManager {
 				if (!isAlive(c)) {
 					return getConnectionSISSHistory();
 				}
+				logger.debug("*** ConnectionManager - CONNESSIONE H2 SISS HISTORY *** "+c.getMetaData().getURL()+" "+c.getMetaData().getUserName());
 			} else {
 				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SISS HISTORY ***");
 				
