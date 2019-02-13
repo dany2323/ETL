@@ -2,6 +2,7 @@ package lispa.schedulers.facade.target;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ProjectRolesDAO;
@@ -110,16 +111,24 @@ public class FillSIRECurrentFacade {
 			 * SireCurrentWorkitemUserAssignedDAO.delete(dataEsecuzione);
 			 */
 
+			logger.debug("START SireCurrentWorkitemLinkedDAO.delete "+ new Date());
 			SireCurrentWorkitemLinkedDAO.delete(dataEsecuzione);
-
+			logger.debug("STOP SireCurrentWorkitemLinkedDAO.delete"+ new Date());
+			
+			logger.debug("START SireCurrentProjectDAO.delete"+ new Date());
 			SireCurrentProjectDAO.delete(dataEsecuzione);
-
+			logger.debug("STOP SireCurrentProjectDAO.delete"+ new Date());
+			
 			// XML
+			logger.debug("START ProjectRolesDAO.delete"+ new Date());
 			ProjectRolesDAO.delete(dataEsecuzione,
 					DmAlmConstants.REPOSITORY_SIRE);
-
+			logger.debug("STOP ProjectRolesDAO.delete"+ new Date());
+			
+			logger.debug("START StatoWorkitemDAO.delete"+ new Date());
 			StatoWorkitemDAO.delete(dataEsecuzione,
 					DmAlmConstants.REPOSITORY_SIRE);
+			logger.debug("STOP StatoWorkitemDAO.delete"+ new Date());
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
