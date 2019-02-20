@@ -116,12 +116,6 @@ public class RichiestaSupportoDAO {
 
 			String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_RICHIESTA_SUPPORTO", 1);
 			Object [] objRichSupp = richiesta.getObject(richiesta, true);
-		    	// Now Declare a descriptor to associate the host object type with the
-		    	// record type in the database.
-//		    	StructDescriptor structDesc = StructDescriptor.createDescriptor(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", connection);
-		    	// Now create the STRUCT objects to associate the host objects
-		    	// with the database records.
-//		    	STRUCT structObj = new STRUCT(structDesc, connection, objRichSupp);
 		    	Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
 		    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
 			ocs.registerOutParameter(1, OracleTypes.CURSOR);
@@ -566,4 +560,43 @@ public class RichiestaSupportoDAO {
 			return false;
 		}
 	}
+	
+	// verifica se una RichiestaSupporto:
+	// non è stata inserita, quindi effettua una insert in tabella
+	// è stata inserita, quindi aggiorna il rank, effettua una update della RichiestaSupporto per storicizzarla 
+	// ed infine effettua una insert con i i nuovi dati
+	public static void checkAlteredRichiestaSupporto(
+			List<DmalmRichiestaSupporto> richieste, Timestamp dataEsecuzione) throws DAOException, SQLException {
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+		OracleCallableStatement ocs = null;
+		ResultSet rs = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.CHECK_ALTERED_ROW_RICH_SUPP", 2);
+			for (DmalmRichiestaSupporto richiesta : richieste) {
+				Object [] objRichSupp = richiesta.getObject(richiesta, true);
+			    Struct structObj = connection.createStruct("RICHSUPPTYPE", objRichSupp);
+			    ocs = (OracleCallableStatement)connection.prepareCall(sql);
+				ocs.setObject(1, structObj);
+				ocs.setTimestamp(2, dataEsecuzione);
+				ocs.execute();
+			}
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if(rs!=null)
+				rs.close();
+			if(ocs!=null)
+				ocs.close();
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+	}
+
 }

@@ -13,7 +13,7 @@ import lispa.schedulers.dao.target.RichiestaSupportoOdsDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.utils.BeanUtils;
+//import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.LogUtils;
 
 public class RichiestaSupportoFacade {
@@ -24,7 +24,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 		
 
 		List<DmalmRichiestaSupporto> staging_richieste = new ArrayList<DmalmRichiestaSupporto>();
-		List<DmalmRichiestaSupporto> target_richieste = new ArrayList<DmalmRichiestaSupporto>();
+//		List<DmalmRichiestaSupporto> target_richieste = new ArrayList<DmalmRichiestaSupporto>();
 		
 		int righeNuove = 0;
 		int righeModificate = 0;
@@ -45,15 +45,14 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 			
 			RichiestaSupportoOdsDAO.insert(staging_richieste, dataEsecuzione);
 			
-			List<DmalmRichiestaSupporto> x = RichiestaSupportoOdsDAO.getAll();
+			List<DmalmRichiestaSupporto> richieste = RichiestaSupportoOdsDAO.getAll();
 			
 			logger.debug("STOP -> Richiesta Supporto, "+staging_richieste.size()+ " richiese di supporto");
 			
-			for(DmalmRichiestaSupporto richiesta : x) {
+			RichiestaSupportoDAO.checkAlteredRichiestaSupporto(richieste, dataEsecuzione);
+			/*for(DmalmRichiestaSupporto richiesta : richieste) {
 				
-				richieste_tmp = richiesta;
-				
-				target_richieste = RichiestaSupportoDAO.getRichiestaSupporto(richiesta);
+				RichiestaSupportoDAO.checkAlteredRichiestaSupporto(richiesta, dataEsecuzione);
 				
 				if(target_richieste.size()==0) {
 					righeNuove++;
@@ -99,9 +98,6 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 							if(!modificato && BeanUtils.areDifferent(row.getPriorityRichSupporto(), richiesta.getPriorityRichSupporto())) {
 								modificato = true;
 							}
-							if(!modificato && BeanUtils.areDifferent(row.getDmalmStatoWorkitemFk03(), richiesta.getDmalmStatoWorkitemFk03())) {
-								modificato=true;
-							}
 							if(!modificato && BeanUtils.areDifferent(row.getDataModificaRecord(), richiesta.getDataModificaRecord())) {
 								modificato=true;
 							}
@@ -117,9 +113,6 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 							if(!modificato && BeanUtils.areDifferent(row.getMotivoRisoluzione(), richiesta.getMotivoRisoluzione())) {
 								modificato=true;
 							}
-							if(!modificato && BeanUtils.areDifferent(row.getSeverityRichSupporto(), richiesta.getSeverityRichSupporto())) {
-								modificato=true;
-							}
 							if(!modificato && BeanUtils.areDifferent(row.getDescrizioneRichSupporto(), richiesta.getDescrizioneRichSupporto())) {
 								modificato=true;
 							}
@@ -130,9 +123,6 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 								modificato=true;
 							}
 							if(!modificato && BeanUtils.areDifferent(row.getDataDisponibilita(), richiesta.getDataDisponibilita())) {
-								modificato=true;
-							}
-							if(!modificato && BeanUtils.areDifferent(row.getPriorityRichSupporto(), richiesta.getPriorityRichSupporto())) {
 								modificato=true;
 							}
 							
@@ -151,7 +141,7 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 						}
 					}
 				}
-			}
+			}*/
 		}
 		catch (DAOException e) 
 		{
