@@ -74,36 +74,36 @@ public class TargetMpsFacade {
 
 			if (ErrorManager.getInstance().hasError())
 				return;
-
-			logger.debug("START Procedura load_mps_confronto_sgrcm "
-					+ new Date());
-
-			ConnectionManager cm = null;
-			Connection conn = null;
-			CallableStatement cstmt = null;
-
-			try {
-				cm = ConnectionManager.getInstance();
-				conn = cm.getConnectionOracle();
-
-				cstmt = conn.prepareCall("{call load_mps_confronto_sgrcm(?)}");
-				cstmt.registerOutParameter(1, Types.INTEGER);
-				cstmt.execute();
-				logger.info("Esito procedura load_mps_confronto_sgrcm: "
-						+ cstmt.getInt(1));
-
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-
-			} finally {
-				if (cstmt != null)
-					cstmt.close();
-				if (cm != null)
-					cm.closeConnection(conn);
-			}
-
-			logger.debug("STOP Procedura load_mps_confronto_sgrcm "
-					+ new Date());
+			logger.debug("SALTO Procedura load_mps_confronto_sgrcm");
+//			logger.debug("START Procedura load_mps_confronto_sgrcm "
+//					+ new Date());
+//
+//			ConnectionManager cm = null;
+//			Connection conn = null;
+//			CallableStatement cstmt = null;
+//
+//			try {
+//				cm = ConnectionManager.getInstance();
+//				conn = cm.getConnectionOracle();
+//
+//				cstmt = conn.prepareCall("{call load_mps_confronto_sgrcm(?)}");
+//				cstmt.registerOutParameter(1, Types.INTEGER);
+//				cstmt.execute();
+//				logger.info("Esito procedura load_mps_confronto_sgrcm: "
+//						+ cstmt.getInt(1));
+//
+//			} catch (Exception e) {
+//				logger.error(e.getMessage(), e);
+//
+//			} finally {
+//				if (cstmt != null)
+//					cstmt.close();
+//				if (cm != null)
+//					cm.closeConnection(conn);
+//			}
+//
+//			logger.debug("STOP Procedura load_mps_confronto_sgrcm "
+//					+ new Date());
 
 			logger.info("STOP MPS fillTargetMps");
 		} catch (DAOException e) {
