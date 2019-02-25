@@ -2,6 +2,8 @@ package lispa.schedulers.facade.cleaning;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,124 +204,124 @@ public class CheckProjectStorFacade {
 
 								SQLQuery query = new SQLQuery(conn, dialect);
 								switch (type.name()) {
-								case "anomalia":
-									QDmalmAnomaliaProdotto anomalia2 = new QDmalmAnomaliaProdotto(
-											"anomalia2");
-									QDmalmAnomaliaProdotto anomalia3 = new QDmalmAnomaliaProdotto(
-											"anomalia3");
-									pk = query
-											.from(anomalia)
-											.where(anomalia.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(anomalia.cdAnomalia.notIn(new SQLSubQuery()
-													.from(anomalia3)
-													.where(anomalia3.cdAnomalia.eq(anomalia.cdAnomalia))
-													.where(anomalia3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
-													.list(anomalia3.cdAnomalia)))
-											.where(anomalia.dtStoricizzazione.loe(p.getDtInizioValidita()))
-											.where(anomalia.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(anomalia2)
-															.where(anomalia.dmalmProjectFk02
-																	.eq(anomalia2.dmalmProjectFk02))
-															.where(anomalia.cdAnomalia
-																	.eq(anomalia2.cdAnomalia))
-															.list(anomalia2.dtStoricizzazione
-																	.max())))
-											.orderBy(anomalia.rankStatoAnomalia.desc(), anomalia.dtModificaRecordAnomalia.desc(), anomalia.dmalmAnomaliaProdottoPk.desc())						
-											.list(anomalia.dmalmAnomaliaProdottoPk);
-
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmAnomaliaProdotto a = AnomaliaProdottoDAO
-													.getAnomaliaProdotto(i);
-											
-											if (a != null) {
-												boolean exist = AnomaliaProdottoDAO
-														.checkEsistenzaAnomalia(
-																a, p);
-												if (!exist) {
-													//System.out.println("Pk"+i+" CD_ANOMALIA"+a.getCdAnomalia()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
-													if (a.getRankStatoAnomalia() == 1) {
-														AnomaliaProdottoDAO
-																.updateRankFlagUltimaSituazione(
-																		a,
-																		new Double(
-																				0),
-																		new Short(
-																				"0"));
-													}
-													a.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													a.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													AnomaliaProdottoDAO
-															.insertAnomaliaProdottoUpdate(
-																	p.getDtInizioValidita(),
-																	a, false);
-												}
-											}
-										}
-									}
-									break;
-								case "defect":
-									QDmalmDifettoProdotto difetto2 = new QDmalmDifettoProdotto(
-											"difetto2");
-									QDmalmDifettoProdotto difetto3 = new QDmalmDifettoProdotto(
-													"difetto3");
-									pk = query
-											.from(difetto)
-											.where(difetto.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(difetto.cdDifetto.notIn(new SQLSubQuery()
-													.from(difetto3)
-													.where(difetto3.cdDifetto.eq(difetto.cdDifetto))
-													.where(difetto3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
-													.list(difetto3.cdDifetto)))
-											.where(difetto.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(difetto2)
-															.where(difetto.dmalmProjectFk02
-																	.eq(difetto2.dmalmProjectFk02))
-															.where(difetto.cdDifetto
-																	.eq(difetto2.cdDifetto))
-															.list(difetto2.dtStoricizzazione
-																	.max())))
-											.orderBy(difetto.rankStatoDifetto.desc(), difetto.dtModificaRecordDifetto.desc(), difetto.dmalmDifettoProdottoPk.desc())						
-											.list(difetto.dmalmDifettoProdottoPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmDifettoProdotto d = DifettoDAO
-													.getDifetto(i);
-
-											if (d != null) {
-												boolean exist = DifettoDAO
-														.checkEsistenzaDifetto(
-																d, p);
-												//System.out.println("Pk"+pk+" CD_DIFETTO"+d.getCdDifetto()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
-												if (!exist) {
-													if (d.getRankStatoDifetto() == 1) {
-														DifettoDAO
-																.updateRankFlagUltimaSituazione(
-																		d,
-																		new Double(
-																				0),
-																		new Short(
-																				"0"));
-													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													DifettoDAO
-															.insertDifettoProdottoUpdate(
-																	dataEsecuzione,
-																	d, false);
-												}
-											}
-										}
-									}
-									break;
+//								case "anomalia":
+//									QDmalmAnomaliaProdotto anomalia2 = new QDmalmAnomaliaProdotto(
+//											"anomalia2");
+//									QDmalmAnomaliaProdotto anomalia3 = new QDmalmAnomaliaProdotto(
+//											"anomalia3");
+//									pk = query
+//											.from(anomalia)
+//											.where(anomalia.dmalmProjectFk02.eq(history
+//													.getDmalmProjectPk()))
+//											.where(anomalia.cdAnomalia.notIn(new SQLSubQuery()
+//													.from(anomalia3)
+//													.where(anomalia3.cdAnomalia.eq(anomalia.cdAnomalia))
+//													.where(anomalia3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
+//													.list(anomalia3.cdAnomalia)))
+//											.where(anomalia.dtStoricizzazione.loe(p.getDtInizioValidita()))
+//											.where(anomalia.dtStoricizzazione
+//													.in(new SQLSubQuery()
+//															.from(anomalia2)
+//															.where(anomalia.dmalmProjectFk02
+//																	.eq(anomalia2.dmalmProjectFk02))
+//															.where(anomalia.cdAnomalia
+//																	.eq(anomalia2.cdAnomalia))
+//															.list(anomalia2.dtStoricizzazione
+//																	.max())))
+//											.orderBy(anomalia.rankStatoAnomalia.desc(), anomalia.dtModificaRecordAnomalia.desc(), anomalia.dmalmAnomaliaProdottoPk.desc())						
+//											.list(anomalia.dmalmAnomaliaProdottoPk);
+//
+//									if (pk.size() > 0) {
+//										for (Integer i : pk) {
+//											DmalmAnomaliaProdotto a = AnomaliaProdottoDAO
+//													.getAnomaliaProdotto(i);
+//											
+//											if (a != null) {
+//												boolean exist = AnomaliaProdottoDAO
+//														.checkEsistenzaAnomalia(
+//																a, p);
+//												if (!exist) {
+//													//System.out.println("Pk"+i+" CD_ANOMALIA"+a.getCdAnomalia()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
+//													if (a.getRankStatoAnomalia() == 1) {
+//														AnomaliaProdottoDAO
+//																.updateRankFlagUltimaSituazione(
+//																		a,
+//																		new Double(
+//																				0),
+//																		new Short(
+//																				"0"));
+//													}
+//													a.setDtStoricizzazione(p
+//															.getDtInizioValidita());
+//													a.setDmalmProjectFk02(p
+//															.getDmalmProjectPk());
+//													AnomaliaProdottoDAO
+//															.insertAnomaliaProdottoUpdate(
+//																	p.getDtInizioValidita(),
+//																	a, false);
+//												}
+//											}
+//										}
+//									}
+//									break;
+//								case "defect":
+//									QDmalmDifettoProdotto difetto2 = new QDmalmDifettoProdotto(
+//											"difetto2");
+//									QDmalmDifettoProdotto difetto3 = new QDmalmDifettoProdotto(
+//													"difetto3");
+//									pk = query
+//											.from(difetto)
+//											.where(difetto.dmalmProjectFk02.eq(history
+//													.getDmalmProjectPk()))
+//											.where(difetto.cdDifetto.notIn(new SQLSubQuery()
+//													.from(difetto3)
+//													.where(difetto3.cdDifetto.eq(difetto.cdDifetto))
+//													.where(difetto3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
+//													.list(difetto3.cdDifetto)))
+//											.where(difetto.dtStoricizzazione
+//													.in(new SQLSubQuery()
+//															.from(difetto2)
+//															.where(difetto.dmalmProjectFk02
+//																	.eq(difetto2.dmalmProjectFk02))
+//															.where(difetto.cdDifetto
+//																	.eq(difetto2.cdDifetto))
+//															.list(difetto2.dtStoricizzazione
+//																	.max())))
+//											.orderBy(difetto.rankStatoDifetto.desc(), difetto.dtModificaRecordDifetto.desc(), difetto.dmalmDifettoProdottoPk.desc())						
+//											.list(difetto.dmalmDifettoProdottoPk);
+//									if (pk.size() > 0) {
+//										for (Integer i : pk) {
+//											DmalmDifettoProdotto d = DifettoDAO
+//													.getDifetto(i);
+//
+//											if (d != null) {
+//												boolean exist = DifettoDAO
+//														.checkEsistenzaDifetto(
+//																d, p);
+//												//System.out.println("Pk"+pk+" CD_DIFETTO"+d.getCdDifetto()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
+//												if (!exist) {
+//													if (d.getRankStatoDifetto() == 1) {
+//														DifettoDAO
+//																.updateRankFlagUltimaSituazione(
+//																		d,
+//																		new Double(
+//																				0),
+//																		new Short(
+//																				"0"));
+//													}
+//													d.setDtStoricizzazione(p
+//															.getDtInizioValidita());
+//													d.setDmalmProjectFk02(p
+//															.getDmalmProjectPk());
+//													DifettoDAO
+//															.insertDifettoProdottoUpdate(
+//																	dataEsecuzione,
+//																	d, false);
+//												}
+//											}
+//										}
+//									}
+//									break;
 								case "srqs":
 									QDmalmProgettoSviluppoSvil progetto2 = new QDmalmProgettoSviluppoSvil(
 											"progetto2");

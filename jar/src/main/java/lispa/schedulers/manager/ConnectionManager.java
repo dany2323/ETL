@@ -62,7 +62,7 @@ import it.lispa.jotm.datasource.crypt.support.BaseEncryptionHelper;
  * @author fdeangel
  * 
  */
-public class ConnectionManager {
+public class ConnectionManager implements AutoCloseable{
 
 	private static Logger logger = Logger.getLogger(ConnectionManager.class);
 
@@ -548,5 +548,12 @@ public class ConnectionManager {
 	public static void sysoutInfo() {
 
 	}
+
+	@Override
+	public void close() throws Exception {
+		dismiss();
+		
+	}
+
 
 }
