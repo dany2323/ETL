@@ -310,7 +310,8 @@ public class SireHistoryWorkitemDAO {
 					.list(fonteHistoryWorkItems.all());
 
 			logger.debug("TYPE: SIRE " + type.toString() + "  SIZE: "
-					+ historyworkitems.size());
+					+ historyworkitems.size() + " minRevision: "+ minRevisionByType
+					.get(type) + " - maxRevision: "+ maxRevision);
 
 			SQLInsertClause insert = new SQLInsertClause(OracleConnection,
 					dialect, stgWorkItems);
