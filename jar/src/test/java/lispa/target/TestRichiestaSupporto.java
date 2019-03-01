@@ -26,11 +26,11 @@ public class TestRichiestaSupporto extends TestCase {
 //		RichiestaSupportoDAO.checkEsistenzaRichiestaSupporto(richiesta, p);
 		List<DmalmRichiestaSupporto> x = RichiestaSupportoOdsDAO.getAll();
 		
-		for(DmalmRichiestaSupporto richiesta : x) {
+//		for(DmalmRichiestaSupporto richiesta : x) {
 			
-			RichiestaSupportoDAO.checkAlteredRichiestaSupporto(richiesta, dataEsecuzione);
+			RichiestaSupportoDAO.checkAlteredRichiestaSupporto(x, dataEsecuzione);
 			
-		}
+//		}
 	}
 	
 
