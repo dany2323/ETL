@@ -60,7 +60,8 @@ public class ElettraUnitaOrganizzativeDAO {
 		
 			String sql = QueryManager.getInstance().getQuery(
 					DmAlmConfigReaderProperties.SQL_ELETTRAUNITAORGANIZZATIVE);
-			try( ConnectionManager cm = ConnectionManager.getInstance();
+			ConnectionManager cm = ConnectionManager.getInstance();
+			try( 
 					Connection connection = cm.getConnectionOracle();
 					PreparedStatement ps = connection.prepareStatement(sql);
 					){
