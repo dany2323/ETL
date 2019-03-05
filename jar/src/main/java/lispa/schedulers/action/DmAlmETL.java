@@ -14,6 +14,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MailUtil;
 import lispa.schedulers.utils.StringUtils;
 
@@ -43,7 +44,8 @@ public class DmAlmETL {
 				+ DmAlmConfigReaderProperties.VERSIONE_ETL + " ***");
 		
 		logger.info("Ambiente: " + ambiente);
-		
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp(
+				"2019-03-03 23:50:00", "yyyy-MM-dd HH:mm:00"));
 		RecoverManager.getInstance().startRecoverTargetByProcedure();
 		RecoverManager.getInstance().startRecoverStaging();
 		RecoverManager.getInstance().startRecoverTrgMps();
