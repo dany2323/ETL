@@ -466,7 +466,9 @@ public class ElettraUnitaOrganizzativeDAO {
 		Connection connection = null;
 
 		List<DmalmElUnitaOrganizzativeFlat> resultList = new LinkedList<>();
-
+		if(pk==null) {
+			return null;
+		}
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
