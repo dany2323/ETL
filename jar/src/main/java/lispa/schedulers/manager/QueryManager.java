@@ -234,7 +234,7 @@ public class QueryManager {
 			
 			logger.info("START RECOVER PROCEDURE ");
 			
-			String sql = QueryUtils.getCallProcedure(DmAlmConstants.RECOVER_STAGING_TARGET, 1);
+			String sql = QueryUtils.getCallProcedure(DmAlmConstants.RECOVER_TARGET_SGR_ELETTRA, 1);
 			cstmt = conn.prepareCall(sql);
 			cstmt.setString(1, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
 			cstmt.executeUpdate();
