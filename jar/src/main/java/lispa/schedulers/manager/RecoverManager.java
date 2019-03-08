@@ -344,8 +344,8 @@ public class RecoverManager {
 			StgMisuraDAO.recoverStgMisura();
 			
 			// CALIPSO
-			logger.debug("START recover Calipso");
-			StgCalipsoSchedaServizioDAO.recoverStgCalipsoSchedaServizio();
+//			logger.debug("START recover Calipso");
+//			StgCalipsoSchedaServizioDAO.recoverStgCalipsoSchedaServizio();
 			
 			// SIRE CURRENT
 			logger.debug("START recover SIRE Current");

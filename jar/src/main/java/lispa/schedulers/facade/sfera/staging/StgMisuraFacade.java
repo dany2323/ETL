@@ -25,16 +25,16 @@ public class StgMisuraFacade {
 	
 	private StgMisuraFacade() {}
 	public static void fillStgMisura() throws PropertiesReaderException {
-		try {
+//		try {
 			logger.debug("START FillStgMisura "+new Date());
-			StgMisuraDAO.FillStgMisura();
+//			StgMisuraDAO.FillStgMisura();
 			logger.debug("STOP FillStgMisura "+new Date());
-		}
-		catch (SQLException | DAOException e) 
-		{
-			logger.error(e.getMessage(), e);
-		
-		}
+//		}
+//		catch (SQLException | DAOException e) 
+//		{
+//			logger.error(e.getMessage(), e);
+//		
+//		}
 		
 	}
 	
