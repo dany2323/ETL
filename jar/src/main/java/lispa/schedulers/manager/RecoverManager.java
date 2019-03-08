@@ -48,14 +48,11 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.facade.calipso.staging.StagingCalipsoFacade;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
 import lispa.schedulers.svn.SIRESchedeServizioXML;
-import lispa.schedulers.svn.SIREUserRolesXML;
 import lispa.schedulers.svn.SISSSchedeServizioXML;
-import lispa.schedulers.svn.SISSUserRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
 
 import java.sql.Timestamp;
@@ -344,8 +341,8 @@ public class RecoverManager {
 			StgMisuraDAO.recoverStgMisura();
 			
 			// CALIPSO
-//			logger.debug("START recover Calipso");
-//			StgCalipsoSchedaServizioDAO.recoverStgCalipsoSchedaServizio();
+			logger.debug("START recover Calipso");
+			StgCalipsoSchedaServizioDAO.recoverStgCalipsoSchedaServizio();
 			
 			// SIRE CURRENT
 			logger.debug("START recover SIRE Current");
@@ -363,8 +360,7 @@ public class RecoverManager {
 			SireHistoryUserDAO.recoverSireHistoryUser();
 			SireHistoryWorkitemDAO.recoverSireHistoryWorkitem();
 			SireHistoryWorkitemLinkedDAO.recoverSireHistoryWorkItemLinked();
-			SireHistoryWorkitemUserAssignedDAO
-					.recoverSireHistoryWIUserAssigned();
+			SireHistoryWorkitemUserAssignedDAO.recoverSireHistoryWIUserAssigned();
 			VSireHistoryWorkitemLinkDAO.recoverVSireWorkitemLink();
 
 			// SISS CURRENT
