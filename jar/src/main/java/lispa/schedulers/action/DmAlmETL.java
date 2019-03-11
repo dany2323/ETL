@@ -141,7 +141,7 @@ public class DmAlmETL {
 			}
 		}
 		// se errore nella Stored Procedure effettuo il ripristino di tutto
-		if (ErrorManager.getInstance().hasError()) {
+		if (ErrorManager.getInstance().hasError() && !RecoverManager.getInstance().isRecovered()) {
 			// SFERA/ELETTRA/SGRCM
 			if (ExecutionManager.getInstance().isExecutionSfera()
 					|| ExecutionManager.getInstance()
