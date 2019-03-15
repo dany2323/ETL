@@ -2,7 +2,7 @@ insert into DMALM_LINKED_WORKITEMS (CODICE_WI_FIGLIO, CODICE_WI_PADRE, TIPO_WI_F
  select ID_FIGLIO, ID_PADRE, TIPO_FIGLIO, TIPO_PADRE, PK_FIGLIO, PK_PADRE, RUOLO, DT_CARICAMENTO, TITOLO_WI_FIGLIO, TITOLO_WI_PADRE, URI_WI_FIGLIO, URI_WI_PADRE, ID_REPOSITORY_FIGLIO, ID_REPOSITORY_PADRE, ID_PROJECT_FIGLIO, ID_PROJECT_PADRE, LINKED_WORKITEMS_SEQ.nextval
     from 
         (
-            select 
+            select distinct
                 prjpadre.ID_PROJECT AS ID_PROJECT_PADRE, 
                 prjfiglio.ID_PROJECT AS ID_PROJECT_FIGLIO, 
                 wipadre.ID_REPOSITORY as ID_REPOSITORY_PADRE, 
@@ -29,8 +29,8 @@ insert into DMALM_LINKED_WORKITEMS (CODICE_WI_FIGLIO, CODICE_WI_PADRE, TIPO_WI_F
              and wipadre.ID_REPOSITORY = 'SIRE' 
              and wipadre.ID_REPOSITORY = wifiglio.ID_REPOSITORY 
              and l.DATA_CARICAMENTO = ? 
-           UNION
-            select 
+           UNION all
+            select distinct
                 prjpadre.ID_PROJECT AS ID_PROJECT_PADRE, 
                 prjfiglio.ID_PROJECT AS ID_PROJECT_FIGLIO, 
                 wipadre.ID_REPOSITORY as ID_REPOSITORY_PADRE, 
