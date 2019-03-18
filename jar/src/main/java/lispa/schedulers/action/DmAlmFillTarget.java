@@ -15,8 +15,10 @@ import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 
+import lispa.schedulers.bean.target.Total;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
+import lispa.schedulers.dao.target.TotalDao;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.calipso.target.CalipsoSchedaServizioFacade;
 import lispa.schedulers.facade.cleaning.CheckProjectStorFacade;
@@ -498,15 +500,17 @@ public class DmAlmFillTarget {
 							DmAlmConstants.M_UPDATE_UO_FATTI,
 							DmAlmConstants.M_SEPARATOR);
 	
+					TotalDao.refreshTable();
 					// ATTRIBUTI COMPLESSI DEI FATTI
-	
+					
+					
 					logger.info("START LinkedWorkitemsFacade.execute " + new Date());
 					if (!alreadyExecuted(DmAlmConstants.TARGET_LINKEDWORKITEMS)) {
 						LinkedWorkitemsFacade.execute(dataEsecuzione);
 					} else {
 						logger.info("Entità già elaborata per la data di esecuzione ");
 					}
-	
+					TotalDao.refreshTable();
 					logger.info("START AttachmentFacade.execute " + new Date());
 					if (!alreadyExecuted(DmAlmConstants.TARGET_ATTACHMENT)) {
 						AttachmentFacade.execute(dataEsecuzione);
