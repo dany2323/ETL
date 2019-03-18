@@ -543,6 +543,7 @@ public final class DmAlmConstants {
 	public static final String PATR = "PATR";
 	public static final String ERRORE_SPAZI_NOME_ASM = "ESF007 - NOME ASM SFERA CONTENENTE SPAZI";
 	public static final String ERRORE_SPAZI_PROGETTO_ASM = "PROGETTO SFERA CONTENENTE SPAZI";
+	public static final int FETCH_SIZE = 1000;
 	public static String IDAPP_OBBLIGATORIO="ESF001 - IdApp e' obbligatorio";
 	public static String IDPRJ_OBBLIGATORIO="ESF002 - IdPrj e' obbligatorio ";
 	public static String IDMEA_OBBLIGATORIO="ESF003 - IdMea e' obbligatorio ";

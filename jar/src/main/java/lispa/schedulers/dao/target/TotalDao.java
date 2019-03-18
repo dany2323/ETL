@@ -1,18 +1,24 @@
 package lispa.schedulers.dao.target;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.Total;
+import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QTotal;
+import lispa.schedulers.utils.QueryUtils;
+import oracle.jdbc.OracleTypes;
 
 import org.apache.log4j.Logger;
 
@@ -136,4 +142,38 @@ public class TotalDao {
 
 		return filteredcwi;
 	}
+	
+	public static void refreshTable() throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		CallableStatement cs = null;
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			logger.info("Inizio Refresh TOTAL");
+			String sql = QueryUtils.getCallProcedure("dbms_mview.refresh", 2);
+			cs = connection.prepareCall(sql);
+			cs.setString(1, "TOTAL");
+			cs.setString(2, "C");
+			cs.execute();        
+			logger.info("Fine Refresh TOTAL");
+
+			
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+			throw new DAOException(e);
+		} finally {
+			if(cs!=null)
+				cs.close();
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+
+	}
+
+		
+	
 }
