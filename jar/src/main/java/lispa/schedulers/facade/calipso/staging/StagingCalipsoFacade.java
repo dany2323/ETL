@@ -150,28 +150,38 @@ public class StagingCalipsoFacade {
 		    int rows = sheet.getPhysicalNumberOfRows();
 
 		    for(int r = 6; r < rows; r++) {
-		    		row = sheet.getRow(r);
+		    	row = sheet.getRow(r);
 			    if(row != null && row.getCell(2) != null && !row.getCell(2).getCellTypeEnum().equals(CellType.BLANK)) {
-				    	DmalmStgCalipsoSchedaServizio excelCalipso = new DmalmStgCalipsoSchedaServizio();
-				    	excelCalipso.setCodiceServizio(getDataCell(row.getCell(2)));
-				    	excelCalipso.setServizioBusiness(getDataCell(row.getCell(3)));
-				    	excelCalipso.setAmbito(getDataCell(row.getCell(4)));
-				    	excelCalipso.setCliente(getDataCell(row.getCell(5)));
-				    	excelCalipso.setResponsabileStruttura(getDataCell(row.getCell(6)));
-				    	excelCalipso.setResponsabileServizio(getDataCell(row.getCell(7)));
-				    	excelCalipso.setResponsabileGestione(getDataCell(row.getCell(8)));
-				    	excelCalipso.setReferenteGestione(getDataCell(row.getCell(9)));
-				    	excelCalipso.setReferenteApplicazione(getDataCell(row.getCell(10)));
-				    	excelCalipso.setSoftwareSupporto(getDataCell(row.getCell(11)));
-				    	excelCalipso.setAmbitoManutenzioneOrdinarSW(getDataCell(row.getCell(12)));
-				    	excelCalipso.setTipologiaIncarico(getDataCell(row.getCell(13)));
-				    	excelCalipso.setSchedaIncarico(getDataCell(row.getCell(14)));
-				    	excelCalipso.setStatoServizio(getDataCell(row.getCell(15)));
-				    	excelCalipso.setTipologiaInfrastruttura(getDataCell(row.getCell(16)));
-				    	excelCalipso.setClasseServizioInfrstrttrl(getDataCell(row.getCell(17)));
-				    	excelCalipso.setAmbitoAssiGestRL(getDataCell(row.getCell(18)));
-				    	excelCalipso.setDataUltimoAggiornamento(getDataCell(row.getCell(19)));
-				    listExcelCalipso.add(excelCalipso);
+			    	List<String> arrResponsabileStruttura = getDataArrayCell(row.getCell(6));
+			    	List<String> arrResponsabileServizio = getDataArrayCell(row.getCell(7));
+			    	List<String> arrResponsabileGestione = getDataArrayCell(row.getCell(8));
+			    	List<String> arrReferenteGestione = getDataArrayCell(row.getCell(9));
+			    	List<String> arrReferenteApplicazione = getDataArrayCell(row.getCell(10));
+			    	for (String responsabile : arrResponsabileStruttura) {
+			    		DmalmStgCalipsoSchedaServizio excelCalipso = getDmalmStgCalipsoSchedaServizio(row, responsabile, arrResponsabileServizio.get(0), 
+			    				arrResponsabileGestione.get(0), arrReferenteGestione.get(0), arrReferenteApplicazione.get(0));
+			    		listExcelCalipso.add(excelCalipso);
+			    	}
+			    	for (String responsabile : arrResponsabileServizio) {
+			    		DmalmStgCalipsoSchedaServizio excelCalipso = getDmalmStgCalipsoSchedaServizio(row, arrResponsabileStruttura.get(0), responsabile, 
+			    				arrResponsabileGestione.get(0), arrReferenteGestione.get(0), arrReferenteApplicazione.get(0));
+			    		listExcelCalipso.add(excelCalipso);
+			    	}
+			    	for (String responsabile : arrResponsabileGestione) {
+			    		DmalmStgCalipsoSchedaServizio excelCalipso = getDmalmStgCalipsoSchedaServizio(row, arrResponsabileStruttura.get(0), arrResponsabileServizio.get(0), 
+			    				responsabile, arrReferenteGestione.get(0), arrReferenteApplicazione.get(0));
+			    		listExcelCalipso.add(excelCalipso);
+			    	}
+			    	for (String responsabile : arrReferenteGestione) {
+			    		DmalmStgCalipsoSchedaServizio excelCalipso = getDmalmStgCalipsoSchedaServizio(row, arrResponsabileStruttura.get(0), arrResponsabileServizio.get(0), 
+			    				arrResponsabileGestione.get(0), responsabile, arrReferenteApplicazione.get(0));
+			    		listExcelCalipso.add(excelCalipso);
+			    	}
+			    	for (String responsabile : arrReferenteApplicazione) {
+			    		DmalmStgCalipsoSchedaServizio excelCalipso = getDmalmStgCalipsoSchedaServizio(row, arrResponsabileStruttura.get(0), arrResponsabileServizio.get(0), 
+			    				arrResponsabileGestione.get(0), arrReferenteGestione.get(0), responsabile);
+			    		listExcelCalipso.add(excelCalipso);
+			    	}
 			    }
 		    }
 
@@ -229,5 +239,50 @@ public class StagingCalipsoFacade {
 			}
 		}
 		return cellValue;
+	}
+	
+	private static List<String> getDataArrayCell(XSSFCell cell) throws IOException {
+		List<String> cellArrayValue = new ArrayList<String>();
+		if (cell != null) {
+			switch(cell.getCellTypeEnum()) {
+				case STRING : 
+					String[] cellValues = cell.getStringCellValue().split("[\n]");
+					for (int i=0; i<cellValues.length; i++) {
+						cellArrayValue.add(cellValues[i]);
+					}
+					break;
+				default:
+					break;
+			}
+		} else {
+			cellArrayValue.add("");
+		}
+		return cellArrayValue;
+	}
+	
+	public static DmalmStgCalipsoSchedaServizio getDmalmStgCalipsoSchedaServizio(XSSFRow row, String responsabileStruttura,
+			String responsabileServizio, String responsabileGestione, String referenteGestione, String referenteApplicazione) throws IOException {
+		
+		DmalmStgCalipsoSchedaServizio excelCalipso = new DmalmStgCalipsoSchedaServizio();
+		excelCalipso.setCodiceServizio(getDataCell(row.getCell(2)));
+    	excelCalipso.setServizioBusiness(getDataCell(row.getCell(3)));
+    	excelCalipso.setAmbito(getDataCell(row.getCell(4)));
+    	excelCalipso.setCliente(getDataCell(row.getCell(5)));
+		excelCalipso.setResponsabileStruttura(responsabileStruttura);
+    	excelCalipso.setResponsabileServizio(responsabileServizio);
+    	excelCalipso.setResponsabileGestione(responsabileGestione);
+    	excelCalipso.setReferenteGestione(referenteGestione);
+    	excelCalipso.setReferenteApplicazione(referenteApplicazione);
+    	excelCalipso.setSoftwareSupporto(getDataCell(row.getCell(11)));
+    	excelCalipso.setAmbitoManutenzioneOrdinarSW(getDataCell(row.getCell(12)));
+    	excelCalipso.setTipologiaIncarico(getDataCell(row.getCell(13)));
+    	excelCalipso.setSchedaIncarico(getDataCell(row.getCell(14)));
+    	excelCalipso.setStatoServizio(getDataCell(row.getCell(15)));
+    	excelCalipso.setTipologiaInfrastruttura(getDataCell(row.getCell(16)));
+    	excelCalipso.setClasseServizioInfrstrttrl(getDataCell(row.getCell(17)));
+    	excelCalipso.setAmbitoAssiGestRL(getDataCell(row.getCell(18)));
+    	excelCalipso.setDataUltimoAggiornamento(getDataCell(row.getCell(19)));
+    
+    	return excelCalipso;
 	}
 }
