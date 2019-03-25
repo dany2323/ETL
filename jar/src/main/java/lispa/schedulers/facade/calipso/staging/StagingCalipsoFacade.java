@@ -79,6 +79,7 @@ public class StagingCalipsoFacade {
 			logger.debug("START StagingCalipsoFacade.fillDmAlmStagingFromExcel");
 			putExcelCalipso();
 			List<DmalmStgCalipsoSchedaServizio> listExcelCalipso = getDataExcelCalipso();
+			logger.debug(listExcelCalipso.size());
 			StgCalipsoSchedaServizioDAO.fillDmAlmStagingFromExcel(listExcelCalipso);
 			
 			logger.debug("STOP StagingCalipsoFacade.fillDmAlmStagingFromExcel");
@@ -202,7 +203,7 @@ public class StagingCalipsoFacade {
 		String cellValue = "";
 		if (cell != null) {
 			switch(cell.getCellTypeEnum()) {
-				case STRING : cellValue = cell.getStringCellValue().replaceAll("[\n\r]", " ");
+				case STRING : cellValue = cell.getStringCellValue().replaceAll("[\r\n]", " ");
 					break;
 				case BLANK: cellValue = null;
 					break;
@@ -219,7 +220,7 @@ public class StagingCalipsoFacade {
 	        						cellValue = String.valueOf(cell.getNumericCellValue());
 	        					}
 	        					break;
-	        				case STRING: cellValue = cell.getStringCellValue().replaceAll("[\n\r]", " ");
+	        				case STRING: cellValue = cell.getStringCellValue().replaceAll("[\r\n]", " ");
 	        					break;
 	        				case ERROR: throw new IOException();
 	        				default:
@@ -252,6 +253,7 @@ public class StagingCalipsoFacade {
 					}
 					break;
 				default:
+					cellArrayValue.add("");
 					break;
 			}
 		} else {
