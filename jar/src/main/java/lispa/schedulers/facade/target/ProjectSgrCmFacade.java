@@ -260,7 +260,7 @@ public class ProjectSgrCmFacade {
 					}
 				}
 			}
-			if(modificato)
+			/*if(modificato)
 				updateFlatProject();
 			modificato=false;
 			for (Tuple row : listaProgettiNonMovimentati) {
@@ -316,7 +316,7 @@ public class ProjectSgrCmFacade {
 			
 			if(modificato){
 				updateFlatProject();
-			}
+			}*/
 			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
