@@ -3,16 +3,13 @@ package lispa.schedulers.facade.cleaning;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
-import lispa.schedulers.bean.target.fatti.DmalmAnomaliaProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmBuild;
 import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
-import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
 import lispa.schedulers.bean.target.fatti.DmalmFase;
 import lispa.schedulers.bean.target.fatti.DmalmManutenzione;
@@ -35,10 +32,8 @@ import lispa.schedulers.bean.target.fatti.DmalmTestcase;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaAssistenzaDAO;
-import lispa.schedulers.dao.target.fatti.AnomaliaProdottoDAO;
 import lispa.schedulers.dao.target.fatti.BuildDAO;
 import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
-import lispa.schedulers.dao.target.fatti.DifettoDAO;
 import lispa.schedulers.dao.target.fatti.DocumentoDAO;
 import lispa.schedulers.dao.target.fatti.FaseDAO;
 import lispa.schedulers.dao.target.fatti.ManutenzioneDAO;
@@ -65,10 +60,8 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaAssistenza;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmManutenzione;
@@ -99,8 +92,6 @@ public class CheckProjectStorFacade {
 
 	private static Logger logger = Logger
 			.getLogger(CheckProjectStorFacade.class);
-	private static QDmalmDifettoProdotto difetto = QDmalmDifettoProdotto.dmalmDifettoProdotto;
-	private static QDmalmAnomaliaProdotto anomalia = QDmalmAnomaliaProdotto.dmalmAnomaliaProdotto;
 	private static QDmalmProgettoSviluppoSvil progettoSviluppoSvil = QDmalmProgettoSviluppoSvil.dmalmProgettoSviluppoSvil;
 	private static QDmalmDocumento documento = QDmalmDocumento.dmalmDocumento;
 	private static QDmalmManutenzione manutenzione = QDmalmManutenzione.dmalmManutenzione;
@@ -139,6 +130,9 @@ public class CheckProjectStorFacade {
 		List<DmalmProject> pNew = new ArrayList<DmalmProject>();
 
 		try {
+			// solo anomalie e difetti
+			storicizzaWI();
+			
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
 					.getDataEsecuzione();
 			// dtchiusura deve essere la beetween delle ultime due date
@@ -170,24 +164,13 @@ public class CheckProjectStorFacade {
 			for (Workitem_Type type : Workitem_Type.values()) {
 				ConnectionManager cm = null;
 				Connection conn = null;
-				CallableStatement call = null;
 				List<Integer> pk = new ArrayList<Integer>();
-				logger.info("Storicizzo type: "+type);
 				if(type.name().equals("anomalia")) {
-					String sql = "{call "+ DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO+"}";
-					logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO);
-						cm = ConnectionManager.getInstance();
-						conn = cm.getConnectionOracle();
-						call = conn.prepareCall(sql);
-				        call.execute();
-				}
-				if(type.name().equals("defect")) {
-					String sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO+"}";
-					logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
-						cm = ConnectionManager.getInstance();
-						conn = cm.getConnectionOracle();
-						call = conn.prepareCall(sql);
-				        call.execute();
+					System.out.println("");
+				} else if(type.name().equals("defect")) {
+					System.out.println("");
+				} else {
+					logger.info("Storicizzo type: "+type);
 				}
 				for (DmalmProject p : pNew) {
 					String idProject = p.getIdProject();
@@ -204,124 +187,6 @@ public class CheckProjectStorFacade {
 
 								SQLQuery query = new SQLQuery(conn, dialect);
 								switch (type.name()) {
-//								case "anomalia":
-//									QDmalmAnomaliaProdotto anomalia2 = new QDmalmAnomaliaProdotto(
-//											"anomalia2");
-//									QDmalmAnomaliaProdotto anomalia3 = new QDmalmAnomaliaProdotto(
-//											"anomalia3");
-//									pk = query
-//											.from(anomalia)
-//											.where(anomalia.dmalmProjectFk02.eq(history
-//													.getDmalmProjectPk()))
-//											.where(anomalia.cdAnomalia.notIn(new SQLSubQuery()
-//													.from(anomalia3)
-//													.where(anomalia3.cdAnomalia.eq(anomalia.cdAnomalia))
-//													.where(anomalia3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
-//													.list(anomalia3.cdAnomalia)))
-//											.where(anomalia.dtStoricizzazione.loe(p.getDtInizioValidita()))
-//											.where(anomalia.dtStoricizzazione
-//													.in(new SQLSubQuery()
-//															.from(anomalia2)
-//															.where(anomalia.dmalmProjectFk02
-//																	.eq(anomalia2.dmalmProjectFk02))
-//															.where(anomalia.cdAnomalia
-//																	.eq(anomalia2.cdAnomalia))
-//															.list(anomalia2.dtStoricizzazione
-//																	.max())))
-//											.orderBy(anomalia.rankStatoAnomalia.desc(), anomalia.dtModificaRecordAnomalia.desc(), anomalia.dmalmAnomaliaProdottoPk.desc())						
-//											.list(anomalia.dmalmAnomaliaProdottoPk);
-//
-//									if (pk.size() > 0) {
-//										for (Integer i : pk) {
-//											DmalmAnomaliaProdotto a = AnomaliaProdottoDAO
-//													.getAnomaliaProdotto(i);
-//											
-//											if (a != null) {
-//												boolean exist = AnomaliaProdottoDAO
-//														.checkEsistenzaAnomalia(
-//																a, p);
-//												if (!exist) {
-//													//System.out.println("Pk"+i+" CD_ANOMALIA"+a.getCdAnomalia()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
-//													if (a.getRankStatoAnomalia() == 1) {
-//														AnomaliaProdottoDAO
-//																.updateRankFlagUltimaSituazione(
-//																		a,
-//																		new Double(
-//																				0),
-//																		new Short(
-//																				"0"));
-//													}
-//													a.setDtStoricizzazione(p
-//															.getDtInizioValidita());
-//													a.setDmalmProjectFk02(p
-//															.getDmalmProjectPk());
-//													AnomaliaProdottoDAO
-//															.insertAnomaliaProdottoUpdate(
-//																	p.getDtInizioValidita(),
-//																	a, false);
-//												}
-//											}
-//										}
-//									}
-//									break;
-//								case "defect":
-//									QDmalmDifettoProdotto difetto2 = new QDmalmDifettoProdotto(
-//											"difetto2");
-//									QDmalmDifettoProdotto difetto3 = new QDmalmDifettoProdotto(
-//													"difetto3");
-//									pk = query
-//											.from(difetto)
-//											.where(difetto.dmalmProjectFk02.eq(history
-//													.getDmalmProjectPk()))
-//											.where(difetto.cdDifetto.notIn(new SQLSubQuery()
-//													.from(difetto3)
-//													.where(difetto3.cdDifetto.eq(difetto.cdDifetto))
-//													.where(difetto3.dmalmProjectFk02.eq(p.getDmalmProjectPk()))
-//													.list(difetto3.cdDifetto)))
-//											.where(difetto.dtStoricizzazione
-//													.in(new SQLSubQuery()
-//															.from(difetto2)
-//															.where(difetto.dmalmProjectFk02
-//																	.eq(difetto2.dmalmProjectFk02))
-//															.where(difetto.cdDifetto
-//																	.eq(difetto2.cdDifetto))
-//															.list(difetto2.dtStoricizzazione
-//																	.max())))
-//											.orderBy(difetto.rankStatoDifetto.desc(), difetto.dtModificaRecordDifetto.desc(), difetto.dmalmDifettoProdottoPk.desc())						
-//											.list(difetto.dmalmDifettoProdottoPk);
-//									if (pk.size() > 0) {
-//										for (Integer i : pk) {
-//											DmalmDifettoProdotto d = DifettoDAO
-//													.getDifetto(i);
-//
-//											if (d != null) {
-//												boolean exist = DifettoDAO
-//														.checkEsistenzaDifetto(
-//																d, p);
-//												//System.out.println("Pk"+pk+" CD_DIFETTO"+d.getCdDifetto()+" Progetto da storicizzare : "+p.getDmalmProjectPk());
-//												if (!exist) {
-//													if (d.getRankStatoDifetto() == 1) {
-//														DifettoDAO
-//																.updateRankFlagUltimaSituazione(
-//																		d,
-//																		new Double(
-//																				0),
-//																		new Short(
-//																				"0"));
-//													}
-//													d.setDtStoricizzazione(p
-//															.getDtInizioValidita());
-//													d.setDmalmProjectFk02(p
-//															.getDmalmProjectPk());
-//													DifettoDAO
-//															.insertDifettoProdottoUpdate(
-//																	dataEsecuzione,
-//																	d, false);
-//												}
-//											}
-//										}
-//									}
-//									break;
 								case "srqs":
 									QDmalmProgettoSviluppoSvil progetto2 = new QDmalmProgettoSviluppoSvil(
 											"progetto2");
@@ -1330,5 +1195,33 @@ public class CheckProjectStorFacade {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 
+	}
+	
+	private static void storicizzaWI() throws SQLException, DAOException {
+
+		ConnectionManager cm = null;
+		Connection conn = null;
+		CallableStatement call = null;
+		try {
+			cm = ConnectionManager.getInstance();
+			conn = cm.getConnectionOracle();
+			logger.info("Storicizzo type: anomalia");
+			String sql = "{call "+ DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO+"}";
+			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO);
+			call = conn.prepareCall(sql);
+	        call.execute();
+			
+			logger.info("Storicizzo type: defect");
+			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO+"}";
+			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
+			call = conn.prepareCall(sql);
+	        call.execute();
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(conn);
+		}
 	}
 }
