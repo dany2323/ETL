@@ -5,5 +5,7 @@ public enum CF_dman {
 	data_dispok,
 	codice,
 	fornitura,
-	data_disp
+	data_disp,
+	tag_alm,
+	ts_tag_alm
 }

@@ -99,6 +99,10 @@ public class QDmalmDocumento extends com.mysema.query.sql.RelationalPathBase<Dma
     
     public final StringPath priority = createString("PRIORITY");
     
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public QDmalmDocumento(String variable) {
         super(DmalmDocumento.class, forVariable(variable), "DMALM", "DMALM_DOCUMENTO");
     }

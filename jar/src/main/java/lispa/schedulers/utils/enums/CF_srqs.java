@@ -8,6 +8,8 @@ public enum CF_srqs {
 	data_inizio,
 	data_inizio_eff,
 	data_disp,
-	data_dispok
+	data_dispok,
+	tag_alm,
+	ts_tag_alm
 	
 }

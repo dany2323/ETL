@@ -6,5 +6,7 @@ public enum CF_drqs {
 	data_dispok,
 	fornitura,
 	data_inizio_eff,
-	data_inizio
+	data_inizio,
+	tag_alm,
+	ts_tag_alm
 }

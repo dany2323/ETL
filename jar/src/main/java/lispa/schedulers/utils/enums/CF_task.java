@@ -9,6 +9,8 @@ public enum CF_task {
 	data_fine_eff,
 	task_type,
 	initialCost,
-	cod_intervento
+	cod_intervento,
+	tag_alm,
+	ts_tag_alm
 
 }

@@ -8,6 +8,8 @@ public enum CF_release_it {
 	tipo_release,
 	motivo_sospensione,
 	counter_qf,
-	giorni_qf
+	giorni_qf,
+	tag_alm,
+	ts_tag_alm
 
 }
