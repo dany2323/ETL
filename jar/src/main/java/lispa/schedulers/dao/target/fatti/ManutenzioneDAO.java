@@ -46,7 +46,7 @@ public class ManutenzioneDAO {
 
 		DmalmManutenzione bean = null;
 		List<DmalmManutenzione> manutenzioni = new ArrayList<DmalmManutenzione>(
-				QueryUtils.getCountByWIType(Workitem_Type.sman));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.sman));
 
 		try {
 			cm = ConnectionManager.getInstance();

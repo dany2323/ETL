@@ -46,7 +46,7 @@ public class TestCaseDAO {
 
 		DmalmTestcase bean = null;
 		List<DmalmTestcase> testcases = new ArrayList<DmalmTestcase>(
-				QueryUtils.getCountByWIType(Workitem_Type.testcase));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.testcase));
 
 		try {
 			cm = ConnectionManager.getInstance();

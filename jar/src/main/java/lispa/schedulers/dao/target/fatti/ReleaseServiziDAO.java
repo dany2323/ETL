@@ -43,7 +43,7 @@ public class ReleaseServiziDAO {
 
 		DmalmReleaseServizi bean = null;
 		List<DmalmReleaseServizi> releases = new ArrayList<DmalmReleaseServizi>(
-				QueryUtils.getCountByWIType(Workitem_Type.release_ser));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.release_ser));
 
 		try {
 			cm = ConnectionManager.getInstance();

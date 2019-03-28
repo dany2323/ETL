@@ -47,7 +47,7 @@ public class SottoprogrammaDAO {
 
 		DmalmSottoprogramma bean = null;
 		List<DmalmSottoprogramma> sottoprogrammi = new ArrayList<DmalmSottoprogramma>(
-				QueryUtils.getCountByWIType(Workitem_Type.sottoprogramma));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.sottoprogramma));
 
 		try {
 			cm = ConnectionManager.getInstance();

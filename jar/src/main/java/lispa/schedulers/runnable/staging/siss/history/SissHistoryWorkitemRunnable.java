@@ -4,19 +4,20 @@ import java.util.Map;
 
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
 public class SissHistoryWorkitemRunnable implements Runnable {
 
-	private Map<Workitem_Type, Long> minRevisionsByType;
+	private Map<EnumWorkitemType, Long> minRevisionsByType;
 	private long maxRevision;
 	private Logger logger;
-	private Workitem_Type type;
+	private EnumWorkitemType type;
 
 	public SissHistoryWorkitemRunnable(
-			Map<Workitem_Type, Long> minRevisionsByType, long maxRevision,
-			Logger logger, Workitem_Type type) {
+			Map<EnumWorkitemType, Long> minRevisionsByType, long maxRevision,
+			Logger logger, EnumWorkitemType type) {
 
 		this.logger = logger;
 		this.minRevisionsByType = minRevisionsByType;

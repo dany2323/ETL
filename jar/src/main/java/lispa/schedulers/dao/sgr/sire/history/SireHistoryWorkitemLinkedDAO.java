@@ -13,6 +13,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitemLinked;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
@@ -33,7 +34,7 @@ public class SireHistoryWorkitemLinkedDAO
 		
 	private static QSireHistoryWorkitemLinked stgLinkedWorkitems = QSireHistoryWorkitemLinked.sireHistoryWorkitemLinked;
 
-	public static void fillSireHistoryWorkitemLinked(Map<Workitem_Type, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
+	public static void fillSireHistoryWorkitemLinked(Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;

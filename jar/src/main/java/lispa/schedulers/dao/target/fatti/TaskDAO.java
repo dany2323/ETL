@@ -46,7 +46,7 @@ public class TaskDAO {
 
 		DmalmTask bean = null;
 		List<DmalmTask> documenti = new ArrayList<DmalmTask>(
-				QueryUtils.getCountByWIType(Workitem_Type.task));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.task));
 
 		try {
 			cm = ConnectionManager.getInstance();

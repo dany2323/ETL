@@ -14,6 +14,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryHyperlink;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryHyperlink;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +37,7 @@ public class SireHistoryHyperlinkDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
 	
-	public static void fillSireHistoryHyperlink(Map<Workitem_Type, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
+	public static void fillSireHistoryHyperlink(Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
 		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
@@ -58,7 +59,7 @@ public class SireHistoryHyperlinkDAO {
 				}
 			};
 			
-			for(Workitem_Type type : Workitem_Type.values()) {
+			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				
 			if(connH2.isClosed()) {
 				if(cm != null) cm.closeConnection(connH2);

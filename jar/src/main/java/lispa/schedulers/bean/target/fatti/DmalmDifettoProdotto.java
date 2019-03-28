@@ -322,7 +322,7 @@ public class DmalmDifettoProdotto {
 
     public void setProvenienzaDifetto(String provenienzaDifetto) {
     	//DM_ALM-289 Aggiunto commento # 4
-        this.provenienzaDifetto = provenienzaDifetto!=null?EnumUtils.getCustomFieldValue(Workitem_Type.defect, CF_defect.role.toString(), provenienzaDifetto):null;
+        this.provenienzaDifetto = provenienzaDifetto!=null?EnumUtils.getCustomFieldValue(Workitem_Type.EnumWorkitemType.defect, CF_defect.role.toString(), provenienzaDifetto):null;
     }
 
     public Double getRankStatoDifetto() {

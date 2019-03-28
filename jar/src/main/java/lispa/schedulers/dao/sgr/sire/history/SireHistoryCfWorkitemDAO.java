@@ -18,6 +18,7 @@ import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistor
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Splitted_CF;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
@@ -103,7 +104,7 @@ public class SireHistoryCfWorkitemDAO {
 	 * uguale a CFName
 	 */
 	public static void fillSireHistoryCfWorkitemByWorkitemType(
-			long minRevision, long maxRevision, Workitem_Type w_type,
+			long minRevision, long maxRevision, EnumWorkitemType w_type,
 			List<String> CFName) throws SQLException, DAOException {
 
 		ConnectionManager cm = null;

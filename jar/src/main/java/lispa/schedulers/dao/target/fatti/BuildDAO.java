@@ -45,7 +45,7 @@ public class BuildDAO {
 
 		DmalmBuild bean = null;
 		List<DmalmBuild> builds = new ArrayList<DmalmBuild>(
-				QueryUtils.getCountByWIType(Workitem_Type.build));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.build));
 
 		try {
 			cm = ConnectionManager.getInstance();

@@ -4,15 +4,16 @@ import java.util.Map;
 
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryHyperlinkDAO;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
 public class SireHistoryHyperlinkRunnable implements Runnable {
-	private Map<Workitem_Type, Long> minRevisionByType;
+	private Map<EnumWorkitemType, Long> minRevisionByType;
 	private long polarion_maxRevision;
 	public Logger logger; 
 
-	public SireHistoryHyperlinkRunnable(Map<Workitem_Type, Long> minRevisionByType, long polarion_maxRevision, Logger logger) {
+	public SireHistoryHyperlinkRunnable(Map<EnumWorkitemType, Long> minRevisionByType, long polarion_maxRevision, Logger logger) {
 		this.minRevisionByType = minRevisionByType;
 		this.polarion_maxRevision = polarion_maxRevision;
 		this.logger = logger;

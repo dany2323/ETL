@@ -51,7 +51,7 @@ public class ClassificatoreDAO {
 		DmalmClassificatore bean = null;
 		List<DmalmClassificatore> classificatoriDemandList = new ArrayList<DmalmClassificatore>(
 				QueryUtils
-						.getCountByWIType(Workitem_Type.classificatore_demand));
+						.getCountByWIType(Workitem_Type.EnumWorkitemType.classificatore_demand));
 		
 		try {
 			cm = ConnectionManager.getInstance();
@@ -148,7 +148,7 @@ public class ClassificatoreDAO {
 		DmalmClassificatore bean = null;		
 		List<DmalmClassificatore> classificatoriList = new ArrayList<DmalmClassificatore>(
 				QueryUtils
-						.getCountByWIType(Workitem_Type.classificatore));
+						.getCountByWIType(Workitem_Type.EnumWorkitemType.classificatore));
 
 		try {
 			cm = ConnectionManager.getInstance();

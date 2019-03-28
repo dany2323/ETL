@@ -46,7 +46,7 @@ public class ReleaseDiProgettoDAO {
 
 		DmalmReleaseDiProgetto bean = null;
 		List<DmalmReleaseDiProgetto> releases = new ArrayList<DmalmReleaseDiProgetto>(
-				QueryUtils.getCountByWIType(Workitem_Type.release));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.release));
 
 		try {
 			cm = ConnectionManager.getInstance();

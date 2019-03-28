@@ -45,7 +45,7 @@ public class FaseDAO {
 
 		DmalmFase bean = null;
 		List<DmalmFase> fasi = new ArrayList<DmalmFase>(
-				QueryUtils.getCountByWIType(Workitem_Type.fase));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.fase));
 
 		try {
 			cm = ConnectionManager.getInstance();

@@ -8,13 +8,14 @@ import org.apache.log4j.Logger;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryHyperlinkDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class SissHistoryHyperlinkRunnable implements Runnable {
-	private Map<Workitem_Type, Long> minRevisionByType;
+	private Map<EnumWorkitemType, Long> minRevisionByType;
 	private long maxRevision;
 	private Logger logger;
 	
-	public SissHistoryHyperlinkRunnable(Map<Workitem_Type, Long> minRevisionByType, long maxRevision,
+	public SissHistoryHyperlinkRunnable(Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision,
 			Logger logger) {
 		
 		this.minRevisionByType = minRevisionByType;

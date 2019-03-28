@@ -46,7 +46,7 @@ public class DocumentoDAO {
 
 		DmalmDocumento bean = null;
 		List<DmalmDocumento> documenti = new ArrayList<DmalmDocumento>(
-				QueryUtils.getCountByWIType(Workitem_Type.documento));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.documento));
 
 		try {
 			cm = ConnectionManager.getInstance();

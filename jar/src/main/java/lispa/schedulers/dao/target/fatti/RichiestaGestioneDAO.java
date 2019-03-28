@@ -45,7 +45,7 @@ public class RichiestaGestioneDAO {
 
 		DmalmRichiestaGestione bean = null;
 		List<DmalmRichiestaGestione> richiesteGestione = new ArrayList<DmalmRichiestaGestione>(
-				QueryUtils.getCountByWIType(Workitem_Type.richiesta_gestione));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.richiesta_gestione));
 
 		try {
 			cm = ConnectionManager.getInstance();

@@ -8,13 +8,14 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
 public class QueryUtils {
 	private static Logger logger = Logger.getLogger(QueryUtils.class);
 	
-	public static int getCountByWIType(Workitem_Type type) {
+	public static int getCountByWIType(EnumWorkitemType type) {
 		String wi = type.toString();
 		ConnectionManager cm = null;
 		Connection connection = null;

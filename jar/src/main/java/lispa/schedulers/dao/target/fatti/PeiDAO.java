@@ -45,7 +45,7 @@ public class PeiDAO {
 
 		DmalmPei bean = null;
 		List<DmalmPei> peis = new ArrayList<DmalmPei>(
-				QueryUtils.getCountByWIType(Workitem_Type.pei));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.pei));
 
 		try {
 			cm = ConnectionManager.getInstance();

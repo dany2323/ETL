@@ -14,6 +14,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRelWorkUserAss;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +37,7 @@ public class SireHistoryWorkitemUserAssignedDAO
 	
 	private static QSireHistoryRelWorkUserAss stgWorkitemUserAssignees = QSireHistoryRelWorkUserAss.sireHistoryRelWorkUserAss;
 
-	public static void fillSireHistoryWorkitemUserAssigned(Map<Workitem_Type, Long> minRevisionByType, long maxRevision) throws DAOException, SQLException {
+	public static void fillSireHistoryWorkitemUserAssigned(Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws DAOException, SQLException {
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
@@ -56,7 +57,7 @@ public class SireHistoryWorkitemUserAssignedDAO
 			    setPrintSchema(true);
 			}};
 			
-			for(Workitem_Type type : Workitem_Type.values()) {
+			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				
 			if(connH2.isClosed()) {
 				if(cm != null) cm.closeConnection(connH2);

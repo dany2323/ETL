@@ -43,7 +43,7 @@ public class TaskItDAO {
 
 		DmalmTaskIt bean = null;
 		List<DmalmTaskIt> tasks = new ArrayList<DmalmTaskIt>(
-				QueryUtils.getCountByWIType(Workitem_Type.taskit));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.taskit));
 
 		try {
 			cm = ConnectionManager.getInstance();

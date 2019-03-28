@@ -18,6 +18,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmStatoWorkitem;
 import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
@@ -46,7 +47,7 @@ public class StatoWorkItemXML {
 	private static Logger logger = Logger.getLogger(StatoWorkItemXML.class);
 
 	public static void fillStatoWorkItem(String myrepository,
-			Workitem_Type workitemType) throws Exception {
+			EnumWorkitemType workitemType) throws Exception {
 
 		QDmAlmStatoWorkitem qDmAlmStatoWorkitem = QDmAlmStatoWorkitem.dmAlmStatoWorkitem;
 		SQLTemplates dialect = new HSQLDBTemplates();
@@ -121,8 +122,8 @@ public class StatoWorkItemXML {
 				doc.getDocumentElement().normalize();
 				Set<String> stati = new HashSet<String>();
 
-				if (workitemType.equals(Workitem_Type.anomalia_assistenza)
-						|| workitemType.equals(Workitem_Type.taskit)) {
+				if (workitemType.equals(Workitem_Type.EnumWorkitemType.anomalia_assistenza)
+						|| workitemType.equals(Workitem_Type.EnumWorkitemType.taskit)) {
 
 					NodeList nList = doc.getElementsByTagName("transition");
 
@@ -227,7 +228,7 @@ public class StatoWorkItemXML {
 	}
 
 	private static String getWorkitemStatusFilePathByWorkitemType(
-			Workitem_Type type) {
+			EnumWorkitemType type) {
 
 		String path = null;
 
