@@ -628,6 +628,7 @@ public final class DmAlmConstants {
 	public static String STORED_PROCEDURE_VERIFICA_ESITO_ETL = "VERIFICA_ESITO_ETL";
 	public static String STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO = "STOR_ANOMALIA_PRODOTTO_BY_PROJ";
 	public static String STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO = "STOR_DIFETTO_PRODOTTO_BY_PROJ";
+	public static String STORED_PROCEDURE_STOR_RELEASE_PROGETTO = "STOR_RELEASE_PROGETTO_BY_PROJ";
 	
 	public static String getProperty(String property) {
 

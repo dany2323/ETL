@@ -169,6 +169,8 @@ public class CheckProjectStorFacade {
 					System.out.println("");
 				} else if(type.name().equals("defect")) {
 					System.out.println("");
+				} else if(type.name().equals("release")) {
+					System.out.println("");
 				} else {
 					logger.info("Storicizzo type: "+type);
 				}
@@ -1214,6 +1216,12 @@ public class CheckProjectStorFacade {
 			logger.info("Storicizzo type: defect");
 			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO+"}";
 			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
+			call = conn.prepareCall(sql);
+	        call.execute();
+	        
+	        logger.info("Storicizzo type: release");
+			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO+"}";
+			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO);
 			call = conn.prepareCall(sql);
 	        call.execute();
 		} catch (Exception e) {
