@@ -420,54 +420,6 @@ public class CheckProjectStorFacade {
 										}
 									}
 									break;
-								case "release":
-									QDmalmReleaseDiProgetto releaseDiProgetto2 = new QDmalmReleaseDiProgetto(
-											"releaseDiProgetto2");
-									pk = query
-											.from(releaseDiProgetto)
-											.where(releaseDiProgetto.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(releaseDiProgetto.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(releaseDiProgetto2)
-															.where(releaseDiProgetto.dmalmProjectFk02
-																	.eq(releaseDiProgetto2.dmalmProjectFk02))
-															.where(releaseDiProgetto.cdReleasediprog
-																	.eq(releaseDiProgetto2.cdReleasediprog))
-															.list(releaseDiProgetto2.dtStoricizzazione
-																	.max())))
-											.orderBy(releaseDiProgetto.rankStatoReleasediprog.desc(), releaseDiProgetto.dtModificaReleasediprog.desc(), releaseDiProgetto.dmalmReleasediprogPk.desc())
-											.list(releaseDiProgetto.dmalmReleasediprogPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-
-											DmalmReleaseDiProgetto r = ReleaseDiProgettoDAO
-													.getReleaseDiProgetto(i);
-											if (r != null) {
-												boolean exist = ReleaseDiProgettoDAO
-														.checkEsistenzaRelease(
-																r, p);
-												if (!exist) {
-													if (r.getRankStatoReleasediprog() == 1) {
-														ReleaseDiProgettoDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
-													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ReleaseDiProgettoDAO
-															.insertReleaseDiProgettoUpdate(
-																	dataEsecuzione,
-																	r, false);
-												}
-											}
-										}
-									}
-									break;
 								case "programma":
 									QDmalmProgramma programma2 = new QDmalmProgramma(
 											"programma2");
