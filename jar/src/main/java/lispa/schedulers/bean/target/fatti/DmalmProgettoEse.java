@@ -64,6 +64,26 @@ public class DmalmProgettoEse {
     
 	private java.sql.Timestamp dtAnnullamento;
 	
+	private java.sql.Timestamp ts_tag_alm;
+	
+	private String tag_alm;
+	
+	public java.sql.Timestamp getTs_tag_alm() {
+		return ts_tag_alm;
+	}
+
+	public void setTs_tag_alm(java.sql.Timestamp ts_tag_alm) {
+		this.ts_tag_alm = ts_tag_alm;
+	}
+
+	public String getTag_alm() {
+		return tag_alm;
+	}
+
+	public void setTag_alm(String tag_alm) {
+		this.tag_alm = tag_alm;
+	}
+
 	private String annullato;
     
 	//DM_ALM-320
