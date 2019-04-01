@@ -92,7 +92,8 @@ public class ProgrammaOdsDAO {
 								programmaODS.cfTipologia, programmaODS.stgPk,
 								programmaODS.dmalmUserFk06, programmaODS.uri,
 								programmaODS.codice,
-								programmaODS.severity, programmaODS.priority)
+								programmaODS.severity, programmaODS.priority,
+								programmaODS.tagAlm, programmaODS.tsTagAlm)
 						.values(programma.getAssignee(),
 								programma.getCdProgramma(),
 								programma.getDescrizioneProgramma(),
@@ -122,7 +123,8 @@ public class ProgrammaOdsDAO {
 								programma.getStgPk(),
 								programma.getDmalmUserFk06(),
 								programma.getUri(), programma.getCodice(),
-								programma.getSeverity(), programma.getPriority())
+								programma.getSeverity(), programma.getPriority(),
+								programma.getTagAlm(), programma.getTsTagAlm())
 						.execute();
 
 				connection.commit();

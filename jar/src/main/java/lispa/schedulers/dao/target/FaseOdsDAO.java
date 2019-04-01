@@ -95,7 +95,8 @@ public class FaseOdsDAO {
 								faseODS.rankStatoFase, faseODS.titoloFase,
 								faseODS.stgPk, faseODS.dmalmUserFk06,
 								faseODS.uri,
-								faseODS.severity, faseODS.priority)
+								faseODS.severity, faseODS.priority,
+								faseODS.tagAlm, faseODS.tsTagAlm)
 						.values(fase.getApplicabile(), fase.getCdFase(),
 								fase.getCodice(), fase.getDataFineBaseline(),
 								fase.getDataFineEffettiva(),
@@ -123,7 +124,8 @@ public class FaseOdsDAO {
 								fase.getMotivoRisoluzioneFase(), new Double(1),
 								fase.getTitoloFase(), fase.getStgPk(),
 								fase.getDmalmUserFk06(), fase.getUri(),
-								fase.getSeverity(), fase.getPriority()
+								fase.getSeverity(), fase.getPriority(),
+								fase.getTagAlm(), fase.getTsTagAlm()
 
 						).execute();
 			}

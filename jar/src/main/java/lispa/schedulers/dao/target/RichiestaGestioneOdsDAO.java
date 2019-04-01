@@ -94,7 +94,8 @@ public class RichiestaGestioneOdsDAO {
 								richiestaODS.stgPk, richiestaODS.ticketid,
 								richiestaODS.titoloRichiestaGest,
 								richiestaODS.dmalmUserFk06, richiestaODS.uri,
-								richiestaODS.severity, richiestaODS.priority)
+								richiestaODS.severity, richiestaODS.priority,
+								richiestaODS.tagAlm, richiestaODS.tsTagAlm)
 						.values(richiesta.getCategoria(),
 								richiesta.getCdRichiestaGest(),
 								richiesta.getDataChiusura(),
@@ -120,7 +121,8 @@ public class RichiestaGestioneOdsDAO {
 								richiesta.getTitoloRichiestaGest(),
 								richiesta.getDmalmUserFk06(),
 								richiesta.getUri(),
-								richiesta.getSeverity(), richiesta.getPriority()).execute();
+								richiesta.getSeverity(), richiesta.getPriority(),
+								richiesta.getTagAlm(), richiesta.getTsTagAlm()).execute();
 
 			}
 

@@ -100,7 +100,8 @@ public class ProgettoSviluppoDemandOdsDAO {
 								progettoSvilDODS.titoloProgSvilD,
 								progettoSvilDODS.stgPk,
 								progettoSvilDODS.dmalmUserFk06,
-								progettoSvilDODS.uri)
+								progettoSvilDODS.uri,
+								progettoSvilDODS.tagAlm, progettoSvilDODS.tsTagAlm)
 						.values(progettoSviluppo.getCdProgSvilD(),
 								progettoSviluppo.getCfCodice(),
 								progettoSviluppo.getCfDataDispEffettiva(),
@@ -136,7 +137,8 @@ public class ProgettoSviluppoDemandOdsDAO {
 								progettoSviluppo.getTitoloProgSvilD(),
 								progettoSviluppo.getStgPk(),
 								progettoSviluppo.getDmalmUserFk06(),
-								progettoSviluppo.getUri()).execute();
+								progettoSviluppo.getUri(),
+								progettoSviluppo.getTagAlm(), progettoSviluppo.getTsTagAlm()).execute();
 				connection.commit();
 			}
 		} catch (Exception e) {

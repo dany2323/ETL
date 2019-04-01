@@ -106,7 +106,8 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 								progettoSvilSODS.dmalmUserFk06,
 								progettoSvilSODS.uri,
 								progettoSvilSODS.severity,
-								progettoSvilSODS.priority)
+								progettoSvilSODS.priority,
+								progettoSvilSODS.tagAlm, progettoSvilSODS.tsTagAlm)
 						.values(progetto.getCdProgSvilS(),
 								progetto.getCodice(),
 								progetto.getDataChiusuraProgSvilS(),
@@ -140,7 +141,8 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 								progetto.getDmalmUserFk06(), progetto.getUri(),
 								//DM_ALM-320
 							    progetto.getSeverity(),
-							    progetto.getPriority())
+							    progetto.getPriority(),
+							    progetto.getTagAlm(), progetto.getTsTagAlm())
 						.execute();
 
 			}

@@ -87,7 +87,8 @@ public class PeiOdsDAO {
 								peiODS.motivoRisoluzionePei,
 								peiODS.rankStatoPei, peiODS.titoloPei,
 								peiODS.stgPk, peiODS.dmalmUserFk06, peiODS.uri,
-								peiODS.severity, peiODS.priority)
+								peiODS.severity, peiODS.priority,
+								peiODS.tagAlm, peiODS.tsTagAlm)
 						.values(pei.getCdPei(), pei.getCodice(),
 								pei.getDescrizionePei(), pei.getDmalmPeiPk(),
 								pei.getDmalmProjectFk02(),
@@ -106,7 +107,8 @@ public class PeiOdsDAO {
 								pei.getMotivoRisoluzionePei(), new Double(1),
 								pei.getTitoloPei(), pei.getStgPk(),
 								pei.getDmalmUserFk06(), pei.getUri(),
-								pei.getSeverity(), pei.getPriority()).execute();
+								pei.getSeverity(), pei.getPriority(),
+								pei.getTagAlm(), pei.getTsTagAlm()).execute();
 
 			}
 

@@ -97,7 +97,8 @@ public class TaskOdsDAO {
 								taskODS.severityTask, taskODS.taskType,
 								taskODS.tempoTotaleRisoluzione,
 								taskODS.titoloTask, taskODS.stgPk,
-								taskODS.dmalmUserFk06, taskODS.uri)
+								taskODS.dmalmUserFk06, taskODS.uri,
+								taskODS.tagAlm, taskODS.tsTagAlm)
 						.values(task.getCdTask(), task.getCodice(),
 								task.getDataChiusuraTask(),
 								task.getDataFineEffettiva(),
@@ -127,7 +128,8 @@ public class TaskOdsDAO {
 								task.getSeverityTask(), task.getTaskType(),
 								task.getTempoTotaleRisoluzione(),
 								task.getTitoloTask(), task.getStgPk(),
-								task.getDmalmUserFk06(), task.getUri())
+								task.getDmalmUserFk06(), task.getUri(),
+								task.getTagAlm(), task.getTsTagAlm())
 						.execute();
 
 			}
