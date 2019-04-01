@@ -83,7 +83,10 @@ public class QDmalmReleaseServiziOds extends com.mysema.query.sql.RelationalPath
     public final StringPath severity = createString("SEVERITY");
         
     public final StringPath priority = createString("PRIORITY");
+
+    public final StringPath tagAlm = createString("TAG_ALM");
     
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmReleaseServiziOds(String variable) {
         super(DmalmReleaseServiziOds.class, forVariable(variable), "DMALM", "DMALM_RELEASE_SERVIZI_ODS");

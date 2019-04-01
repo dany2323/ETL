@@ -132,7 +132,10 @@ public class QDmalmReleaseDiProgetto extends
 	
 	public final StringPath typeRelease = createString("TYPE_RELEASE");
 	
-	
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
 	public QDmalmReleaseDiProgetto(String variable) {
 		super(DmalmReleaseDiProgetto.class, forVariable(variable), "DMALM",
 				"DMALM_RELEASE_DI_PROGETTO");

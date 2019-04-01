@@ -113,7 +113,10 @@ public class QDmalmClassificatoreOds extends
 	    
 	public final StringPath priority = createString("PRIORITY");
 	
-	
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
 	public QDmalmClassificatoreOds(Path<? extends DmalmClassificatoreDemOds> path) {
 		super(path.getType(), path.getMetadata(), "DMALM",
 				"DMALM_CLASSIFICATORE_ODS");

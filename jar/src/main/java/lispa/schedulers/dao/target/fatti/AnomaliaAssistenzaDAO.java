@@ -110,7 +110,8 @@ public class AnomaliaAssistenzaDAO {
 				bean.setAoid(rs.getString("AOID"));
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_ANOM_ASS_PK"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				anomalie.add(bean);
 			}
 
@@ -206,7 +207,8 @@ public class AnomaliaAssistenzaDAO {
 							anomass.stChiuso, anomass.stgPk,
 							anomass.tempoTotaleRisoluzione, anomass.ticketid,
 							anomass.titoloAnomaliaAss, anomass.dmalmUserFk06,
-							anomass.uri, anomass.dtAnnullamento)
+							anomass.uri, anomass.dtAnnullamento,
+							anomass.tagAlm, anomass.tsTagAlm)
 					.values(anomalia_assistenza.getCdAnomaliaAss(),
 							anomalia_assistenza.getDmalmAnomaliaAssPk(),
 							anomalia_assistenza.getDmalmProjectFk02(),
@@ -243,7 +245,9 @@ public class AnomaliaAssistenzaDAO {
 							anomalia_assistenza.getTitoloAnomaliaAss(),
 							anomalia_assistenza.getDmalmUserFk06(),
 							anomalia_assistenza.getUri(),
-							anomalia_assistenza.getDtAnnullamento()).execute();
+							anomalia_assistenza.getDtAnnullamento(),
+							anomalia_assistenza.getTagAlm(),
+							anomalia_assistenza.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -323,7 +327,8 @@ public class AnomaliaAssistenzaDAO {
 							anomass.tempoTotaleRisoluzione, anomass.ticketid,
 							anomass.titoloAnomaliaAss, anomass.dmalmUserFk06,
 							anomass.uri, anomass.dtAnnullamento,
-							anomass.changed, anomass.annullato)
+							anomass.changed, anomass.annullato,
+							anomass.tagAlm, anomass.tsTagAlm)
 					.values(anomalia_assistenza.getCdAnomaliaAss(),
 							pkValue == true ? anomalia_assistenza
 									.getDmalmAnomaliaAssPk() : StringTemplate
@@ -368,7 +373,9 @@ public class AnomaliaAssistenzaDAO {
 							anomalia_assistenza.getUri(),
 							anomalia_assistenza.getDtAnnullamento(),
 							anomalia_assistenza.getChanged(),
-							anomalia_assistenza.getAnnullato()).execute();
+							anomalia_assistenza.getAnnullato(),
+							anomalia_assistenza.getTagAlm(),
+							anomalia_assistenza.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -451,7 +458,9 @@ public class AnomaliaAssistenzaDAO {
 							anomalia_assistenza.getTitoloAnomaliaAss())
 					.set(anomass.dtAnnullamento,
 							anomalia_assistenza.getDtAnnullamento())
-					.set(anomass.annullato, anomalia_assistenza.getAnnullato()).execute();
+					.set(anomass.annullato, anomalia_assistenza.getAnnullato())
+					.set(anomass.tagAlm, anomalia_assistenza.getTagAlm())
+					.set(anomass.tsTagAlm, anomalia_assistenza.getTsTagAlm()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -538,6 +547,8 @@ public class AnomaliaAssistenzaDAO {
 			a.setTicketid(t.get(anomass.ticketid));
 			a.setTitoloAnomaliaAss(t.get(anomass.titoloAnomaliaAss));
 			a.setUri(t.get(anomass.uri));
+			a.setTagAlm(t.get(anomass.tagAlm));
+			a.setTsTagAlm(t.get(anomass.tsTagAlm));
 
 			return a;
 		} else

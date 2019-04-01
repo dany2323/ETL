@@ -99,6 +99,10 @@ public class QDmalmTaskOds extends com.mysema.query.sql.RelationalPathBase<Dmalm
 
     public final StringPath titoloTask = createString("TITOLO_TASK");
 
+    public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public final com.mysema.query.sql.PrimaryKey<DmalmTaskOds> sysC0023172 = createPrimaryKey(dmalmTaskPk);
 
     public QDmalmTaskOds(String variable) {

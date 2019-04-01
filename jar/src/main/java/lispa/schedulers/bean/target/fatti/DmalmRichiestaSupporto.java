@@ -8,7 +8,7 @@ import lispa.schedulers.dao.UtilsDAO;
 
 public class DmalmRichiestaSupporto implements SQLData {
 
-	private static final Integer COUNT_COLUMN = 31;
+	private static final Integer COUNT_COLUMN = 33;
 	private String sql_type;
 	private String idRepository;
 	private String uriRichiestaSupporto;
@@ -42,7 +42,9 @@ public class DmalmRichiestaSupporto implements SQLData {
 	private String codiceProdotto;
 	private java.sql.Timestamp dtScadenzaRichiestaSupporto;
     private Float timespent;
-
+  //DM_ALM-470
+  	private String tagAlm;
+  	private java.sql.Timestamp tsTagAlm;
 	
 //	public DmalmRichiestaSupporto() {
 //		
@@ -323,6 +325,8 @@ public class DmalmRichiestaSupporto implements SQLData {
 		objRichSupp[28] = richiesta.getCodiceProdotto();
 		objRichSupp[29] = richiesta.getDtScadenzaRichiestaSupporto();
 		objRichSupp[30] = richiesta.getTimespent();
+		objRichSupp[31] = richiesta.getTagAlm();
+		objRichSupp[32] = richiesta.getTsTagAlm();
 		
 		return objRichSupp;
 	}
@@ -412,5 +416,17 @@ public class DmalmRichiestaSupporto implements SQLData {
 	}
 	public void setTimespent(Float timespent) {
 		this.timespent = timespent;
+	}
+	public String getTagAlm() {
+		return tagAlm;
+	}
+	public void setTagAlm(String tagAlm) {
+		this.tagAlm = tagAlm;
+	}
+	public java.sql.Timestamp getTsTagAlm() {
+		return tsTagAlm;
+	}
+	public void setTsTagAlm(java.sql.Timestamp tsTagAlm) {
+		this.tsTagAlm = tsTagAlm;
 	}
 }

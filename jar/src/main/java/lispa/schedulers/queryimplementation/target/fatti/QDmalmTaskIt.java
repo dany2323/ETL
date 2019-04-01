@@ -98,6 +98,10 @@ public class QDmalmTaskIt extends com.mysema.query.sql.RelationalPathBase<DmalmT
     
     public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
 
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public QDmalmTaskIt(String variable) {
         super(DmalmTaskIt.class, forVariable(variable), "DMALM", "DMALM_TASK_IT");
     }

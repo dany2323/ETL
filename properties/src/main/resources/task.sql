@@ -47,7 +47,9 @@
 		hw.data_inizio_eff as DATA_INIZIO_EFF,
 		hw.data_fine_effettiva as DATA_FINE_EFF,
 		(select LISTAGG(hcf.c_string_value, ', ') within group (order by hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'task_type') as TASK_TYPE,
-		(select distinct to_char(hcf.c_long_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'initialCost') as INITIAL_COST
+		(select distinct to_char(hcf.c_long_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'initialCost') as INITIAL_COST,
+		(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'tag_alm') as TAG_ALM,
+		(select distinct hcf.c_date_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -108,7 +110,9 @@ UNION ALL
 		hw.data_inizio_eff as DATA_INIZIO_EFF,
 		hw.data_fine_effettiva as DATA_FINE_EFF,
 		(select LISTAGG(hcf.c_string_value, ', ') within group (order by hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'task_type') as TASK_TYPE,
-		(select distinct to_char(hcf.c_long_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'initialCost') as INITIAL_COST
+		(select distinct to_char(hcf.c_long_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'initialCost') as INITIAL_COST,
+		(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'tag_alm') as TAG_ALM,
+		(select distinct hcf.c_date_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SISS_HISTORY_USER hu 
