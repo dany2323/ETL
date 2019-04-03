@@ -121,7 +121,8 @@ public class AnomaliaProdottoDAO {
 				
 				//DM_ALM-320
 				bean.setPriority(rs.getString("PRIORITY"));
-				
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				anomalie.add(bean);
 			}
 
@@ -239,6 +240,8 @@ public class AnomaliaProdottoDAO {
 					.set(anomaliaProdotto.dataDisponibilita, anomalia.getDtDisponibilita())
 					// DM_ALM-320
 					.set(anomaliaProdotto.priority, anomalia.getPriority())
+					.set(anomaliaProdotto.tagAlm, anomalia.getTagAlm())
+					.set(anomaliaProdotto.tsTagAlm, anomalia.getTsTagAlm())
 					.execute();
 
 			// DM_ALM-142
@@ -311,7 +314,9 @@ public class AnomaliaProdottoDAO {
 							anomaliaProdotto.contestazione,
 							anomaliaProdotto.noteContestazione,
 							anomaliaProdotto.dataDisponibilita,
-							anomaliaProdotto.priority)
+							anomaliaProdotto.priority,
+							anomaliaProdotto.tagAlm,
+							anomaliaProdotto.tsTagAlm)
 					.values(bean.getCdAnomalia(),
 							bean.getDmalmAnomaliaProdottoPk(),
 							bean.getDmalmProjectFk02(),
@@ -345,7 +350,9 @@ public class AnomaliaProdottoDAO {
 							bean.getDtAnnullamento(), bean.getContestazione(),
 							bean.getNoteContestazione(),
 							bean.getDtDisponibilita(),
-							bean.getPriority()).execute();
+							bean.getPriority(),
+							bean.getTagAlm(),
+							bean.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -415,7 +422,9 @@ public class AnomaliaProdottoDAO {
 							anomaliaProdotto.changed,
 							anomaliaProdotto.annullato,
 							anomaliaProdotto.dataDisponibilita,
-							anomaliaProdotto.priority)
+							anomaliaProdotto.priority,
+							anomaliaProdotto.tagAlm,
+							anomaliaProdotto.tsTagAlm)
 					.values(bean.getCdAnomalia(),
 							pkValue == true ? bean.getDmalmAnomaliaProdottoPk()
 									: StringTemplate
@@ -460,7 +469,9 @@ public class AnomaliaProdottoDAO {
 							bean.getNoteContestazione(), bean.getChanged(),
 							bean.getAnnullato(),
 							bean.getDtDisponibilita(),
-							bean.getPriority()).execute();
+							bean.getPriority(),
+							bean.getTagAlm(),
+							bean.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -729,7 +740,8 @@ public class AnomaliaProdottoDAO {
 			
 			// DM_ALM-320
 			ret.setPriority(t.get(anomaliaProdotto.priority));
-
+			ret.setTagAlm(t.get(anomaliaProdotto.tagAlm));
+			ret.setTsTagAlm(t.get(anomaliaProdotto.tsTagAlm));
 			return ret;
 		} else {
 			return null;
