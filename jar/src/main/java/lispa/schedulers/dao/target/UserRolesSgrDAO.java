@@ -418,8 +418,7 @@ public class UserRolesSgrDAO {
 	}
 	
 	public static List<DmalmUserRolesSgr> getUserRolesForProjectAtRevision(String myrepo,
-			String projectId, String projectLocation, long c_rev,
-			Timestamp c_created, SVNRepository repository) throws Exception {
+			String projectId, String projectLocation, SVNRepository repository) throws Exception {
 		
 		List<DmalmUserRolesSgr> projectUserRoles = new ArrayList<DmalmUserRolesSgr>();
 
@@ -444,12 +443,12 @@ public class UserRolesSgrDAO {
 							.getProperty(
 									DmAlmConfigReaderProperties.SIRE_SVN_USER_ROLES_FILE));
 
-			SVNNodeKind nodeKind = repository.checkPath(filePath, c_rev);
+			SVNNodeKind nodeKind = repository.checkPath(filePath, -1);
 			SVNProperties fileProperties = null;
 			ByteArrayOutputStream baos = null;
 			fileProperties = new SVNProperties();
 
-			SVNFileRevision svnfr = new SVNFileRevision(filePath, c_rev, fileProperties, fileProperties);
+			SVNFileRevision svnfr = new SVNFileRevision(filePath, -1, fileProperties, fileProperties);
 
 			baos = new ByteArrayOutputStream();
 			if(repository.checkPath(svnfr.getPath(), svnfr.getRevision()) == SVNNodeKind.NONE){

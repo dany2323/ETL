@@ -96,7 +96,30 @@ public class UserRolesSgrFacade {
 					setPrintSchema(true);
 				}
 			};
+			
+			
+UserRolesSgrDAO.deleteUserRoles();
+			
+			logger.info("Inizio gestione ruoli globali");
+			logger.info("Inizio gestione SIRE");
+			List<DmalmUserRolesSgr> userRolesGlobal = UserRolesSgrDAO.getUserRolesForProjectAtRevision(DmAlmConstants.REPOSITORY_SIRE,
+					DmAlmConstants.GLOBAL, "", 
+					repositorySire);
+			for(DmalmUserRolesSgr projectUserRole: userRolesGlobal){
+				UserRolesSgrDAO.insertUserRole(projectUserRole, 0, dataEsecuzione);
+			}
+			logger.info("Fine gestione SIRE");
+			logger.info("Inizio gestione SISS");
 
+			userRolesGlobal = UserRolesSgrDAO.getUserRolesForProjectAtRevision(DmAlmConstants.REPOSITORY_SISS,
+					DmAlmConstants.GLOBAL, "", 
+					repositorySiss);
+			for(DmalmUserRolesSgr projectUserRole: userRolesGlobal){
+				UserRolesSgrDAO.insertUserRole(projectUserRole, 0, dataEsecuzione);
+			}
+			logger.info("Fine gestione SISS");
+			
+			logger.info("Fine gestione ruoli globali");
 			SQLQuery query = new SQLQuery(oraConn, dialect);
 
 			logger.debug("fillCurrentUserRoles - query project");
@@ -126,14 +149,12 @@ public class UserRolesSgrFacade {
 					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SISS)) {
 						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
 								prj.get(project.idProject), projectSVNPath,
-								revision, prj.get(project.cCreated), 
 								repositorySiss);
 					}
 					
 					if(prj.get(project.idRepository).equals(DmAlmConstants.REPOSITORY_SIRE)) {
 						userRolesGroupedByProjID = UserRolesSgrDAO.getUserRolesForProjectAtRevision(prj.get(project.idRepository),
 								prj.get(project.idProject), projectSVNPath,
-								revision, prj.get(project.cCreated), 
 								repositorySire);
 					}
 					
