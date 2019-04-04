@@ -87,9 +87,9 @@ public class QDmalmProgettoEse extends com.mysema.query.sql.RelationalPathBase<D
         
     public final StringPath priority = createString("PRIORITY");
     
-    public final DateTimePath<java.sql.Timestamp> ts_tag_alm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
 
-    public final StringPath tag_alm = createString("TAG_ALM");
+    public final StringPath tagAlm = createString("TAG_ALM");
 
     
     public QDmalmProgettoEse(String variable) {

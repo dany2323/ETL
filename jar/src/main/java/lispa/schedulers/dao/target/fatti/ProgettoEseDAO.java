@@ -118,8 +118,8 @@ public class ProgettoEseDAO {
 						bean.setSeverity(rs.getString("SEVERITY"));
 						bean.setPriority(rs.getString("PRIORITY"));
 		
-						bean.setTag_alm(rs.getString("TAG_ALM"));
-						bean.setTs_tag_alm(rs.getTimestamp("TS_TAG_ALM"));
+						bean.setTagAlm(rs.getString("TAG_ALM"));
+						bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 						progetti.add(bean);
 					}
 				}
@@ -242,7 +242,7 @@ public class ProgettoEseDAO {
 							progettoEse.dtAnnullamento, progettoEse.changed,
 							progettoEse.annullato,
 							progettoEse.severity, progettoEse.priority,
-							progettoEse.ts_tag_alm,progettoEse.tag_alm)
+							progettoEse.tsTagAlm,progettoEse.tagAlm)
 					.values(progetto.getCdProgettoEse(),
 							progetto.getDescrizioneProgettoEse(),
 							pkValue == true ? progetto.getDmalmProgettoEsePk()
@@ -274,7 +274,7 @@ public class ProgettoEseDAO {
 							progetto.getDtAnnullamento(),
 							progetto.getChanged(), progetto.getAnnullato(),
 							progetto.getSeverity(), progetto.getPriority(),
-							progetto.getTs_tag_alm(),progetto.getTag_alm())
+							progetto.getTsTagAlm(),progetto.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -325,7 +325,8 @@ public class ProgettoEseDAO {
 							progettoEse.cfDtUltimaSottomissione,
 							progettoEse.dmalmUserFk06, progettoEse.uri,
 							progettoEse.dtAnnullamento,
-							progettoEse.severity, progettoEse.priority)
+							progettoEse.severity, progettoEse.priority,
+							progettoEse.tagAlm,	progettoEse.tsTagAlm)
 					.values(progetto.getCdProgettoEse(),
 							progetto.getDescrizioneProgettoEse(),
 							progetto.getDmalmProgettoEsePk(),
@@ -349,7 +350,8 @@ public class ProgettoEseDAO {
 							progetto.getCfDtUltimaSottomissione(),
 							progetto.getDmalmUserFk06(), progetto.getUri(),
 							progetto.getDtAnnullamento(),
-							progetto.getSeverity(), progetto.getPriority()).execute();
+							progetto.getSeverity(), progetto.getPriority(),
+							progetto.getTagAlm(), progetto.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -419,6 +421,8 @@ public class ProgettoEseDAO {
 					.set(progettoEse.annullato, progetto.getAnnullato())
 					.set(progettoEse.severity, progetto.getSeverity())
 					.set(progettoEse.priority, progetto.getPriority())
+					.set(progettoEse.tagAlm, progetto.getTagAlm())
+					.set(progettoEse.tsTagAlm, progetto.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -505,7 +509,8 @@ public class ProgettoEseDAO {
 			//DM_ALM-320
 			p.setSeverity(t.get(progettoEse.severity));
 			p.setPriority(t.get(progettoEse.priority));
-
+			p.setTagAlm(t.get(progettoEse.tagAlm));
+			p.setTsTagAlm(t.get(progettoEse.tsTagAlm));
 			return p;
 
 		} else

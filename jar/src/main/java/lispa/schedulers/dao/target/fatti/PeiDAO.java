@@ -99,7 +99,9 @@ public class PeiDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				peis.add(bean);
 			}
 
@@ -179,7 +181,8 @@ public class PeiDAO {
 							p.motivoRisoluzionePei, p.rankStatoPei,
 							p.titoloPei, p.stgPk, p.dmalmUserFk06, p.uri,
 							p.dtAnnullamento,
-							p.severity, p.priority)
+							p.severity, p.priority,
+							p.tagAlm,	p.tsTagAlm)
 					.values(pei.getCdPei(), pei.getCodice(),
 							pei.getDescrizionePei(), pei.getDmalmPeiPk(),
 							pei.getDmalmProjectFk02(),
@@ -198,7 +201,8 @@ public class PeiDAO {
 							pei.getTitoloPei(), pei.getStgPk(),
 							pei.getDmalmUserFk06(), pei.getUri(),
 							pei.getDtAnnullamento(),
-							pei.getSeverity(), pei.getPriority()).execute();
+							pei.getSeverity(), pei.getPriority(),
+							pei.getTagAlm(), pei.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -267,7 +271,8 @@ public class PeiDAO {
 							p.motivoRisoluzionePei, p.rankStatoPei,
 							p.titoloPei, p.stgPk, p.dmalmUserFk06, p.uri,
 							p.dtAnnullamento, p.changed, p.annullato,
-							p.severity, p.priority)
+							p.severity, p.priority,
+							p.tagAlm, p.tsTagAlm)
 					.values(pei.getCdPei(),
 							pei.getCodice(),
 							pei.getDescrizionePei(),
@@ -296,7 +301,9 @@ public class PeiDAO {
 							pei.getDmalmUserFk06(), pei.getUri(),
 							pei.getDtAnnullamento(), pei.getChanged(),
 							pei.getAnnullato(),
-							pei.getSeverity(), pei.getPriority()).execute();
+							pei.getSeverity(), pei.getPriority(),
+							pei.getTagAlm(), 
+							pei.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -353,6 +360,8 @@ public class PeiDAO {
 					.set(p.annullato, pei.getAnnullato())
 					.set(p.severity, pei.getSeverity())
 					.set(p.priority, pei.getPriority())
+					.set(p.tagAlm, pei.getTagAlm())
+					.set(p.tsTagAlm, pei.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -427,6 +436,8 @@ public class PeiDAO {
 			//DM_ALM-320
 			d.setSeverity(t.get(p.severity));
 			d.setPriority(t.get(p.priority));
+			d.setTagAlm(t.get(p.tagAlm));
+			d.setTsTagAlm(t.get(p.tsTagAlm));
 
 			return d;
 

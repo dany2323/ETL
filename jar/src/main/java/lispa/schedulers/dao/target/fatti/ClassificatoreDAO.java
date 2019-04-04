@@ -114,6 +114,8 @@ public class ClassificatoreDAO {
 						"scheda_servizio"));
 
 				bean.setType(DmAlmConstants.WORKITEM_TYPE_CLASSIFICATORE_DEMAND);
+				bean.setTagAlm(rsClassDem.getString("TAG_ALM"));
+				bean.setTsTagAlm(rsClassDem.getTimestamp("TS_TAG_ALM"));
 				classificatoriDemandList.add(bean);
 			}
 
@@ -216,6 +218,8 @@ public class ClassificatoreDAO {
 				//DM_ALM-320
 				bean.setSeverity(rsClass.getString("SEVERITY"));
 				bean.setPriority(rsClass.getString("PRIORITY"));
+				bean.setTagAlm(rsClass.getString("TAG_ALM"));
+				bean.setTsTagAlm(rsClass.getTimestamp("TS_TAG_ALM"));
 				
 				classificatoriList.add(bean);
 			}
@@ -368,7 +372,8 @@ public class ClassificatoreDAO {
 							qClassificatore.locationSorgenti,
 							qClassificatore.type,
 							qClassificatore.codiceServizi,
-							qClassificatore.severity, qClassificatore.priority)
+							qClassificatore.severity, qClassificatore.priority,
+							qClassificatore.tagAlm, qClassificatore.tsTagAlm)
 					.values(classificatore.getCd_classificatore(), classificatore.getCf_ambito(),
 							classificatore.getCf_area(), classificatore.getCf_riferimenti(),
 							classificatore.getCf_scheda_servizio(),
@@ -397,7 +402,9 @@ public class ClassificatoreDAO {
 							classificatore.getType(),
 							classificatore.getCodiceServizi(),
 							classificatore.getSeverity(),
-							classificatore.getPriority()).execute();
+							classificatore.getPriority(),
+							classificatore.getTagAlm(),
+							classificatore.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -482,7 +489,8 @@ public class ClassificatoreDAO {
 							qClassificatore.locationSorgenti,
 							qClassificatore.type,
 							qClassificatore.codiceServizi,
-							qClassificatore.severity, qClassificatore.priority)
+							qClassificatore.severity, qClassificatore.priority,
+							qClassificatore.tagAlm, qClassificatore.tsTagAlm)
 					.values(classificatore.getCd_classificatore(),
 							classificatore.getCf_ambito(),
 							classificatore.getCf_area(),
@@ -516,7 +524,9 @@ public class ClassificatoreDAO {
 							classificatore.getType(),
 							classificatore.getCodiceServizi(),
 							classificatore.getSeverity(),
-							classificatore.getPriority()).execute();
+							classificatore.getPriority(),
+							classificatore.getTagAlm(),
+							classificatore.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -592,6 +602,8 @@ public class ClassificatoreDAO {
 					.set(qClassificatore.codiceServizi,  classificatore.getCodiceServizi())
 					.set(qClassificatore.severity, classificatore.getSeverity())
 					.set(qClassificatore.priority,  classificatore.getPriority())
+					.set(qClassificatore.tagAlm,  classificatore.getTagAlm())
+					.set(qClassificatore.tsTagAlm,  classificatore.getTsTagAlm())
 					
 					.execute();
 
@@ -675,6 +687,8 @@ public class ClassificatoreDAO {
 			//DM_ALM-320
 			c.setSeverity(t.get(qClassificatore.severity));
 			c.setPriority(t.get(qClassificatore.priority));
+			c.setTagAlm(t.get(qClassificatore.tagAlm));
+			c.setTsTagAlm(t.get(qClassificatore.tsTagAlm));
 			return c;
 
 		} else

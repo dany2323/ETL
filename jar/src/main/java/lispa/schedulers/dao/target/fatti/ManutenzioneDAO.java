@@ -115,7 +115,9 @@ public class ManutenzioneDAO {
 				bean.setTitoloManutenzione(rs.getString("TITOLO_MANUTENZIONE"));
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_MANUTENZIONE_PK"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				manutenzioni.add(bean);
 			}
 
@@ -209,7 +211,8 @@ public class ManutenzioneDAO {
 							man.severityManutenzione,
 							man.tempoTotaleRisoluzione, man.titoloManutenzione,
 							man.stgPk, man.dmalmUserFk06, man.uri,
-							man.dmalmProgettoSferaFk, man.dtAnnullamento)
+							man.dmalmProgettoSferaFk, man.dtAnnullamento,
+							man.tagAlm,	man.tsTagAlm)
 					.values(manutenzione.getAssigneesManutenzione(),
 							manutenzione.getCdManutenzione(),
 							manutenzione.getCodice(),
@@ -248,7 +251,8 @@ public class ManutenzioneDAO {
 							manutenzione.getDmalmUserFk06(),
 							manutenzione.getUri(),
 							manutenzione.getDmalmProgettoSferaFk(),
-							manutenzione.getDtAnnullamento()).execute();
+							manutenzione.getDtAnnullamento(),
+							manutenzione.getTagAlm(), manutenzione.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -330,7 +334,8 @@ public class ManutenzioneDAO {
 							man.tempoTotaleRisoluzione, man.titoloManutenzione,
 							man.stgPk, man.dmalmUserFk06, man.uri,
 							man.dmalmProgettoSferaFk, man.dtAnnullamento,
-							man.changed, man.annullato)
+							man.changed, man.annullato,
+							man.tagAlm,	man.tsTagAlm)
 					.values(manutenzione.getAssigneesManutenzione(),
 							manutenzione.getCdManutenzione(),
 							manutenzione.getCodice(),
@@ -375,7 +380,9 @@ public class ManutenzioneDAO {
 							manutenzione.getDmalmProgettoSferaFk(),
 							manutenzione.getDtAnnullamento(),
 							manutenzione.getChanged(),
-							manutenzione.getAnnullato()).execute();
+							manutenzione.getAnnullato(),
+							manutenzione.getTagAlm(), 
+							manutenzione.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -461,6 +468,8 @@ public class ManutenzioneDAO {
 					.set(man.uri, manutenzione.getUri())
 					.set(man.dtAnnullamento, manutenzione.getDtAnnullamento())
 					.set(man.annullato, manutenzione.getAnnullato())
+					.set(man.tagAlm, manutenzione.getTagAlm())
+					.set(man.tsTagAlm, manutenzione.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -546,6 +555,8 @@ public class ManutenzioneDAO {
 			m.setTempoTotaleRisoluzione(t.get(man.tempoTotaleRisoluzione));
 			m.setTitoloManutenzione(t.get(man.titoloManutenzione));
 			m.setUri(t.get(man.uri));
+			m.setTagAlm(t.get(man.tagAlm));
+			m.setTsTagAlm(t.get(man.tsTagAlm));
 
 			return m;
 		} else
