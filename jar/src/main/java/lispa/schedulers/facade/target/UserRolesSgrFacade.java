@@ -98,7 +98,7 @@ public class UserRolesSgrFacade {
 			};
 			
 			
-UserRolesSgrDAO.deleteUserRoles();
+			UserRolesSgrDAO.deleteUserRoles();
 			
 			logger.info("Inizio gestione ruoli globali");
 			logger.info("Inizio gestione SIRE");
@@ -132,9 +132,6 @@ UserRolesSgrDAO.deleteUserRoles();
 					.orderBy(project.idProject.asc(), project.cRev.desc())
 					.list(project.dmalmProjectPrimaryKey,project.pathProject, project.idProject, project.cRev,
 							project.cCreated,project.idRepository);
-
-			logger.info("Delete User roles");
-			UserRolesSgrDAO.deleteUserRoles();
 			
 			for (Tuple prj : dmalmProjects) {
 				logger.info("fillCurrentUserRoles - Inizio gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
