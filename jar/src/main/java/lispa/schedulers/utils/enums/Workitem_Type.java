@@ -45,6 +45,7 @@ public class Workitem_Type {
 		enumMap.put(EnumWorkitemType.programma, DmAlmConstants.STORED_PROCEDURE_STOR_PROGRAMMA);
 		enumMap.put(EnumWorkitemType.release, DmAlmConstants.STORED_PROCEDURE_REL_PROGETTO);
 		enumMap.put(EnumWorkitemType.sottoprogramma, DmAlmConstants.STORED_PROCEDURE_SOTTOPROGRAMMA);
+		enumMap.put(EnumWorkitemType.srqs, DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO);
 		return enumMap;
 	}
 }
