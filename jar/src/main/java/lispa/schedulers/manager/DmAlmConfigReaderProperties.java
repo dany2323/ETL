@@ -11,7 +11,9 @@ public class DmAlmConfigReaderProperties
 	//QUERY FATTI
 	public static final String SQL_ANOMALIA					    = "anomalia.sql";
 	public static final String SQL_ANOMALIA_PRODOTTO_DUMMY	    = "anomaliaprodottodummy.sql";
+	public static final String TEST_SQL_ANOMALIA_PRODOTTO_DUMMY	    = "selectanomaliaprodottodummy.sql";
 	public static final String SQL_DIFETTO_PRODOTTO_DUMMY	    = "difettoprodottodummy.sql";
+	public static final String TEST_SQL_DIFETTO_PRODOTTO_DUMMY	    = "selectdifettoprodottodummy.sql";
 	public static final String SQL_DEFECT 						= "defect.sql";
 	public static final String SQL_PROGRAMMA					= "programma.sql";
 	public static final String SQL_PROGETTO_DEMAND				= "rqd.sql";
