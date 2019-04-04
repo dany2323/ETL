@@ -171,7 +171,9 @@ public class CheckProjectStorFacade {
 					System.out.println("");
 				} else if(type.name().equals("release")) {
 					System.out.println("");
-				} else {
+				} else if(type.name().equals("srqs")) {
+				}
+				else {
 					logger.info("Storicizzo type: "+type);
 				}
 				for (DmalmProject p : pNew) {
@@ -189,54 +191,6 @@ public class CheckProjectStorFacade {
 
 								SQLQuery query = new SQLQuery(conn, dialect);
 								switch (type.name()) {
-								case "srqs":
-									QDmalmProgettoSviluppoSvil progetto2 = new QDmalmProgettoSviluppoSvil(
-											"progetto2");
-									pk = query
-											.from(progettoSviluppoSvil)
-											.where(progettoSviluppoSvil.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(progettoSviluppoSvil.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(progetto2)
-															.where(progettoSviluppoSvil.dmalmProjectFk02
-																	.eq(progetto2.dmalmProjectFk02))
-															.where(progettoSviluppoSvil.cdProgSvilS
-																	.eq(progetto2.cdProgSvilS))
-															.list(progetto2.dtStoricizzazione
-																	.max())))
-											.orderBy(progettoSviluppoSvil.rankStatoProgSvilS.desc(), progettoSviluppoSvil.dtModificaProgSvilS.desc(), progettoSviluppoSvil.dmalmProgSvilSPk.desc())
-											.list(progettoSviluppoSvil.dmalmProgSvilSPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-
-											DmalmProgettoSviluppoSvil pss = ProgettoSviluppoSviluppoDAO
-													.getProgettoSviluppoSviluppo(i);
-											if (pss != null) {
-												boolean exist = ProgettoSviluppoSviluppoDAO
-														.checkEsistenzaProgetto(
-																pss, p);
-												if (!exist) {
-													if (pss.getRankStatoProgSvilS() == 1) {
-														ProgettoSviluppoSviluppoDAO
-																.updateRank(
-																		pss,
-																		new Double(
-																				0));
-													}
-													pss.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													pss.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgettoSviluppoSviluppoDAO
-															.insertProgettoSviluppoSvilUpdate(
-																	dataEsecuzione,
-																	pss, false);
-												}
-											}
-										}
-									}
-									break;
 								case "documento":
 									QDmalmDocumento documento2 = new QDmalmDocumento(
 											"documento2");
@@ -1174,6 +1128,12 @@ public class CheckProjectStorFacade {
 	        logger.info("Storicizzo type: release");
 			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO+"}";
 			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO);
+			call = conn.prepareCall(sql);
+	        call.execute();
+	        
+	        logger.info("Storicizzo type: srqs");
+			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO+"}";
+			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO);
 			call = conn.prepareCall(sql);
 	        call.execute();
 		} catch (Exception e) {
