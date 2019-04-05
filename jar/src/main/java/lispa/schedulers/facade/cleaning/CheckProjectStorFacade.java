@@ -17,9 +17,7 @@ import lispa.schedulers.bean.target.fatti.DmalmPei;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoDemand;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoEse;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoDem;
-import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoSvil;
 import lispa.schedulers.bean.target.fatti.DmalmProgramma;
-import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
@@ -41,9 +39,7 @@ import lispa.schedulers.dao.target.fatti.PeiDAO;
 import lispa.schedulers.dao.target.fatti.ProgettoDemandDAO;
 import lispa.schedulers.dao.target.fatti.ProgettoEseDAO;
 import lispa.schedulers.dao.target.fatti.ProgettoSviluppoDemandDAO;
-import lispa.schedulers.dao.target.fatti.ProgettoSviluppoSviluppoDAO;
 import lispa.schedulers.dao.target.fatti.ProgrammaDAO;
-import lispa.schedulers.dao.target.fatti.ReleaseDiProgettoDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
@@ -69,9 +65,7 @@ import lispa.schedulers.queryimplementation.target.fatti.QDmalmPei;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoDemand;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoEse;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoSviluppoDem;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoSviluppoSvil;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgramma;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseDiProgetto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseServizi;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmRichiestaGestione;
@@ -92,12 +86,10 @@ public class CheckProjectStorFacade {
 
 	private static Logger logger = Logger
 			.getLogger(CheckProjectStorFacade.class);
-	private static QDmalmProgettoSviluppoSvil progettoSviluppoSvil = QDmalmProgettoSviluppoSvil.dmalmProgettoSviluppoSvil;
 	private static QDmalmDocumento documento = QDmalmDocumento.dmalmDocumento;
 	private static QDmalmManutenzione manutenzione = QDmalmManutenzione.dmalmManutenzione;
 	private static QDmalmTestcase testcase = QDmalmTestcase.dmalmTestcase;
 	private static QDmalmTask task = QDmalmTask.dmalmTask;
-	private static QDmalmReleaseDiProgetto releaseDiProgetto = QDmalmReleaseDiProgetto.dmalmReleaseDiProgetto;
 	private static QDmalmProgramma programma = QDmalmProgramma.dmalmProgramma;
 	private static QDmalmSottoprogramma sottoprogramma = QDmalmSottoprogramma.dmalmSottoprogramma;
 	private static QDmalmProgettoDemand progettoDemand = QDmalmProgettoDemand.dmalmProgettoDemand;
@@ -1114,25 +1106,25 @@ public class CheckProjectStorFacade {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			logger.info("Storicizzo type: anomalia");
-			String sql = "{call "+ DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO+"}";
+			String sql = "{call STORICIZZA_WI_BY_PROJECT."+ DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO+"}";
 			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO);
 			call = conn.prepareCall(sql);
 	        call.execute();
 			
 			logger.info("Storicizzo type: defect");
-			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO+"}";
+			sql = "{call STORICIZZA_WI_BY_PROJECT."+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO+"}";
 			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
 			call = conn.prepareCall(sql);
 	        call.execute();
 	        
 	        logger.info("Storicizzo type: release");
-			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO+"}";
+			sql = "{call STORICIZZA_WI_BY_PROJECT."+ DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO+"}";
 			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO);
 			call = conn.prepareCall(sql);
 	        call.execute();
 	        
 	        logger.info("Storicizzo type: srqs");
-			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO+"}";
+			sql = "{call STORICIZZA_WI_BY_PROJECT."+ DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO+"}";
 			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO);
 			call = conn.prepareCall(sql);
 	        call.execute();
