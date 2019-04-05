@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
@@ -12,44 +13,29 @@ import lispa.schedulers.bean.target.fatti.DmalmBuild;
 import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
 import lispa.schedulers.bean.target.fatti.DmalmFase;
-import lispa.schedulers.bean.target.fatti.DmalmManutenzione;
 import lispa.schedulers.bean.target.fatti.DmalmPei;
-import lispa.schedulers.bean.target.fatti.DmalmProgettoDemand;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoEse;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoDem;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoSvil;
-import lispa.schedulers.bean.target.fatti.DmalmProgramma;
-import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
-import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
-import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
-import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
 import lispa.schedulers.bean.target.fatti.DmalmTask;
 import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
 import lispa.schedulers.bean.target.fatti.DmalmTestcase;
-import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.fatti.AnomaliaAssistenzaDAO;
 import lispa.schedulers.dao.target.fatti.BuildDAO;
 import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
 import lispa.schedulers.dao.target.fatti.DocumentoDAO;
 import lispa.schedulers.dao.target.fatti.FaseDAO;
-import lispa.schedulers.dao.target.fatti.ManutenzioneDAO;
 import lispa.schedulers.dao.target.fatti.PeiDAO;
-import lispa.schedulers.dao.target.fatti.ProgettoDemandDAO;
 import lispa.schedulers.dao.target.fatti.ProgettoEseDAO;
 import lispa.schedulers.dao.target.fatti.ProgettoSviluppoDemandDAO;
 import lispa.schedulers.dao.target.fatti.ProgettoSviluppoSviluppoDAO;
-import lispa.schedulers.dao.target.fatti.ProgrammaDAO;
-import lispa.schedulers.dao.target.fatti.ReleaseDiProgettoDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
-import lispa.schedulers.dao.target.fatti.RichiestaManutenzioneDAO;
-import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
-import lispa.schedulers.dao.target.fatti.SottoprogrammaDAO;
 import lispa.schedulers.dao.target.fatti.TaskDAO;
 import lispa.schedulers.dao.target.fatti.TaskItDAO;
 import lispa.schedulers.dao.target.fatti.TestCaseDAO;
@@ -64,24 +50,22 @@ import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmManutenzione;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmPei;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoDemand;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoEse;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoSviluppoDem;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoSviluppoSvil;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgramma;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseDiProgetto;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseServizi;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmRichiestaGestione;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmRichiestaManutenzione;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmSottoprogramma;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTask;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.utils.DateUtils;
+import lispa.schedulers.utils.EnumUtils;
+import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
+
 import org.apache.log4j.Logger;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -94,15 +78,9 @@ public class CheckProjectStorFacade {
 			.getLogger(CheckProjectStorFacade.class);
 	private static QDmalmProgettoSviluppoSvil progettoSviluppoSvil = QDmalmProgettoSviluppoSvil.dmalmProgettoSviluppoSvil;
 	private static QDmalmDocumento documento = QDmalmDocumento.dmalmDocumento;
-	private static QDmalmManutenzione manutenzione = QDmalmManutenzione.dmalmManutenzione;
 	private static QDmalmTestcase testcase = QDmalmTestcase.dmalmTestcase;
 	private static QDmalmTask task = QDmalmTask.dmalmTask;
-	private static QDmalmReleaseDiProgetto releaseDiProgetto = QDmalmReleaseDiProgetto.dmalmReleaseDiProgetto;
-	private static QDmalmProgramma programma = QDmalmProgramma.dmalmProgramma;
-	private static QDmalmSottoprogramma sottoprogramma = QDmalmSottoprogramma.dmalmSottoprogramma;
-	private static QDmalmProgettoDemand progettoDemand = QDmalmProgettoDemand.dmalmProgettoDemand;
 	private static QDmalmProgettoSviluppoDem progettoSviluppoDem = QDmalmProgettoSviluppoDem.dmalmProgettoSviluppoDem;
-	private static QDmalmRichiestaManutenzione richiestaManutenzione = QDmalmRichiestaManutenzione.dmalmRichiestaManutenzione;
 	private static QDmalmFase fase = QDmalmFase.dmalmFase;
 	private static QDmalmPei pei = QDmalmPei.dmalmPei;
 	private static QDmalmProgettoEse progettoEse = QDmalmProgettoEse.dmalmProgettoEse;
@@ -128,7 +106,7 @@ public class CheckProjectStorFacade {
 
 		logger.info("START CheckProjectStorFacade.execute()");
 		List<DmalmProject> pNew = new ArrayList<DmalmProject>();
-
+		
 		try {
 			// solo anomalie e difetti
 			storicizzaWI();
@@ -147,6 +125,7 @@ public class CheckProjectStorFacade {
 						+ " Project");
 				storicizzaWI(pNew, dataEsecuzione, dataChiusura);
 			}
+			storicizzaWI();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -161,17 +140,25 @@ public class CheckProjectStorFacade {
 			throws DAOException, PropertiesReaderException {
 		try {
 
-			for (Workitem_Type type : Workitem_Type.values()) {
+			for (EnumWorkitemType type : EnumWorkitemType.values()) {
 				ConnectionManager cm = null;
 				Connection conn = null;
 				List<Integer> pk = new ArrayList<Integer>();
 				if(type.name().equals("anomalia")) {
-					System.out.println("");
-				} else if(type.name().equals("defect")) {
-					System.out.println("");
-				} else if(type.name().equals("release")) {
-					System.out.println("");
-				} else if(type.name().equals("srqs")) {
+				} 
+				else if(type.name().equals("defect")) {
+				} 
+				else if(type.name().equals("sup")) {
+				} 
+				else if(type.name().equals("sman") || type.name().equals("dman")) {
+				} 
+				else if(type.name().equals("rqd")) {
+				} 
+				else if(type.name().equals("programma")) {
+				} 
+				else if(type.name().equals("release")) {
+				} 
+				else if(type.name().equals("sottoprogramma")) {
 				}
 				else {
 					logger.info("Storicizzo type: "+type);
@@ -234,53 +221,6 @@ public class CheckProjectStorFacade {
 															.insertDocumentoUpdate(
 																	dataEsecuzione,
 																	d, false);
-												}
-											}
-										}
-									}
-									break;
-								case "sman":
-									QDmalmManutenzione manutenzione2 = new QDmalmManutenzione(
-											"manutenzione2");
-									pk = query
-											.from(manutenzione)
-											.where(manutenzione.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(manutenzione.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(manutenzione2)
-															.where(manutenzione.dmalmProjectFk02
-																	.eq(manutenzione2.dmalmProjectFk02))
-															.where(manutenzione.cdManutenzione
-																	.eq(manutenzione2.cdManutenzione))
-															.list(manutenzione2.dtStoricizzazione
-																	.max())))
-											.orderBy(manutenzione.rankStatoManutenzione.desc(), manutenzione.dtModificaManutenzione.desc(), manutenzione.dmalmManutenzionePk.desc())
-											.list(manutenzione.dmalmManutenzionePk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmManutenzione m = ManutenzioneDAO
-													.getManutenzione(i);
-											if (m != null) {
-												boolean exist = ManutenzioneDAO
-														.checkEsistenzaManutenzione(
-																m, p);
-												if (!exist) {
-													if (m.getRankStatoManutenzione() == 1) {
-														ManutenzioneDAO
-																.updateRank(
-																		m,
-																		new Double(
-																				0));
-													}
-													m.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													m.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ManutenzioneDAO
-															.insertManutenzioneUpdate(
-																	dataEsecuzione,
-																	m, false);
 												}
 											}
 										}
@@ -374,148 +314,6 @@ public class CheckProjectStorFacade {
 										}
 									}
 									break;
-								case "programma":
-									QDmalmProgramma programma2 = new QDmalmProgramma(
-											"programma2");
-									pk = query
-											.from(programma)
-											.where(programma.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(programma.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(programma2)
-															.where(programma.dmalmProjectFk02
-																	.eq(programma2.dmalmProjectFk02))
-															.where(programma.cdProgramma
-																	.eq(programma2.cdProgramma))
-															.list(programma2.dtStoricizzazione
-																	.max())))
-											.orderBy(programma.rankStatoProgramma.desc(), programma.dtModificaProgramma.desc(), programma.dmalmProgrammaPk.desc())
-											.list(programma.dmalmProgrammaPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmProgramma d = ProgrammaDAO
-													.getProgramma(i);
-											if (d != null) {
-												boolean exist = ProgrammaDAO
-														.checkEsistenzaProgramma(
-																d, p);
-												if (!exist) {
-													if (d.getRankStatoProgramma() == 1) {
-														ProgrammaDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
-													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgrammaDAO
-															.insertProgrammaUpdate(
-																	dataEsecuzione,
-																	d, false);
-												}
-											}
-										}
-									}
-									break;
-								case "sottoprogramma":
-									QDmalmSottoprogramma sottoprogramma2 = new QDmalmSottoprogramma(
-											"sottoprogramma2");
-									pk = query
-											.from(sottoprogramma)
-											.where(sottoprogramma.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(sottoprogramma.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(sottoprogramma2)
-															.where(sottoprogramma.dmalmProjectFk02
-																	.eq(sottoprogramma2.dmalmProjectFk02))
-															.where(sottoprogramma.cdSottoprogramma
-																	.eq(sottoprogramma2.cdSottoprogramma))
-															.list(sottoprogramma2.dtStoricizzazione
-																	.max())))
-											.orderBy(sottoprogramma.rankStatoSottoprogramma.desc(), sottoprogramma.dtModificaSottoprogramma.desc(), sottoprogramma.dmalmSottoprogrammaPk.desc())
-											.list(sottoprogramma.dmalmSottoprogrammaPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-
-											DmalmSottoprogramma s = SottoprogrammaDAO
-													.getSottoprogramma(i);
-											if (s != null) {
-												boolean exist = SottoprogrammaDAO
-														.checkEsistenzaSottoProgramma(
-																s, p);
-												if (!exist) {
-													if (s.getRankStatoSottoprogramma() == 1) {
-														SottoprogrammaDAO
-																.updateRank(
-																		s,
-																		new Double(
-																				0));
-													}
-													s.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													s.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													SottoprogrammaDAO
-															.insertSottoprogrammaUpdate(
-																	dataEsecuzione,
-																	s, false);
-												}
-											}
-										}
-									}
-									break;
-								case "rqd":
-									QDmalmProgettoDemand progettoDemand2 = new QDmalmProgettoDemand(
-											"progettoDemand2");
-									pk = query
-											.from(progettoDemand)
-											.where(progettoDemand.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(progettoDemand.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(progettoDemand2)
-															.where(progettoDemand.dmalmProjectFk02
-																	.eq(progettoDemand2.dmalmProjectFk02))
-															.where(progettoDemand.cdProgettoDemand
-																	.eq(progettoDemand2.cdProgettoDemand))
-															.list(progettoDemand2.dtStoricizzazione
-																	.max())))
-											.orderBy(progettoDemand.rankStatoProgettoDemand.desc(), progettoDemand.dtModificaProgettoDemand.desc(), progettoDemand.dmalmProgettoDemandPk.desc())
-											.list(progettoDemand.dmalmProgettoDemandPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmProgettoDemand d = ProgettoDemandDAO
-													.getProgettoDemand(i);
-											if (d != null) {
-												boolean exist = ProgettoDemandDAO
-														.checkEsistenzaProgetto(
-																d, p);
-												if (!exist) {
-													if (d.getRankStatoProgettoDemand() == 1) {
-														ProgettoDemandDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
-													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgettoDemandDAO
-															.insertProgettoDemandUpdate(
-																	dataEsecuzione,
-																	d, false);
-												}
-											}
-										}
-									}
-									break;
 								case "drqs":
 									QDmalmProgettoSviluppoDem progettoSviluppoDem2 = new QDmalmProgettoSviluppoDem(
 											"progettoSviluppoDem2");
@@ -558,53 +356,6 @@ public class CheckProjectStorFacade {
 															.insertProgettoSviluppoDemUpdate(
 																	dataEsecuzione,
 																	d, false);
-												}
-											}
-										}
-									}
-									break;
-								case "dman":
-									QDmalmRichiestaManutenzione richiestaManutenzione2 = new QDmalmRichiestaManutenzione(
-											"richiestaManutenzione2");
-									pk = query
-											.from(richiestaManutenzione)
-											.where(richiestaManutenzione.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(richiestaManutenzione.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(richiestaManutenzione2)
-															.where(richiestaManutenzione.dmalmProjectFk02
-																	.eq(richiestaManutenzione2.dmalmProjectFk02))
-															.where(richiestaManutenzione.cdRichiestaManutenzione
-																	.eq(richiestaManutenzione2.cdRichiestaManutenzione))
-															.list(richiestaManutenzione2.dtStoricizzazione
-																	.max())))
-											.orderBy(richiestaManutenzione.rankStatoRichManutenzione.desc(), richiestaManutenzione.dtModificaRichManutenzione.desc(), richiestaManutenzione.dmalmRichManutenzionePk.desc())
-											.list(richiestaManutenzione.dmalmRichManutenzionePk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmRichiestaManutenzione r = RichiestaManutenzioneDAO
-													.getRichiestaManutenzione(i);
-											if (r != null) {
-												boolean exist = RichiestaManutenzioneDAO
-														.checkEsistenzaRichiesta(
-																r, p);
-												if (!exist) {
-													if (r.getRankStatoRichManutenzione() == 1) {
-														RichiestaManutenzioneDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
-													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													RichiestaManutenzioneDAO
-															.insertRichiestaManutenzioneUpdate(
-																	dataEsecuzione,
-																	r, false);
 												}
 											}
 										}
@@ -1061,27 +812,6 @@ public class CheckProjectStorFacade {
 										}
 									}
 									break;
-									
-								case "sup":
-									List<DmalmRichiestaSupporto> richieste = RichiestaSupportoDAO
-														.getRichiestaSupporto(history.getDmalmProjectPk(), 1);
-									for (DmalmRichiestaSupporto richiesta : richieste) {
-										DmalmRichiestaSupporto r = RichiestaSupportoDAO
-												.getRichiestaSupporto(richiesta.getDmalmRichiestaSupportoPk());
-										if (r != null) {
-											boolean exist = RichiestaSupportoDAO.checkEsistenzaRichiestaSupporto(r, p);
-											if (!exist) {
-												if (r.getRankStatoRichSupporto() == 1) {
-													RichiestaSupportoDAO.updateRank(r, new Double(0));
-												}
-												r.setDataStoricizzazione(p.getDtInizioValidita());
-												r.setDmalmProjectFk02(p.getDmalmProjectPk());
-												RichiestaSupportoDAO.insertRichiestaSupportoUpdate(dataEsecuzione, r, false);
-											}
-										}
-									}
-									break;
-
 								}
 
 							} catch (Exception e) {
@@ -1104,41 +834,26 @@ public class CheckProjectStorFacade {
 		}
 
 	}
-	
-	private static void storicizzaWI() throws SQLException, DAOException {
-
+	private static void storicizzaWI() throws DAOException, SQLException {
+		
 		ConnectionManager cm = null;
 		Connection conn = null;
 		CallableStatement call = null;
 		try {
-			cm = ConnectionManager.getInstance();
-			conn = cm.getConnectionOracle();
-			logger.info("Storicizzo type: anomalia");
-			String sql = "{call "+ DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO+"}";
-			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO);
-			call = conn.prepareCall(sql);
-	        call.execute();
-			
-			logger.info("Storicizzo type: defect");
-			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO+"}";
-			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
-			call = conn.prepareCall(sql);
-	        call.execute();
-	        
-	        logger.info("Storicizzo type: release");
-			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO+"}";
-			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_STOR_RELEASE_PROGETTO);
-			call = conn.prepareCall(sql);
-	        call.execute();
-	        
-	        logger.info("Storicizzo type: srqs");
-			sql = "{call "+DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO+"}";
-			logger.debug("Inizio chiamata alla Stored Procedure "+DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO);
-			call = conn.prepareCall(sql);
-	        call.execute();
+			Iterator<EnumWorkitemType> itEnumWiTypeKeySet = Workitem_Type.getEnumMapWiTypeStoredProcedure().keySet().iterator();
+			while (itEnumWiTypeKeySet.hasNext()) {
+				EnumWorkitemType enumWorkitemType = itEnumWiTypeKeySet.next();
+				logger.info("Storicizzo type: "+enumWorkitemType);
+				String sql = QueryUtils.getCallProcedure("STORICIZZA_WI_BY_PROJECT."+ Workitem_Type.getEnumMapWiTypeStoredProcedure().get(enumWorkitemType), 0);
+				logger.debug("Inizio chiamata alla Stored Procedure "+Workitem_Type.getEnumMapWiTypeStoredProcedure().get(enumWorkitemType));
+				cm = ConnectionManager.getInstance();
+				conn = cm.getConnectionOracle();
+				call = conn.prepareCall(sql);
+		        call.execute();
+			}
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
 		} finally {
 			if (cm != null)
 				cm.closeConnection(conn);

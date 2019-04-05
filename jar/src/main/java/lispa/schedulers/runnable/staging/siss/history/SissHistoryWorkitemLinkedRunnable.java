@@ -8,14 +8,15 @@ import org.apache.log4j.Logger;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class SissHistoryWorkitemLinkedRunnable implements Runnable {
 	
 	private Logger logger;
-	Map<Workitem_Type, Long> minRevisionsByType;
+	Map<EnumWorkitemType, Long> minRevisionsByType;
 	private long polarion_maxRevision;
 	
-	public SissHistoryWorkitemLinkedRunnable(Map<Workitem_Type, Long> minRevisionsByType, long polarion_maxRevision, Logger logger) {
+	public SissHistoryWorkitemLinkedRunnable(Map<EnumWorkitemType, Long> minRevisionsByType, long polarion_maxRevision, Logger logger) {
 		
 		this.logger = logger;
 		this.minRevisionsByType = minRevisionsByType;

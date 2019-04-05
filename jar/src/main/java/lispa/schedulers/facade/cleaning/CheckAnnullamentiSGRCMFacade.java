@@ -94,6 +94,8 @@ import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
+
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -354,7 +356,7 @@ public class CheckAnnullamentiSGRCMFacade {
 			Timestamp dataChiusura = DateUtils.addSecondsToTimestamp(
 					dataEsecuzione, -1);
 
-			for (Workitem_Type type : Workitem_Type.values()) {
+			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				ConnectionManager cm = null;
 				Connection conn = null;
 				List<Integer> pk = new ArrayList<Integer>();
@@ -1314,7 +1316,7 @@ public class CheckAnnullamentiSGRCMFacade {
 			List<DmalmProject> pNew = ProjectSgrCmDAO.getProjectToLinkWi(
 					unmarked, dataEsecuzione);
 
-			for (Workitem_Type type : Workitem_Type.values()) {
+			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				ConnectionManager cm = null;
 				Connection conn = null;
 				List<Integer> pk = new ArrayList<Integer>();

@@ -27,6 +27,7 @@ import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistor
 import lispa.schedulers.queryimplementation.target.QDmalmStatoWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNException;
@@ -97,10 +98,10 @@ public class SireHistoryWorkitemDAO {
 
 	}
 
-	public static Map<Workitem_Type, Long> getMinRevisionByType()
+	public static Map<EnumWorkitemType, Long> getMinRevisionByType()
 			throws Exception {
 
-		HashMap<Workitem_Type, Long> map = new HashMap<Workitem_Type, Long>();
+		HashMap<EnumWorkitemType, Long> map = new HashMap<EnumWorkitemType, Long>();
 
 		SQLTemplates dialect = new HSQLDBTemplates();
 
@@ -108,7 +109,7 @@ public class SireHistoryWorkitemDAO {
 		Connection oracle = null;
 
 		try {
-			for (Workitem_Type type : Workitem_Type.values()) {
+			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 
 				List<Long> max = new ArrayList<Long>();
 
@@ -268,8 +269,8 @@ public class SireHistoryWorkitemDAO {
 	}
 
 	public static void fillSireHistoryWorkitem(
-			Map<Workitem_Type, Long> minRevisionByType, long maxRevision,
-			Workitem_Type type) throws Exception {
+			Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision,
+			EnumWorkitemType type) throws Exception {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;

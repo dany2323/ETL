@@ -39,6 +39,7 @@ import lispa.schedulers.runnable.staging.sire.history.SireHistoryUserRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryWorkitemUserAssignedRunnable;
 import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 /**
  * In particolare, il popolamento delle tabelle di staging di SGR_CM avviene
@@ -163,7 +164,7 @@ public class FillSIREHistoryFacade {
 		try {
 			logger.debug("START SIREHistoryFacade.fill()");
 
-			Map<Workitem_Type, Long> minRevisionsByType = SireHistoryWorkitemDAO
+			Map<EnumWorkitemType, Long> minRevisionsByType = SireHistoryWorkitemDAO
 					.getMinRevisionByType();
 
 			// Specifica: recupero il numero di revisione più alto alla fonte
@@ -259,9 +260,9 @@ public class FillSIREHistoryFacade {
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			
 			logger.debug("START SireHistoryWorkitem - numero wi: "
-					+ Workitem_Type.values().length);
+					+ Workitem_Type.EnumWorkitemType.values().length);
 			
-			for (Workitem_Type type : Workitem_Type.values()) {
+			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				logger.debug("START TYPE: SIRE " + type.toString());
 				int tentativi = 0;
 				ErrorManager.getInstance().resetDeadlock();

@@ -7,6 +7,7 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.svn.StatoWorkItemXML;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
@@ -24,7 +25,7 @@ public class SissStatoWorkitemRunnable implements Runnable {
 	public void run() {
 		
 		try {
-			for(Workitem_Type type : Workitem_Type.values()) {
+			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				logger.debug("START  fillStatoWorkItem SISS "+ type.toString() + " " + new Date());
 				StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SISS, type);
 				logger.debug("STOP  fillStatoWorkItem SISS " + type.toString() + " " + new Date());

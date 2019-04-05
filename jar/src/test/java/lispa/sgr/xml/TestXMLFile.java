@@ -534,13 +534,13 @@ public class TestXMLFile extends TestCase {
 
 	public void testFillStatoWorkItem() throws Exception {
 		StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SIRE,
-				Workitem_Type.pei);
+				Workitem_Type.EnumWorkitemType.pei);
 		StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SIRE,
-				Workitem_Type.anomalia_assistenza);
+				Workitem_Type.EnumWorkitemType.anomalia_assistenza);
 		StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SIRE,
-				Workitem_Type.taskit);
+				Workitem_Type.EnumWorkitemType.taskit);
 		StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SIRE,
-				Workitem_Type.build);
+				Workitem_Type.EnumWorkitemType.build);
 	}
 
 	public void testFillLinkedWorkItemRoles() {

@@ -39,6 +39,7 @@ import lispa.schedulers.runnable.staging.siss.history.SissHistoryUserRunnable;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryWorkitemUserAssignedRunnable;
 import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 /**
  * In particolare, il popolamento delle tabelle di staging di SGR_CM avviene
@@ -161,7 +162,7 @@ public class FillSISSHistoryFacade {
 		try {
 			logger.debug("START SISSHistoryFacade.fill()");
 
-			Map<Workitem_Type, Long> minRevisionsByType = SissHistoryWorkitemDAO
+			Map<EnumWorkitemType, Long> minRevisionsByType = SissHistoryWorkitemDAO
 					.getMinRevisionByType();
 
 			long user_minRevision = SissHistoryUserDAO.getMinRevision();
@@ -249,9 +250,9 @@ public class FillSISSHistoryFacade {
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			
 			logger.debug("START SissHistoryWorkitem - numero wi: "
-					+ Workitem_Type.values().length);
+					+ Workitem_Type.EnumWorkitemType.values().length);
 			
-			for (Workitem_Type type : Workitem_Type.values()) {
+			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				logger.debug("START TYPE: SISS " + type.toString());
 				int tentativi = 0;
 				ErrorManager.getInstance().resetDeadlock();

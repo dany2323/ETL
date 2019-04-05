@@ -46,7 +46,7 @@ public class RichiestaManutenzioneDAO {
 
 		DmalmRichiestaManutenzione bean = null;
 		List<DmalmRichiestaManutenzione> richieste = new ArrayList<DmalmRichiestaManutenzione>(
-				QueryUtils.getCountByWIType(Workitem_Type.dman));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.dman));
 
 		try {
 			cm = ConnectionManager.getInstance();

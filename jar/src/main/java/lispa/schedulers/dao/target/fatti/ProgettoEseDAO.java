@@ -44,7 +44,7 @@ public class ProgettoEseDAO {
 
 		DmalmProgettoEse bean = null;
 		List<DmalmProgettoEse> progetti = new ArrayList<DmalmProgettoEse>(
-				QueryUtils.getCountByWIType(Workitem_Type.progettoese));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.progettoese));
 
 		try {
 			cm = ConnectionManager.getInstance();

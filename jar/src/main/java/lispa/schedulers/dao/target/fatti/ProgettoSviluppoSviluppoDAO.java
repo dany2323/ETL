@@ -45,7 +45,7 @@ public class ProgettoSviluppoSviluppoDAO {
 
 		DmalmProgettoSviluppoSvil bean = null;
 		List<DmalmProgettoSviluppoSvil> progettiSviluppo = new ArrayList<DmalmProgettoSviluppoSvil>(
-				QueryUtils.getCountByWIType(Workitem_Type.srqs));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.srqs));
 
 		try {
 			cm = ConnectionManager.getInstance();

@@ -40,7 +40,7 @@ public class TestSIREHistoryWorkItem extends TestCase {
 			@Override
 			public void run() {
 				SireHistoryWorkitemDAO.updateDescriptions(0, Long.MAX_VALUE,
-						Workitem_Type.anomalia_assistenza.toString());
+						Workitem_Type.EnumWorkitemType.anomalia_assistenza.toString());
 
 			}
 
@@ -50,7 +50,7 @@ public class TestSIREHistoryWorkItem extends TestCase {
 			@Override
 			public void run() {
 				SireHistoryWorkitemDAO.updateDescriptions(0, Long.MAX_VALUE,
-						Workitem_Type.srqs.toString());
+						Workitem_Type.EnumWorkitemType.srqs.toString());
 
 			}
 
@@ -60,7 +60,7 @@ public class TestSIREHistoryWorkItem extends TestCase {
 			@Override
 			public void run() {
 				SireHistoryWorkitemDAO.updateDescriptions(0, Long.MAX_VALUE,
-						Workitem_Type.richiesta_gestione.toString());
+						Workitem_Type.EnumWorkitemType.richiesta_gestione.toString());
 
 			}
 
@@ -70,7 +70,7 @@ public class TestSIREHistoryWorkItem extends TestCase {
 			@Override
 			public void run() {
 				SissHistoryWorkitemDAO.updateDescriptions(0, Long.MAX_VALUE,
-						Workitem_Type.anomalia_assistenza.toString());
+						Workitem_Type.EnumWorkitemType.anomalia_assistenza.toString());
 
 			}
 
@@ -80,7 +80,7 @@ public class TestSIREHistoryWorkItem extends TestCase {
 			@Override
 			public void run() {
 				SissHistoryWorkitemDAO.updateDescriptions(0, Long.MAX_VALUE,
-						Workitem_Type.srqs.toString());
+						Workitem_Type.EnumWorkitemType.srqs.toString());
 
 			}
 
@@ -90,7 +90,7 @@ public class TestSIREHistoryWorkItem extends TestCase {
 			@Override
 			public void run() {
 				SissHistoryWorkitemDAO.updateDescriptions(0, Long.MAX_VALUE,
-						Workitem_Type.richiesta_gestione.toString());
+						Workitem_Type.EnumWorkitemType.richiesta_gestione.toString());
 
 			}
 

@@ -41,13 +41,13 @@ private static Logger logger = Logger.getLogger(RichiestaSupportoFacade.class);
 			
 			RichiestaSupportoOdsDAO.delete();
 			
-			logger.debug("START -> Popolamento Richiesta Supporto, "+staging_richieste.size()+ " richiese di supporto");
+			logger.debug("START -> Popolamento Richiesta Supporto ODS, "+staging_richieste.size()+ " richiese di supporto");
 			
 			RichiestaSupportoOdsDAO.insert(staging_richieste, dataEsecuzione);
 			
 			List<DmalmRichiestaSupporto> x = RichiestaSupportoOdsDAO.getAll();
 			
-			logger.debug("STOP -> Richiesta Supporto, "+staging_richieste.size()+ " richiese di supporto");
+			logger.debug("STOP -> Richiesta Supporto ODS, "+staging_richieste.size()+ " richiese di supporto");
 			
 			for(DmalmRichiestaSupporto richiesta : x) {
 				

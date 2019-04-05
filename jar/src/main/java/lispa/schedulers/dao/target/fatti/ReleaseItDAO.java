@@ -44,7 +44,7 @@ public class ReleaseItDAO {
 
 		DmalmReleaseIt bean = null;
 		List<DmalmReleaseIt> releases = new ArrayList<DmalmReleaseIt>(
-				QueryUtils.getCountByWIType(Workitem_Type.release_it));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.release_it));
 
 		try {
 			cm = ConnectionManager.getInstance();

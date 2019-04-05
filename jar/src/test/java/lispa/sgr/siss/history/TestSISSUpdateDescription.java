@@ -8,7 +8,7 @@ public class TestSISSUpdateDescription extends TestCase {
 
 	public static void testDescription() throws InterruptedException {
 		Thread anomAssSISS = new Thread(new SissHistoryDescriptionRunnable(
-				Workitem_Type.anomalia_assistenza, 0, Long.MAX_VALUE));
+				Workitem_Type.EnumWorkitemType.anomalia_assistenza, 0, Long.MAX_VALUE));
 
 		anomAssSISS.start();
 		anomAssSISS.join();

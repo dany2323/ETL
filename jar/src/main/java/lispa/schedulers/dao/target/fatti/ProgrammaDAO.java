@@ -43,7 +43,7 @@ public class ProgrammaDAO {
 
 		DmalmProgramma bean = null;
 		List<DmalmProgramma> programmi = new ArrayList<DmalmProgramma>(
-				QueryUtils.getCountByWIType(Workitem_Type.programma));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.programma));
 
 		try {
 			cm = ConnectionManager.getInstance();

@@ -31,13 +31,14 @@ import lispa.schedulers.utils.enums.CF_taskit;
 import lispa.schedulers.utils.enums.CF_testcase;
 import lispa.schedulers.utils.enums.Template_Type;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class EnumUtils {
 
 	public static List<String> workItemTypes() {
-		Workitem_Type types[] = Workitem_Type.values();
+		EnumWorkitemType types[] = Workitem_Type.EnumWorkitemType.values();
 		List<String> types_list = new ArrayList<String>();
-		for(Workitem_Type type : types) {
+		for(EnumWorkitemType type : types) {
 			types_list.add(type.toString());
 		}
 		return types_list;
@@ -47,7 +48,7 @@ public class EnumUtils {
 
 
 	/* ritorna la lista di CF di interesse per il Workitem_type */
-	public static List<String> getCFEnumerationByType(Workitem_Type type) {
+	public static List<String> getCFEnumerationByType(EnumWorkitemType type) {
 
 		Enum<?>[] CF_enum = null;
 		List<String> custom_fields = new ArrayList<String>();
@@ -142,7 +143,7 @@ public class EnumUtils {
 		
 		return custom_fields;
 	}
-	public static String getTemplateByWorkItem(Workitem_Type type) {
+	public static String getTemplateByWorkItem(EnumWorkitemType type) {
 		String template = null;
 
 		switch(type.toString()) {
@@ -229,7 +230,7 @@ public class EnumUtils {
 		return template;
 	}
 	//
-	public static String getCustomFieldValue(Workitem_Type type,String customFieldId,String idValue) {
+	public static String getCustomFieldValue(EnumWorkitemType type,String customFieldId,String idValue) {
 		
 		Enum<?>[] CF_values = null;
 		List<String> custom_fields_values = new ArrayList<String>();

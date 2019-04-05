@@ -84,13 +84,14 @@ import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class TestWI extends TestCase {
 
 	private static Logger logger = Logger.getLogger(DmAlmETL.class);
 	private int retry;
 	private int wait;
-	private Map<Workitem_Type, Long> minRevisionsByType;
+	private Map<EnumWorkitemType, Long> minRevisionsByType;
 	
 	private static QDmalmAsm dmalmAsm = QDmalmAsm.dmalmAsm;
 	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
@@ -363,7 +364,7 @@ public class TestWI extends TestCase {
 	}
 
 	private void loadWiAndCustomFieldInStaging(String typeWi,long minRev, long maxRev) throws Exception {
-		Map<Workitem_Type, Long> minRevisionsByType = SireHistoryWorkitemDAO
+		Map<EnumWorkitemType, Long> minRevisionsByType = SireHistoryWorkitemDAO
 				.getMinRevisionByType();
 		// Drop degli indici prima dell'elaborazione di HISTORY_WORKITEM e
 		// HISTORY_CF_WORKITEM
@@ -377,10 +378,10 @@ public class TestWI extends TestCase {
 				.getProperty(DMALM_DEADLOCK_WAIT));
 
 		logger.debug("START SireHistoryWorkitem - numero wi: "
-				+ Workitem_Type.values().length);
+				+ Workitem_Type.EnumWorkitemType.values().length);
 
-		Workitem_Type type = null;
-		for (Workitem_Type type2 : Workitem_Type.values()) {
+		EnumWorkitemType type = null;
+		for (EnumWorkitemType type2 : Workitem_Type.EnumWorkitemType.values()) {
 			if(type2.toString().equals(typeWi)){
 				type = type2;
 			}

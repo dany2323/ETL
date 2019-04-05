@@ -48,7 +48,7 @@ public class DifettoDAO {
 
 		DmalmDifettoProdotto bean = null;
 		List<DmalmDifettoProdotto> difetti = new ArrayList<DmalmDifettoProdotto>(
-				QueryUtils.getCountByWIType(Workitem_Type.defect));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.defect));
 
 		try {
 			cm = ConnectionManager.getInstance();

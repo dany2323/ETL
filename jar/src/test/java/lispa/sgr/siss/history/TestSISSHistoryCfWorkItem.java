@@ -20,6 +20,7 @@ import lispa.schedulers.runnable.staging.sire.history.SireHistoryWorkitemRunnabl
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryWorkitemRunnable;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -119,7 +120,7 @@ extends TestCase
 		try {
 			List<Thread> sireworkitems = new ArrayList<Thread>();
 			List<Thread> sissworkitems = new ArrayList<Thread>();
-			for(Workitem_Type type : Workitem_Type.values()) {
+			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				Thread t = new Thread(new SissHistoryWorkitemRunnable(SissHistoryWorkitemDAO.getMinRevisionByType(), Long.MAX_VALUE, logger, type));
 				Thread t1 = new Thread(new SireHistoryWorkitemRunnable(SireHistoryWorkitemDAO.getMinRevisionByType(), Long.MAX_VALUE, logger, type));
 

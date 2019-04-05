@@ -43,7 +43,7 @@ public class AnomaliaAssistenzaDAO {
 
 		DmalmAnomaliaAssistenza bean = null;
 		List<DmalmAnomaliaAssistenza> anomalie = new ArrayList<DmalmAnomaliaAssistenza>(
-				QueryUtils.getCountByWIType(Workitem_Type.anomalia_assistenza));
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.anomalia_assistenza));
 
 		try {
 			cm = ConnectionManager.getInstance();

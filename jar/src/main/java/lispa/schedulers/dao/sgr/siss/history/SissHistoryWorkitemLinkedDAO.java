@@ -12,6 +12,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitemLinked;
 import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;
 
@@ -32,7 +33,7 @@ public class SissHistoryWorkitemLinkedDAO
 		
 	private static QSissHistoryWorkitemLinked stgLinkedWorkitems = QSissHistoryWorkitemLinked.sissHistoryWorkitemLinked;
 
-	public static void fillSissHistoryWorkitemLinked(Map<Workitem_Type, Long> minRevisionsByType, long maxRevision) throws Exception {
+	public static void fillSissHistoryWorkitemLinked(Map<EnumWorkitemType, Long> minRevisionsByType, long maxRevision) throws Exception {
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
