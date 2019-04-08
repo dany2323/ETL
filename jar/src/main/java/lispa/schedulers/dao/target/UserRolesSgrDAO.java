@@ -475,6 +475,7 @@ public class UserRolesSgrDAO {
 			if (nodeKind == SVNNodeKind.FILE) {
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 						.newInstance();
+				
 				Document doc = dbFactory.newDocumentBuilder()
 						.parse(new ByteArrayInputStream(xmlContent
 								.getBytes()));
@@ -535,8 +536,6 @@ public class UserRolesSgrDAO {
 	private static Integer getMaxPk() throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		Integer resUserRolesSgrPk = 0;
 		
@@ -546,18 +545,15 @@ public class UserRolesSgrDAO {
 
 			String sql = QueryManager.getInstance().getQuery(
 					DmAlmConfigReaderProperties.USER_ROLES_SGR_PK_MAXVAL);
-			ps = connection.prepareStatement(sql);
+			try(PreparedStatement ps = connection.prepareStatement(sql);){
 
-			rs = ps.executeQuery();
-			rs.next();
-			resUserRolesSgrPk = rs.getInt("DMALM_USER_ROLES_PK")+1;
+				try(ResultSet rs = ps.executeQuery();){
+					rs.next();
+					resUserRolesSgrPk = rs.getInt("DMALM_USER_ROLES_PK")+1;
+				}
+			}
 			
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
+				
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
