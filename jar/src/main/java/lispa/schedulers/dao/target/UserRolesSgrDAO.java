@@ -418,8 +418,7 @@ public class UserRolesSgrDAO {
 	}
 	
 	public static List<DmalmUserRolesSgr> getUserRolesForProjectAtRevision(String myrepo,
-			String projectId, String projectLocation, long c_rev,
-			Timestamp c_created, SVNRepository repository) throws Exception {
+			String projectId, String projectLocation, SVNRepository repository) throws Exception {
 		
 		List<DmalmUserRolesSgr> projectUserRoles = new ArrayList<DmalmUserRolesSgr>();
 
@@ -444,12 +443,12 @@ public class UserRolesSgrDAO {
 							.getProperty(
 									DmAlmConfigReaderProperties.SIRE_SVN_USER_ROLES_FILE));
 
-			SVNNodeKind nodeKind = repository.checkPath(filePath, c_rev);
+			SVNNodeKind nodeKind = repository.checkPath(filePath, -1);
 			SVNProperties fileProperties = null;
 			ByteArrayOutputStream baos = null;
 			fileProperties = new SVNProperties();
 
-			SVNFileRevision svnfr = new SVNFileRevision(filePath, c_rev, fileProperties, fileProperties);
+			SVNFileRevision svnfr = new SVNFileRevision(filePath, -1, fileProperties, fileProperties);
 
 			baos = new ByteArrayOutputStream();
 			if(repository.checkPath(svnfr.getPath(), svnfr.getRevision()) == SVNNodeKind.NONE){
@@ -476,6 +475,7 @@ public class UserRolesSgrDAO {
 			if (nodeKind == SVNNodeKind.FILE) {
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 						.newInstance();
+				
 				Document doc = dbFactory.newDocumentBuilder()
 						.parse(new ByteArrayInputStream(xmlContent
 								.getBytes()));
@@ -536,8 +536,6 @@ public class UserRolesSgrDAO {
 	private static Integer getMaxPk() throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		Integer resUserRolesSgrPk = 0;
 		
@@ -547,18 +545,15 @@ public class UserRolesSgrDAO {
 
 			String sql = QueryManager.getInstance().getQuery(
 					DmAlmConfigReaderProperties.USER_ROLES_SGR_PK_MAXVAL);
-			ps = connection.prepareStatement(sql);
+			try(PreparedStatement ps = connection.prepareStatement(sql);){
 
-			rs = ps.executeQuery();
-			rs.next();
-			resUserRolesSgrPk = rs.getInt("DMALM_USER_ROLES_PK")+1;
+				try(ResultSet rs = ps.executeQuery();){
+					rs.next();
+					resUserRolesSgrPk = rs.getInt("DMALM_USER_ROLES_PK")+1;
+				}
+			}
 			
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
+				
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);

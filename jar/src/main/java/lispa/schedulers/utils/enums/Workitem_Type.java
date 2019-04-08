@@ -31,14 +31,14 @@ public class Workitem_Type {
 		task,
 		classificatore_demand, 
 		classificatore,
-		sup
+//		sup
 	}
 	
 	public static EnumMap<EnumWorkitemType, String> getEnumMapWiTypeStoredProcedure() {
 		EnumMap<EnumWorkitemType, String> enumMap = new EnumMap<EnumWorkitemType, String>(EnumWorkitemType.class);
 		enumMap.put(EnumWorkitemType.anomalia, DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO);
 		enumMap.put(EnumWorkitemType.defect, DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
-		enumMap.put(EnumWorkitemType.sup, DmAlmConstants.STORED_PROCEDURE_STOR_RICHIESTA_SUPPORTO);
+//		enumMap.put(EnumWorkitemType.sup, DmAlmConstants.STORED_PROCEDURE_STOR_RICHIESTA_SUPPORTO);
 		enumMap.put(EnumWorkitemType.sman, DmAlmConstants.STORED_PROCEDURE_STOR_MANUTENZIONE);
 		enumMap.put(EnumWorkitemType.dman, DmAlmConstants.STORED_PROCEDURE_STOR_MANUTENZIONE);
 		enumMap.put(EnumWorkitemType.rqd, DmAlmConstants.STORED_PROCEDURE_STOR_PROG_DEMAND);
