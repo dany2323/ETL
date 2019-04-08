@@ -11,10 +11,10 @@ insert into DMALM_PERSONALE               ( select * from T_DMALM_PERSONALE     
 insert into DMALM_ASM                     ( select * from T_DMALM_ASM ); 
 insert into DMALM_PROGETTO_SFERA          ( select * from T_DMALM_PROGETTO_SFERA ); 
 insert into DMALM_MISURA                  ( select * from T_DMALM_MISURA ); 
+insert into DMALM_AREA_TEMATICA           ( select * from T_DMALM_AREA_TEMATICA            );
 insert into DMALM_PROJECT                 ( select * from T_DMALM_PROJECT                  );
 insert into DMALM_USER                    ( select * from T_DMALM_USER                     );
 insert into DMALM_STATO_WORKITEM          ( select * from T_DMALM_STATO_WORKITEM           );
-insert into DMALM_AREA_TEMATICA           ( select * from T_DMALM_AREA_TEMATICA            );
 insert into DMALM_PROJECT_ROLES_SGR       ( select * from T_DMALM_PROJECT_ROLES_SGR        );
 insert into DMALM_USER_ROLES_SGR          ( select * from T_DMALM_USER_ROLES_SGR           );
 insert into DMALM_SCHEDE_SERVIZIO         ( select * from T_DMALM_SCHEDE_SERVIZIO          );
