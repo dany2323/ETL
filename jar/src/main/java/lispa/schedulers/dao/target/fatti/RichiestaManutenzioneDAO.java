@@ -117,7 +117,8 @@ public class RichiestaManutenzioneDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-				
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				richieste.add(bean);
 			}
 
@@ -219,7 +220,8 @@ public class RichiestaManutenzioneDAO {
 							rch_man.titoloRichiestaManutenzione, rch_man.stgPk,
 							rch_man.dmalmUserFk06, rch_man.uri,
 							rch_man.dtAnnullamento,
-							rch_man.severity, rch_man.priority)
+							rch_man.severity, rch_man.priority,
+							rch_man.tsTagAlm,rch_man.tagAlm)
 					.values(richiesta.getCdRichiestaManutenzione(),
 							richiesta.getClasseDiFornitura(),
 							richiesta.getCodice(),
@@ -250,7 +252,8 @@ public class RichiestaManutenzioneDAO {
 							richiesta.getTitoloRichiestaManutenzione(),
 							richiesta.getStgPk(), richiesta.getDmalmUserFk06(),
 							richiesta.getUri(), richiesta.getDtAnnullamento(),
-							richiesta.getSeverity(), richiesta.getPriority())
+							richiesta.getSeverity(), richiesta.getPriority(),
+							richiesta.getTsTagAlm(),richiesta.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -341,7 +344,8 @@ public class RichiestaManutenzioneDAO {
 							rch_man.dmalmUserFk06, rch_man.uri,
 							rch_man.dtAnnullamento, rch_man.changed,
 							rch_man.annullato,
-							rch_man.severity, rch_man.priority)
+							rch_man.severity, rch_man.priority,
+							rch_man.tsTagAlm,rch_man.tagAlm)
 					.values(richiesta.getCdRichiestaManutenzione(),
 							richiesta.getClasseDiFornitura(),
 							richiesta.getCodice(),
@@ -378,7 +382,8 @@ public class RichiestaManutenzioneDAO {
 							richiesta.getStgPk(), richiesta.getDmalmUserFk06(),
 							richiesta.getUri(), richiesta.getDtAnnullamento(),
 							richiesta.getChanged(), richiesta.getAnnullato(),
-							richiesta.getSeverity(), richiesta.getPriority())
+							richiesta.getSeverity(), richiesta.getPriority(),
+							richiesta.getTsTagAlm(),richiesta.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -463,6 +468,8 @@ public class RichiestaManutenzioneDAO {
 					.set(rch_man.annullato, richiesta.getAnnullato())
 					.set(rch_man.severity, richiesta.getSeverity())
 					.set(rch_man.priority, richiesta.getPriority())
+					.set(rch_man.tagAlm, richiesta.getTagAlm())
+					.set(rch_man.tsTagAlm, richiesta.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -553,7 +560,9 @@ public class RichiestaManutenzioneDAO {
 			//DM_ALM-320
 			r.setSeverity(t.get(rch_man.severity));
 			r.setPriority(t.get(rch_man.priority));
-
+			r.setTagAlm(t.get(rch_man.tagAlm));
+			r.setTsTagAlm(t.get(rch_man.tsTagAlm));
+			
 			return r;
 
 		} else

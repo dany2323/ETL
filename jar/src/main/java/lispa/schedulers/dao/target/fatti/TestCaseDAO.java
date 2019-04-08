@@ -103,6 +103,8 @@ public class TestCaseDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				
 				testcases.add(bean);
 			}
@@ -194,7 +196,8 @@ public class TestCaseDAO {
 							tstcs.titoloTestcase, tstcs.stgPk,
 							tstcs.dmalmUserFk06, tstcs.uri,
 							tstcs.dtAnnullamento,
-							tstcs.severity, tstcs.priority)
+							tstcs.severity, tstcs.priority,
+							tstcs.tsTagAlm,tstcs.tagAlm)
 					.values(testcase.getCdTestcase(), testcase.getCodice(),
 							testcase.getDataEsecuzioneTestcase(),
 							testcase.getDescrizioneTestcase(),
@@ -221,7 +224,8 @@ public class TestCaseDAO {
 							testcase.getDmalmUserFk06(), testcase.getUri(),
 							testcase.getDtAnnullamento(),
 							//DM_ALM-320
-							testcase.getSeverity(), testcase.getPriority()).execute();
+							testcase.getSeverity(), testcase.getPriority(),
+							testcase.getTsTagAlm(),testcase.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -300,7 +304,8 @@ public class TestCaseDAO {
 							tstcs.dmalmUserFk06, tstcs.uri,
 							tstcs.dtAnnullamento, tstcs.changed,
 							tstcs.annullato,
-							tstcs.severity, tstcs.priority)
+							tstcs.severity, tstcs.priority,
+							tstcs.tsTagAlm,tstcs.tagAlm)
 					.values(testcase.getCdTestcase(),
 							testcase.getCodice(),
 							testcase.getDataEsecuzioneTestcase(),
@@ -332,7 +337,8 @@ public class TestCaseDAO {
 							testcase.getDmalmUserFk06(), testcase.getUri(),
 							testcase.getDtAnnullamento(),
 							testcase.getChanged(), testcase.getAnnullato(),
-							testcase.getSeverity(), testcase.getPriority())
+							testcase.getSeverity(), testcase.getPriority(),
+							testcase.getTsTagAlm(),testcase.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -407,6 +413,8 @@ public class TestCaseDAO {
 					//DM_ALM-320
 					.set(tstcs.severity, testcase.getSeverity())
 					.set(tstcs.priority, testcase.getPriority())
+					.set(tstcs.tagAlm, testcase.getTagAlm())
+					.set(tstcs.tsTagAlm, testcase.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -485,6 +493,8 @@ public class TestCaseDAO {
 			//DM_ALM-320
 			e.setSeverity(t.get(tstcs.severity));
 			e.setPriority(t.get(tstcs.priority));
+			e.setTagAlm(t.get(tstcs.tagAlm));
+			e.setTsTagAlm(t.get(tstcs.tsTagAlm));
 			
 			return e;
 		} else

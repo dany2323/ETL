@@ -57,7 +57,7 @@ public class RichiestaSupportoDAO {
 				bean.setStgPk(rs.getString("STG_PK"));
 				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
-				bean.setCdRichiestaSupporto(rs.getString("ID_RICHIESTA_SUPPORTO"));
+				bean.setCdRichiestaSupporto(rs.getString("CD_RICHIESTA_SUPPORTO"));
 				bean.setDataRisoluzioneRichSupporto(rs.getTimestamp("DATA_RISOLUZIONE_RICH_SUPPORTO"));
 				bean.setNrGiorniFestivi(rs.getInt("NR_GIORNI_FESTIVI"));
 				bean.setTempoTotRichSupporto(rs.getInt("TEMPO_TOT_RICH_SUPPORTO"));
@@ -77,6 +77,8 @@ public class RichiestaSupportoDAO {
 				bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
 				bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
 				bean.setTimespent(rs.getFloat("TIMESPENT"));
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				richieste.add(bean);
 			}
 
@@ -132,7 +134,7 @@ public class RichiestaSupportoDAO {
 					bean.setStgPk(rs.getString("STG_PK"));
 					bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 					bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
-					bean.setCdRichiestaSupporto(rs.getString("ID_RICHIESTA_SUPPORTO"));
+					bean.setCdRichiestaSupporto(rs.getString("CD_RICHIESTA_SUPPORTO"));
 					bean.setDataRisoluzioneRichSupporto(rs.getTimestamp("DATA_RISOLUZIONE_RICH_SUPPORTO"));
 					bean.setNrGiorniFestivi(rs.getInt("NR_GIORNI_FESTIVI"));
 					bean.setTempoTotRichSupporto(rs.getInt("TEMPO_TOT_RICH_SUPPORTO"));
@@ -153,6 +155,8 @@ public class RichiestaSupportoDAO {
 					bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
 					bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
 					bean.setTimespent(rs.getFloat("TIMESPENT"));
+					bean.setTagAlm(rs.getString("TAG_ALM"));
+					bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 					richieste.add(bean);
 	//				logger.info("Inserito");
 	
@@ -341,7 +345,7 @@ public class RichiestaSupportoDAO {
 					bean.setStgPk(rs.getString("STG_PK"));
 					bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 					bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
-					bean.setCdRichiestaSupporto(rs.getString("ID_RICHIESTA_SUPPORTO"));
+					bean.setCdRichiestaSupporto(rs.getString("CD_RICHIESTA_SUPPORTO"));
 					bean.setDataRisoluzioneRichSupporto(rs.getTimestamp("DATA_RISOLUZIONE_RICH_SUPPORTO"));
 					bean.setNrGiorniFestivi(rs.getInt("NR_GIORNI_FESTIVI"));
 					bean.setTempoTotRichSupporto(rs.getInt("TEMPO_TOT_RICH_SUPPORTO"));
@@ -365,6 +369,8 @@ public class RichiestaSupportoDAO {
 					bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
 					bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
 					bean.setTimespent(rs.getFloat("TIMESPENT"));
+					bean.setTagAlm(rs.getString("TAG_ALM"));
+					bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				}
 			}
 		} catch (Exception e) {
@@ -421,7 +427,7 @@ public class RichiestaSupportoDAO {
 					bean.setStgPk(rs.getString("STG_PK"));
 					bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 					bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
-					bean.setCdRichiestaSupporto(rs.getString("ID_RICHIESTA_SUPPORTO"));
+					bean.setCdRichiestaSupporto(rs.getString("CD_RICHIESTA_SUPPORTO"));
 					bean.setDataRisoluzioneRichSupporto(rs.getTimestamp("DATA_RISOLUZIONE_RICH_SUPPORTO"));
 					bean.setNrGiorniFestivi(rs.getInt("NR_GIORNI_FESTIVI"));
 					bean.setTempoTotRichSupporto(rs.getInt("TEMPO_TOT_RICH_SUPPORTO"));
@@ -445,6 +451,8 @@ public class RichiestaSupportoDAO {
 					bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
 					bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
 					bean.setTimespent(rs.getFloat("TIMESPENT"));
+					bean.setTagAlm(rs.getString("TAG_ALM"));
+					bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 					richieste.add(bean);
 				}
 			}

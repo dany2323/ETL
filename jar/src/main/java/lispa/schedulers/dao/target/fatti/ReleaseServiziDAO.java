@@ -98,7 +98,8 @@ public class ReleaseServiziDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				releases.add(bean);
 			}
 
@@ -194,7 +195,8 @@ public class ReleaseServiziDAO {
 							releaseservizi.richiestaAnalisiImpattiRel,
 							releaseservizi.dmalmUserFk06, releaseservizi.uri,
 							releaseservizi.dtAnnullamento,
-							releaseservizi.severity, releaseservizi.priority)
+							releaseservizi.severity, releaseservizi.priority,
+							releaseservizi.tsTagAlm,releaseservizi.tagAlm)
 					.values(release.getCdRelServizi(),
 							release.getDescrizioneRelServizi(),
 							release.getDmalmRelServiziPk(),
@@ -220,7 +222,8 @@ public class ReleaseServiziDAO {
 							release.getRichiestaAnalisiImpattiRel(),
 							release.getDmalmUserFk06(), release.getUri(),
 							release.getDtAnnullamento(),
-							release.getSeverity(), release.getPriority()).execute();
+							release.getSeverity(), release.getPriority(),
+							release.getTsTagAlm(),release.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -303,7 +306,8 @@ public class ReleaseServiziDAO {
 							releaseservizi.dmalmUserFk06, releaseservizi.uri,
 							releaseservizi.dtAnnullamento,
 							releaseservizi.changed, releaseservizi.annullato,
-							releaseservizi.severity, releaseservizi.priority)
+							releaseservizi.severity, releaseservizi.priority,
+							releaseservizi.tsTagAlm,releaseservizi.tagAlm)
 					.values(release.getCdRelServizi(),
 							release.getDescrizioneRelServizi(),
 							pkValue == true ? release.getDmalmRelServiziPk()
@@ -333,7 +337,8 @@ public class ReleaseServiziDAO {
 							release.getDmalmUserFk06(), release.getUri(),
 							release.getDtAnnullamento(), release.getChanged(),
 							release.getAnnullato(),
-							release.getSeverity(), release.getPriority()).execute();
+							release.getSeverity(), release.getPriority(),
+							release.getTsTagAlm(),release.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -411,6 +416,8 @@ public class ReleaseServiziDAO {
 							release.getSeverity())
 					.set(releaseservizi.priority,
 							release.getPriority())
+					.set(releaseservizi.tagAlm, release.getTagAlm())
+					.set(releaseservizi.tsTagAlm, release.getTsTagAlm())
 					.execute();
 			connection.commit();
 		} catch (Exception e) {
@@ -498,7 +505,9 @@ public class ReleaseServiziDAO {
 			//DM_ALM-320
 			r.setSeverity(t.get(releaseservizi.severity));
 			r.setPriority(t.get(releaseservizi.priority));
-
+			r.setTagAlm(t.get(releaseservizi.tagAlm));
+			r.setTsTagAlm(t.get(releaseservizi.tsTagAlm));
+			
 			return r;
 
 		} else

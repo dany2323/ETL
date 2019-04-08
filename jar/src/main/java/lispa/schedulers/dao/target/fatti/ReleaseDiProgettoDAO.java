@@ -141,6 +141,8 @@ public class ReleaseDiProgettoDAO {
 						bean.setSeverity(rs.getString("SEVERITY"));
 						bean.setPriority(rs.getString("PRIORITY"));
 						bean.setTypeRelease(rs.getString("TYPE_RELEASE"));
+						bean.setTagAlm(rs.getString("TAG_ALM"));
+						bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 						
 						releases.add(bean);
 					}
@@ -230,7 +232,8 @@ public class ReleaseDiProgettoDAO {
 							rls.dmalmAreaTematicaFk05, rls.dmalmUserFk06,
 							rls.uri, rls.dtAnnullamento, rls.dtInizioQF,
 							rls.dtFineQF, rls.numQuickFix,
-							rls.severity, rls.priority, rls.typeRelease)
+							rls.severity, rls.priority, rls.typeRelease,
+							rls.tsTagAlm,rls.tagAlm)
 					.values(release.getCdReleasediprog(), release.getCodice(),
 							release.getDataDisponibilitaEff(),
 							release.getDataPassaggioInEsercizio(),
@@ -263,7 +266,8 @@ public class ReleaseDiProgettoDAO {
 							release.getNumQuickFix(),
 							//DM_ALM-320
 							release.getSeverity(), release.getPriority(),
-							release.getTypeRelease()).execute();
+							release.getTypeRelease(),
+							release.getTsTagAlm(),release.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -341,7 +345,8 @@ public class ReleaseDiProgettoDAO {
 							rls.uri, rls.dtAnnullamento, rls.dtInizioQF,
 							rls.dtFineQF, rls.numQuickFix, rls.changed,
 							rls.annullato,
-							rls.severity, rls.priority, rls.typeRelease)
+							rls.severity, rls.priority, rls.typeRelease,
+							rls.tsTagAlm,rls.tagAlm)
 					.values(release.getCdReleasediprog(),
 							release.getCodice(),
 							release.getDataDisponibilitaEff(),
@@ -381,7 +386,8 @@ public class ReleaseDiProgettoDAO {
 							release.getAnnullato(),
 							//DM_ALM-320
 							release.getSeverity(), release.getPriority(),
-							release.getTypeRelease()).execute();
+							release.getTypeRelease(),
+							release.getTsTagAlm(),release.getTagAlm()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -460,7 +466,9 @@ public class ReleaseDiProgettoDAO {
 					//DM_ALM-320
 					.set(rls.severity, release.getSeverity())
 					.set(rls.priority, release.getPriority())
-					.set(rls.typeRelease, release.getTypeRelease()).execute();
+					.set(rls.typeRelease, release.getTypeRelease())
+					.set(rls.tagAlm, release.getTagAlm())
+					.set(rls.tsTagAlm, release.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -549,6 +557,8 @@ public class ReleaseDiProgettoDAO {
 			r.setSeverity(t.get(rls.severity));
 			r.setPriority(t.get(rls.priority));
 			r.setTypeRelease(t.get(rls.typeRelease));
+			r.setTagAlm(t.get(rls.tagAlm));
+			r.setTsTagAlm(t.get(rls.tsTagAlm));
 			return r;
 
 		} else
