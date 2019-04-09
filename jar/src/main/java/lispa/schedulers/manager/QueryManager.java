@@ -17,6 +17,7 @@ import java.util.List;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.utils.QueryUtils;
 
 import org.apache.log4j.Logger;
 
@@ -216,5 +217,40 @@ public class QueryManager {
 			}
 		}
 		return flag;
+	}
+	
+	public synchronized void executeStoredProcedure() throws DAOException, SQLException {
+
+		ConnectionManager cm = null;
+		Connection conn = null;
+		CallableStatement cstmt = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			conn = cm.getConnectionOracle();
+			
+			logger.info("START RECOVER PROCEDURE ");
+			
+			String sql = QueryUtils.getCallProcedure(DmAlmConstants.RECOVER_TARGET_SGR_ELETTRA, 1);
+			cstmt = conn.prepareCall(sql);
+			cstmt.setString(1, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
+			cstmt.executeUpdate();
+			
+			conn.commit();
+			logger.info("STOP RECOVER PROCEDURE");
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			
+		} finally {
+			if (cstmt != null) {
+				cstmt.close();
+			}
+			if (cm != null) {
+				cm.closeConnection(conn);
+			}
+		}
 	}
 }

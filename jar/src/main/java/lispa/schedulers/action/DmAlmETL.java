@@ -14,6 +14,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MailUtil;
 import lispa.schedulers.utils.StringUtils;
 
@@ -33,14 +34,18 @@ public class DmAlmETL {
 	 */
 	
 	public static void main(String[] args) throws PropertiesReaderException {
+		DmAlmConfigReaderProperties.setFileProperties(args[1]);
 		Log4JConfiguration.inizialize();
-
+		
 		String ambiente = DmAlmConfigReader.getInstance().getProperty(
 				DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 
 		logger.info("*** Eseguo DmAlmEtl v"
 				+ DmAlmConfigReaderProperties.VERSIONE_ETL + " ***");
 
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp(args[2], "yyyy-MM-dd HH:mm:00"));
+		logger.info("Data Esecuzione: " + DataEsecuzione.getInstance().getDataEsecuzione());
+		
 		logger.info("Ambiente: " + ambiente);
 
 		logger.info("Esecuzione SFERA: "
@@ -117,7 +122,7 @@ public class DmAlmETL {
 					if (ExecutionManager.getInstance().isExecutionSfera()
 							|| ExecutionManager.getInstance()
 									.isExecutionElettraSgrcm()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 					}
 
@@ -146,7 +151,7 @@ public class DmAlmETL {
 			if (ExecutionManager.getInstance().isExecutionSfera()
 					|| ExecutionManager.getInstance()
 							.isExecutionElettraSgrcm()) {
-				RecoverManager.getInstance().startRecoverTarget();
+				RecoverManager.getInstance().startRecoverTargetByProcedure();
 				RecoverManager.getInstance().startRecoverStaging();
 			}
 

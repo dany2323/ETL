@@ -215,7 +215,7 @@ public class DmAlmFillTarget {
 					
 					// Aggiunto checkpoint di recovery in data 17/07/17
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -234,7 +234,7 @@ public class DmAlmFillTarget {
 					
 					// Aggiunto checkpoint di recovery in data 19/04/17
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -369,7 +369,7 @@ public class DmAlmFillTarget {
 					}
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -464,7 +464,7 @@ public class DmAlmFillTarget {
 //					// FINE DM_ALM-350
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -524,7 +524,7 @@ public class DmAlmFillTarget {
 					}
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -596,7 +596,7 @@ public class DmAlmFillTarget {
 					// }
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -629,7 +629,7 @@ public class DmAlmFillTarget {
 	//				ProjectSgrCmDAO.updateFKUOonProjects();
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -644,7 +644,7 @@ public class DmAlmFillTarget {
 					CheckLinkPersonaleUnitaOrganizzativaFacade.execute(dataEsecuzione);
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -708,7 +708,7 @@ public class DmAlmFillTarget {
 					MisuraFacade.execute(dataEsecuzione);
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTarget();
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS

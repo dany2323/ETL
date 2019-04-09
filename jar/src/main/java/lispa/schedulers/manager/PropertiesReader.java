@@ -19,9 +19,8 @@ public class PropertiesReader
 		try
 		{
 			properties = new Properties();
-			properties.load(getClass().getClassLoader().getResourceAsStream(propertiesFile));
 			
-			try (FileInputStream fis = new FileInputStream(properties.getProperty("dm_alm.properties"))) 
+			try (FileInputStream fis = new FileInputStream(propertiesFile)) 
 			{
 				properties.load(fis);				
 				
@@ -31,17 +30,8 @@ public class PropertiesReader
 			}
 
 			
-		}
-		catch (FileNotFoundException e)
-		{
+		} catch (Exception e) {
 			throw new PropertiesReaderException(e);
-		}
-		catch (IOException e)
-		{
-			throw new PropertiesReaderException(e);
-		}
-		catch (Exception e) {
-			
 		}
 	}
 	

@@ -177,6 +177,7 @@ public final class DmAlmConstants {
 	public static final String RECOVER_TARGET = "recover_target.sql";
 	public static final String DELETE_TARGET_MPS_TABLES = "delete_target_mps_tables.sql";
 	public static final String RECOVER_MPS_TARGET = "recover_mps_target.sql";
+	public static final String RECOVER_TARGET_SGR_ELETTRA = "RECOVER_TARGET_SGR_ELETTRA";
 	
 	//File .sql con query multiple. vanno eseguiti splittandoli con il separatore ';'
 	public static final String M_UPDATE_RANK_FATTI = "m_updateranksinmonth.sql";

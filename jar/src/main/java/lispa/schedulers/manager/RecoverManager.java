@@ -155,6 +155,21 @@ public class RecoverManager {
 		}
 
 	}
+	
+	public synchronized void startRecoverTargetByProcedure() { 
+		 
+		logger.info("START RECOVER TARGET"); 
+		 
+		try { 
+			 
+			QueryManager.getInstance().executeStoredProcedure(); 
+		} catch (Exception e) { 
+			logger.error(e.getMessage(), e); 
+			ErrorManager.getInstance().exceptionOccurred(true, e); 
+		} 
+ 
+		logger.info("STOP RECOVER TARGET");		 
+	}
 
 	/**
 	 * Per quanto riguarda le tabelle target, non si può applicare lo stesso
@@ -172,38 +187,38 @@ public class RecoverManager {
 	 * dell’esecuzione precedente).
 	 */
 
-	public synchronized void startRecoverTarget() {
-
-		logger.info("START RECOVER TARGET");
-
-		QueryManager qm = null;
-
-		try {
-
-			qm = QueryManager.getInstance();
-
-			String separator = ";";
-
-			// cancella tutto il contenuto delle tabelle target
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.DELETE_TARGET_TABLES, separator); //TODO 
-
-			// inserisce il contenuto delle tabelle di backup nelle tabelle
-			// target
-			// ovvero riporta il target allo stato precedente all'inizio
-			// dell'esecuzione dell'ETL
-			qm.executeMultipleStatementsFromFile(DmAlmConstants.RECOVER_TARGET,
-					separator);
-
-			setRecovered(true);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		logger.info("STOP RECOVER TARGET");
-
-	}
+//	public synchronized void startRecoverTarget() {
+//
+//		logger.info("START RECOVER TARGET");
+//
+//		QueryManager qm = null;
+//
+//		try {
+//
+//			qm = QueryManager.getInstance();
+//
+//			String separator = ";";
+//
+//			// cancella tutto il contenuto delle tabelle target
+//			qm.executeMultipleStatementsFromFile(
+//					DmAlmConstants.DELETE_TARGET_TABLES, separator); //TODO 
+//
+//			// inserisce il contenuto delle tabelle di backup nelle tabelle
+//			// target
+//			// ovvero riporta il target allo stato precedente all'inizio
+//			// dell'esecuzione dell'ETL
+//			qm.executeMultipleStatementsFromFile(DmAlmConstants.RECOVER_TARGET,
+//					separator);
+//
+//			setRecovered(true);
+//
+//		} catch (Exception e) {
+//			logger.error(e.getMessage(), e);
+//		}
+//
+//		logger.info("STOP RECOVER TARGET");
+//
+//	}
 
 	public synchronized boolean prepareTargetForRecover(Timestamp dataEsecuzione) {
 

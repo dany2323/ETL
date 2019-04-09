@@ -159,7 +159,7 @@ public class TestWI extends TestCase {
 			//MisuraFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
 
 //			if (ErrorManager.getInstance().hasError()) {
-//				RecoverManager.getInstance().startRecoverTarget();
+//				RecoverManager.getInstance().startRecoverTargetByProcedure();
 //				RecoverManager.getInstance().startRecoverStaging();
 //
 //				// MPS
@@ -218,7 +218,7 @@ public class TestWI extends TestCase {
 			
 			//DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2016-02-28 21:00:00","yyyy-MM-dd HH:mm:00"));
 			//CheckProjectStorFacade.execute();
-			//RecoverManager.getInstance().startRecoverTarget();
+			//RecoverManager.getInstance().startRecoverTargetByProcedure();
 			
 			//CheckLinkAsmSferaUnitaOrganizzativaFacade.execute(DateUtils.stringToTimestamp("2018-02-01 20:40:00",
 			//		"yyyy-MM-dd HH:mm:00"));
@@ -231,7 +231,7 @@ public class TestWI extends TestCase {
 							"yyyy-MM-dd HH:mm:00")); */
 			/*DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-05-03 20:40:00",
 					"yyyy-MM-dd HH:mm:00"));
-			RecoverManager.getInstance().startRecoverTarget();
+			RecoverManager.getInstance().startRecoverTargetByProcedure();
 			
 			RecoverManager.getInstance().startRecoverStaging();*/
 //			

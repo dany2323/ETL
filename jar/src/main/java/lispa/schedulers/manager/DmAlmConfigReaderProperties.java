@@ -3,7 +3,7 @@ package lispa.schedulers.manager;
 
 public class DmAlmConfigReaderProperties
 {
-	public static final String PROPERTIES_READER_FILE_NAME = "datamart.properties";
+	public static String PROPERTIES_READER_FILE_NAME;
 	
 	//wi-191
 	public static final String VERSIONE_ETL = "4.9.00";
@@ -301,4 +301,8 @@ public class DmAlmConfigReaderProperties
 	public static final String SQL_STG_RILASCIES = "stg_mps_rilasci.sql";
 
 	public static final String SQL_ELETTRAFUNZIONALITA_BY_MODULO_PK = "funzionalita_by_modulo_pk.sql";
+	
+	public static void setFileProperties(String fileProperties) {
+		PROPERTIES_READER_FILE_NAME = fileProperties;
+	}
 }
