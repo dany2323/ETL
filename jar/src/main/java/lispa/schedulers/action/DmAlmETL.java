@@ -44,9 +44,6 @@ public class DmAlmETL {
 		logger.info("*** Eseguo DmAlmEtl v"
 				+ DmAlmConfigReaderProperties.VERSIONE_ETL + " ***");
 
-		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp(args[2], "yyyy-MM-dd HH:mm:00")); 
-		logger.info("Data Esecuzione Restore: " + DataEsecuzione.getInstance().getDataEsecuzione());
-		
 		logger.info("Ambiente: " + ambiente);
 
 		logger.info("Esecuzione SFERA: "
