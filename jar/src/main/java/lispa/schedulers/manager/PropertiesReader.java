@@ -1,12 +1,8 @@
 package lispa.schedulers.manager;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Properties;
-
 import org.apache.log4j.Logger;
-
 import lispa.schedulers.exception.PropertiesReaderException;
 
 public class PropertiesReader
@@ -19,9 +15,8 @@ public class PropertiesReader
 		try
 		{
 			properties = new Properties();
-			properties.load(getClass().getClassLoader().getResourceAsStream(propertiesFile));
 			
-			try (FileInputStream fis = new FileInputStream(properties.getProperty("dm_alm.properties"))) 
+			try (FileInputStream fis = new FileInputStream(propertiesFile)) 
 			{
 				properties.load(fis);				
 				
@@ -31,17 +26,8 @@ public class PropertiesReader
 			}
 
 			
-		}
-		catch (FileNotFoundException e)
-		{
+		} catch (Exception e) {
 			throw new PropertiesReaderException(e);
-		}
-		catch (IOException e)
-		{
-			throw new PropertiesReaderException(e);
-		}
-		catch (Exception e) {
-			
 		}
 	}
 	

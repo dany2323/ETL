@@ -84,6 +84,9 @@ public class DmAlmMisuraDAO {
 		} catch (PropertiesReaderException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(e.getMessage(), e);
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
 		}
 		if (sql.isEmpty())
 			return misure;

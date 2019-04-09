@@ -3,7 +3,7 @@ package lispa.schedulers.manager;
 
 public class DmAlmConfigReaderProperties
 {
-	public static final String PROPERTIES_READER_FILE_NAME = "datamart.properties";
+	public static String PROPERTIES_READER_FILE_NAME;
 	
 	//wi-191
 	public static final String VERSIONE_ETL = "4.9.00";
@@ -305,4 +305,8 @@ public class DmAlmConfigReaderProperties
 	public static final String DMALM_CALIPSO_SOURCE_PATH_FILE = "dmalm.calipso.source.path";
 	public static final String DMALM_CALIPSO_PATH = "dmalm.calipso.path";
 	public static final String DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL = "dmalm.calipso.scheda.servizio.excel";
+	
+	public static void setFileProperties(String fileProperties) {
+		PROPERTIES_READER_FILE_NAME = fileProperties;
+	}
 }

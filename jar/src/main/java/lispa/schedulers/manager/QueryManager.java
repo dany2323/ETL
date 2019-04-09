@@ -2,7 +2,6 @@ package lispa.schedulers.manager;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.CallableStatement;
@@ -66,7 +65,7 @@ public class QueryManager {
 
 	}
 
-	public synchronized String getQuery(String file) {
+	public synchronized String getQuery(String file) throws Exception {
 
 		String out = "";
 		String inputLine;
@@ -81,7 +80,7 @@ public class QueryManager {
 			}
 			
 			in.close();
-		} catch (IOException e) {
+		} catch (FileNotFoundException e) {
 			logger.error(e.getMessage(), e);
 		}
 
@@ -167,7 +166,7 @@ public class QueryManager {
 
 		for (String record : records) {
 			String[] splitRecord = record.split(":");
-			boolean flag = executeStoredProcedure(splitRecord[0], splitRecord[1], dataEsecuzione);
+			boolean flag = executeProcedure(splitRecord[0], splitRecord[1], dataEsecuzione);
 			if (!flag) {
 				return flag;
 			}
@@ -175,7 +174,7 @@ public class QueryManager {
 		return true;
 	}
 	
-	public synchronized boolean executeStoredProcedure(String backupTable, String targetTable, 
+	public synchronized boolean executeProcedure(String backupTable, String targetTable, 
 			Timestamp dataEsecuzione) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
@@ -187,9 +186,8 @@ public class QueryManager {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			
-			String sql = QueryUtils.getCallFunction(DmAlmConstants.FUNCTION_BACKUP_TARGET, 4);
+			String sql = QueryUtils.getCallFunction(DmAlmConstants.BACKUP_TARGET, 4);
 			cstmt = conn.prepareCall(sql);
-			//cstmt = conn.prepareCall("{? = call BACKUP_TARGET(?, ?, ?, ?)}");
 			cstmt.registerOutParameter(1, Types.VARCHAR);
 			cstmt.setString(2, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
 			cstmt.setString(3, backupTable.trim());
@@ -220,5 +218,40 @@ public class QueryManager {
 			}
 		}
 		return flag;
+	}
+	
+	public synchronized void executeStoredProcedure() throws DAOException, SQLException {
+
+		ConnectionManager cm = null;
+		Connection conn = null;
+		CallableStatement cstmt = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			conn = cm.getConnectionOracle();
+			
+			logger.info("START RECOVER PROCEDURE ");
+			
+			String sql = QueryUtils.getCallProcedure(DmAlmConstants.RECOVER_TARGET_SGR_ELETTRA, 1);
+			cstmt = conn.prepareCall(sql);
+			cstmt.setString(1, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
+			cstmt.executeUpdate();
+			
+			conn.commit();
+			logger.info("STOP RECOVER PROCEDURE");
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			
+		} finally {
+			if (cstmt != null) {
+				cstmt.close();
+			}
+			if (cm != null) {
+				cm.closeConnection(conn);
+			}
+		}
 	}
 }

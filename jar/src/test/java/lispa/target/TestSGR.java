@@ -332,7 +332,7 @@ public class TestSGR extends TestCase
 						"yyyy-MM-dd HH:mm:00"));
 
 		RecoverManager.getInstance().startRecoverStaging();
-		RecoverManager.getInstance().startRecoverTarget();
+		RecoverManager.getInstance().startRecoverTargetByProcedure();
 
 	}
 

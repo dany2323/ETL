@@ -14,12 +14,6 @@ import lispa.schedulers.dao.elettra.StgElModuliDAO;
 import lispa.schedulers.dao.elettra.StgElPersonaleDAO;
 import lispa.schedulers.dao.elettra.StgElProdottiDAO;
 import lispa.schedulers.dao.elettra.StgElUnitaOrganizzativeDAO;
-import lispa.schedulers.dao.oreste.AmbienteTecnologicoDAO;
-import lispa.schedulers.dao.oreste.ClassificatoriDAO;
-import lispa.schedulers.dao.oreste.FunzionalitaDAO;
-import lispa.schedulers.dao.oreste.ModuliDAO;
-import lispa.schedulers.dao.oreste.ProdottiArchitettureDAO;
-import lispa.schedulers.dao.oreste.SottosistemiDAO;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentProjectDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemLinkedDAO;
@@ -47,15 +41,11 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.facade.calipso.staging.StagingCalipsoFacade;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
 import lispa.schedulers.svn.SIRESchedeServizioXML;
-import lispa.schedulers.svn.SIREUserRolesXML;
 import lispa.schedulers.svn.SISSSchedeServizioXML;
-import lispa.schedulers.svn.SISSUserRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
 
 import java.sql.Timestamp;
@@ -157,56 +147,7 @@ public class RecoverManager {
 		}
 
 	}
-
-	/**
-	 * Per quanto riguarda le tabelle target, non si può applicare lo stesso
-	 * ragionamento dell’area di staging. La procedura di ripristino quindi
-	 * avviene tramite delle tabelle di backup (riconoscibili dal prefisso ‘T_’)
-	 * Si procede come segue: - prima di iniziare con l’elaborazione del target,
-	 * si copia tutto il contenuto delle stesse in delle tabelle di backup - si
-	 * procede con l’elaborazione del target e, a seconda del suo esito, si
-	 * possono verificare due situazioni: a. esito OK: l’elaborazione avviene
-	 * senza errori ed il contenuto delle tabelle di backup può essere
-	 * cancellato b. esito KO: si verifica un errore durante l’elaborazione per
-	 * cui è necessario interrompere la stessa. Si provvede a copiare il
-	 * contenuto delle tabelle di backup nelle tabelle di target per riportare
-	 * lo stesso ad una situazione consistente (ovvero la situazione
-	 * dell’esecuzione precedente).
-	 */
-
-	public synchronized void startRecoverTarget() {
-
-		logger.info("START RECOVER TARGET");
-
-		QueryManager qm = null;
-
-		try {
-
-			qm = QueryManager.getInstance();
-
-			String separator = ";";
-
-			// cancella tutto il contenuto delle tabelle target
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.DELETE_TARGET_TABLES, separator); //TODO 
-
-			// inserisce il contenuto delle tabelle di backup nelle tabelle
-			// target
-			// ovvero riporta il target allo stato precedente all'inizio
-			// dell'esecuzione dell'ETL
-			qm.executeMultipleStatementsFromFile(DmAlmConstants.RECOVER_TARGET,
-					separator);
-
-			setRecovered(true);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		logger.info("STOP RECOVER TARGET");
-
-	}
-
+	
 	public synchronized boolean prepareTargetForRecover(Timestamp dataEsecuzione) {
 
 		logger.info("START PREPARE TARGET FOR RECOVER");
@@ -285,6 +226,37 @@ public class RecoverManager {
 
 	}
 
+	/**
+	 * Per quanto riguarda le tabelle target, non si può applicare lo stesso
+	 * ragionamento dell’area di staging. La procedura di ripristino quindi
+	 * avviene tramite delle tabelle di backup (riconoscibili dal prefisso ‘T_’)
+	 * Si procede come segue: - prima di iniziare con l’elaborazione del target,
+	 * si copia tutto il contenuto delle stesse in delle tabelle di backup - si
+	 * procede con l’elaborazione del target e, a seconda del suo esito, si
+	 * possono verificare due situazioni: a. esito OK: l’elaborazione avviene
+	 * senza errori ed il contenuto delle tabelle di backup può essere
+	 * cancellato b. esito KO: si verifica un errore durante l’elaborazione per
+	 * cui è necessario interrompere la stessa. Si provvede a copiare il
+	 * contenuto delle tabelle di backup nelle tabelle di target per riportare
+	 * lo stesso ad una situazione consistente (ovvero la situazione
+	 * dell’esecuzione precedente).
+	 */
+
+	public synchronized void startRecoverTargetByProcedure() { 
+		 
+		logger.info("START RECOVER TARGET"); 
+		 
+		try { 
+			 
+			QueryManager.getInstance().executeStoredProcedure(); 
+		} catch (Exception e) { 
+			logger.error(e.getMessage(), e); 
+			ErrorManager.getInstance().exceptionOccurred(true, e); 
+		} 
+ 
+		logger.info("STOP RECOVER TARGET");		 
+	}
+	
 	/**
 	 * Come previsto dalle specifiche XXXX, durante la fase di staging viene
 	 * effettuato un controllo di consistenza relativo all’esito delle procedure
