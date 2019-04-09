@@ -17,5 +17,9 @@ hs_err_pid*
 
 #target folders
 */target/*
+*target/*
+*/bin/*
 
+#other
+*.swp
 jar/\.classpath
