@@ -42,6 +42,7 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
+import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
 import lispa.schedulers.svn.SIRESchedeServizioXML;
