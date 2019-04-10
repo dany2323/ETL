@@ -186,7 +186,8 @@ public class QueryManager {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			
-			cstmt = conn.prepareCall("{? = call BACKUP_TARGET(?, ?, ?, ?)}");
+			String sql = QueryUtils.getCallFunction(DmAlmConstants.FUNCTION_BACKUP_TARGET, 4);
+			cstmt = conn.prepareCall(sql);
 			cstmt.registerOutParameter(1, Types.VARCHAR);
 			cstmt.setString(2, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
 			cstmt.setString(3, backupTable.trim());
