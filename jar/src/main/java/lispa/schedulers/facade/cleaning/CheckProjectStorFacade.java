@@ -7,6 +7,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
+import com.mysema.query.sql.SQLTemplates;
+
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
 import lispa.schedulers.bean.target.fatti.DmalmBuild;
@@ -14,9 +22,7 @@ import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
 import lispa.schedulers.bean.target.fatti.DmalmFase;
 import lispa.schedulers.bean.target.fatti.DmalmPei;
-import lispa.schedulers.bean.target.fatti.DmalmProgettoEse;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoDem;
-import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoSvil;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
@@ -30,9 +36,7 @@ import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
 import lispa.schedulers.dao.target.fatti.DocumentoDAO;
 import lispa.schedulers.dao.target.fatti.FaseDAO;
 import lispa.schedulers.dao.target.fatti.PeiDAO;
-import lispa.schedulers.dao.target.fatti.ProgettoEseDAO;
 import lispa.schedulers.dao.target.fatti.ProgettoSviluppoDemandDAO;
-import lispa.schedulers.dao.target.fatti.ProgettoSviluppoSviluppoDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
@@ -61,29 +65,20 @@ import lispa.schedulers.queryimplementation.target.fatti.QDmalmTask;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
-
-import org.apache.log4j.Logger;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLSubQuery;
-import com.mysema.query.sql.SQLTemplates;
 
 public class CheckProjectStorFacade {
 
 	private static Logger logger = Logger
 			.getLogger(CheckProjectStorFacade.class);
-	private static QDmalmProgettoSviluppoSvil progettoSviluppoSvil = QDmalmProgettoSviluppoSvil.dmalmProgettoSviluppoSvil;
 	private static QDmalmDocumento documento = QDmalmDocumento.dmalmDocumento;
 	private static QDmalmTestcase testcase = QDmalmTestcase.dmalmTestcase;
 	private static QDmalmTask task = QDmalmTask.dmalmTask;
 	private static QDmalmProgettoSviluppoDem progettoSviluppoDem = QDmalmProgettoSviluppoDem.dmalmProgettoSviluppoDem;
 	private static QDmalmFase fase = QDmalmFase.dmalmFase;
 	private static QDmalmPei pei = QDmalmPei.dmalmPei;
-	private static QDmalmProgettoEse progettoEse = QDmalmProgettoEse.dmalmProgettoEse;
 	private static QDmalmReleaseIt releaseIT = QDmalmReleaseIt.dmalmReleaseIt;
 	private static QDmalmBuild build = QDmalmBuild.dmalmBuild;
 	private static QDmalmTaskIt taskIT = QDmalmTaskIt.dmalmTaskIt;
@@ -160,6 +155,8 @@ public class CheckProjectStorFacade {
 				} 
 				else if(type.name().equals("sottoprogramma")) {
 				}
+				else if(type.name().equals("progettoese")) {
+				} 
 				else {
 					logger.info("Storicizzo type: "+type);
 				}
@@ -440,53 +437,6 @@ public class CheckProjectStorFacade {
 												}
 											}
 
-										}
-									}
-									break;
-								case "progettoese":
-									QDmalmProgettoEse progettoEse2 = new QDmalmProgettoEse(
-											"progettoEse2");
-									pk = query
-											.from(progettoEse)
-											.where(progettoEse.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(progettoEse.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(progettoEse2)
-															.where(progettoEse.dmalmProjectFk02
-																	.eq(progettoEse2.dmalmProjectFk02))
-															.where(progettoEse.cdProgettoEse
-																	.eq(progettoEse2.cdProgettoEse))
-															.list(progettoEse2.dtStoricizzazione
-																	.max())))
-											.orderBy(progettoEse.rankStatoProgettoEse.desc(), progettoEse.dtModificaProgettoEse.desc(), progettoEse.dmalmProgettoEsePk.desc())
-											.list(progettoEse.dmalmProgettoEsePk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmProgettoEse d = ProgettoEseDAO
-													.getProgettoEse(i);
-											if (d != null) {
-												boolean exist = ProgettoEseDAO
-														.checkEsistenzaProgetto(
-																d, p);
-												if (!exist) {
-													if (d.getRankStatoProgettoEse() == 1) {
-														ProgettoEseDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
-													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ProgettoEseDAO
-															.insertProgettoEseUpdate(
-																	dataEsecuzione,
-																	d, false);
-												}
-											}
 										}
 									}
 									break;
