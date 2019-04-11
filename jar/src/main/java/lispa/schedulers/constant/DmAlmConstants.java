@@ -641,11 +641,13 @@ public final class DmAlmConstants {
 	public static String STORED_PROCEDURE_REL_PROGETTO = "STOR_RELEASE_PROGETTO_BY_PROJ";
 	public static String STORED_PROCEDURE_SOTTOPROGRAMMA = "STOR_SOTTOPROGRAMMA_BY_PROJ";
 	public static String STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO = "STOR_PROG_SVI_SVI_BY_PROJ";
+	public static final String STORED_PROCEDURE_STOR_PROG_ESE = "STOR_PROGETTO_ESE_BY_PROJ";
 	public static String FUNCTION_BACKUP_TARGET = "BACKUP_TARGET";
 	public static String RECOVER_TARGET_SGR_ELETTRA = "RECOVER_TARGET_SGR_ELETTRA";
 
 	// Calipso Sheet Name Scheda Servizio
 	public static String CALIPSO_SHEET_NAME_SCHEDA_SERVIZIO = "Portfolio_esteso";
+
 	
 	public static String getProperty(String property) {
 
