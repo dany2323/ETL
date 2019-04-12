@@ -103,7 +103,6 @@ public class CheckProjectStorFacade {
 		List<DmalmProject> pNew = new ArrayList<DmalmProject>();
 		
 		try {
-			// solo anomalie e difetti
 			storicizzaWI();
 			
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
@@ -120,7 +119,6 @@ public class CheckProjectStorFacade {
 						+ " Project");
 				storicizzaWI(pNew, dataEsecuzione, dataChiusura);
 			}
-			storicizzaWI();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
