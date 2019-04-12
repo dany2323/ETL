@@ -47,7 +47,10 @@ public class Workitem_Type {
 		enumMap.put(EnumWorkitemType.sottoprogramma, DmAlmConstants.STORED_PROCEDURE_SOTTOPROGRAMMA);
 		enumMap.put(EnumWorkitemType.srqs, DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO);
 		enumMap.put(EnumWorkitemType.progettoese, DmAlmConstants.STORED_PROCEDURE_STOR_PROG_ESE);
-
+		enumMap.put(EnumWorkitemType.anomalia_assistenza, DmAlmConstants.STORED_PROCEDURE_ANOMALIA_ASS);
+		enumMap.put(EnumWorkitemType.task, DmAlmConstants.STORED_PROCEDURE_TASK);
+		enumMap.put(EnumWorkitemType.release_ser, DmAlmConstants.STORED_PROCEDURE_REL_SER);
+		
 		return enumMap;
 	}
 }
