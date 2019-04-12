@@ -16,7 +16,6 @@ import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 
 import lispa.schedulers.bean.target.DmalmProject;
-import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
 import lispa.schedulers.bean.target.fatti.DmalmBuild;
 import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
@@ -24,13 +23,10 @@ import lispa.schedulers.bean.target.fatti.DmalmFase;
 import lispa.schedulers.bean.target.fatti.DmalmPei;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoDem;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
-import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
-import lispa.schedulers.bean.target.fatti.DmalmTask;
 import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
 import lispa.schedulers.bean.target.fatti.DmalmTestcase;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
-import lispa.schedulers.dao.target.fatti.AnomaliaAssistenzaDAO;
 import lispa.schedulers.dao.target.fatti.BuildDAO;
 import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
 import lispa.schedulers.dao.target.fatti.DocumentoDAO;
@@ -38,9 +34,7 @@ import lispa.schedulers.dao.target.fatti.FaseDAO;
 import lispa.schedulers.dao.target.fatti.PeiDAO;
 import lispa.schedulers.dao.target.fatti.ProgettoSviluppoDemandDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
-import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
-import lispa.schedulers.dao.target.fatti.TaskDAO;
 import lispa.schedulers.dao.target.fatti.TaskItDAO;
 import lispa.schedulers.dao.target.fatti.TestCaseDAO;
 import lispa.schedulers.exception.DAOException;
@@ -49,19 +43,14 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaAssistenza;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmPei;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoEse;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoSviluppoDem;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoSviluppoSvil;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseIt;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseServizi;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmRichiestaGestione;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmTask;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.utils.DateUtils;
@@ -75,7 +64,6 @@ public class CheckProjectStorFacade {
 			.getLogger(CheckProjectStorFacade.class);
 	private static QDmalmDocumento documento = QDmalmDocumento.dmalmDocumento;
 	private static QDmalmTestcase testcase = QDmalmTestcase.dmalmTestcase;
-	private static QDmalmTask task = QDmalmTask.dmalmTask;
 	private static QDmalmProgettoSviluppoDem progettoSviluppoDem = QDmalmProgettoSviluppoDem.dmalmProgettoSviluppoDem;
 	private static QDmalmFase fase = QDmalmFase.dmalmFase;
 	private static QDmalmPei pei = QDmalmPei.dmalmPei;
@@ -83,8 +71,6 @@ public class CheckProjectStorFacade {
 	private static QDmalmBuild build = QDmalmBuild.dmalmBuild;
 	private static QDmalmTaskIt taskIT = QDmalmTaskIt.dmalmTaskIt;
 	private static QDmalmRichiestaGestione richiestaGestione = QDmalmRichiestaGestione.dmalmRichiestaGestione;
-	private static QDmalmAnomaliaAssistenza anomaliaAssistenza = QDmalmAnomaliaAssistenza.dmalmAnomaliaAssistenza;
-	private static QDmalmReleaseServizi releaseServizi = QDmalmReleaseServizi.dmalmReleaseServizi;
 	private static QDmalmClassificatore classificatoreDem = QDmalmClassificatore.dmalmClassificatore;
 	private static SQLTemplates dialect = new HSQLDBTemplates();
 
@@ -103,8 +89,6 @@ public class CheckProjectStorFacade {
 		List<DmalmProject> pNew = new ArrayList<DmalmProject>();
 		
 		try {
-			storicizzaWI();
-			
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
 					.getDataEsecuzione();
 			// dtchiusura deve essere la beetween delle ultime due date
@@ -119,6 +103,7 @@ public class CheckProjectStorFacade {
 						+ " Project");
 				storicizzaWI(pNew, dataEsecuzione, dataChiusura);
 			}
+			storicizzaWI();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -137,6 +122,7 @@ public class CheckProjectStorFacade {
 				ConnectionManager cm = null;
 				Connection conn = null;
 				List<Integer> pk = new ArrayList<Integer>();
+				
 				if(type.name().equals("anomalia")) {
 				} 
 				else if(type.name().equals("defect")) {
@@ -153,9 +139,9 @@ public class CheckProjectStorFacade {
 				} 
 				else if(type.name().equals("sottoprogramma")) {
 				}
-				else if(type.name().equals("progettoese")) {
-				} 
-				else {
+				else if(type.name().equals("srqs")) {
+					
+				} else {
 					logger.info("Storicizzo type: "+type);
 				}
 				for (DmalmProject p : pNew) {
@@ -173,7 +159,7 @@ public class CheckProjectStorFacade {
 
 								SQLQuery query = new SQLQuery(conn, dialect);
 								switch (type.name()) {
-								case "documento":
+									case "documento":
 									QDmalmDocumento documento2 = new QDmalmDocumento(
 											"documento2");
 									pk = query
@@ -262,48 +248,6 @@ public class CheckProjectStorFacade {
 															.insertTestCaseUpdate(
 																	dataEsecuzione,
 																	t, false);
-												}
-											}
-										}
-									}
-									break;
-								case "task":
-									QDmalmTask task2 = new QDmalmTask("task2");
-									pk = query
-											.from(task)
-											.where(task.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(task.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(task2)
-															.where(task.dmalmProjectFk02
-																	.eq(task2.dmalmProjectFk02))
-															.where(task.cdTask
-																	.eq(task2.cdTask))
-															.list(task2.dtStoricizzazione
-																	.max())))
-											.orderBy(task.rankStatoTask.desc(), task.dtModificaTask.desc(), task.dmalmTaskPk.desc())
-											.list(task.dmalmTaskPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-
-											DmalmTask t = TaskDAO.getTask(i);
-											if (t != null) {
-												boolean exist = TaskDAO
-														.checkEsistenzaTask(t,
-																p);
-												if (!exist) {
-													if (t.getRankStatoTask() == 1) {
-														TaskDAO.updateRank(t,
-																new Double(0));
-													}
-													t.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													t.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													TaskDAO.insertTaskUpdate(
-															dataEsecuzione, t,
-															false);
 												}
 											}
 										}
@@ -618,101 +562,6 @@ public class CheckProjectStorFacade {
 										}
 									}
 									break;
-								case "anomalia_assistenza":
-									QDmalmAnomaliaAssistenza anomaliaAssistenza2 = new QDmalmAnomaliaAssistenza(
-											"anomaliaAssistenza2");
-									pk = query
-											.from(anomaliaAssistenza)
-											.where(anomaliaAssistenza.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(anomaliaAssistenza.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(anomaliaAssistenza2)
-															.where(anomaliaAssistenza.dmalmProjectFk02
-																	.eq(anomaliaAssistenza2.dmalmProjectFk02))
-															.where(anomaliaAssistenza.cdAnomaliaAss
-																	.eq(anomaliaAssistenza2.cdAnomaliaAss))
-															.list(anomaliaAssistenza2.dtStoricizzazione
-																	.max())))
-											.orderBy(anomaliaAssistenza.rankStatoAnomaliaAss.desc(), anomaliaAssistenza.dtModificaAnomaliaAss.desc(), anomaliaAssistenza.dmalmAnomaliaAssPk.desc())
-											.list(anomaliaAssistenza.dmalmAnomaliaAssPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmAnomaliaAssistenza a = AnomaliaAssistenzaDAO
-													.getAnomaliaAssistenza(i);
-											if (a != null) {
-												boolean exist = AnomaliaAssistenzaDAO
-														.checkEsistenzaAnomalia(
-																a, p);
-												if (!exist) {
-													if (a.getRankStatoAnomaliaAss() == 1) {
-														AnomaliaAssistenzaDAO
-																.updateRank(
-																		a,
-																		new Double(
-																				0));
-													}
-													a.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													a.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													AnomaliaAssistenzaDAO
-															.insertAnomaliaAssistenzaUpdate(
-																	dataEsecuzione,
-																	a, false);
-												}
-											}
-										}
-									}
-									break;
-								case "release_ser":
-									QDmalmReleaseServizi releaseServizi2 = new QDmalmReleaseServizi(
-											"releaseServizi2");
-									pk = query
-											.from(releaseServizi)
-											.where(releaseServizi.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(releaseServizi.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(releaseServizi2)
-															.where(releaseServizi.dmalmProjectFk02
-																	.eq(releaseServizi2.dmalmProjectFk02))
-															.where(releaseServizi.cdRelServizi
-																	.eq(releaseServizi2.cdRelServizi))
-															.list(releaseServizi2.dtStoricizzazione
-																	.max())))
-											.orderBy(releaseServizi.rankStatoRelServizi.desc(), releaseServizi.dtModificaRelServizi.desc(), releaseServizi.dmalmRelServiziPk.desc())
-											.list(releaseServizi.dmalmRelServiziPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmReleaseServizi r = ReleaseServiziDAO
-													.getReleaseServizi(i);
-											if (r != null) {
-												boolean exist = ReleaseServiziDAO
-														.checkEsistenzaRelease(
-																r, p);
-												if (!exist) {
-													if (r.getRankStatoRelServizi() == 1) {
-														ReleaseServiziDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
-													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ReleaseServiziDAO
-															.insertReleaseServiziUpdate(
-																	dataEsecuzione,
-																	r, false);
-												}
-											}
-										}
-									}
-									break;
-
 								case "classificatore_demand":
 									QDmalmClassificatore classificatoreDem2 = new QDmalmClassificatore(
 											"classificatoreDem2");
@@ -782,6 +631,7 @@ public class CheckProjectStorFacade {
 		}
 
 	}
+	
 	private static void storicizzaWI() throws DAOException, SQLException {
 		
 		ConnectionManager cm = null;
