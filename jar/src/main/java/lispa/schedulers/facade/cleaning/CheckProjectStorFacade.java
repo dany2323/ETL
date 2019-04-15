@@ -123,25 +123,22 @@ public class CheckProjectStorFacade {
 				Connection conn = null;
 				List<Integer> pk = new ArrayList<Integer>();
 				
-				if(type.name().equals("anomalia")) {
-				} 
-				else if(type.name().equals("defect")) {
-				} 
-				else if(type.name().equals("sup")) {
-				} 
-				else if(type.name().equals("sman") || type.name().equals("dman")) {
-				} 
-				else if(type.name().equals("rqd")) {
-				} 
-				else if(type.name().equals("programma")) {
-				} 
-				else if(type.name().equals("release")) {
-				} 
-				else if(type.name().equals("sottoprogramma")) {
-				}
-				else if(type.name().equals("srqs")) {
+				if(type.name().equals("anomalia") 
+						|| type.name().equals("defect")
+						|| type.name().equals("sup")
+						|| type.name().equals("sman")
+						|| type.name().equals("dman") 
+						|| type.name().equals("rqd") 
+						|| type.name().equals("programma") 
+						|| type.name().equals("release")
+						|| type.name().equals("sottoprogramma") 
+						|| type.name().equals("srqs")
+						|| type.name().equals("release_it")
+						|| type.name().equals("classificatore")
+						|| type.name().equals("classificatore_demand")
+						|| type.name().equals("richiesta_gestione")
+						|| type.name().equals("documento")) {
 					
-				} else {
 					logger.info("Storicizzo type: "+type);
 				}
 				for (DmalmProject p : pNew) {
@@ -159,54 +156,6 @@ public class CheckProjectStorFacade {
 
 								SQLQuery query = new SQLQuery(conn, dialect);
 								switch (type.name()) {
-									case "documento":
-									QDmalmDocumento documento2 = new QDmalmDocumento(
-											"documento2");
-									pk = query
-											.from(documento)
-											.where(documento.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(documento.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(documento2)
-															.where(documento.dmalmProjectFk02
-																	.eq(documento2.dmalmProjectFk02))
-															.where(documento.cdDocumento
-																	.eq(documento2.cdDocumento))
-															.list(documento2.dtStoricizzazione
-																	.max())))
-											.orderBy(documento.rankStatoDocumento.desc(), documento.dtModificaDocumento.desc(), documento.dmalmDocumentoPk.desc())
-											.list(documento.dmalmDocumentoPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-
-											DmalmDocumento d = DocumentoDAO
-													.getDocumento(i);
-											if (d != null) {
-												boolean exist = DocumentoDAO
-														.checkEsistenzaDocumento(
-																d, p);
-												if (!exist) {
-													if (d.getRankStatoDocumento() == 1) {
-														DocumentoDAO
-																.updateRank(
-																		d,
-																		new Double(
-																				0));
-													}
-													d.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													d.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													DocumentoDAO
-															.insertDocumentoUpdate(
-																	dataEsecuzione,
-																	d, false);
-												}
-											}
-										}
-									}
-									break;
 								case "testcase":
 									QDmalmTestcase testcase2 = new QDmalmTestcase(
 											"testcase2");
@@ -382,53 +331,6 @@ public class CheckProjectStorFacade {
 										}
 									}
 									break;
-								case "release_it":
-									QDmalmReleaseIt releaseIT2 = new QDmalmReleaseIt(
-											"releaseIT2");
-									pk = query
-											.from(releaseIT)
-											.where(releaseIT.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(releaseIT.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(releaseIT2)
-															.where(releaseIT.dmalmProjectFk02
-																	.eq(releaseIT2.dmalmProjectFk02))
-															.where(releaseIT.cdReleaseIt
-																	.eq(releaseIT2.cdReleaseIt))
-															.list(releaseIT2.dtStoricizzazione
-																	.max())))
-											.orderBy(releaseIT.rankStatoReleaseIt.desc(), releaseIT.dtModificaReleaseIt.desc(), releaseIT.dmalmReleaseItPk.desc())
-											.list(releaseIT.dmalmReleaseItPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmReleaseIt r = ReleaseItDAO
-													.getReleaseIt(i);
-											if (r != null) {
-												boolean exist = ReleaseItDAO
-														.checkEsistenzaRelease(
-																r, p);
-												if (!exist) {
-													if (r.getRankStatoReleaseIt() == 1) {
-														ReleaseItDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
-													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ReleaseItDAO
-															.insertReleaseItUpdate(
-																	dataEsecuzione,
-																	r, false);
-												}
-											}
-										}
-									}
-									break;
 								case "build":
 									QDmalmBuild build2 = new QDmalmBuild(
 											"build2");
@@ -510,100 +412,6 @@ public class CheckProjectStorFacade {
 															.insertTaskItUpdate(
 																	dataEsecuzione,
 																	t, false);
-												}
-											}
-										}
-									}
-									break;
-								case "richiesta_gestione":
-									QDmalmRichiestaGestione richiestaGestione2 = new QDmalmRichiestaGestione(
-											"richiestaGestione2");
-									pk = query
-											.from(richiestaGestione)
-											.where(richiestaGestione.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(richiestaGestione.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(richiestaGestione2)
-															.where(richiestaGestione.dmalmProjectFk02
-																	.eq(richiestaGestione2.dmalmProjectFk02))
-															.where(richiestaGestione.cdRichiestaGest
-																	.eq(richiestaGestione2.cdRichiestaGest))
-															.list(richiestaGestione2.dtStoricizzazione
-																	.max())))
-											.orderBy(richiestaGestione.rankStatoRichiestaGest.desc(), richiestaGestione.dtModificaRichiestaGest.desc(), richiestaGestione.dmalmRichiestaGestPk.desc())
-											.list(richiestaGestione.dmalmRichiestaGestPk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmRichiestaGestione r = RichiestaGestioneDAO
-													.getRichiestaGestione(i);
-											if (r != null) {
-												boolean exist = RichiestaGestioneDAO
-														.checkEsistenzaRichiesta(
-																r, p);
-												if (!exist) {
-													if (r.getRankStatoRichiestaGest() == 1) {
-														RichiestaGestioneDAO
-																.updateRank(
-																		r,
-																		new Double(
-																				0));
-													}
-													r.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													r.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													RichiestaGestioneDAO
-															.insertRichiestaGestioneUpdate(
-																	dataEsecuzione,
-																	r, false);
-												}
-											}
-										}
-									}
-									break;
-								case "classificatore_demand":
-									QDmalmClassificatore classificatoreDem2 = new QDmalmClassificatore(
-											"classificatoreDem2");
-									pk = query
-											.from(classificatoreDem)
-											.where(classificatoreDem.dmalmProjectFk02.eq(history
-													.getDmalmProjectPk()))
-											.where(classificatoreDem.dtStoricizzazione
-													.in(new SQLSubQuery()
-															.from(classificatoreDem2)
-															.where(classificatoreDem.dmalmProjectFk02
-																	.eq(classificatoreDem2.dmalmProjectFk02))
-															.where(classificatoreDem.cd_classificatore
-																	.eq(classificatoreDem2.cd_classificatore))
-															.list(classificatoreDem2.dtStoricizzazione
-																	.max())))
-											.orderBy(classificatoreDem.rankStatoClassificatore.desc(), classificatoreDem.dtModificaClassif.desc(), classificatoreDem.dmalmClassificatorePk.desc())
-											.list(classificatoreDem.dmalmClassificatorePk);
-									if (pk.size() > 0) {
-										for (Integer i : pk) {
-											DmalmClassificatore c = ClassificatoreDAO
-													.getClassificatore(i);
-											if (c != null) {
-												boolean exist = ClassificatoreDAO
-														.checkEsistenzaClassificatore(
-																c, p);
-												if (!exist) {
-													if (c.getRankStatoClassificatore() == 1) {
-														ClassificatoreDAO
-																.updateRank(
-																		c,
-																		new Double(
-																				0));
-													}
-													c.setDtStoricizzazione(p
-															.getDtInizioValidita());
-													c.setDmalmProjectFk02(p
-															.getDmalmProjectPk());
-													ClassificatoreDAO
-															.insertClassUpdate(
-																	dataEsecuzione,
-																	c, false);
 												}
 											}
 										}

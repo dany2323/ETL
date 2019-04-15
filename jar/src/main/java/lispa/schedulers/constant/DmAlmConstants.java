@@ -642,6 +642,10 @@ public final class DmAlmConstants {
 	public static String STORED_PROCEDURE_ANOMALIA_ASS = "STOR_ANOMALIA_ASS_BY_PROJ";
 	public static String STORED_PROCEDURE_TASK = "STOR_TASK_BY_PROJ";
 	public static String STORED_PROCEDURE_REL_SER = "STOR_RELEASE_SERVIZI_BY_PROJ";
+	public static String STORED_PROCEDURE_RELEASE_IT_BY_PROJ = "STOR_RELEASE_IT_BY_PROJ";
+	public static String STORED_PROCEDURE_CLASS_BY_PROJ = "STOR_CLASS_BY_PROJ";
+	public static String STORED_PROCEDURE_RICH_GESTIONE_BY_PROJ = "STOR_RICH_GESTIONE_BY_PROJ";
+	public static String STORED_PROCEDURE_DOCUMENTO_BY_PROJ = "STOR_DOCUMENTO_BY_PROJ";
 
 
 	public static String getProperty(String property) {

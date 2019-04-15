@@ -50,6 +50,11 @@ public class Workitem_Type {
 		enumMap.put(EnumWorkitemType.anomalia_assistenza, DmAlmConstants.STORED_PROCEDURE_ANOMALIA_ASS);
 		enumMap.put(EnumWorkitemType.task, DmAlmConstants.STORED_PROCEDURE_TASK);
 		enumMap.put(EnumWorkitemType.release_ser, DmAlmConstants.STORED_PROCEDURE_REL_SER);
+		enumMap.put(EnumWorkitemType.release_it, DmAlmConstants.STORED_PROCEDURE_RELEASE_IT_BY_PROJ);
+		enumMap.put(EnumWorkitemType.classificatore, DmAlmConstants.STORED_PROCEDURE_CLASS_BY_PROJ);
+		enumMap.put(EnumWorkitemType.richiesta_gestione, DmAlmConstants.STORED_PROCEDURE_RICH_GESTIONE_BY_PROJ);
+		enumMap.put(EnumWorkitemType.documento, DmAlmConstants.STORED_PROCEDURE_DOCUMENTO_BY_PROJ);
+		
 		return enumMap;
 	}
 }
