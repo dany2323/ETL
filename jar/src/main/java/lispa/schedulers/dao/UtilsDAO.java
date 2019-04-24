@@ -54,20 +54,22 @@ public class UtilsDAO {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			if(ps!=null)
+			if(ps!=null) {
 				try {
 					ps.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			if(cm!=null)
+			}
+			if(cm!=null) {
 				try {
 					cm.closeConnection(connection);
 				} catch (DAOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
 		}
 		return result;
 	}
@@ -76,7 +78,6 @@ public class UtilsDAO {
 		
 		ConnectionManager cm = null;
 		Connection connection = null;
-		Statement stmt = null;
 		java.util.List<String> stringArray = null;
 		Array array = null;
 		String sql = "{call "+nameStoredProcedure+"(?, ?)}";
@@ -84,22 +85,28 @@ public class UtilsDAO {
 			
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-			stmt = connection.createStatement();
+			try(Statement stmt = connection.createStatement();){
 			
-			logger.debug("Inizio chiamata alla Stored Procedure "+nameStoredProcedure);
-	        stmt.executeUpdate("begin dbms_output.enable(); end;");
-
-	        CallableStatement call = connection.prepareCall(sql);
-	        
-            call.registerOutParameter(1, Types.ARRAY, "DBMSOUTPUT_LINESARRAY");
-        		call.setObject(2, dataEsecuzione);
-            call.execute();
-
-            
-            array = call.getArray(1);
-            if (array != null) {
-            		stringArray = Arrays.asList((String[]) array.getArray());
-            }
+				logger.debug("Inizio chiamata alla Stored Procedure "+nameStoredProcedure);
+		        stmt.executeUpdate("begin dbms_output.enable(); end;");
+	
+		        try(CallableStatement call = connection.prepareCall(sql);){
+		        
+		            call.registerOutParameter(1, Types.ARRAY, "DBMSOUTPUT_LINESARRAY");
+		        		call.setObject(2, dataEsecuzione);
+		            call.execute();
+		
+		            
+		            array = call.getArray(1);
+		            if (array != null) {
+		            		stringArray = Arrays.asList((String[]) array.getArray());
+		            }
+		            if (array != null) {
+		    			array.free();
+		            }
+		            stmt.executeUpdate("begin dbms_output.disable(); end;");
+		        }
+			}
 		} catch (SQLException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} catch (DAOException e) {
@@ -110,10 +117,7 @@ public class UtilsDAO {
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}
-			if (array != null) {
-        			array.free();
-			}
-			stmt.executeUpdate("begin dbms_output.disable(); end;");
+			
 			logger.debug("Fine chiamata alla Stored Procedure "+nameStoredProcedure);
 		}
 		
@@ -124,35 +128,27 @@ public class UtilsDAO {
 	
 		ConnectionManager cm = null;
 		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs=null;
 		Integer seqId = 0;
 		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			String sqlSequenceName = "select "+sequenceName+" from dual";
-			ps = connection.prepareStatement(sqlSequenceName);
-			rs = ps.executeQuery(sqlSequenceName);
-			if (rs.next()) {
-				seqId = rs.getInt(1);
+			try(PreparedStatement ps = connection.prepareStatement(sqlSequenceName);){
+				try(ResultSet rs = ps.executeQuery(sqlSequenceName);){
+					if (rs.next()) {
+						seqId = rs.getInt(1);
+					}
+				}
 			}
-		} catch (SQLException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		} finally {
-			if(rs!=null){
-				rs.close();
+		
+			} catch (Exception e) {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+			} finally {
+				if (cm != null) {
+					cm.closeConnection(connection);
+				}
 			}
-			if(ps!=null)
-				ps.close();
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
 		
 		return seqId;
 	}
@@ -161,30 +157,22 @@ public class UtilsDAO {
 		
 		ConnectionManager cm = null;
 		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs=null;
 		Integer maxValue = 0;
 		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			String sqlMaxValue = "select max("+fieldName+") from "+tableName;
-			ps = connection.prepareStatement(sqlMaxValue);
-			rs = ps.executeQuery(sqlMaxValue);
-			if (rs.next()) {
-				maxValue = rs.getInt(1);
+			try(PreparedStatement ps = connection.prepareStatement(sqlMaxValue);){
+				try(ResultSet rs = ps.executeQuery(sqlMaxValue);){
+					if (rs.next()) {
+						maxValue = rs.getInt(1);
+					}
+				}
 			}
-		} catch (SQLException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
-			if(rs!=null)
-				rs.close();
-			if(ps!=null)
-				ps.close();
 			if (cm != null) {
 				cm.closeConnection(connection);
 			}

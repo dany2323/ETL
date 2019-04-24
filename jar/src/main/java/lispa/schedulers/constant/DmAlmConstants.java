@@ -1,5 +1,24 @@
 package lispa.schedulers.constant;
 
+/*
+ * SonarQube, open source software quality management tool.
+ * Copyright (C) 2008-2013 SonarSource
+ * mailto:contact AT sonarsource DOT com
+ *
+ * SonarQube is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * SonarQube is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.DmAlmConfigReader;
@@ -645,6 +664,16 @@ public final class DmAlmConstants {
 	public static String STORED_PROCEDURE_ANOMALIA_ASS = "STOR_ANOMALIA_ASS_BY_PROJ";
 	public static String STORED_PROCEDURE_TASK = "STOR_TASK_BY_PROJ";
 	public static String STORED_PROCEDURE_REL_SER = "STOR_RELEASE_SERVIZI_BY_PROJ";
+	public static final String STORED_PROCEDURE_TASK_IT = "STOR_TASK_IT_BY_PROJ";
+	public static final String STORED_PROCEDURE_TEST_CASE = "STOR_TEST_BY_PROJ";
+	public static final String STORED_PROCEDURE_RICHIESTA_GESTIONE = "STOR_RICH_GESTIONE_BY_PROJ";
+	public static final String STORED_PROCEDURE_PEI ="STOR_PEI_BY_PROJ ";
+	public static final String STORED_PROCEDURE_BUILD = "STOR_BUILD_BY_PROJ";
+	public static final String STORED_PROCEDURE_FASE = "STOR_FASE_BY_PROJ";
+	public static final String STORED_PROCEDURE_REL_IT = "STOR_RELEASE_IT_BY_PROJ";
+	public static final String STORED_PROCEDURE_PROG_SV_DEM = "STOR_PROG_SV_DEM_BY_PROJ";
+	public static final String STORED_PROCEDURE_CLASS = "STOR_CLASS_BY_PROJ";
+
 	public static String FUNCTION_BACKUP_TARGET = "BACKUP_TARGET";
 	public static String RECOVER_TARGET_SGR_ELETTRA = "RECOVER_TARGET_SGR_ELETTRA";
 
