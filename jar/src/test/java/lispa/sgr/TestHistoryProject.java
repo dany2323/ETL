@@ -1,10 +1,11 @@
-package lispa.sgr.sire.history;
+package lispa.sgr;
 
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DM_ALM_USER;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.PROPERTIES_READER_FILE_NAME;
 
-import org.apache.log4j.Logger;
+import java.sql.Timestamp;
 
+import org.apache.log4j.Logger;
 import junit.framework.TestCase;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
@@ -17,9 +18,9 @@ import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.PropertiesReader;
 import lispa.schedulers.utils.DateUtils;
 
-public class TestSIREHistoryProject extends TestCase {
-
-	private Logger logger = Logger.getLogger(ProjectSgrCmFacade.class);
+public class TestHistoryProject extends TestCase {
+	
+	private Logger logger = Logger.getLogger(TestHistoryProject.class);
 
 	public void testFillStaging() throws Exception {
 		DmAlmConfigReaderProperties.setFileProperties("/Users/lucaporro/LISPA/DataMart/props/dm_alm.properties");
@@ -27,16 +28,17 @@ public class TestSIREHistoryProject extends TestCase {
 		logger.debug("TestHistoryProject");
 		PropertiesReader propertiesReader = new PropertiesReader(PROPERTIES_READER_FILE_NAME);
 		logger.debug(propertiesReader.getProperty(DM_ALM_USER));
-		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2019-04-29 12:00:00", "yyyy-MM-dd HH:mm:00"));
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2019-04-30 10:20:00", "yyyy-MM-dd HH:mm:00"));
 		//SISS
 		long project_minRevision_siss = SissHistoryProjectDAO.getMinRevision();
 		long polarion_maxRevision_siss = SissHistoryRevisionDAO.getMaxRevision();
-		SissHistoryProjectDAO.fillSissHistoryProject(project_minRevision_siss, polarion_maxRevision_siss);
+//		SissHistoryProjectDAO.fillSissHistoryProject(project_minRevision_siss, polarion_maxRevision_siss);
 		
 		//SIRE
 		long project_minRevision_sire = SireHistoryProjectDAO.getMinRevision();
 		long polarion_maxRevision_sire = SireHistoryRevisionDAO.getMaxRevision();
-		SireHistoryProjectDAO.fillSireHistoryProject(project_minRevision_sire, polarion_maxRevision_sire);
-
+//		SireHistoryProjectDAO.fillSireHistoryProject(project_minRevision_sire, polarion_maxRevision_sire);
+		Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
+		ProjectSgrCmFacade.execute(dataEsecuzione);
 	}
 }

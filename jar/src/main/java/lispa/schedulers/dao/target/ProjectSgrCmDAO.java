@@ -260,11 +260,9 @@ public class ProjectSgrCmDAO {
 					+ project.size());
 
 			if (rs != null) {
-				logger.debug("rs close");
 				rs.close();
 			}
 			if (ps != null) {
-				logger.debug("ps close");
 				ps.close();
 			}
 		} catch (DAOException e) {
@@ -275,12 +273,10 @@ public class ProjectSgrCmDAO {
 
 		} finally {
 			if (cm != null) {
-				logger.debug("connection close");
 				cm.closeConnection(connection);
 			}
 		}
 
-		logger.debug("return");
 		return project;
 	}
 

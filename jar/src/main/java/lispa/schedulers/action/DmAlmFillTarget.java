@@ -445,13 +445,13 @@ public class DmAlmFillTarget {
 						logger.info("Entità già elaborata per la data di esecuzione ");
 					}
 	
-					logger.info("START ReleaseDiProgettoFacade.execute "
-							+ new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_RELEASE_DI_PROG)) {
-						ReleaseDiProgettoFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
+//					logger.info("START ReleaseDiProgettoFacade.execute "
+//							+ new Date());
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_RELEASE_DI_PROG)) {
+//						ReleaseDiProgettoFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione ");
+//					}
 					
 					// DM_ALM-350
 					logger.info("START RichiestaSupporto.execute "

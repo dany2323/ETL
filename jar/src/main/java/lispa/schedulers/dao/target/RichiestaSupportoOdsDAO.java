@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Struct;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.log4j.Logger;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
@@ -18,6 +20,7 @@ import oracle.jdbc.OracleTypes;
 
 public class RichiestaSupportoOdsDAO {
 
+	private static Logger logger = Logger.getLogger(RichiestaSupportoOdsDAO.class);
 	public static void delete() throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
@@ -53,6 +56,8 @@ public class RichiestaSupportoOdsDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		OracleCallableStatement ocs = null;
+		List <Integer> listPk= new ArrayList<Integer>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -60,6 +65,10 @@ public class RichiestaSupportoOdsDAO {
 			connection.setAutoCommit(false);
 	        String sql = QueryUtils.getCallProcedure("RICHIESTA_SUPPORTO.INSERT_RICHIESTA_SUPPORTO_ODS", 2);
 		    for (DmalmRichiestaSupporto richiesta : staging_richieste) {
+		    	if(listPk.contains(richiesta.getDmalmRichiestaSupportoPk()))
+					logger.info("Trovata DmalmRichiestaSupportoPk DUPLICATA!!!"+richiesta.getDmalmRichiestaSupportoPk());
+				else{
+					listPk.add(richiesta.getDmalmRichiestaSupportoPk());
 //		    		DmalmRichiestaSupporto r = new DmalmRichiestaSupporto(DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase()+".RICHSUPPTYPE", richiesta);
 			    	Object [] objRichSupp = richiesta.getObject(richiesta, true);
 			    	// Now Declare a descriptor to associate the host object type with the
@@ -74,11 +83,11 @@ public class RichiestaSupportoOdsDAO {
 			    	// and
 			    	// registerOutParameter(position,type,oracletype)
 			    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
-				ocs.setObject(1, structObj); 
-				ocs.setTimestamp(2, dataEsecuzione);
-				ocs.execute();
-				ocs.close();
-
+					ocs.setObject(1, structObj); 
+					ocs.setTimestamp(2, dataEsecuzione);
+					ocs.execute();
+					ocs.close();
+				}
 		    }
 		    connection.commit();
 
