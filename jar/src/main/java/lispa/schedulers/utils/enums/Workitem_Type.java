@@ -15,7 +15,7 @@ public class Workitem_Type {
 		progettoese,
 		fase,
 		defect,
-//		release,
+		release,
 		sottoprogramma,
 		programma,
 		taskit,
@@ -44,7 +44,7 @@ public class Workitem_Type {
 		enumMap.put(EnumWorkitemType.dman, DmAlmConstants.STORED_PROCEDURE_STOR_MANUTENZIONE);
 		enumMap.put(EnumWorkitemType.rqd, DmAlmConstants.STORED_PROCEDURE_STOR_PROG_DEMAND);
 		enumMap.put(EnumWorkitemType.programma, DmAlmConstants.STORED_PROCEDURE_STOR_PROGRAMMA);
-//		enumMap.put(EnumWorkitemType.release, DmAlmConstants.STORED_PROCEDURE_REL_PROGETTO);
+		enumMap.put(EnumWorkitemType.release, DmAlmConstants.STORED_PROCEDURE_REL_PROGETTO);
 		enumMap.put(EnumWorkitemType.sottoprogramma, DmAlmConstants.STORED_PROCEDURE_SOTTOPROGRAMMA);
 		enumMap.put(EnumWorkitemType.srqs, DmAlmConstants.STORED_PROCEDURE_PROGETTO_SVILUPPO_SVILUPPO);
 		enumMap.put(EnumWorkitemType.progettoese, DmAlmConstants.STORED_PROCEDURE_STOR_PROG_ESE);
