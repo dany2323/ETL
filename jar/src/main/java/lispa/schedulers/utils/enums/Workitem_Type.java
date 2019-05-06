@@ -38,6 +38,7 @@ public class Workitem_Type {
 		EnumMap<EnumWorkitemType, String> enumMap = new EnumMap<EnumWorkitemType, String>(EnumWorkitemType.class);
 		enumMap.put(EnumWorkitemType.anomalia, DmAlmConstants.STORED_PROCEDURE_STOR_ANOMALIA_PRODOTTO);
 		enumMap.put(EnumWorkitemType.defect, DmAlmConstants.STORED_PROCEDURE_STOR_DIFETTO_PRODOTTO);
+		enumMap.put(EnumWorkitemType.documento, DmAlmConstants.STORED_PROCEDURE_STOR_DOCUMENTO);
 		enumMap.put(EnumWorkitemType.sup, DmAlmConstants.STORED_PROCEDURE_STOR_RICHIESTA_SUPPORTO);
 		enumMap.put(EnumWorkitemType.sman, DmAlmConstants.STORED_PROCEDURE_STOR_MANUTENZIONE);
 		enumMap.put(EnumWorkitemType.dman, DmAlmConstants.STORED_PROCEDURE_STOR_MANUTENZIONE);
