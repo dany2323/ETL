@@ -1075,208 +1075,208 @@ public class CheckSferaMisureFacade implements Runnable {
 //						dataEsecuzione);
 //			}
 
-			// pPrjFlApplicLgFpDwh
-			if (row.get(stgMisura.pPrjFlApplicLgFpDwh) == null
-					|| (!row.get(stgMisura.pPrjFlApplicLgFpDwh).equals("SI") && !row
-							.get(stgMisura.pPrjFlApplicLgFpDwh).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO
-								+ row.get(stgMisura.pPrjFlApplicLgFpDwh),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
+//			// pPrjFlApplicLgFpDwh
+//			if (row.get(stgMisura.pPrjFlApplicLgFpDwh) == null
+//					|| (!row.get(stgMisura.pPrjFlApplicLgFpDwh).equals("SI") && !row
+//							.get(stgMisura.pPrjFlApplicLgFpDwh).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjFlApplicLgFpDwh),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
 
-			// pPrjFlagApplLgFpGis
-			if (row.get(stgMisura.pPrjFlagApplLgFpGis) == null
-					|| (!row.get(stgMisura.pPrjFlagApplLgFpGis).equals("SI") && !row
-							.get(stgMisura.pPrjFlagApplLgFpGis).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_GIS_NO_PERMESSO
-								+ row.get(stgMisura.pPrjFlagApplLgFpGis),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlApplLgFpEdma
-			if (row.get(stgMisura.pPrjFlApplLgFpEdma) == null
-					|| (!row.get(stgMisura.pPrjFlApplLgFpEdma).equals("SI") && !row
-							.get(stgMisura.pPrjFlApplLgFpEdma).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_APPLICATIBILITA_LG_FP_EDMA_NON_PERMESSO
-								+ row.get(stgMisura.pPrjFlApplLgFpEdma),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlagApplLgFpMware
-			if (row.get(stgMisura.pPrjFlagApplLgFpMware) == null
-					|| (!row.get(stgMisura.pPrjFlagApplLgFpMware).equals("SI") && !row
-							.get(stgMisura.pPrjFlagApplLgFpMware).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_MWARE_NO_PERMESSO
-								+ row.get(stgMisura.pPrjFlagApplLgFpMware),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlApplLgFpWeb
-			if (row.get(stgMisura.pPrjFlApplLgFpWeb) == null
-					|| (!row.get(stgMisura.pPrjFlApplLgFpWeb).equals("SI") && !row
-							.get(stgMisura.pPrjFlApplLgFpWeb).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_SITIWEB
-								+ row.get(stgMisura.pPrjFlApplLgFpWeb),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlApplicLgFpFuturo01
-			if (row.get(stgMisura.pPrjFlApplicLgFpFuturo01) == null
-					|| (!row.get(stgMisura.pPrjFlApplicLgFpFuturo01).equals(
-							"SI") && !row.get(
-							stgMisura.pPrjFlApplicLgFpFuturo01).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
-								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo01),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlApplicLgFpFuturo02
-			if (row.get(stgMisura.pPrjFlApplicLgFpFuturo02) == null
-					|| (!row.get(stgMisura.pPrjFlApplicLgFpFuturo02).equals(
-							"SI") && !row.get(
-							stgMisura.pPrjFlApplicLgFpFuturo02).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
-								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo02),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlAmbTecTransBatRep
-			if (row.get(stgMisura.pPrjFlAmbTecTransBatRep) == null
-					|| (!row.get(stgMisura.pPrjFlAmbTecTransBatRep)
-							.equals("SI") && !row.get(
-							stgMisura.pPrjFlAmbTecTransBatRep).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP_NON_PERMESSO
-								+ row.get(stgMisura.pPrjFlAmbTecTransBatRep),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlagAmbTecnGis
-			if (row.get(stgMisura.pPrjFlagAmbTecnGis) == null
-					|| (!row.get(stgMisura.pPrjFlagAmbTecnGis).equals("SI") && !row
-							.get(stgMisura.pPrjFlagAmbTecnGis).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_GIS_VALORE_NON_PERMESSO
-								+ row.get(stgMisura.pPrjFlagAmbTecnGis),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjAmbTecnPortali
-			if (row.get(stgMisura.pPrjAmbTecnPortali) == null
-					|| (!row.get(stgMisura.pPrjAmbTecnPortali).equals("SI") && !row
-							.get(stgMisura.pPrjAmbTecnPortali).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PORTALI_NON_PERMESSO
-								+ row.get(stgMisura.pPrjAmbTecnPortali),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlAmbTecnPiatEnterpr
-			if (row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr) == null
-					|| (!row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr).equals(
-							"SI") && !row.get(
-							stgMisura.pPrjFlAmbTecnPiatEnterpr).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO
-						.insert(DmAlmConstants.FONTE_MISURA,
-								DmAlmConstants.TARGET_PROGETTO_SFERA,
-								MisuraUtils.MisuraToString(row),
-								DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PIAT_SPEC_ENT_NON_PERMESSO
-										+ row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr),
-								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-								dataEsecuzione);
-			}
-
-			// pPrjFlAmbitoTecnFuturo01
-			if (row.get(stgMisura.pPrjFlAmbitoTecnFuturo01) == null
-					|| (!row.get(stgMisura.pPrjFlAmbitoTecnFuturo01).equals(
-							"SI") && !row.get(
-							stgMisura.pPrjFlAmbitoTecnFuturo01).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO_NON_PERMESSO
-								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo01),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-			}
-
-			// pPrjFlAmbitoTecnFuturo02
-			if (row.get(stgMisura.pPrjFlAmbitoTecnFuturo02) == null
-					|| (!row.get(stgMisura.pPrjFlAmbitoTecnFuturo02).equals(
-							"SI") && !row.get(
-							stgMisura.pPrjFlAmbitoTecnFuturo02).equals("NO"))) {
-				errore++;
-				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
-						DmAlmConstants.TARGET_PROGETTO_SFERA,
-						MisuraUtils.MisuraToString(row),
-						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO
-								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo02),
-						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
-						dataEsecuzione);
-
-			}
+//			// pPrjFlagApplLgFpGis
+//			if (row.get(stgMisura.pPrjFlagApplLgFpGis) == null
+//					|| (!row.get(stgMisura.pPrjFlagApplLgFpGis).equals("SI") && !row
+//							.get(stgMisura.pPrjFlagApplLgFpGis).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_GIS_NO_PERMESSO
+//								+ row.get(stgMisura.pPrjFlagApplLgFpGis),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlApplLgFpEdma
+//			if (row.get(stgMisura.pPrjFlApplLgFpEdma) == null
+//					|| (!row.get(stgMisura.pPrjFlApplLgFpEdma).equals("SI") && !row
+//							.get(stgMisura.pPrjFlApplLgFpEdma).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_APPLICATIBILITA_LG_FP_EDMA_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjFlApplLgFpEdma),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlagApplLgFpMware
+//			if (row.get(stgMisura.pPrjFlagApplLgFpMware) == null
+//					|| (!row.get(stgMisura.pPrjFlagApplLgFpMware).equals("SI") && !row
+//							.get(stgMisura.pPrjFlagApplLgFpMware).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_MWARE_NO_PERMESSO
+//								+ row.get(stgMisura.pPrjFlagApplLgFpMware),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlApplLgFpWeb
+//			if (row.get(stgMisura.pPrjFlApplLgFpWeb) == null
+//					|| (!row.get(stgMisura.pPrjFlApplLgFpWeb).equals("SI") && !row
+//							.get(stgMisura.pPrjFlApplLgFpWeb).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_SITIWEB
+//								+ row.get(stgMisura.pPrjFlApplLgFpWeb),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlApplicLgFpFuturo01
+//			if (row.get(stgMisura.pPrjFlApplicLgFpFuturo01) == null
+//					|| (!row.get(stgMisura.pPrjFlApplicLgFpFuturo01).equals(
+//							"SI") && !row.get(
+//							stgMisura.pPrjFlApplicLgFpFuturo01).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo01),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlApplicLgFpFuturo02
+//			if (row.get(stgMisura.pPrjFlApplicLgFpFuturo02) == null
+//					|| (!row.get(stgMisura.pPrjFlApplicLgFpFuturo02).equals(
+//							"SI") && !row.get(
+//							stgMisura.pPrjFlApplicLgFpFuturo02).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo02),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlAmbTecTransBatRep
+//			if (row.get(stgMisura.pPrjFlAmbTecTransBatRep) == null
+//					|| (!row.get(stgMisura.pPrjFlAmbTecTransBatRep)
+//							.equals("SI") && !row.get(
+//							stgMisura.pPrjFlAmbTecTransBatRep).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjFlAmbTecTransBatRep),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlagAmbTecnGis
+//			if (row.get(stgMisura.pPrjFlagAmbTecnGis) == null
+//					|| (!row.get(stgMisura.pPrjFlagAmbTecnGis).equals("SI") && !row
+//							.get(stgMisura.pPrjFlagAmbTecnGis).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_GIS_VALORE_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjFlagAmbTecnGis),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjAmbTecnPortali
+//			if (row.get(stgMisura.pPrjAmbTecnPortali) == null
+//					|| (!row.get(stgMisura.pPrjAmbTecnPortali).equals("SI") && !row
+//							.get(stgMisura.pPrjAmbTecnPortali).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PORTALI_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjAmbTecnPortali),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlAmbTecnPiatEnterpr
+//			if (row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr) == null
+//					|| (!row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr).equals(
+//							"SI") && !row.get(
+//							stgMisura.pPrjFlAmbTecnPiatEnterpr).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO
+//						.insert(DmAlmConstants.FONTE_MISURA,
+//								DmAlmConstants.TARGET_PROGETTO_SFERA,
+//								MisuraUtils.MisuraToString(row),
+//								DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PIAT_SPEC_ENT_NON_PERMESSO
+//										+ row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr),
+//								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//								dataEsecuzione);
+//			}
+//
+//			// pPrjFlAmbitoTecnFuturo01
+//			if (row.get(stgMisura.pPrjFlAmbitoTecnFuturo01) == null
+//					|| (!row.get(stgMisura.pPrjFlAmbitoTecnFuturo01).equals(
+//							"SI") && !row.get(
+//							stgMisura.pPrjFlAmbitoTecnFuturo01).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo01),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//			}
+//
+//			// pPrjFlAmbitoTecnFuturo02
+//			if (row.get(stgMisura.pPrjFlAmbitoTecnFuturo02) == null
+//					|| (!row.get(stgMisura.pPrjFlAmbitoTecnFuturo02).equals(
+//							"SI") && !row.get(
+//							stgMisura.pPrjFlAmbitoTecnFuturo02).equals("NO"))) {
+//				errore++;
+//				ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
+//						DmAlmConstants.TARGET_PROGETTO_SFERA,
+//						MisuraUtils.MisuraToString(row),
+//						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO
+//								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo02),
+//						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						dataEsecuzione);
+//
+//			}
 
 			// PROGETTO PATR- SFERA NON DI TIPO ‘BASELINE’
 			if (row.get(stgMisura.nomeProgetto) != null
