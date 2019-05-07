@@ -21,6 +21,7 @@ import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryUserDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemLinkedDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.sire.history.VSireHistoryWorkitemLinkDAO;
 import lispa.schedulers.dao.target.SchedeServizioDAO;
 import lispa.schedulers.exception.DAOException;
@@ -132,7 +133,7 @@ public class FillSIREHistoryFacade {
 			//logger.debug("STOP UserRolesDAO.delete  " + new Date());
 
 			logger.debug("START SireHistoryCfWorkitemDAO.delete  " + new Date());
-			SireHistoryCfWorkitemDAO.delete(dataEsecuzione);
+			SireHistoryCfWorkitemDAO.delete();
 			logger.debug("STOP SireHistoryCfWorkitemDAO.delete  " + new Date());
 
 			logger.debug("START SireHistoryWorkitemDAO.delete  " + new Date());
@@ -143,6 +144,9 @@ public class FillSIREHistoryFacade {
 			SchedeServizioDAO.delete(dataEsecuzione,
 					DmAlmConstants.REPOSITORY_SIRE);
 			logger.debug("STOP SchedeServizioDAO.delete  " + new Date());
+			
+			SireHistoryWorkitemUserAssignedDAO.delete();
+		
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 

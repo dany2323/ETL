@@ -47,7 +47,7 @@ public class SireHistoryCfWorkitemDAO {
 
 	}
 
-	public static void delete(Timestamp dataEsecuzione) throws Exception {
+	public static void delete() throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -58,11 +58,7 @@ public class SireHistoryCfWorkitemDAO {
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QSireHistoryCfWorkitem stgCFWorkItems = QSireHistoryCfWorkitem.sireHistoryCfWorkitem;
 
-			new SQLDeleteClause(connection, dialect, stgCFWorkItems).where(
-					stgCFWorkItems.dataCaricamento.lt(dataEsecuzione).or(
-							stgCFWorkItems.dataCaricamento.eq(DataEsecuzione
-									.getInstance().getDataEsecuzione())))
-					.execute();
+			new SQLDeleteClause(connection, dialect, stgCFWorkItems).execute();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
