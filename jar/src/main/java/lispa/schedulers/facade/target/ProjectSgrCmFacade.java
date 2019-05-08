@@ -118,7 +118,7 @@ public class ProjectSgrCmFacade {
 								// aggiorno la data di fine validita sul record
 								// corrente
 								ProjectSgrCmDAO.updateDataFineValidita(
-										dataEsecuzione, project);
+										project.getcCreated(), project);
 								logger.debug("Old Project updated");
 								// inserisco un nuovo record
 								ProjectSgrCmDAO.insertProjectUpdate(
