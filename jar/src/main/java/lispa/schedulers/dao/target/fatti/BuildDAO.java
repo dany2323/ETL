@@ -9,17 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import lispa.schedulers.bean.target.DmalmProject;
-import lispa.schedulers.bean.target.fatti.DmalmBuild;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
-import lispa.schedulers.utils.QueryUtils;
-import lispa.schedulers.utils.enums.Workitem_Type;
-
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
@@ -29,6 +18,18 @@ import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.template.StringTemplate;
+
+import lispa.schedulers.bean.target.DmalmProject;
+import lispa.schedulers.bean.target.fatti.DmalmBuild;
+import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
+import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
+import lispa.schedulers.utils.QueryUtils;
+import lispa.schedulers.utils.enums.Workitem_Type;
 
 public class BuildDAO {
 
@@ -55,7 +56,7 @@ public class BuildDAO {
 					DmAlmConfigReaderProperties.SQL_BUILD);
 			ps = connection.prepareStatement(sql);
 
-			ps.setFetchSize(200);
+			ps.setFetchSize(DmAlmConstants.FETCH_SIZE);
 
 			ps.setTimestamp(1, dataEsecuzione);
 			ps.setTimestamp(2, dataEsecuzione);

@@ -112,7 +112,7 @@ public class ProjectSgrCmDAO {
 
 			ps.setTimestamp(1, dataEsecuzione);
 			ps.setTimestamp(2, dataEsecuzione);
-
+			ps.setFetchSize(DmAlmConstants.FETCH_SIZE);
 			rs = ps.executeQuery();
 
 			logger.debug("ProjectSgrCmDAO.getAllProject - Query eseguita!");

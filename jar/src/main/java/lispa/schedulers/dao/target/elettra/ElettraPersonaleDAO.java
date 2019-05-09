@@ -22,6 +22,7 @@ import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.template.StringTemplate;
 
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
@@ -484,7 +485,7 @@ public class ElettraPersonaleDAO {
 			}
 			
 			PreparedStatement ps = connection.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			ps.setFetchSize(200);
+			ps.setFetchSize(DmAlmConstants.FETCH_SIZE);
 
 			rs = ps.executeQuery();		
 
