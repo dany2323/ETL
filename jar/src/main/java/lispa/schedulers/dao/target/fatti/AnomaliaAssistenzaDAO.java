@@ -9,6 +9,7 @@ import java.util.List;
 
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
@@ -53,7 +54,7 @@ public class AnomaliaAssistenzaDAO {
 					DmAlmConfigReaderProperties.SQL_ANOMALIA_ASSISTENZA);
 			ps = connection.prepareStatement(sql);
 
-			ps.setFetchSize(200);
+			ps.setFetchSize(DmAlmConstants.FETCH_SIZE);
 
 			ps.setTimestamp(1, dataEsecuzione);
 			ps.setTimestamp(2, dataEsecuzione);

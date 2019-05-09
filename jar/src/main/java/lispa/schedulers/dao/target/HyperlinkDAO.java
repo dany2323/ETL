@@ -51,7 +51,7 @@ public class HyperlinkDAO {
 			String sql = QueryManager.getInstance().getQuery(SQL_HYPERLINK);
 			ps = connection.prepareStatement(sql);
 
-			ps.setFetchSize(200);
+			ps.setFetchSize(DmAlmConstants.FETCH_SIZE);
 
 			ps.setTimestamp(1, dataEsecuzione);
 			ps.setTimestamp(2, dataEsecuzione);
