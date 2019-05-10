@@ -12,6 +12,7 @@ import com.mysema.query.Tuple;
 
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
+import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
@@ -19,10 +20,12 @@ import lispa.schedulers.dao.target.ProjectUnitaOrganizzativaEccezioniDAO;
 import lispa.schedulers.dao.target.StrutturaOrganizzativaEdmaLispaDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.utils.BeanUtils;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
 
 public class ProjectSgrCmFacade {
@@ -115,7 +118,7 @@ public class ProjectSgrCmFacade {
 								// aggiorno la data di fine validita sul record
 								// corrente
 								ProjectSgrCmDAO.updateDataFineValidita(
-										dataEsecuzione, project);
+										project.getcCreated(), project);
 								logger.debug("Old Project updated");
 								// inserisco un nuovo record
 								ProjectSgrCmDAO.insertProjectUpdate(
@@ -139,6 +142,7 @@ public class ProjectSgrCmFacade {
 					}
 				}
 			}
+			updateFlatProject();
 
 			// verifica delle UO per i Project non scaricati in History
 			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
@@ -153,7 +157,7 @@ public class ProjectSgrCmFacade {
 
 			Integer strutturaOrgFk02;
 			Integer unitaOrganizzativaFk;
-
+			boolean modificato=false;
 			for (Tuple row : listaProgettiNonMovimentati) {
 				if (row != null) {
 					//Edma
@@ -199,7 +203,7 @@ public class ProjectSgrCmFacade {
 									unitaOrganizzativaFk)) {
 
 						righeModificate++;
-
+						modificato=true;
 						DmalmProject bean = new DmalmProject();
 
 						bean.setIdProject(row.get(proj.idProject));
@@ -256,23 +260,64 @@ public class ProjectSgrCmFacade {
 					}
 				}
 			}
-			
-			//DMALM-191 associazione project Unità Organizzativa Flat
-			//ricarica il valore della Fk ad ogni esecuzione
-			try {
-				QueryManager qm = QueryManager.getInstance();
+			/*if(modificato)
+				updateFlatProject();
+			modificato=false;
+			for (Tuple row : listaProgettiNonMovimentati) {
+				
+				DmalmElUnitaOrganizzativeFlat uoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+				if(uoFlat != null && uoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
+					modificato=true;
+					DmalmProject bean = new DmalmProject();
 
-				logger.info("INIZIO Update Project UnitaOrganizzativaFlatFk");
-				
-				qm.executeMultipleStatementsFromFile(
-						DmAlmConstants.M_UPDATE_PROJECT_UOFLATFK,
-						DmAlmConstants.M_SEPARATOR);
-				
-				logger.info("FINE Update Project UnitaOrganizzativaFlatFk");
-			} catch (Exception e) {
-				//non viene emesso un errore bloccante in quanto la Fk è recuperabile dopo l'esecuzione
-				logger.error(e.getMessage(), e);
+					bean.setIdProject(row.get(proj.idProject));
+					bean.setIdRepository(row.get(proj.idRepository));
+					bean.setcTemplate(row.get(proj.cTemplate));
+					bean.setDmalmAreaTematicaFk01(row
+							.get(proj.dmalmAreaTematicaFk01));
+					bean.setDmalmStrutturaOrgFk02(row.get(proj.dmalmStrutturaOrgFk02));
+					bean.setDmalmUnitaOrganizzativaFk(row.get(proj.dmalmUnitaOrganizzativaFk));
+					bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+					bean.setFlAttivo(row.get(proj.flAttivo));
+					bean.setPathProject(row.get(proj.pathProject));
+					bean.setDtInizioValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(), 1).getTime()));
+					bean.setcCreated(row.get(proj.cCreated));
+					bean.setServiceManagers(row.get(proj.serviceManagers));
+					bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
+					bean.setcIsLocal(row.get(proj.cIsLocal));
+					bean.setcPk(row.get(proj.cPk));
+					bean.setFkUriLead(row.get(proj.fkUriLead));
+					bean.setcDeleted(row.get(proj.cDeleted));
+					bean.setcFinish(row.get(proj.cFinish));
+					bean.setcUri(row.get(proj.cUri));
+					bean.setcStart(row.get(proj.cStart));
+					bean.setFkUriProjectgroup(row
+							.get(proj.fkUriProjectgroup));
+					bean.setcActive(row.get(proj.cActive));
+					bean.setFkProjectgroup(row.get(proj.fkProjectgroup));
+					bean.setFkLead(row.get(proj.fkLead));
+					bean.setcLockworkrecordsdate(row
+							.get(proj.cLockworkrecordsdate));
+					bean.setcRev(row.get(proj.cRev));
+					bean.setcDescription(row.get(proj.cDescription));
+					bean.setSiglaProject(row.get(proj.siglaProject));
+					bean.setNomeCompletoProject(row
+							.get(proj.nomeCompletoProject));
+					bean.setDtCaricamento(DataEsecuzione.getInstance().getDataEsecuzione());
+
+					ProjectSgrCmDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
+							bean); 
+
+					// inserisco un nuovo record
+					ProjectSgrCmDAO.insertProjectUpdate(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
+							bean, false);
+				}
 			}
+			
+			if(modificato){
+				updateFlatProject();
+			}*/
+			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(project_tmp));
@@ -299,6 +344,21 @@ public class ProjectSgrCmFacade {
 				logger.error(e.getMessage(), e);
 
 			}
+		}
+	}
+
+	private static void updateFlatProject() {
+		try {
+			QueryManager qm = QueryManager.getInstance();
+
+			logger.info("INIZIO Update Project UnitaOrganizzativaFlatFk");
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_PROJECT_UOFLATFK,
+					DmAlmConstants.M_SEPARATOR);
+			logger.info("FINE Update Project UnitaOrganizzativaFlatFk");
+		} catch (Exception e) {
+			//non viene emesso un errore bloccante in quanto la Fk è recuperabile dopo l'esecuzione
+			logger.error(e.getMessage(), e);
 		}
 	}
 }
