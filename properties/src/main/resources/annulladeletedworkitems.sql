@@ -220,11 +220,24 @@ select
    all
    select
    distinct cd_classificatore as CODICE,
-   ID_REPOSITORY, 'classificatore' as type
+   ID_REPOSITORY, type
    from dmalm_classificatore
    where annullato is NULL
    and changed is null
+   and type = 'classificatore'
    minus
    select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+   union
+   all
+   select
+   distinct cd_classificatore as CODICE,
+   ID_REPOSITORY, type
+   from dmalm_classificatore
+   where annullato is NULL
+   and changed is null
+   and type = 'classificatore_demand'
+   minus
+   select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
+ 
  ORDER BY 2, 3, 1    
   
