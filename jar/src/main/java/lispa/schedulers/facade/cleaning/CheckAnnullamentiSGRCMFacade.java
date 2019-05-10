@@ -2738,6 +2738,22 @@ public class CheckAnnullamentiSGRCMFacade {
 
 					targetTipologiaWi = DmAlmConstants.TARGET_CLASSIFICATORE;
 					break;
+				case "classificatore_demand":
+					update_classificatore
+							.where(classificatore.cd_classificatore.eq(rs
+									.getString("CODICE")))
+							.where(classificatore.idRepository.eq(rs
+									.getString("ID_REPOSITORY")))
+							.set(classificatore.annullato,
+									DmAlmConstants.FISICAMENTE)
+							.set(classificatore.dtAnnullamento,
+									DataEsecuzione.getInstance()
+											.getDataEsecuzione()).execute();
+					update_classificatore = new SQLUpdateClause(conn,
+							dialect, classificatore);
+
+					targetTipologiaWi = DmAlmConstants.TARGET_CLASSIFICATORE;
+					break;
 				case "sup":
 					DmalmRichiestaSupporto richiesta = new DmalmRichiestaSupporto();
 					richiesta.setCdRichiestaSupporto(rs.getString("CODICE"));
