@@ -44,6 +44,8 @@ SELECT 'SIRE' as ID_REPOSITORY,
 		hw.st_chiuso as STATO_CHIUSO,
 		(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'so') as SO,
 		(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'platform') as PLATFORM,
+		(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'tag_alm') as TAG_ALM,
+		(select distinct hcf.c_date_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM,
 		hw.aoid as AOID
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk
@@ -102,6 +104,8 @@ UNION ALL
 		hw.st_chiuso as STATO_CHIUSO,
 		(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'so') as SO,
 		(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'platform') as PLATFORM,
+		(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'tag_alm') as TAG_ALM,
+		(select distinct hcf.c_date_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM,
 		hw.aoid as AOID
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk

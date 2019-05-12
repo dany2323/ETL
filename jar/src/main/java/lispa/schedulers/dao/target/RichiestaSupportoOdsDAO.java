@@ -157,6 +157,8 @@ public class RichiestaSupportoOdsDAO {
 			    bean.setCodiceProdotto(rs.getString("CODICE_PRODOTTO"));
 			    bean.setDtScadenzaRichiestaSupporto(rs.getTimestamp("DATA_SCADENZA"));
 			    bean.setTimespent(rs.getFloat("TIMESPENT"));
+			    bean.setTagAlm(rs.getString("TAG_ALM"));
+			    bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				richieste.add(bean);
 			}
 

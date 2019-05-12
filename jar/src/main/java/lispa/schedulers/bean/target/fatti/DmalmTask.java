@@ -90,6 +90,10 @@ public class DmalmTask {
 	
 	private String annullato;
     
+	//DM_ALM-470
+	private String tagAlm;
+	private java.sql.Timestamp tsTagAlm;
+		
     public String getChanged() {
 		return changed;
 	}
@@ -418,6 +422,22 @@ public class DmalmTask {
 
 	public void setAnnullato(String annullato) {
 		this.annullato = annullato;
+	}
+
+	public String getTagAlm() {
+		return tagAlm;
+	}
+
+	public void setTagAlm(String tagAlm) {
+		this.tagAlm = tagAlm;
+	}
+
+	public java.sql.Timestamp getTsTagAlm() {
+		return tsTagAlm;
+	}
+
+	public void setTsTagAlm(java.sql.Timestamp tsTagAlm) {
+		this.tsTagAlm = tsTagAlm;
 	}
 
 }

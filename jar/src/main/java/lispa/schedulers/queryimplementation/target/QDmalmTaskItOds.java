@@ -93,6 +93,10 @@ public class QDmalmTaskItOds extends com.mysema.query.sql.RelationalPathBase<Dma
 
     public final com.mysema.query.sql.PrimaryKey<DmalmTaskItOds> sysC0024211 = createPrimaryKey(dmalmTaskItPk);
 
+    public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public QDmalmTaskItOds(String variable) {
         super(DmalmTaskItOds.class, forVariable(variable), "DMALM", "DMALM_TASK_IT_ODS");
     }

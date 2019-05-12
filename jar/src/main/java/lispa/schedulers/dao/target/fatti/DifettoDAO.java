@@ -118,7 +118,9 @@ public class DifettoDAO {
 				bean.setDtDisponibilita(rs.getTimestamp("DATA_DISPONIBILITA"));
 				//DM_ALM-320
 				bean.setPriority(rs.getString("PRIORITY"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				difetti.add(bean);
 			}
 
@@ -274,6 +276,8 @@ public class DifettoDAO {
 					.set(difettoProdotto.dataDisponibilita, difetto.getDtDisponibilita())
 					//DM_ALM-320
 					.set(difettoProdotto.priority, difetto.getPriority())
+					.set(difettoProdotto.tagAlm, difetto.getTagAlm())
+					.set(difettoProdotto.tsTagAlm, difetto.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -331,7 +335,9 @@ public class DifettoDAO {
 							difetto.flagUltimaSituazione,
 							difetto.dtAnnullamento,
 							difetto.dataDisponibilita,
-							difetto.priority)
+							difetto.priority,
+							difetto.tagAlm,
+							difetto.tsTagAlm)
 					.values(bean.getCdDifetto(),
 							bean.getDmalmDifettoProdottoPk(),
 							bean.getDmalmProjectFk02(),
@@ -362,7 +368,9 @@ public class DifettoDAO {
 							bean.getDtAnnullamento(),
 							bean.getDtDisponibilita(),
 							//DM_ALM-320
-							bean.getPriority()).execute();
+							bean.getPriority(),
+							bean.getTagAlm(),
+							bean.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -421,7 +429,9 @@ public class DifettoDAO {
 							difetto.dtAnnullamento, difetto.changed,
 							difetto.annullato,
 							difetto.dataDisponibilita,
-							difetto.priority)
+							difetto.priority,
+							difetto.tagAlm,
+							difetto.tsTagAlm)
 					.values(bean.getCdDifetto(),
 							pkValue == true ? bean.getDmalmDifettoProdottoPk()
 									: StringTemplate
@@ -459,7 +469,9 @@ public class DifettoDAO {
 							bean.getChanged(), bean.getAnnullato(),
 							bean.getDtDisponibilita(),
 							//DM_ALM-320
-							bean.getPriority()).execute();
+							bean.getPriority(),
+							bean.getTagAlm(),
+							bean.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -618,6 +630,8 @@ public class DifettoDAO {
 			d.setDtDisponibilita(t.get(difetto.dataDisponibilita));
 			//DM_ALM-320
 			d.setPriority(t.get(difetto.priority));
+			d.setTagAlm(t.get(difetto.tagAlm));
+			d.setTsTagAlm(t.get(difetto.tsTagAlm));
 
 			return d;
 

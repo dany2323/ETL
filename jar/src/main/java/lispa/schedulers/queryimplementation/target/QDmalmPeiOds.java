@@ -84,7 +84,10 @@ public class QDmalmPeiOds extends com.mysema.query.sql.RelationalPathBase<DmalmP
     public final StringPath severity = createString("SEVERITY");
         
     public final StringPath priority = createString("PRIORITY");
+
+    public final StringPath tagAlm = createString("TAG_ALM");
     
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmPeiOds(String variable) {
         super(DmalmPeiOds.class, forVariable(variable), "DMALM", "DMALM_PEI_ODS");

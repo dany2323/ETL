@@ -91,6 +91,10 @@ public class QDmalmReleaseItOds extends com.mysema.query.sql.RelationalPathBase<
     public final NumberPath<Integer> counterQf = createNumber("COUNTER_QF", Integer.class);
     
     public final NumberPath<Integer> giorniQf = createNumber("GIORNI_QF", Integer.class);
+
+    public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public final com.mysema.query.sql.PrimaryKey<DmalmReleaseItOds> sysC0023776 = createPrimaryKey(dmalmReleaseItPk);
 

@@ -127,7 +127,9 @@ public class ProgettoDemandDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				progetti.add(bean);
 			}
 
@@ -232,7 +234,8 @@ public class ProgettoDemandDAO {
 							progettoDemand.cfClassificazione,
 							progettoDemand.dtAnnullamento,
 							progettoDemand.severity,
-							progettoDemand.priority)
+							progettoDemand.priority,
+							progettoDemand.tagAlm,	progettoDemand.tsTagAlm)
 					.values(progetto.getCdProgettoDemand(),
 							progetto.getDescrizioneProgettoDemand(),
 							progetto.getDmalmProgettoDemandPk(),
@@ -270,7 +273,9 @@ public class ProgettoDemandDAO {
 							progetto.getDtAnnullamento(),
 							//DM_ALM-320
 							progetto.getSeverity(),
-							progetto.getPriority()).execute();
+							progetto.getPriority(),
+							progetto.getTagAlm(), 
+							progetto.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -364,7 +369,8 @@ public class ProgettoDemandDAO {
 							progettoDemand.cfClassificazione,
 							progettoDemand.dtAnnullamento,
 							progettoDemand.changed, progettoDemand.annullato,
-							progettoDemand.severity, progettoDemand.priority)
+							progettoDemand.severity, progettoDemand.priority,
+							progettoDemand.tagAlm,	progettoDemand.tsTagAlm)
 					.values(progetto.getCdProgettoDemand(),
 							progetto.getDescrizioneProgettoDemand(),
 							pkValue == true ? progetto
@@ -406,7 +412,8 @@ public class ProgettoDemandDAO {
 							progetto.getCfClassificazione(),
 							progetto.getDtAnnullamento(),
 							progetto.getChanged(), progetto.getAnnullato(),
-							progetto.getSeverity(), progetto.getPriority())
+							progetto.getSeverity(), progetto.getPriority(),
+							progetto.getTagAlm(), progetto.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -501,9 +508,10 @@ public class ProgettoDemandDAO {
 					.set(progettoDemand.annullato, progetto.getAnnullato())
 					//DM_ALM-320
 					.set(progettoDemand.severity, progetto.getSeverity())
-					.set(progettoDemand.priority, progetto.getPriority()).execute();
-					
-
+					.set(progettoDemand.priority, progetto.getPriority())
+					.set(progettoDemand.tagAlm, progetto.getTagAlm())
+					.set(progettoDemand.tsTagAlm, progetto.getTsTagAlm())
+					.execute();
 			connection.commit();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -657,7 +665,8 @@ public class ProgettoDemandDAO {
 			//DM_ALM-320
 			p.setSeverity(t.get(progettoDemand.severity));
 			p.setPriority(t.get(progettoDemand.priority));
-
+			p.setTagAlm(t.get(progettoDemand.tagAlm));
+			p.setTsTagAlm(t.get(progettoDemand.tsTagAlm));
 			return p;
 
 		} else

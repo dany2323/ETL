@@ -116,7 +116,8 @@ public class SottoprogrammaDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-				
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				sottoprogrammi.add(bean);
 			}
 
@@ -213,7 +214,8 @@ public class SottoprogrammaDAO {
 							sottoprogramma.dtCaricamentoSottoprogramma,
 							sottoprogramma.stgPk, sottoprogramma.dmalmUserFk06,
 							sottoprogramma.uri, sottoprogramma.dtAnnullamento,
-							sottoprogramma.severity, sottoprogramma.priority)
+							sottoprogramma.severity, sottoprogramma.priority,
+							sottoprogramma.tsTagAlm,sottoprogramma.tagAlm)
 					.values(subprogram.getIdRepository(),
 							subprogram.getDmalmSottoprogrammaPk(),
 							subprogram.getCdSottoprogramma(),
@@ -239,7 +241,8 @@ public class SottoprogrammaDAO {
 							subprogram.getStgPk(),
 							subprogram.getDmalmUserFk06(), subprogram.getUri(),
 							subprogram.getDtAnnullamento(),
-							subprogram.getSeverity(), subprogram.getPriority()).execute();
+							subprogram.getSeverity(), subprogram.getPriority(),
+							subprogram.getTsTagAlm(),subprogram.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -332,7 +335,8 @@ public class SottoprogrammaDAO {
 							sottoprogramma.stgPk, sottoprogramma.dmalmUserFk06,
 							sottoprogramma.uri, sottoprogramma.dtAnnullamento,
 							sottoprogramma.changed, sottoprogramma.annullato,
-							sottoprogramma.severity, sottoprogramma.priority)
+							sottoprogramma.severity, sottoprogramma.priority,
+							sottoprogramma.tsTagAlm,sottoprogramma.tagAlm)
 					.values(subprogram.getIdRepository(),
 							pkValue == true ? subprogram
 									.getDmalmSottoprogrammaPk()
@@ -365,7 +369,8 @@ public class SottoprogrammaDAO {
 							subprogram.getDmalmUserFk06(), subprogram.getUri(),
 							subprogram.getDtAnnullamento(),
 							subprogram.getChanged(), subprogram.getAnnullato(),
-							subprogram.getSeverity(), subprogram.getPriority())
+							subprogram.getSeverity(), subprogram.getPriority(),
+							subprogram.getTsTagAlm(),subprogram.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -443,6 +448,8 @@ public class SottoprogrammaDAO {
 					//DM_ALM-320
 					.set(sottoprogramma.severity, subprogram.getSeverity())
 					.set(sottoprogramma.priority, subprogram.getPriority())
+					.set(sottoprogramma.tagAlm, subprogram.getTagAlm())
+					.set(sottoprogramma.tsTagAlm, subprogram.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -537,7 +544,9 @@ public class SottoprogrammaDAO {
 			//DM_ALM-320
 			s.setSeverity(t.get(sottoprogramma.severity));
 			s.setPriority(t.get(sottoprogramma.priority));
-
+			s.setTagAlm(t.get(sottoprogramma.tagAlm));
+			s.setTsTagAlm(t.get(sottoprogramma.tsTagAlm));
+			
 			return s;
 
 		} else

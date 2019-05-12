@@ -6,5 +6,7 @@ public enum CF_programma {
 	cod_intervento,
 	sm,
 	contratto,
-	codice
+	codice,
+	tag_alm,
+	ts_tag_alm
 }

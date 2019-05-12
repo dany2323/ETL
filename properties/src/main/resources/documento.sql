@@ -26,7 +26,9 @@ SELECT
         hw.versione as VERSIONE,
         hw.tipo_doc as TIPO_DOCUMENTO,
         hw.codice as CODICE,
-        hw.cod_intervento as COD_INTERVENTO
+        hw.cod_intervento as COD_INTERVENTO,
+	(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'tag_alm') as TAG_ALM,
+		(select distinct hcf.c_date_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk 
 				left join DMALM_SIRE_HISTORY_USER hu 
@@ -66,7 +68,9 @@ UNION ALL
         hw.versione as VERSIONE,
         hw.tipo_doc as TIPO_DOCUMENTO,
 		hw.codice as CODICE,
-		hw.cod_intervento as COD_INTERVENTO
+		hw.cod_intervento as COD_INTERVENTO,
+	(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'tag_alm') as TAG_ALM,
+		(select distinct hcf.c_date_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 
 		on hw.FK_PROJECT = hp.c_pk  
 				left join DMALM_SISS_HISTORY_USER hu 

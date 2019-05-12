@@ -114,7 +114,9 @@ public class ProgettoSviluppoSviluppoDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				progettiSviluppo.add(bean);
 			}
 
@@ -220,7 +222,8 @@ public class ProgettoSviluppoSviluppoDAO {
 							progetto.dmalmProgettoSferaFk,
 							progetto.dtAnnullamento,
 							progetto.severity,
-							progetto.priority)
+							progetto.priority,
+							progetto.tsTagAlm,progetto.tagAlm)
 					.values(progettoSviluppo.getCdProgSvilS(),
 							progettoSviluppo.getCodice(),
 							progettoSviluppo.getDataChiusuraProgSvilS(),
@@ -259,7 +262,8 @@ public class ProgettoSviluppoSviluppoDAO {
 							progettoSviluppo.getDtAnnullamento(),
 							//DM_ALM-320
 							progettoSviluppo.getSeverity(),
-							progettoSviluppo.getPriority()).execute();
+							progettoSviluppo.getPriority(),
+							progettoSviluppo.getTsTagAlm(),progettoSviluppo.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -353,7 +357,8 @@ public class ProgettoSviluppoSviluppoDAO {
 							progetto.dtAnnullamento, progetto.changed,
 							progetto.annullato,
 							progetto.severity,
-							progetto.priority)
+							progetto.priority,
+							progetto.tsTagAlm,progetto.tagAlm)
 					.values(progettoSviluppo.getCdProgSvilS(),
 							progettoSviluppo.getCodice(),
 							progettoSviluppo.getDataChiusuraProgSvilS(),
@@ -398,7 +403,8 @@ public class ProgettoSviluppoSviluppoDAO {
 							progettoSviluppo.getAnnullato(),
 							//DM_ALM-320
 							progettoSviluppo.getSeverity(),
-							progettoSviluppo.getPriority()).execute();
+							progettoSviluppo.getPriority(),
+							progettoSviluppo.getTsTagAlm(),progettoSviluppo.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -490,6 +496,8 @@ public class ProgettoSviluppoSviluppoDAO {
 					//DM_ALM-320
 					.set(progetto.severity, progettoSviluppo.getSeverity())
 					.set(progetto.priority, progettoSviluppo.getPriority())
+					.set(progetto.tagAlm, progettoSviluppo.getTagAlm())
+					.set(progetto.tsTagAlm, progettoSviluppo.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -581,6 +589,8 @@ public class ProgettoSviluppoSviluppoDAO {
 			//DM_ALM-320
 			p.setSeverity(t.get(progetto.severity));
 			p.setPriority(t.get(progetto.priority));
+			p.setTagAlm(t.get(progetto.tagAlm));
+			p.setTsTagAlm(t.get(progetto.tsTagAlm));
 			
 			return p;
 

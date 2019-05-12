@@ -96,6 +96,10 @@ public class DmalmDifettoProdotto {
 	//DM_ALM-320
 	private String priority;
 	
+	//DM_ALM-470
+  	private String tagAlm;
+  	private java.sql.Timestamp tsTagAlm;
+  	
     public java.sql.Timestamp getDtDisponibilita() {
 		return dtDisponibilita;
 	}
@@ -419,6 +423,22 @@ public class DmalmDifettoProdotto {
 
 	public void setPriority(String priority) {
 		this.priority = priority;
+	}
+
+	public String getTagAlm() {
+		return tagAlm;
+	}
+
+	public void setTagAlm(String tagAlm) {
+		this.tagAlm = tagAlm;
+	}
+
+	public java.sql.Timestamp getTsTagAlm() {
+		return tsTagAlm;
+	}
+
+	public void setTsTagAlm(java.sql.Timestamp tsTagAlm) {
+		this.tsTagAlm = tsTagAlm;
 	}
 
 }

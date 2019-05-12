@@ -83,7 +83,8 @@ public class BuildOdsDAO {
 								buildODS.rankStatoBuild, buildODS.titoloBuild,
 								buildODS.stgPk, buildODS.codice,
 								buildODS.dmalmUserFk06, buildODS.uri,
-								buildODS.severity, buildODS.priority)
+								buildODS.severity, buildODS.priority,
+								buildODS.tagAlm, buildODS.tsTagAlm)
 						.values(build.getCdBuild(),
 								build.getDescrizioneBuild(),
 								build.getDmalmBuildPk(),
@@ -105,7 +106,8 @@ public class BuildOdsDAO {
 								new Double(1), build.getTitoloBuild(),
 								build.getStgPk(), build.getCodice(),
 								build.getDmalmUserFk06(), build.getUri(),
-								build.getSeverity(), build.getPriority())
+								build.getSeverity(), build.getPriority(),
+								build.getTagAlm(), build.getTsTagAlm())
 						.execute();
 
 				connection.commit();

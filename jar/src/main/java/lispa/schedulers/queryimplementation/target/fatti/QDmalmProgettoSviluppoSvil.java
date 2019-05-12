@@ -107,6 +107,10 @@ public class QDmalmProgettoSviluppoSvil extends com.mysema.query.sql.RelationalP
     
     public final StringPath priority = createString("PRIORITY");
     
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public QDmalmProgettoSviluppoSvil(String variable) {
         super(DmalmProgettoSviluppoSvil.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_SVILUPPO_SVIL");
     }

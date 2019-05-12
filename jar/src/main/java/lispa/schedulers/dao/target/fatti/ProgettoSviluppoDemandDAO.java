@@ -112,7 +112,9 @@ public class ProgettoSviluppoDemandDAO {
 				bean.setTitoloProgSvilD(rs.getString("TITOLO_PROG_SVIL_D"));
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_PROG_SVIL_D_PK"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				progettiSviluppo.add(bean);
 			}
 
@@ -211,7 +213,8 @@ public class ProgettoSviluppoDemandDAO {
 							progetto.tempoTotaleRisoluzione,
 							progetto.titoloProgSvilD, progetto.stgPk,
 							progetto.dmalmUserFk06, progetto.uri,
-							progetto.dtAnnullamento)
+							progetto.dtAnnullamento,
+							progetto.tsTagAlm,progetto.tagAlm)
 					.values(progettoSviluppo.getCdProgSvilD(),
 							progettoSviluppo.getCfCodice(),
 							progettoSviluppo.getCfDataDispEffettiva(),
@@ -245,7 +248,8 @@ public class ProgettoSviluppoDemandDAO {
 							progettoSviluppo.getStgPk(),
 							progettoSviluppo.getDmalmUserFk06(),
 							progettoSviluppo.getUri(),
-							progettoSviluppo.getDtAnnullamento()).execute();
+							progettoSviluppo.getDtAnnullamento(),
+							progettoSviluppo.getTsTagAlm(),progettoSviluppo.getTagAlm()).execute();
 			connection.commit();
 
 		} catch (Exception e) {
@@ -332,7 +336,8 @@ public class ProgettoSviluppoDemandDAO {
 							progetto.titoloProgSvilD, progetto.stgPk,
 							progetto.dmalmUserFk06, progetto.uri,
 							progetto.dtAnnullamento, progetto.changed,
-							progetto.annullato)
+							progetto.annullato,
+							progetto.tsTagAlm,progetto.tagAlm)
 					.values(progettoSviluppo.getCdProgSvilD(),
 							progettoSviluppo.getCfCodice(),
 							progettoSviluppo.getCfDataDispEffettiva(),
@@ -372,7 +377,8 @@ public class ProgettoSviluppoDemandDAO {
 							progettoSviluppo.getUri(),
 							progettoSviluppo.getDtAnnullamento(),
 							progettoSviluppo.getChanged(),
-							progettoSviluppo.getAnnullato()).execute();
+							progettoSviluppo.getAnnullato(),
+							progettoSviluppo.getTsTagAlm(),progettoSviluppo.getTagAlm()).execute();
 			connection.commit();
 
 		} catch (Exception e) {
@@ -457,7 +463,9 @@ public class ProgettoSviluppoDemandDAO {
 					.set(progetto.uri, progettoSviluppoDem.getUri())
 					.set(progetto.dtAnnullamento,
 							progettoSviluppoDem.getDtAnnullamento())
-					.set(progetto.annullato, progettoSviluppoDem.getAnnullato()).execute();
+					.set(progetto.annullato, progettoSviluppoDem.getAnnullato())
+					.set(progetto.tagAlm, progettoSviluppoDem.getTagAlm())
+					.set(progetto.tsTagAlm, progettoSviluppoDem.getTsTagAlm()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -541,7 +549,8 @@ public class ProgettoSviluppoDemandDAO {
 			p.setTempoTotaleRisoluzione(t.get(progetto.tempoTotaleRisoluzione));
 			p.setTitoloProgSvilD(t.get(progetto.titoloProgSvilD));
 			p.setUri(t.get(progetto.uri));
-
+			p.setTagAlm(t.get(progetto.tagAlm));
+			p.setTsTagAlm(t.get(progetto.tsTagAlm));
 			return p;
 
 		} else

@@ -1,5 +1,23 @@
 package lispa.schedulers.dao.target.fatti;
-
+/*
+* SonarQube, open source software quality management tool.
+* Copyright (C) 2008-2013 SonarSource
+* mailto:contact AT sonarsource DOT com
+*
+* SonarQube is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 3 of the License, or (at your option) any later version.
+*
+* SonarQube is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program; if not, write to the Free Software Foundation,
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,8 +58,6 @@ public class ProgettoEseDAO {
 			Timestamp dataEsecuzione) throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		DmalmProgettoEse bean = null;
 		List<DmalmProgettoEse> progetti = new ArrayList<DmalmProgettoEse>(
@@ -50,66 +66,63 @@ public class ProgettoEseDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-
+			connection.setAutoCommit(false);
 			String sql = QueryManager.getInstance().getQuery(
 					DmAlmConfigReaderProperties.SQL_PROGETTO_ESE);
-			ps = connection.prepareStatement(sql);
+			try(PreparedStatement ps = connection.prepareStatement(sql);){
 
-			ps.setFetchSize(DmAlmConstants.FETCH_SIZE);
-
-			ps.setTimestamp(1, dataEsecuzione);
-			ps.setTimestamp(2, dataEsecuzione);
-
-			rs = ps.executeQuery();
-
-			logger.debug("Query Eseguita!");
-
-			while (rs.next()) {
-				// Elabora il risultato
-				bean = new DmalmProgettoEse();
-
-				bean.setCdProgettoEse(rs.getString("CD_PROGETTO_ESE"));
-				bean.setCfCodice(rs.getString("CODICE"));
-				bean.setCfDtUltimaSottomissione(rs
-						.getTimestamp("DATA_SOTTOMISSIONE"));
-				bean.setUri(rs.getString("URI_WI"));
-				bean.setStgPk(rs.getString("STG_PROGETTO_ESE_PK"));
-				bean.setDescrizioneProgettoEse(rs
-						.getString("DESCRIZIONE_PROGETTO_ESE"));
-				bean.setDmalmProgettoEsePk(rs.getInt("DMALM_PROGETTO_ESE_PK"));
-				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
-				bean.setDmalmStatoWorkitemFk03(rs
-						.getInt("DMALM_STATO_WORKITEM_FK_03"));
-				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
-				bean.setDsAutoreProgettoEse(rs
-						.getString("NOME_AUTORE_PROGETTO_ESE"));
-				bean.setDtCaricamentoProgettoEse(dataEsecuzione);
-				bean.setDtCreazioneProgettoEse(rs
-						.getTimestamp("DATA_INSERIMENTO_RECORD"));
-				bean.setDtModificaProgettoEse(rs
-						.getTimestamp("DATA_MODIFICA_PROGETTO_ESE"));
-				bean.setDtRisoluzioneProgettoEse(rs
-						.getTimestamp("DATA_RISOLUZIONE_PROGETTO_ESE"));
-				bean.setIdAutoreProgettoEse(rs
-						.getString("ID_AUTORE_PROGETTO_ESE"));
-				bean.setIdRepository(rs.getString("ID_REPOSITORY"));
-				bean.setDtScadenzaProgettoEse(rs
-						.getTimestamp("DATA_SCADENZA_PROGETTO_ESE"));
-				bean.setMotivoRisoluzioneProgEse(rs
-						.getString("MOTIVO_RISOLUZIONE_PROGETTOESE"));
-				bean.setTitoloProgettoEse(rs.getString("TITOLO_PROGETTO_ESE"));
-				//DM_ALM-320
-				bean.setSeverity(rs.getString("SEVERITY"));
-				bean.setPriority(rs.getString("PRIORITY"));
-
-				progetti.add(bean);
-			}
-
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
+				ps.setFetchSize(DmAlmConstants.FETCH_SIZE);
+	
+				ps.setTimestamp(1, dataEsecuzione);
+				ps.setTimestamp(2, dataEsecuzione);
+	
+				try(ResultSet rs = ps.executeQuery();){
+	
+					logger.debug("Query Eseguita!");
+		
+					while (rs.next()) {
+						// Elabora il risultato
+						bean = new DmalmProgettoEse();
+		
+						bean.setCdProgettoEse(rs.getString("CD_PROGETTO_ESE"));
+						bean.setCfCodice(rs.getString("CODICE"));
+						bean.setCfDtUltimaSottomissione(rs
+								.getTimestamp("DATA_SOTTOMISSIONE"));
+						bean.setUri(rs.getString("URI_WI"));
+						bean.setStgPk(rs.getString("STG_PROGETTO_ESE_PK"));
+						bean.setDescrizioneProgettoEse(rs
+								.getString("DESCRIZIONE_PROGETTO_ESE"));
+						bean.setDmalmProgettoEsePk(rs.getInt("DMALM_PROGETTO_ESE_PK"));
+						bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+						bean.setDmalmStatoWorkitemFk03(rs
+								.getInt("DMALM_STATO_WORKITEM_FK_03"));
+						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
+						bean.setDsAutoreProgettoEse(rs
+								.getString("NOME_AUTORE_PROGETTO_ESE"));
+						bean.setDtCaricamentoProgettoEse(dataEsecuzione);
+						bean.setDtCreazioneProgettoEse(rs
+								.getTimestamp("DATA_INSERIMENTO_RECORD"));
+						bean.setDtModificaProgettoEse(rs
+								.getTimestamp("DATA_MODIFICA_PROGETTO_ESE"));
+						bean.setDtRisoluzioneProgettoEse(rs
+								.getTimestamp("DATA_RISOLUZIONE_PROGETTO_ESE"));
+						bean.setIdAutoreProgettoEse(rs
+								.getString("ID_AUTORE_PROGETTO_ESE"));
+						bean.setIdRepository(rs.getString("ID_REPOSITORY"));
+						bean.setDtScadenzaProgettoEse(rs
+								.getTimestamp("DATA_SCADENZA_PROGETTO_ESE"));
+						bean.setMotivoRisoluzioneProgEse(rs
+								.getString("MOTIVO_RISOLUZIONE_PROGETTOESE"));
+						bean.setTitoloProgettoEse(rs.getString("TITOLO_PROGETTO_ESE"));
+						//DM_ALM-320
+						bean.setSeverity(rs.getString("SEVERITY"));
+						bean.setPriority(rs.getString("PRIORITY"));
+		
+						bean.setTagAlm(rs.getString("TAG_ALM"));
+						bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+						progetti.add(bean);
+					}
+				}
 			}
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -228,7 +241,8 @@ public class ProgettoEseDAO {
 							progettoEse.dmalmUserFk06, progettoEse.uri,
 							progettoEse.dtAnnullamento, progettoEse.changed,
 							progettoEse.annullato,
-							progettoEse.severity, progettoEse.priority)
+							progettoEse.severity, progettoEse.priority,
+							progettoEse.tsTagAlm,progettoEse.tagAlm)
 					.values(progetto.getCdProgettoEse(),
 							progetto.getDescrizioneProgettoEse(),
 							pkValue == true ? progetto.getDmalmProgettoEsePk()
@@ -259,7 +273,8 @@ public class ProgettoEseDAO {
 							progetto.getDmalmUserFk06(), progetto.getUri(),
 							progetto.getDtAnnullamento(),
 							progetto.getChanged(), progetto.getAnnullato(),
-							progetto.getSeverity(), progetto.getPriority())
+							progetto.getSeverity(), progetto.getPriority(),
+							progetto.getTsTagAlm(),progetto.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -310,7 +325,8 @@ public class ProgettoEseDAO {
 							progettoEse.cfDtUltimaSottomissione,
 							progettoEse.dmalmUserFk06, progettoEse.uri,
 							progettoEse.dtAnnullamento,
-							progettoEse.severity, progettoEse.priority)
+							progettoEse.severity, progettoEse.priority,
+							progettoEse.tagAlm,	progettoEse.tsTagAlm)
 					.values(progetto.getCdProgettoEse(),
 							progetto.getDescrizioneProgettoEse(),
 							progetto.getDmalmProgettoEsePk(),
@@ -334,7 +350,8 @@ public class ProgettoEseDAO {
 							progetto.getCfDtUltimaSottomissione(),
 							progetto.getDmalmUserFk06(), progetto.getUri(),
 							progetto.getDtAnnullamento(),
-							progetto.getSeverity(), progetto.getPriority()).execute();
+							progetto.getSeverity(), progetto.getPriority(),
+							progetto.getTagAlm(), progetto.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -404,6 +421,8 @@ public class ProgettoEseDAO {
 					.set(progettoEse.annullato, progetto.getAnnullato())
 					.set(progettoEse.severity, progetto.getSeverity())
 					.set(progettoEse.priority, progetto.getPriority())
+					.set(progettoEse.tagAlm, progetto.getTagAlm())
+					.set(progettoEse.tsTagAlm, progetto.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -490,7 +509,8 @@ public class ProgettoEseDAO {
 			//DM_ALM-320
 			p.setSeverity(t.get(progettoEse.severity));
 			p.setPriority(t.get(progettoEse.priority));
-
+			p.setTagAlm(t.get(progettoEse.tagAlm));
+			p.setTsTagAlm(t.get(progettoEse.tsTagAlm));
 			return p;
 
 		} else

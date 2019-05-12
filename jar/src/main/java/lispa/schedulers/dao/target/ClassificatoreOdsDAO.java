@@ -87,7 +87,8 @@ public class ClassificatoreOdsDAO {
 								ods.locationSorgenti,
 								ods.type,
 								ods.codiceServizi,
-								ods.severity, ods.priority)
+								ods.severity, ods.priority,
+								ods.tagAlm, ods.tsTagAlm)
 						.values(classificatore.getCd_classificatore(),
 								classificatore.getCf_ambito(), classificatore.getCf_area(),
 								classificatore.getCf_riferimenti(),
@@ -120,7 +121,8 @@ public class ClassificatoreOdsDAO {
 								classificatore.getType(),
 								classificatore.getCodiceServizi(),
 								classificatore.getSeverity(),
-								classificatore.getPriority()).execute();
+								classificatore.getPriority(),
+								classificatore.getTagAlm(), classificatore.getTsTagAlm()).execute();
 
 			}
 

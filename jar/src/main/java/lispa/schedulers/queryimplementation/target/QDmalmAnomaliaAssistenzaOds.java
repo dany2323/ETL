@@ -97,6 +97,10 @@ public class QDmalmAnomaliaAssistenzaOds extends com.mysema.query.sql.Relational
     
     public final StringPath priority = createString("PRIORITY");
 
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public final com.mysema.query.sql.PrimaryKey<DmalmAnomaliaAssistenzaOds> sysC0024517 = createPrimaryKey(dmalmAnomaliaAssPk);
 
     public QDmalmAnomaliaAssistenzaOds(String variable) {

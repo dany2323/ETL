@@ -93,6 +93,10 @@ public class QDmalmProgettoSviluppoDOds extends com.mysema.query.sql.RelationalP
 
     public final StringPath titoloProgSvilD = createString("TITOLO_PROG_SVIL_D");
 
+    public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public final com.mysema.query.sql.PrimaryKey<DmalmProgettoSviluppoDOds> sysC0023552 = createPrimaryKey(dmalmProgSvilDPk);
 
     public QDmalmProgettoSviluppoDOds(String variable) {

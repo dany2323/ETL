@@ -94,7 +94,8 @@ public class BuildDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				builds.add(bean);
 			}
 
@@ -186,7 +187,8 @@ public class BuildDAO {
 							BuildDAO.build.codice,
 							BuildDAO.build.dmalmUserFk06, BuildDAO.build.uri,
 							BuildDAO.build.dtAnnullamento,
-							BuildDAO.build.severity, BuildDAO.build.priority)
+							BuildDAO.build.severity, BuildDAO.build.priority,
+							BuildDAO.build.tagAlm, BuildDAO.build.tsTagAlm)
 					.values(build.getCdBuild(), build.getDescrizioneBuild(),
 							build.getDmalmBuildPk(),
 							build.getDmalmProjectFk02(),
@@ -206,7 +208,8 @@ public class BuildDAO {
 							build.getTitoloBuild(), build.getStgPk(),
 							build.getCodice(), build.getDmalmUserFk06(),
 							build.getUri(), build.getDtAnnullamento(),
-							build.getSeverity(), build.getPriority())
+							build.getSeverity(), build.getPriority(),
+							build.getTagAlm(), build.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -285,7 +288,8 @@ public class BuildDAO {
 							BuildDAO.build.dmalmUserFk06, BuildDAO.build.uri,
 							BuildDAO.build.dtAnnullamento,
 							BuildDAO.build.changed, BuildDAO.build.annullato,
-							BuildDAO.build.severity, BuildDAO.build.priority)
+							BuildDAO.build.severity, BuildDAO.build.priority,
+							BuildDAO.build.tagAlm, BuildDAO.build.tsTagAlm)
 					.values(build.getCdBuild(),
 							build.getDescrizioneBuild(),
 							pkValue == true ? build.getDmalmBuildPk()
@@ -311,7 +315,8 @@ public class BuildDAO {
 							build.getCodice(), build.getDmalmUserFk06(),
 							build.getUri(), build.getDtAnnullamento(),
 							build.getChanged(), build.getAnnullato(),
-							build.getSeverity(), build.getPriority()).execute();
+							build.getSeverity(), build.getPriority(),
+							build.getTagAlm(), build.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -374,6 +379,8 @@ public class BuildDAO {
 					.set(BuildDAO.build.annullato, build.getAnnullato())
 					.set(BuildDAO.build.severity, build.getSeverity())
 					.set(BuildDAO.build.priority, build.getPriority())
+					.set(BuildDAO.build.tagAlm, build.getTagAlm())
+					.set(BuildDAO.build.tsTagAlm, build.getTsTagAlm())
 					.execute();
 					
 			connection.commit();
@@ -446,6 +453,8 @@ public class BuildDAO {
 			//DM_ALM-320
 			b.setSeverity(t.get(bb.severity));
 			b.setPriority(t.get(bb.priority));
+			b.setTagAlm(t.get(bb.tagAlm));
+			b.setTsTagAlm(t.get(bb.tsTagAlm));
 
 			return b;
 

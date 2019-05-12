@@ -106,7 +106,8 @@ public class ReleaseDiProgettoOdsDAO {
 								releaseODS.dmalmUserFk06, releaseODS.uri,
 								releaseODS.dtInizioQF, releaseODS.dtFineQF,
 								releaseODS.numQuickFix,
-								releaseODS.severity, releaseODS.priority, releaseODS.typeRelease)
+								releaseODS.severity, releaseODS.priority, releaseODS.typeRelease,
+								releaseODS.tagAlm, releaseODS.tsTagAlm)
 						.values(release.getCdReleasediprog(),
 								release.getCodice(),
 								release.getDataDisponibilitaEff(),
@@ -139,7 +140,8 @@ public class ReleaseDiProgettoOdsDAO {
 								release.getNumQuickFix(),
 								//DM_ALM-320
 								release.getSeverity(), release.getPriority(),
-								release.getTypeRelease()).execute();
+								release.getTypeRelease(),
+								release.getTagAlm(), release.getTsTagAlm()).execute();
 				}
 			}
 

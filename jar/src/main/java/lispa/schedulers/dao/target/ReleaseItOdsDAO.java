@@ -93,7 +93,8 @@ public class ReleaseItOdsDAO {
 								releaseItOds.typeRelease,
 								releaseItOds.motivoSospensione,
 								releaseItOds.counterQf,
-								releaseItOds.giorniQf)
+								releaseItOds.giorniQf,
+								releaseItOds.tagAlm, releaseItOds.tsTagAlm)
 						.values(releaseIt.getCdReleaseIt(),
 								releaseIt.getDescrizioneReleaseIt(),
 								releaseIt.getDmalmReleaseItPk(),
@@ -126,7 +127,8 @@ public class ReleaseItOdsDAO {
 								releaseIt.getTypeRelease(),
 								releaseIt.getMotivoSospensione(),
 								releaseIt.getCounterQf(),
-								releaseIt.getGiorniQf()).execute();
+								releaseIt.getGiorniQf(),
+								releaseIt.getTagAlm(), releaseIt.getTsTagAlm()).execute();
 								
 
 				connection.commit();

@@ -84,6 +84,10 @@ public class DmalmReleaseIt {
 	
 	private Integer giorniQf;
 	
+	//DM_ALM-470
+  	private String tagAlm;
+  	private java.sql.Timestamp tsTagAlm;
+  	
 	public String getMotivoSospensione() {
 		return motivoSospensione;
 	}
@@ -386,6 +390,22 @@ public class DmalmReleaseIt {
 
 	public void setTypeRelease(String typeRelease) {
 		this.typeRelease = typeRelease;
+	}
+
+	public String getTagAlm() {
+		return tagAlm;
+	}
+
+	public void setTagAlm(String tagAlm) {
+		this.tagAlm = tagAlm;
+	}
+
+	public java.sql.Timestamp getTsTagAlm() {
+		return tsTagAlm;
+	}
+
+	public void setTsTagAlm(java.sql.Timestamp tsTagAlm) {
+		this.tsTagAlm = tsTagAlm;
 	}
 
 }
