@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.utils.QueryUtils;
@@ -63,13 +64,14 @@ public class CheckProjectStorFacade {
 						"STORICIZZA_WI_BY_PROJECT." + Workitem_Type
 								.getEnumMapWiTypeStoredProcedure()
 								.get(enumWorkitemType),
-						0);
+						1);
 				logger.debug("Chiamo la SP "
 						+ Workitem_Type.getEnumMapWiTypeStoredProcedure()
 								.get(enumWorkitemType));
 				cm = ConnectionManager.getInstance();
 				conn = cm.getConnectionOracle();
 				try (CallableStatement call = conn.prepareCall(sql);) {
+					call.setTimestamp(1, DataEsecuzione.getInstance().getDataEsecuzione());
 					call.execute();
 				}
 			}
