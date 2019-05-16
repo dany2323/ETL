@@ -47,8 +47,8 @@
 	cw.data_disp as DATA_DISPONIBILITA,
 	(select distinct to_char(cf.c_string_value) from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'role') as PROVENIENZA_DIFETTO,
 	cw.C_PRIORITY as PRIORITY,
-	(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'tag_alm') as TAG_ALM,
-		(select distinct hcf.c_date_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM
+	(select distinct to_char(cf.c_string_value) from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'tag_alm') as TAG_ALM,
+	(select distinct cf.c_date_value from dmalm_siss_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'ts_tag_alm') as TS_TAG_ALM
 	FROM 
 					DMALM_SISS_HISTORY_WORKITEM cw 
 									left join DMALM_SISS_HISTORY_USER cu on  cw.FK_AUTHOR = cu.C_PK                              
@@ -109,8 +109,8 @@
 	cw.data_disp as DATA_DISPONIBILITA,
 	(select distinct to_char(cf.c_string_value) from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'role') as PROVENIENZA_DIFETTO,
 	cw.C_PRIORITY as PRIORITY,
-	(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'tag_alm') as TAG_ALM,
-		(select distinct hcf.c_date_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM
+	(select distinct to_char(cf.c_string_value) from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'tag_alm') as TAG_ALM,
+	(select distinct cf.c_date_value from dmalm_sire_history_cf_workitem cf where cf.fk_workitem = cw.c_pk and cf.c_name = 'ts_tag_alm') as TS_TAG_ALM
 	FROM 
 					DMALM_SIRE_HISTORY_WORKITEM cw 
 									left join DMALM_SIRE_HISTORY_USER cu on  cw.FK_AUTHOR = cu.C_PK
