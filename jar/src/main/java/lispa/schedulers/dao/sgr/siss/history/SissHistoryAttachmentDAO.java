@@ -93,7 +93,7 @@ public class SissHistoryAttachmentDAO {
 								row.get(fonteAttachment.cLength),
 								row.get(fonteAttachment.cPk),
 								row.get(fonteAttachment.cRev),
-								row.get(fonteAttachment.cTitle),
+								StringUtils.truncate(row.get(fonteAttachment.cTitle),1000),
 								row.get(fonteAttachment.cUpdated),
 								row.get(fonteAttachment.cUri),
 								row.get(fonteAttachment.cUrl),
