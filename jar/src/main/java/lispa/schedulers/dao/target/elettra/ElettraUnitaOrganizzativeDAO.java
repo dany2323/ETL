@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -354,15 +356,17 @@ public class ElettraUnitaOrganizzativeDAO {
 		}
 	}
 
-	public static int getUnitaOrganizzativaByCodiceArea(String codiceArea,
+	public static Map<Timestamp, Integer> getUnitaOrganizzativaByCodiceArea(String codiceArea,
 			Timestamp dataUltimaModifica) throws DAOException {
-		if (codiceArea == null || dataUltimaModifica == null)
-			return 0;
+		HashMap <Timestamp,Integer> result=new HashMap<>();
+		result.put(dataUltimaModifica,0);
 
+		if (codiceArea == null || dataUltimaModifica == null) {
+			return result;
+		}
 		ConnectionManager cm = null;
 		Connection connection = null;
-
-		List<Integer> strutture = new ArrayList<>();
+		List<Tuple> strutture = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -378,7 +382,7 @@ public class ElettraUnitaOrganizzativeDAO {
 							.loe(dataUltimaModifica))
 					.where(qDmalmElUnitaOrganizzative.dataFineValidita
 							.goe(dataUltimaModifica))
-					.list(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk);
+					.list(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk,qDmalmElUnitaOrganizzative.dataInizioValidita);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
@@ -387,8 +391,12 @@ public class ElettraUnitaOrganizzativeDAO {
 				cm.closeConnection(connection);
 			}
 		}
-
-		return !strutture.isEmpty() ? strutture.get(0) : 0;
+		
+		if(!strutture.isEmpty()) {
+			result.put(strutture.get(0).get(qDmalmElUnitaOrganizzative.dataInizioValidita),strutture.get(0).get(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk) );
+		}
+		
+		return result;
 	}
 	
 	public static List<DmalmElUnitaOrganizzative> getStartUnitaOrganizzativeFlat() throws DAOException, SQLException {

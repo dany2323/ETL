@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -31,6 +32,7 @@ import lispa.schedulers.utils.LogUtils;
 public class ProjectSgrCmFacade {
 
 	private static Logger logger = Logger.getLogger(ProjectSgrCmFacade.class);
+	private static Map<Timestamp, Integer> map;
 
 	public static void execute(Timestamp dataEsecuzione) throws Exception,
 			DAOException {
@@ -142,7 +144,6 @@ public class ProjectSgrCmFacade {
 					}
 				}
 			}
-			updateFlatProject();
 
 			// verifica delle UO per i Project non scaricati in History
 			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
@@ -157,7 +158,8 @@ public class ProjectSgrCmFacade {
 
 			Integer strutturaOrgFk02;
 			Integer unitaOrganizzativaFk;
-			boolean modificato=false;
+			Timestamp dataFineValidita=null;
+
 			for (Tuple row : listaProgettiNonMovimentati) {
 				if (row != null) {
 					//Edma
@@ -190,9 +192,20 @@ public class ProjectSgrCmFacade {
 					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
 						unitaOrganizzativaFk = 0;
 					} else {
-						unitaOrganizzativaFk = ElettraUnitaOrganizzativeDAO
-								.getUnitaOrganizzativaByCodiceArea(
-										codiceAreaUOElettra, dataEsecuzione);
+						if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
+							unitaOrganizzativaFk = 0;
+						} else {
+							
+							map = ElettraUnitaOrganizzativeDAO
+									.getUnitaOrganizzativaByCodiceArea(
+											codiceAreaUOElettra, dataEsecuzione);
+							unitaOrganizzativaFk=0;
+							for(Timestamp t:map.keySet()) {
+								unitaOrganizzativaFk = map.get(t);
+								dataFineValidita=t;
+							}
+							
+						}
 					}
 					
 					if (BeanUtils.areDifferent(
@@ -203,7 +216,6 @@ public class ProjectSgrCmFacade {
 									unitaOrganizzativaFk)) {
 
 						righeModificate++;
-						modificato=true;
 						DmalmProject bean = new DmalmProject();
 
 						bean.setIdProject(row.get(proj.idProject));
@@ -216,7 +228,7 @@ public class ProjectSgrCmFacade {
 						bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
 						bean.setFlAttivo(row.get(proj.flAttivo));
 						bean.setPathProject(row.get(proj.pathProject));
-						bean.setDtInizioValidita(dataEsecuzione);
+						bean.setDtInizioValidita(dataFineValidita);
 						bean.setcCreated(dataEsecuzione);
 						bean.setServiceManagers(row.get(proj.serviceManagers));
 						bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
@@ -240,17 +252,21 @@ public class ProjectSgrCmFacade {
 						bean.setNomeCompletoProject(row
 								.get(proj.nomeCompletoProject));
 						bean.setDtCaricamento(dataEsecuzione);
-
-						if(bean.getAnnullato()==null)
+						bean.setDtFineValidita(row.get(proj.dtFineValidita));
+						if(dataFineValidita==null) {
+							dataFineValidita=dataEsecuzione;
+						}
+						if(bean.getAnnullato()==null && dataFineValidita.compareTo(bean.getDtFineValidita())<0 )
 						{
 						// STORICIZZO
 						// aggiorno la data di fine validita sul record
 						// corrente 
-						ProjectSgrCmDAO.updateDataFineValidita(dataEsecuzione,
+						
+						ProjectSgrCmDAO.updateDataFineValidita(dataFineValidita,
 								bean); 
 
 						// inserisco un nuovo record
-						ProjectSgrCmDAO.insertProjectUpdate(dataEsecuzione,
+						ProjectSgrCmDAO.insertProjectUpdate(dataFineValidita,
 								bean, false);
 						}
 						else
@@ -260,64 +276,7 @@ public class ProjectSgrCmFacade {
 					}
 				}
 			}
-			/*if(modificato)
-				updateFlatProject();
-			modificato=false;
-			for (Tuple row : listaProgettiNonMovimentati) {
-				
-				DmalmElUnitaOrganizzativeFlat uoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
-				if(uoFlat != null && uoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
-					modificato=true;
-					DmalmProject bean = new DmalmProject();
-
-					bean.setIdProject(row.get(proj.idProject));
-					bean.setIdRepository(row.get(proj.idRepository));
-					bean.setcTemplate(row.get(proj.cTemplate));
-					bean.setDmalmAreaTematicaFk01(row
-							.get(proj.dmalmAreaTematicaFk01));
-					bean.setDmalmStrutturaOrgFk02(row.get(proj.dmalmStrutturaOrgFk02));
-					bean.setDmalmUnitaOrganizzativaFk(row.get(proj.dmalmUnitaOrganizzativaFk));
-					bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
-					bean.setFlAttivo(row.get(proj.flAttivo));
-					bean.setPathProject(row.get(proj.pathProject));
-					bean.setDtInizioValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(), 1).getTime()));
-					bean.setcCreated(row.get(proj.cCreated));
-					bean.setServiceManagers(row.get(proj.serviceManagers));
-					bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
-					bean.setcIsLocal(row.get(proj.cIsLocal));
-					bean.setcPk(row.get(proj.cPk));
-					bean.setFkUriLead(row.get(proj.fkUriLead));
-					bean.setcDeleted(row.get(proj.cDeleted));
-					bean.setcFinish(row.get(proj.cFinish));
-					bean.setcUri(row.get(proj.cUri));
-					bean.setcStart(row.get(proj.cStart));
-					bean.setFkUriProjectgroup(row
-							.get(proj.fkUriProjectgroup));
-					bean.setcActive(row.get(proj.cActive));
-					bean.setFkProjectgroup(row.get(proj.fkProjectgroup));
-					bean.setFkLead(row.get(proj.fkLead));
-					bean.setcLockworkrecordsdate(row
-							.get(proj.cLockworkrecordsdate));
-					bean.setcRev(row.get(proj.cRev));
-					bean.setcDescription(row.get(proj.cDescription));
-					bean.setSiglaProject(row.get(proj.siglaProject));
-					bean.setNomeCompletoProject(row
-							.get(proj.nomeCompletoProject));
-					bean.setDtCaricamento(DataEsecuzione.getInstance().getDataEsecuzione());
-
-					ProjectSgrCmDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
-							bean); 
-
-					// inserisco un nuovo record
-					ProjectSgrCmDAO.insertProjectUpdate(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
-							bean, false);
-				}
-			}
-			
-			if(modificato){
-				updateFlatProject();
-			}*/
-			
+			updateFlatProject();			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(project_tmp));

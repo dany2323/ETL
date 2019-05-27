@@ -241,7 +241,7 @@ public class TestEccezioniProdotti extends TestCase{
 				if(pFound.getDtInizioValidita().after(ta.get(dmalmAsm.dataInizioValidita))) {
 					inizioVal = pFound.getDtInizioValidita();
 				}
-				Timestamp pFoundFineValidita = DateUtils.stringToTimestamp(pFound.getDtFineValidita().substring(0, 19), "yyyy-MM-dd HH:mm:ss");
+				Timestamp pFoundFineValidita = DateUtils.stringToTimestamp(pFound.getDtFineValidita().toString().substring(0, 19), "yyyy-MM-dd HH:mm:ss");
 				if(pFoundFineValidita.before(ta.get(dmalmAsm.dataInizioValidita))) {
 					fineVal = pFoundFineValidita;
 				}

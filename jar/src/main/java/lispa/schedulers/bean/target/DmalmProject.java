@@ -22,7 +22,7 @@ public class DmalmProject {
 
     private java.sql.Timestamp dtCaricamento;
 
-    private String dtFineValidita;
+    private Timestamp dtFineValidita;
 
     private java.sql.Timestamp dtInizioValidita;
 
@@ -102,11 +102,11 @@ public class DmalmProject {
         this.dtCaricamento = dtCaricamento;
     }
 
-    public String getDtFineValidita() {
+    public java.sql.Timestamp getDtFineValidita() {
         return dtFineValidita;
     }
 
-    public void setDtFineValidita(String dtFineValidita) {
+    public void setDtFineValidita(java.sql.Timestamp dtFineValidita) {
         this.dtFineValidita = dtFineValidita;
     }
 

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -588,11 +589,15 @@ public class DmalmStagingTest extends TestCase {
 					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
 						unitaOrganizzativaFk = 0;
 					} else {
-						unitaOrganizzativaFk = ElettraUnitaOrganizzativeDAO
+						Map<Timestamp, Integer> map = ElettraUnitaOrganizzativeDAO
 								.getUnitaOrganizzativaByCodiceArea(
 										codiceAreaUOElettra, DataEsecuzione
-												.getInstance()
-												.getDataEsecuzione());
+										.getInstance()
+										.getDataEsecuzione());
+						unitaOrganizzativaFk=0;
+						for(Timestamp t:map.keySet()) {
+							unitaOrganizzativaFk = map.get(t);
+						}
 					}
 
 					logger.debug("update dmalm_project set DMALM_UNITAORGANIZZATIVA_FK_03 = "

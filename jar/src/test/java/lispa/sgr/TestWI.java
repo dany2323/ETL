@@ -18,14 +18,20 @@ import com.mysema.query.Tuple;
 import junit.framework.TestCase;
 import lispa.schedulers.action.DmAlmETL;
 import lispa.schedulers.bean.target.DmalmPersonale;
+import lispa.schedulers.bean.target.DmalmProject;
+import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
 import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
+import lispa.schedulers.dao.target.ProjectSgrCmDAO;
+import lispa.schedulers.dao.target.ProjectUnitaOrganizzativaEccezioniDAO;
+import lispa.schedulers.dao.target.StrutturaOrganizzativaEdmaLispaDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
@@ -36,14 +42,18 @@ import lispa.schedulers.facade.sfera.target.MisuraFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.Log4JConfiguration;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
+import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
@@ -54,34 +64,196 @@ public class TestWI extends TestCase {
 	private static Logger logger = Logger.getLogger(DmAlmETL.class);
 	private int retry;
 	private int wait;
-	private Map<EnumWorkitemType, Long> minRevisionsByType;
 	
-	private static QDmalmAsm dmalmAsm = QDmalmAsm.dmalmAsm;
-	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
-	private static QDmalmAsmProdottiArchitetture qDmalmAsmProdottiArchitetture = QDmalmAsmProdottiArchitetture.qDmalmAsmProdottiArchitetture;
-	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
-	private static QDmalmElPersonale qDmalmElPersonale = QDmalmElPersonale.qDmalmElPersonale;
-	QDmalmAsm asm = QDmalmAsm.dmalmAsm;
-	private static QDmalmElUnitaOrganizzativeFlat flat= QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
+	private int strutturaOrgFk02;
+	private int unitaOrganizzativaFk;
+	private int righeModificate;
+	private boolean modificato;
 
 	public void testProvenienzaDifetto(){
 		try {
+			DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm.properties");
+			QDmalmElUnitaOrganizzativeFlat flat= QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
+
+			QDmalmProject proj = QDmalmProject.dmalmProject;
+
 			Log4JConfiguration.inizialize();
-			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-12-17 23:40:00","yyyy-MM-dd HH:mm:00"));
-			int days;
-			try {
-				days = Integer.parseInt(DmAlmConfigReader.getInstance()
-						.getProperty(DMALM_STAGING_DAY_DELETE));
-			} catch (PropertiesReaderException | NumberFormatException e) {
-				days = DEFAULT_DAY_DELETE;
-				logger.debug(e.getMessage(), e);
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2019-05-10 20:40:00","yyyy-MM-dd HH:mm:00"));
+			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
+					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());
+			List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO = ProjectUnitaOrganizzativaEccezioniDAO
+					.getAllProjectUOException();
+			Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
+//
+			for (Tuple row : listaProgettiNonMovimentati) {
+				if (row != null) {
+					//Edma
+					// FK Struttura Organizzativa
+					String codiceAreaUOEdma = ProjectSgrCmDAO.gestioneCodiceAreaUO(
+							eccezioniProjectUO, row.get(proj.idProject),
+							row.get(proj.idRepository),
+							row.get(proj.nomeCompletoProject),
+							row.get(proj.cTemplate),
+							row.get(proj.fkProjectgroup), dataEsecuzione, false);
+
+					if (codiceAreaUOEdma.equals(DmAlmConstants.NON_PRESENTE)) {
+						strutturaOrgFk02 = 0;
+					} else {
+						// UO Edma
+						strutturaOrgFk02 = StrutturaOrganizzativaEdmaLispaDAO
+								.getIdStrutturaOrganizzativaByCodiceUpdate(
+										codiceAreaUOEdma, dataEsecuzione);
+					}
+
+					//Elettra
+					// FK Unità Organizzativa
+					String codiceAreaUOElettra = ProjectSgrCmDAO.gestioneCodiceAreaUO(
+							eccezioniProjectUO, row.get(proj.idProject),
+							row.get(proj.idRepository),
+							row.get(proj.nomeCompletoProject),
+							row.get(proj.cTemplate),
+							row.get(proj.fkProjectgroup), dataEsecuzione, true);
+					Map<Timestamp, Integer> map;
+					Timestamp dataFineValidita=null;
+					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
+						unitaOrganizzativaFk = 0;
+					} else {
+						
+						map = ElettraUnitaOrganizzativeDAO
+								.getUnitaOrganizzativaByCodiceArea(
+										codiceAreaUOElettra, dataEsecuzione);
+						unitaOrganizzativaFk=0;
+						for(Timestamp t:map.keySet()) {
+							unitaOrganizzativaFk = map.get(t);
+							dataFineValidita=t;
+						}
+						
+					}
+					
+					if (BeanUtils.areDifferent(
+							row.get(proj.dmalmStrutturaOrgFk02),
+							strutturaOrgFk02)
+							|| BeanUtils.areDifferent(
+									row.get(proj.dmalmUnitaOrganizzativaFk),
+									unitaOrganizzativaFk)) {
+
+						righeModificate++;
+						modificato=true;
+						DmalmProject bean = new DmalmProject();
+
+						bean.setIdProject(row.get(proj.idProject));
+						bean.setIdRepository(row.get(proj.idRepository));
+						bean.setcTemplate(row.get(proj.cTemplate));
+						bean.setDmalmAreaTematicaFk01(row
+								.get(proj.dmalmAreaTematicaFk01));
+						bean.setDmalmStrutturaOrgFk02(strutturaOrgFk02);
+						bean.setDmalmUnitaOrganizzativaFk(unitaOrganizzativaFk);
+						bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+						bean.setFlAttivo(row.get(proj.flAttivo));
+						bean.setPathProject(row.get(proj.pathProject));
+						bean.setDtInizioValidita(dataFineValidita);
+						bean.setcCreated(dataEsecuzione);
+						bean.setServiceManagers(row.get(proj.serviceManagers));
+						bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
+						bean.setcIsLocal(row.get(proj.cIsLocal));
+						bean.setcPk(row.get(proj.cPk));
+						bean.setFkUriLead(row.get(proj.fkUriLead));
+						bean.setcDeleted(row.get(proj.cDeleted));
+						bean.setcFinish(row.get(proj.cFinish));
+						bean.setcUri(row.get(proj.cUri));
+						bean.setcStart(row.get(proj.cStart));
+						bean.setFkUriProjectgroup(row
+								.get(proj.fkUriProjectgroup));
+						bean.setcActive(row.get(proj.cActive));
+						bean.setFkProjectgroup(row.get(proj.fkProjectgroup));
+						bean.setFkLead(row.get(proj.fkLead));
+						bean.setcLockworkrecordsdate(row
+								.get(proj.cLockworkrecordsdate));
+						bean.setcRev(row.get(proj.cRev));
+						bean.setcDescription(row.get(proj.cDescription));
+						bean.setSiglaProject(row.get(proj.siglaProject));
+						bean.setNomeCompletoProject(row
+								.get(proj.nomeCompletoProject));
+						bean.setDtCaricamento(dataEsecuzione);
+						bean.setDtFineValidita(row.get(proj.dtFineValidita));
+						if(dataFineValidita==null) {
+							dataFineValidita=dataEsecuzione;
+						}
+						if(bean.getAnnullato()==null && dataFineValidita.compareTo(bean.getDtFineValidita())<0 )
+						{
+						// STORICIZZO
+						// aggiorno la data di fine validita sul record
+						// corrente 
+						
+						ProjectSgrCmDAO.updateDataFineValidita(dataFineValidita,
+								bean); 
+
+						// inserisco un nuovo record
+						ProjectSgrCmDAO.insertProjectUpdate(dataFineValidita,
+								bean, false);
+						}
+						else
+						{
+							ProjectSgrCmDAO.updateDmalmProject(bean);
+						}
+					}
+				}
 			}
-			final Timestamp dataEsecuzioneDeleted = DateUtils
-					.getAddDayToDate(-days);
+			updateFlatProject();
+//			listaProgettiNonMovimentati = ProjectSgrCmDAO
+//					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());
+//			for (Tuple row : listaProgettiNonMovimentati) {
+//				
+//				DmalmElUnitaOrganizzativeFlat uoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+//				if(uoFlat != null && uoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
+//					modificato=true;
+//					DmalmProject bean = new DmalmProject();
+//					
+//					bean.setIdProject(row.get(proj.idProject));
+//					bean.setIdRepository(row.get(proj.idRepository));
+//					bean.setcTemplate(row.get(proj.cTemplate));
+//					bean.setDmalmAreaTematicaFk01(row
+//							.get(proj.dmalmAreaTematicaFk01));
+//					bean.setDmalmStrutturaOrgFk02(row.get(proj.dmalmStrutturaOrgFk02));
+//					bean.setDmalmUnitaOrganizzativaFk(row.get(proj.dmalmUnitaOrganizzativaFk));
+//					bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+//					bean.setFlAttivo(row.get(proj.flAttivo));
+//					bean.setPathProject(row.get(proj.pathProject));
+//					bean.setDtInizioValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(), 1).getTime()));
+//					bean.setcCreated(row.get(proj.cCreated));
+//					bean.setServiceManagers(row.get(proj.serviceManagers));
+//					bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
+//					bean.setcIsLocal(row.get(proj.cIsLocal));
+//					bean.setcPk(row.get(proj.cPk));
+//					bean.setFkUriLead(row.get(proj.fkUriLead));
+//					bean.setcDeleted(row.get(proj.cDeleted));
+//					bean.setcFinish(row.get(proj.cFinish));
+//					bean.setcUri(row.get(proj.cUri));
+//					bean.setcStart(row.get(proj.cStart));
+//					bean.setFkUriProjectgroup(row
+//							.get(proj.fkUriProjectgroup));
+//					bean.setcActive(row.get(proj.cActive));
+//					bean.setFkProjectgroup(row.get(proj.fkProjectgroup));
+//					bean.setFkLead(row.get(proj.fkLead));
+//					bean.setcLockworkrecordsdate(row
+//							.get(proj.cLockworkrecordsdate));
+//					bean.setcRev(row.get(proj.cRev));
+//					bean.setcDescription(row.get(proj.cDescription));
+//					bean.setSiglaProject(row.get(proj.siglaProject));
+//					bean.setNomeCompletoProject(row
+//							.get(proj.nomeCompletoProject));
+//					bean.setDtCaricamento(DataEsecuzione.getInstance().getDataEsecuzione());
+//
+//					ProjectSgrCmDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
+//							bean); 
+//
+//					// inserisco un nuovo record
+//					ProjectSgrCmDAO.insertProjectUpdate(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
+//							bean, false);
+//				}
+//			}
+//			updateFlatProject();
 			
-			StgMisuraFacade.fillStgMisura();
-			
-			MisuraFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
 //			List<DmalmElPersonale> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();
 //			int recordStoricizzati=0;
 //			ElettraUnitaOrganizzativeFacade.fillElettraUnitaOrganizzativeFlat(DataEsecuzione.getInstance().getDataEsecuzione());
@@ -429,7 +601,20 @@ public class TestWI extends TestCase {
 			e.printStackTrace();
 		}
 	}
+	private static void updateFlatProject() {
+		try {
+			QueryManager qm = QueryManager.getInstance();
 
+			logger.info("INIZIO Update Project UnitaOrganizzativaFlatFk");
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_PROJECT_UOFLATFK,
+					DmAlmConstants.M_SEPARATOR);
+			logger.info("FINE Update Project UnitaOrganizzativaFlatFk");
+		} catch (Exception e) {
+			//non viene emesso un errore bloccante in quanto la Fk è recuperabile dopo l'esecuzione
+			logger.error(e.getMessage(), e);
+		}
+	}
 	private void loadWiAndCustomFieldInStaging(String typeWi,long minRev, long maxRev) throws Exception {
 		Map<EnumWorkitemType, Long> minRevisionsByType = SireHistoryWorkitemDAO
 				.getMinRevisionByType();
