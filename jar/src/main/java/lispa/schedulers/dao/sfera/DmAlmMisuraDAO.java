@@ -109,6 +109,8 @@ public class DmAlmMisuraDAO {
 				bean.setB2Ufp(rs.getDouble("B_2_UFP"));
 				bean.setB3Num(rs.getDouble("B_3_NUM"));
 				bean.setB3Ufp(rs.getDouble("B_3_UFP"));
+				bean.setB4Num(rs.getDouble("B_4_NUM"));
+				bean.setB4Ufp(rs.getDouble("B_4_UFP"));
 				bean.setB5Num(rs.getDouble("B_5_NUM"));
 				bean.setB5Ufp(rs.getDouble("B_5_UFP"));
 				bean.setBfpNum(rs.getDouble("BFP_NUM"));
@@ -406,6 +408,8 @@ public class DmAlmMisuraDAO {
 					.set(misura.b2Ufp, misure.getB2Ufp())
 					.set(misura.b3Num, misure.getB3Num())
 					.set(misura.b3Ufp, misure.getB3Ufp())
+					.set(misura.b4Num, misure.getB4Num())
+					.set(misura.b4Ufp, misure.getB4Ufp())
 					.set(misura.b5Num, misure.getB5Num())
 					.set(misura.b5Ufp, misure.getB5Ufp())
 					.set(misura.bfpNum, misure.getBfpNum())
