@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
-import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
@@ -39,13 +38,13 @@ public class RichiestaSupportoDAO {
 			connection = cm.getConnectionOracle();
 			// connection.setAutoCommit(false);
 			String sql = QueryUtils.getCallFunction("RICHIESTA_SUPPORTO.GET_ALL_RICHIESTA_SUPPORTO", 1);
-			cs = connection.prepareCall(sql);
+			CallableStatement cs = connection.prepareCall(sql);
 			cs.registerOutParameter(1, OracleTypes.CURSOR);
 			cs.setTimestamp(2, dataEsecuzione);
 			cs.setFetchSize(75);
 			cs.execute();
 			// return the result set
-			rs = (ResultSet) cs.getObject(1);
+			ResultSet rs = (ResultSet) cs.getObject(1);
 
 			logger.debug("Query Eseguita!");
 
@@ -116,7 +115,7 @@ public class RichiestaSupportoDAO {
 				ocs.execute();
 	
 				// return the result set
-				rs = (ResultSet) ocs.getObject(1);
+				ResultSet rs = (ResultSet) ocs.getObject(1);
 				while (rs.next()) {
 	//				logger.info("Cerco di inserire "+rs.getString("STG_PK")+ " ");
 					// Elabora il risultato
@@ -305,7 +304,7 @@ public class RichiestaSupportoDAO {
 				ocs.setInt(2, pk);
 				ocs.execute();
 	
-				try(ResultSet rs = (ResultSet) ocs.getObject(1);){
+				ResultSet rs = (ResultSet) ocs.getObject(1);
 	
 				while (rs.next()) {
 					// Elabora il risultato
@@ -385,7 +384,7 @@ public class RichiestaSupportoDAO {
 				ocs.execute();
 	
 				// return the result set
-				try(ResultSet rs = (ResultSet) ocs.getObject(1);){
+				ResultSet rs = (ResultSet) ocs.getObject(1);
 	
 				while (rs.next()) {
 					// Elabora il risultato
