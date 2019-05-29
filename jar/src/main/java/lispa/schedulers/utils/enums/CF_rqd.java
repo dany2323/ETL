@@ -13,5 +13,7 @@ public enum CF_rqd {
 	oa_id, 
 	codice_obiettivo_aziendale,
 	codice_obiettivo_utente,
-	classificazione
+	classificazione,
+	tag_alm,
+	ts_tag_alm
 }

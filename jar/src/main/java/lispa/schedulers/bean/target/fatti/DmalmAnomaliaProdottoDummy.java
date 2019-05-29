@@ -89,6 +89,10 @@ public class DmalmAnomaliaProdottoDummy {
 	
 	private java.sql.Timestamp dtDisponibilita;
 
+	//DM_ALM-470
+  	private String tagAlm;
+  	private java.sql.Timestamp tsTagAlm;
+  	
 	public java.sql.Timestamp getDtDisponibilita() {
 		return dtDisponibilita;
 	}
@@ -420,5 +424,21 @@ public class DmalmAnomaliaProdottoDummy {
 
 	public void setNoteContestazione(String noteContestazione) {
 		this.noteContestazione = noteContestazione;
+	}
+
+	public String getTagAlm() {
+		return tagAlm;
+	}
+
+	public void setTagAlm(String tagAlm) {
+		this.tagAlm = tagAlm;
+	}
+
+	public java.sql.Timestamp getTsTagAlm() {
+		return tsTagAlm;
+	}
+
+	public void setTsTagAlm(java.sql.Timestamp tsTagAlm) {
+		this.tsTagAlm = tsTagAlm;
 	}
 }

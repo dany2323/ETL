@@ -106,6 +106,8 @@ public class ReleaseItDAO {
 				bean.setMotivoSospensione(rs.getString("MOTIVO_SOSPENSIONE"));
 				bean.setCounterQf(rs.getInt("COUNTER_QF"));
 				bean.setGiorniQf(rs.getInt("GIORNI_QF"));
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				releases.add(bean);
 			}
 
@@ -207,7 +209,8 @@ public class ReleaseItDAO {
 							releaseIt.typeRelease,
 							releaseIt.motivoSospensione,
 							releaseIt.counterQf,
-							releaseIt.giorniQf)
+							releaseIt.giorniQf,
+							releaseIt.tsTagAlm,releaseIt.tagAlm)
 					.values(release.getCdReleaseIt(),
 							release.getDescrizioneReleaseIt(),
 							release.getDmalmReleaseItPk(),
@@ -239,7 +242,8 @@ public class ReleaseItDAO {
 							release.getTypeRelease(),
 							release.getMotivoSospensione(),
 							release.getCounterQf(),
-							release.getGiorniQf()).execute();
+							release.getGiorniQf(),
+							release.getTsTagAlm(),release.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -329,7 +333,8 @@ public class ReleaseItDAO {
 							releaseIt.typeRelease,
 							releaseIt.motivoSospensione,
 							releaseIt.counterQf,
-							releaseIt.giorniQf)
+							releaseIt.giorniQf,
+							releaseIt.tsTagAlm,releaseIt.tagAlm)
 					.values(release.getCdReleaseIt(),
 							release.getDescrizioneReleaseIt(),
 							pkValue == true ? release.getDmalmReleaseItPk() : StringTemplate
@@ -365,7 +370,8 @@ public class ReleaseItDAO {
 							release.getTypeRelease(),
 							release.getMotivoSospensione(),
 							release.getCounterQf(),
-							release.getGiorniQf()).execute();
+							release.getGiorniQf(),
+							release.getTsTagAlm(),release.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -445,6 +451,8 @@ public class ReleaseItDAO {
 					.set(releaseIt.motivoSospensione, release.getMotivoSospensione())
 					.set(releaseIt.counterQf, release.getCounterQf())
 					.set(releaseIt.giorniQf, release.getGiorniQf())
+					.set(releaseIt.tagAlm, release.getTagAlm())
+					.set(releaseIt.tsTagAlm, release.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -522,6 +530,8 @@ public class ReleaseItDAO {
 			r.setMotivoSospensione(t.get(releaseIt.motivoSospensione));
 			r.setCounterQf(t.get(releaseIt.counterQf));
 			r.setGiorniQf(t.get(releaseIt.giorniQf));
+			r.setTagAlm(t.get(releaseIt.tagAlm));
+			r.setTsTagAlm(t.get(releaseIt.tsTagAlm));
 			return r;
 			
 		}else return null;

@@ -85,7 +85,10 @@ public class QDmalmRichiestaGestioneOds extends com.mysema.query.sql.RelationalP
     public final StringPath severity = createString("SEVERITY");
         
     public final StringPath priority = createString("PRIORITY");
+
+    public final StringPath tagAlm = createString("TAG_ALM");
     
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmRichiestaGestioneOds(String variable) {
         super(DmalmRichiestaGestioneOds.class, forVariable(variable), "DMALM", "DMALM_RICHIESTA_GESTIONE_ODS");

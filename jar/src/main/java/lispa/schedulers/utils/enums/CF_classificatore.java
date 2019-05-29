@@ -6,5 +6,7 @@ public enum CF_classificatore {
 	progettoDeroga,
 	assegneeITderoga,
 	locSorgenti,
-	codiceServizi
+	codiceServizi,
+	tag_alm,
+	ts_tag_alm
 }

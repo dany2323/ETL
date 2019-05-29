@@ -105,7 +105,9 @@ public class TaskItDAO {
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_TASKIT_PK"));
 				bean.setTipoTask(rs.getString("TIPO"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				tasks.add(bean);
 			}
 
@@ -190,7 +192,8 @@ public class TaskItDAO {
 							taskit.dtInizioPianificato, taskit.durataEffettiva,
 							taskit.priorityTaskIt, taskit.severityTaskIt,
 							taskit.tipoTask, taskit.dmalmUserFk06, taskit.uri,
-							taskit.dtAnnullamento)
+							taskit.dtAnnullamento,
+							taskit.tsTagAlm,taskit.tagAlm)
 					.values(task.getCdTaskIt(), task.getDescrizioneTaskIt(),
 							task.getDmalmTaskItPk(),
 							task.getDmalmProjectFk02(),
@@ -215,7 +218,8 @@ public class TaskItDAO {
 							task.getDurataEffettiva(),
 							task.getPriorityTaskIt(), task.getSeverityTaskIt(),
 							task.getTipoTask(), task.getDmalmUserFk06(),
-							task.getUri(), task.getDtAnnullamento()).execute();
+							task.getUri(), task.getDtAnnullamento(),
+							task.getTsTagAlm(),task.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -290,7 +294,8 @@ public class TaskItDAO {
 							taskit.priorityTaskIt, taskit.severityTaskIt,
 							taskit.tipoTask, taskit.dmalmUserFk06, taskit.uri,
 							taskit.dtAnnullamento, taskit.changed,
-							taskit.annullato)
+							taskit.annullato,
+							taskit.tsTagAlm,taskit.tagAlm)
 					.values(task.getCdTaskIt(),
 							task.getDescrizioneTaskIt(),
 							pkValue == true ? task.getDmalmTaskItPk()
@@ -322,7 +327,8 @@ public class TaskItDAO {
 							task.getPriorityTaskIt(), task.getSeverityTaskIt(),
 							task.getTipoTask(), task.getDmalmUserFk06(),
 							task.getUri(), task.getDtAnnullamento(),
-							task.getChanged(), task.getAnnullato()).execute();
+							task.getChanged(), task.getAnnullato(),
+							task.getTsTagAlm(),task.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -387,6 +393,8 @@ public class TaskItDAO {
 					.set(taskit.tipoTask, task.getTipoTask())
 					.set(taskit.dtAnnullamento, task.getDtAnnullamento())
 					.set(taskit.annullato, task.getAnnullato())
+					.set(taskit.tagAlm, task.getTagAlm())
+					.set(taskit.tsTagAlm, task.getTsTagAlm())
 					.execute();
 			connection.commit();
 		}
@@ -465,7 +473,9 @@ public class TaskItDAO {
 			a.setTipoTask(t.get(tsk.tipoTask));
 			a.setTitoloTaskIt(t.get(tsk.titoloTaskIt));
 			a.setUri(t.get(tsk.uri));
-
+			a.setTagAlm(t.get(tsk.tagAlm));
+			a.setTsTagAlm(t.get(tsk.tsTagAlm));
+			
 			return a;
 
 		} else

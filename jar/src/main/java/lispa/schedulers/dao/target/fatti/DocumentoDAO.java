@@ -111,7 +111,9 @@ public class DocumentoDAO {
 				// DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				documenti.add(bean);
 			}
 
@@ -257,7 +259,8 @@ public class DocumentoDAO {
 							doc.numeroTestata, doc.rankStatoDocumento,
 							doc.rankStatoDocumentoMese, doc.stgPk, doc.tipo,
 							doc.titoloDocumento, doc.uri,
-							doc.severity, doc.priority)
+							doc.severity, doc.priority,
+							doc.tagAlm,	doc.tsTagAlm)
 					.values(documento.getAnnullato(),
 							documento.getAssigneesDocumento(),
 							documento.getCdDocumento(),
@@ -293,7 +296,8 @@ public class DocumentoDAO {
 							documento.getStgPk(), documento.getTipo(),
 							documento.getTitoloDocumento(), documento.getUri(),
 							// DM_ALM-320
-							documento.getSeverity(), documento.getPriority())
+							documento.getSeverity(), documento.getPriority(),
+							documento.getTagAlm(), documento.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -370,6 +374,8 @@ public class DocumentoDAO {
 					// DM_ALM-320
 					.set(doc.severity, documento.getSeverity())
 					.set(doc.priority, documento.getPriority())
+					.set(doc.tagAlm, documento.getTagAlm())
+					.set(doc.tsTagAlm, documento.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -451,6 +457,8 @@ public class DocumentoDAO {
 			// DM_ALM-320
 			d.setSeverity(t.get(doc.severity));
 			d.setPriority(t.get(doc.priority));
+			d.setTagAlm(t.get(doc.tagAlm));
+			d.setTsTagAlm(t.get(doc.tsTagAlm));
 			
 			return d;
 		} else

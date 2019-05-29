@@ -8,5 +8,7 @@ public enum CF_sman {
 	data_dispok,
 	data_inizio,
 	data_inizio_eff,
-	cod_intervento	
+	cod_intervento,
+	tag_alm,
+	ts_tag_alm
 }

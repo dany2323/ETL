@@ -93,6 +93,10 @@ public class QDmalmRichManutenzioneOds extends com.mysema.query.sql.RelationalPa
     public final StringPath severity = createString("SEVERITY");
         
     public final StringPath priority = createString("PRIORITY");
+
+    public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmRichManutenzioneOds(String variable) {
         super(DmalmRichManutenzioneOds.class, forVariable(variable), "DMALM", "DMALM_RICH_MANUTENZIONE_ODS");

@@ -83,7 +83,8 @@ public class DifettoProdottoOdsDAO {
 								difettoODS.dmalmUserFk06, difettoODS.uri,
 								difettoODS.effortCostoSviluppo,
 								difettoODS.dtDisponibilita,
-								difettoODS.priority)
+								difettoODS.priority,
+								difettoODS.tagAlm, difettoODS.tsTagAlm)
 						.values(difetto.getCdDifetto(),
 								difetto.getDmalmDifettoProdottoPk(),
 								difetto.getDmalmProjectFk02(),
@@ -116,7 +117,8 @@ public class DifettoProdottoOdsDAO {
 								difetto.getEffortCostoSviluppo(),
 								difetto.getDtDisponibilita(),
 								//DM_ALM-320
-								difetto.getPriority()).execute();
+								difetto.getPriority(),
+								difetto.getTagAlm(), difetto.getTsTagAlm()).execute();
 				}
 			}
 			connection.commit();
@@ -208,7 +210,8 @@ public class DifettoProdottoOdsDAO {
 				bean.setEffortCostoSviluppo(row
 						.get(difettoODS.effortCostoSviluppo));
 				bean.setDtDisponibilita(row.get(difettoODS.dtDisponibilita));
-
+				bean.setTagAlm(row.get(difettoODS.tagAlm));
+				bean.setTsTagAlm(row.get(difettoODS.tsTagAlm));
 				res.add(bean);
 			}
 

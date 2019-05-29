@@ -100,6 +100,10 @@ public class QDmalmProgettoSviluppoDem extends com.mysema.query.sql.RelationalPa
     
     public final DateTimePath<java.sql.Timestamp> dtAnnullamento = createDateTime("DT_ANNULLAMENTO", java.sql.Timestamp.class);
 
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public QDmalmProgettoSviluppoDem(String variable) {
         super(DmalmProgettoSviluppoDem.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_SVILUPPO_DEM");
     }

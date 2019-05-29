@@ -10,6 +10,8 @@ public enum CF_anomalia_assistenza {
 	ca,
 	cs,
 	aoid,
-	st_chiuso
+	st_chiuso,
+	tag_alm,
+	ts_tag_alm
 
 }

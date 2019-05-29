@@ -91,7 +91,8 @@ public class SottoprogrammaOdsDAO {
 								sottoprogrammaODS.dmalmTempoFk04,
 								sottoprogrammaODS.dmalmUserFk06,
 								sottoprogrammaODS.uri,
-								sottoprogrammaODS.severity, sottoprogrammaODS.priority)
+								sottoprogrammaODS.severity, sottoprogrammaODS.priority,
+								sottoprogrammaODS.tagAlm, sottoprogrammaODS.tsTagAlm)
 						.values(sottoprogramma.getIdRepository(),
 								sottoprogramma.getDmalmSottoprogrammaPk(),
 								sottoprogramma.getCdSottoprogramma(),
@@ -117,7 +118,8 @@ public class SottoprogrammaOdsDAO {
 								sottoprogramma.getDmalmUserFk06(),
 								sottoprogramma.getUri(),
 								//DM_ALM-320
-								sottoprogramma.getSeverity(), sottoprogramma.getPriority()).execute();
+								sottoprogramma.getSeverity(), sottoprogramma.getPriority(),
+								sottoprogramma.getTagAlm(), sottoprogramma.getTsTagAlm()).execute();
 			}
 			connection.commit();
 		} catch (Exception e) {

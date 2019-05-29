@@ -94,7 +94,8 @@ public class AnomaliaAssistenzaOdsDAO {
 								anomaliaODS.tempoTotaleRisoluzione,
 								anomaliaODS.ticketid,
 								anomaliaODS.titoloAnomaliaAss,
-								anomaliaODS.dmalmUserFk06, anomaliaODS.uri)
+								anomaliaODS.dmalmUserFk06, anomaliaODS.uri,
+								anomaliaODS.tagAlm, anomaliaODS.tsTagAlm)
 						.values(anomalia.getCdAnomaliaAss(),
 								anomalia.getDmalmAnomaliaAssPk(),
 								anomalia.getDmalmProjectFk02(),
@@ -124,7 +125,8 @@ public class AnomaliaAssistenzaOdsDAO {
 								anomalia.getTempoTotaleRisoluzione(),
 								anomalia.getTicketid(),
 								anomalia.getTitoloAnomaliaAss(),
-								anomalia.getDmalmUserFk06(), anomalia.getUri())
+								anomalia.getDmalmUserFk06(), anomalia.getUri(),
+								anomalia.getTagAlm(), anomalia.getTsTagAlm())
 						.execute();
 
 				connection.commit();

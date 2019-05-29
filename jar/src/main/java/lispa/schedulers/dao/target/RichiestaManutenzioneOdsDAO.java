@@ -100,7 +100,8 @@ public class RichiestaManutenzioneOdsDAO {
 								richiestaODS.titoloRichiestaManutenzione,
 								richiestaODS.stgPk, richiestaODS.dmalmUserFk06,
 								richiestaODS.uri,
-								richiestaODS.severity, richiestaODS.priority)
+								richiestaODS.severity, richiestaODS.priority,
+								richiestaODS.tagAlm, richiestaODS.tsTagAlm)
 						.values(richiesta.getCdRichiestaManutenzione(),
 								richiesta.getClasseDiFornitura(),
 								richiesta.getCodice(),
@@ -132,7 +133,8 @@ public class RichiestaManutenzioneOdsDAO {
 								richiesta.getStgPk(),
 								richiesta.getDmalmUserFk06(),
 								richiesta.getUri(),
-								richiesta.getSeverity(), richiesta.getPriority()).execute();
+								richiesta.getSeverity(), richiesta.getPriority(),
+								richiesta.getTagAlm(), richiesta.getTsTagAlm()).execute();
 
 			}
 

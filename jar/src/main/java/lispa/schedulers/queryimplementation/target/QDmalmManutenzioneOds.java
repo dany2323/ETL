@@ -99,6 +99,10 @@ public class QDmalmManutenzioneOds extends com.mysema.query.sql.RelationalPathBa
 
     public final StringPath titoloManutenzione = createString("TITOLO_MANUTENZIONE");
 
+    public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public final com.mysema.query.sql.PrimaryKey<DmalmManutenzioneOds> sysC0023103 = createPrimaryKey(dmalmManutenzionePk);
 
     public QDmalmManutenzioneOds(String variable) {

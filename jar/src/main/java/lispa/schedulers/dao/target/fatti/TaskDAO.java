@@ -107,7 +107,9 @@ public class TaskDAO {
 				bean.setTitoloTask(rs.getString("TITOLO_TASK"));
 				bean.setUri(rs.getString("URI_WI"));
 				bean.setStgPk(rs.getString("STG_TASK_PK"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
+				
 				documenti.add(bean);
 			}
 
@@ -192,7 +194,8 @@ public class TaskDAO {
 							tsk.rankStatoTask, tsk.severityTask, tsk.taskType,
 							tsk.tempoTotaleRisoluzione, tsk.titoloTask,
 							tsk.stgPk, tsk.dmalmUserFk06, tsk.uri,
-							tsk.dtAnnullamento)
+							tsk.dtAnnullamento,
+							tsk.tsTagAlm,tsk.tagAlm)
 					.values(task.getCdTask(), task.getCodice(),
 							task.getDataChiusuraTask(),
 							task.getDataFineEffettiva(),
@@ -221,7 +224,8 @@ public class TaskDAO {
 							task.getTempoTotaleRisoluzione(),
 							task.getTitoloTask(), task.getStgPk(),
 							task.getDmalmUserFk06(), task.getUri(),
-							task.getDtAnnullamento()).execute();
+							task.getDtAnnullamento(),
+							task.getTsTagAlm(),task.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -295,7 +299,8 @@ public class TaskDAO {
 							tsk.rankStatoTask, tsk.severityTask, tsk.taskType,
 							tsk.tempoTotaleRisoluzione, tsk.titoloTask,
 							tsk.stgPk, tsk.dmalmUserFk06, tsk.uri,
-							tsk.dtAnnullamento, tsk.changed, tsk.annullato)
+							tsk.dtAnnullamento, tsk.changed, tsk.annullato,
+							tsk.tsTagAlm,tsk.tagAlm)
 					.values(task.getCdTask(), task.getCodice(),
 							task.getDataChiusuraTask(),
 							task.getDataFineEffettiva(),
@@ -326,7 +331,8 @@ public class TaskDAO {
 							task.getTempoTotaleRisoluzione(),
 							task.getTitoloTask(), task.getStgPk(),
 							task.getDmalmUserFk06(), task.getUri(),
-							task.getDtAnnullamento(), task.getChanged(), task.getAnnullato()).execute();
+							task.getDtAnnullamento(), task.getChanged(), task.getAnnullato(),
+							task.getTsTagAlm(),task.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -396,6 +402,8 @@ public class TaskDAO {
 					.set(tsk.uri, task.getUri())
 					.set(tsk.dtAnnullamento, task.getDtAnnullamento())
 					.set(tsk.annullato, task.getAnnullato())
+					.set(tsk.tagAlm, task.getTagAlm())
+					.set(tsk.tsTagAlm, task.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -478,6 +486,8 @@ public class TaskDAO {
 			a.setTempoTotaleRisoluzione(t.get(tsk.tempoTotaleRisoluzione));
 			a.setTitoloTask(t.get(tsk.titoloTask));
 			a.setUri(t.get(tsk.uri));
+			a.setTagAlm(t.get(tsk.tagAlm));
+			a.setTsTagAlm(t.get(tsk.tsTagAlm));
 			
 			return a;
 			

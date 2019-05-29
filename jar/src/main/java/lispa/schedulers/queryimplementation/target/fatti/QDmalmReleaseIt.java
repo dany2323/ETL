@@ -100,6 +100,10 @@ public class QDmalmReleaseIt extends com.mysema.query.sql.RelationalPathBase<Dma
     
     public final NumberPath<Integer> giorniQf = createNumber("GIORNI_QF", Integer.class);
     
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
+    
     public QDmalmReleaseIt(String variable) {
         super(DmalmReleaseIt.class, forVariable(variable), "DMALM", "DMALM_RELEASE_IT");
     }

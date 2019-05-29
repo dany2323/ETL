@@ -106,7 +106,8 @@ public class RichiestaGestioneDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
-
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				richiesteGestione.add(bean);
 			}
 
@@ -198,7 +199,8 @@ public class RichiestaGestioneDAO {
 							rchgs.ticketid, rchgs.titoloRichiestaGest,
 							rchgs.dmalmUserFk06, rchgs.uri,
 							rchgs.dtAnnullamento,
-							rchgs.severity, rchgs.priority)
+							rchgs.severity, rchgs.priority,
+							rchgs.tsTagAlm,rchgs.tagAlm)
 					.values(richiesta.getCategoria(),
 							richiesta.getCdRichiestaGest(),
 							richiesta.getDataChiusura(),
@@ -225,7 +227,8 @@ public class RichiestaGestioneDAO {
 							richiesta.getTitoloRichiestaGest(),
 							richiesta.getDmalmUserFk06(), richiesta.getUri(),
 							richiesta.getDtAnnullamento(),
-							richiesta.getSeverity(), richiesta.getPriority()).execute();
+							richiesta.getSeverity(), richiesta.getPriority(),
+							richiesta.getTsTagAlm(),richiesta.getTagAlm()).execute();
 
 			connection.commit();
 
@@ -305,7 +308,8 @@ public class RichiestaGestioneDAO {
 							rchgs.dmalmUserFk06, rchgs.uri,
 							rchgs.dtAnnullamento, rchgs.changed,
 							rchgs.annullato,
-							rchgs.severity, rchgs.priority)
+							rchgs.severity, rchgs.priority,
+							rchgs.tsTagAlm,rchgs.tagAlm)
 					.values(richiesta.getCategoria(),
 							richiesta.getCdRichiestaGest(),
 							richiesta.getDataChiusura(),
@@ -338,7 +342,8 @@ public class RichiestaGestioneDAO {
 							richiesta.getDmalmUserFk06(), richiesta.getUri(),
 							richiesta.getDtAnnullamento(),
 							richiesta.getChanged(), richiesta.getAnnullato(),
-							richiesta.getSeverity(), richiesta.getPriority())
+							richiesta.getSeverity(), richiesta.getPriority(),
+							richiesta.getTsTagAlm(),richiesta.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -411,7 +416,9 @@ public class RichiestaGestioneDAO {
 					.set(rchgs.dtAnnullamento, richiesta.getDtAnnullamento())
 					.set(rchgs.annullato, richiesta.getAnnullato())
 					.set(rchgs.severity, richiesta.getSeverity())
-					.set(rchgs.priority, richiesta.getPriority()).execute();
+					.set(rchgs.priority, richiesta.getPriority())
+					.set(rchgs.tagAlm, richiesta.getTagAlm())
+					.set(rchgs.tsTagAlm, richiesta.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -492,7 +499,9 @@ public class RichiestaGestioneDAO {
 			//DM_ALM-320
 			r.setSeverity(t.get(rchgs.severity));
 			r.setPriority(t.get(rchgs.priority));
-
+			r.setTagAlm(t.get(rchgs.tagAlm));
+			r.setTsTagAlm(t.get(rchgs.tsTagAlm));
+			
 			return r;
 
 		} else

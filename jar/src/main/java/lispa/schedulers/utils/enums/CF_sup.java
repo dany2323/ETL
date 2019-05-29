@@ -5,5 +5,7 @@ public enum CF_sup {
 	cod_intervento,
 	cod_area,
 	cod_prodotto,
-	categoria
+	categoria,
+	tag_alm,
+	ts_tag_alm
 }

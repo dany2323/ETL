@@ -8,5 +8,7 @@ public enum CF_fase {
 	effettiva_start,
 	effettiva_end,
 	baseline_start,
-	baseline_end
+	baseline_end,
+	tag_alm,
+	ts_tag_alm
 }

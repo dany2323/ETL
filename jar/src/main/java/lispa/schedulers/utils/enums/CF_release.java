@@ -8,6 +8,8 @@ public enum CF_release {
 	cod_intervento,
 	version,
 	registry,
-	tipo_release
+	tipo_release,
+	tag_alm,
+	ts_tag_alm
 
 }

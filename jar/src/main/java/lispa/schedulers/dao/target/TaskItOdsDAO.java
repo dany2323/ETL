@@ -91,7 +91,8 @@ public class TaskItOdsDAO {
 								taskItOds.durataEffettiva,
 								taskItOds.priorityTaskIt,
 								taskItOds.severityTaskIt, taskItOds.tipoTask,
-								taskItOds.dmalmUserFk06, taskItOds.uri)
+								taskItOds.dmalmUserFk06, taskItOds.uri,
+								taskItOds.tagAlm, taskItOds.tsTagAlm)
 						.values(task.getCdTaskIt(),
 								task.getDescrizioneTaskIt(),
 								task.getDmalmTaskItPk(),
@@ -119,7 +120,8 @@ public class TaskItOdsDAO {
 								task.getDurataEffettiva(),
 								task.getPriorityTaskIt(),
 								task.getSeverityTaskIt(), task.getTipoTask(),
-								task.getDmalmUserFk06(), task.getUri())
+								task.getDmalmUserFk06(), task.getUri(),
+								task.getTagAlm(), task.getTsTagAlm())
 						.execute();
 
 				connection.commit();

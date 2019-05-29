@@ -113,6 +113,8 @@ public class FaseDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 				
 				fasi.add(bean);
 			}
@@ -197,7 +199,8 @@ public class FaseDAO {
 							fs.idRepository, fs.motivoRisoluzioneFase,
 							fs.rankStatoFase, fs.titoloFase, fs.stgPk,
 							fs.dmalmUserFk06, fs.uri, fs.dtAnnullamento,
-							fs.severity, fs.priority)
+							fs.severity, fs.priority,
+							fs.tagAlm,	fs.tsTagAlm)
 					.values(fase.getApplicabile(), fase.getCdFase(),
 							fase.getCodice(), fase.getDataFineBaseline(),
 							fase.getDataFineEffettiva(),
@@ -223,7 +226,8 @@ public class FaseDAO {
 							fase.getTitoloFase(), fase.getStgPk(),
 							fase.getDmalmUserFk06(), fase.getUri(),
 							fase.getDtAnnullamento(),
-							fase.getSeverity(), fase.getPriority()).execute();
+							fase.getSeverity(), fase.getPriority(),
+							fase.getTagAlm(), fase.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -297,7 +301,8 @@ public class FaseDAO {
 							fs.rankStatoFase, fs.titoloFase, fs.stgPk,
 							fs.dmalmUserFk06, fs.uri, fs.dtAnnullamento,
 							fs.changed, fs.annullato,
-							fs.severity, fs.priority)
+							fs.severity, fs.priority,
+							fs.tagAlm,	fs.tsTagAlm)
 					.values(fase.getApplicabile(),
 							fase.getCdFase(),
 							fase.getCodice(),
@@ -333,7 +338,8 @@ public class FaseDAO {
 							fase.getDmalmUserFk06(), fase.getUri(),
 							fase.getDtAnnullamento(), fase.getChanged(),
 							fase.getAnnullato(),
-							fase.getSeverity(), fase.getPriority()).execute();
+							fase.getSeverity(), fase.getPriority(),
+							fase.getTagAlm(), fase.getTsTagAlm()).execute();
 
 			connection.commit();
 
@@ -400,6 +406,8 @@ public class FaseDAO {
 					.set(fs.annullato, fase.getAnnullato())
 					.set(fs.severity, fase.getSeverity())
 					.set(fs.priority, fase.getPriority())
+					.set(fs.tagAlm, fase.getTagAlm())
+					.set(fs.tsTagAlm, fase.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -480,6 +488,8 @@ public class FaseDAO {
 			//DM_ALM-320
 			f.setSeverity(t.get(fs.severity));
 			f.setPriority(t.get(fs.priority));
+			f.setTagAlm(t.get(fs.tagAlm));
+			f.setTsTagAlm(t.get(fs.tsTagAlm));
 			
 			return f;
 

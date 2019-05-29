@@ -5,5 +5,7 @@ public enum CF_documento {
 	classe_doc,
 	tipo_doc,
 	versione,
-	cod_intervento
+	cod_intervento,
+	tag_alm,
+	ts_tag_alm
 }

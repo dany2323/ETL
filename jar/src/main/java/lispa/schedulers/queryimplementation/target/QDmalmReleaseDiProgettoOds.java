@@ -106,7 +106,10 @@ public class QDmalmReleaseDiProgettoOds extends com.mysema.query.sql.RelationalP
     public final StringPath priority = createString("PRIORITY");
     
     public final StringPath typeRelease = createString("TYPE_RELEASE");
+
+    public final StringPath tagAlm = createString("TAG_ALM");
     
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmReleaseDiProgettoOds(String variable) {
         super(DmalmReleaseDiProgettoOds.class, forVariable(variable), "DMALM", "DMALM_RELEASE_DI_PROGETTO_ODS");

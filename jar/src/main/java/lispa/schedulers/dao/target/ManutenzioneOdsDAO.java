@@ -106,7 +106,8 @@ public class ManutenzioneOdsDAO {
 								manutenzioneODS.titoloManutenzione,
 								manutenzioneODS.stgPk,
 								manutenzioneODS.dmalmUserFk06,
-								manutenzioneODS.uri)
+								manutenzioneODS.uri,
+								manutenzioneODS.tagAlm, manutenzioneODS.tsTagAlm)
 						.values(manutenzione.getAssigneesManutenzione(),
 								manutenzione.getCdManutenzione(),
 								manutenzione.getCodice(),
@@ -144,7 +145,9 @@ public class ManutenzioneOdsDAO {
 								manutenzione.getTitoloManutenzione(),
 								manutenzione.getStgPk(),
 								manutenzione.getDmalmUserFk06(),
-								manutenzione.getUri()).execute();
+								manutenzione.getUri(),
+								manutenzione.getTagAlm(), manutenzione.getTsTagAlm()
+								).execute();
 
 			}
 

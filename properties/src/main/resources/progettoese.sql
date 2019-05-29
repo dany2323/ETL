@@ -22,6 +22,8 @@
 		to_char(hw.c_description) as DESCRIZIONE_PROGETTO_ESE,
 		hw.codice as CODICE,
 		(select distinct hcf.c_date_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_sottomissione') as DATA_SOTTOMISSIONE,
+		(select distinct hcf.c_date_value from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM,
+		(select distinct to_char(hcf.c_string_value) from dmalm_sire_history_cf_workitem hcf where hcf.fk_workitem = hw.C_PK and hcf.c_name = 'tag_alm') as TAG_ALM,
 		hw.c_severity as SEVERITY,
 		hw.c_priority as PRIORITY
 		from dmalm_sire_history_workitem hw left join dmalm_sire_history_project hp 
@@ -59,6 +61,8 @@ UNION ALL
 		to_char(hw.c_description) as DESCRIZIONE_PROGETTO_ESE,
 		hw.codice as CODICE,
 		(select distinct hcf.c_date_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'data_sottomissione') as DATA_SOTTOMISSIONE,
+		(select distinct hcf.c_date_value from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.c_pk and hcf.c_name = 'ts_tag_alm') as TS_TAG_ALM,
+		(select distinct to_char(hcf.c_string_value) from dmalm_siss_history_cf_workitem hcf where hcf.fk_workitem = hw.C_PK and hcf.c_name = 'tag_alm') as TAG_ALM,
 		hw.c_severity as SEVERITY,
 		hw.c_priority as PRIORITY
 		from dmalm_siss_history_workitem hw left join dmalm_siss_history_project hp 

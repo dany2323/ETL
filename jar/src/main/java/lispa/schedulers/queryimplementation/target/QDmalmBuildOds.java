@@ -79,6 +79,9 @@ public class QDmalmBuildOds extends com.mysema.query.sql.RelationalPathBase<Dmal
         
     public final StringPath priority = createString("PRIORITY");
     
+public final StringPath tagAlm = createString("TAG_ALM");
+    
+    public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmBuildOds(String variable) {
         super(DmalmBuildOds.class, forVariable(variable), "DMALM", "DMALM_BUILD_ODS");

@@ -106,6 +106,8 @@ public class ProgrammaDAO {
 				//DM_ALM-320
 				bean.setSeverity(rs.getString("SEVERITY"));
 				bean.setPriority(rs.getString("PRIORITY"));
+				bean.setTagAlm(rs.getString("TAG_ALM"));
+				bean.setTsTagAlm(rs.getTimestamp("TS_TAG_ALM"));
 
 				programmi.add(bean);
 			}
@@ -194,7 +196,8 @@ public class ProgrammaDAO {
 							prog.cfReferenteRegionale, prog.cfServiceManager,
 							prog.cfTipologia, prog.stgPk, prog.dmalmUserFk06,
 							prog.codice, prog.uri, prog.dtAnnullamento,
-							prog.severity, prog.priority)
+							prog.severity, prog.priority,
+							prog.tsTagAlm,prog.tagAlm)
 					.values(program.getAssignee(), program.getCdProgramma(),
 							program.getDescrizioneProgramma(),
 							program.getDmalmProgrammaPk(),
@@ -223,7 +226,8 @@ public class ProgrammaDAO {
 							program.getDmalmUserFk06(), program.getCodice(),
 							program.getUri(), program.getDtAnnullamento(),
 							//DM_ALM-320
-							program.getSeverity(), program.getPriority())
+							program.getSeverity(), program.getPriority(),
+							program.getTsTagAlm(),program.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -298,7 +302,8 @@ public class ProgrammaDAO {
 							prog.cfTipologia, prog.stgPk, prog.dmalmUserFk06,
 							prog.codice, prog.uri, prog.dtAnnullamento,
 							prog.changed, prog.annullato,
-							prog.severity, prog.priority)
+							prog.severity, prog.priority,
+							prog.tsTagAlm,prog.tagAlm)
 					.values(program.getAssignee(),
 							program.getCdProgramma(),
 							program.getDescrizioneProgramma(),
@@ -333,7 +338,8 @@ public class ProgrammaDAO {
 							program.getUri(), program.getDtAnnullamento(),
 							program.getChanged(), program.getAnnullato(),
 							//DM_ALM-320
-							program.getSeverity(), program.getPriority())
+							program.getSeverity(), program.getPriority(),
+							program.getTsTagAlm(),program.getTagAlm())
 					.execute();
 
 			connection.commit();
@@ -403,6 +409,8 @@ public class ProgrammaDAO {
 					.set(prog.severity, program.getSeverity())
 					//DM_ALM-320
 					.set(prog.priority, program.getPriority())
+					.set(prog.tagAlm, program.getTagAlm())
+					.set(prog.tsTagAlm, program.getTsTagAlm())
 					.execute();
 
 			connection.commit();
@@ -484,6 +492,8 @@ public class ProgrammaDAO {
 			//DM_ALM-320
 			p.setSeverity(t.get(prog.severity));
 			p.setPriority(t.get(prog.priority));
+			p.setTagAlm(t.get(prog.tagAlm));
+			p.setTsTagAlm(t.get(prog.tsTagAlm));
 			
 			return p;
 
