@@ -1,62 +1,90 @@
-insert into DMALM_LINKED_WORKITEMS (CODICE_WI_FIGLIO, CODICE_WI_PADRE, TIPO_WI_FIGLIO, TIPO_WI_PADRE, FK_WI_FIGLIO, FK_WI_PADRE, RUOLO, DT_CARICAMENTO, TITOLO_WI_FIGLIO, TITOLO_WI_PADRE, URI_WI_FIGLIO, URI_WI_PADRE, ID_REPOSITORY_FIGLIO, ID_REPOSITORY_PADRE, CODICE_PROJECT_FIGLIO, CODICE_PROJECT_PADRE, LINKED_WORKITEMS_PK)  
- select ID_FIGLIO, ID_PADRE, TIPO_FIGLIO, TIPO_PADRE, PK_FIGLIO, PK_PADRE, RUOLO, DT_CARICAMENTO, TITOLO_WI_FIGLIO, TITOLO_WI_PADRE, URI_WI_FIGLIO, URI_WI_PADRE, ID_REPOSITORY_FIGLIO, ID_REPOSITORY_PADRE, ID_PROJECT_FIGLIO, ID_PROJECT_PADRE, LINKED_WORKITEMS_SEQ.nextval
-    from 
-        (
-            select 
-                prjpadre.ID_PROJECT AS ID_PROJECT_PADRE, 
-                prjfiglio.ID_PROJECT AS ID_PROJECT_FIGLIO, 
-                wipadre.ID_REPOSITORY as ID_REPOSITORY_PADRE, 
-                wifiglio.ID_REPOSITORY as ID_REPOSITORY_FIGLIO, 
-                wipadre.codice as ID_PADRE,
-                wifiglio.codice as ID_FIGLIO,
-                wipadre.type as TIPO_PADRE,
-                wifiglio.type as TIPO_FIGLIO, 
-                l.c_role as RUOLO, 
-                wipadre.DMALM_PK as PK_PADRE,
-                wifiglio.DMALM_PK as PK_FIGLIO, 
-                l.data_caricamento as DT_CARICAMENTO,
-                wipadre.titolo as TITOLO_WI_PADRE,
-                wifiglio.titolo as TITOLO_WI_FIGLIO, 
-                l.FK_URI_P_WORKITEM as URI_WI_PADRE,
-                l.FK_URI_WORKITEM as URI_WI_FIGLIO
-             from dmalm_sire_current_work_linked l  
-             join TOTAL wifiglio on l.FK_P_WORKITEM = wifiglio.uri
-             join TOTAL wipadre on l.FK_WORKITEM = wipadre.uri
-             join dmalm_project prjfiglio on PRJFIGLIO.DMALM_PROJECT_PK = wifiglio.PROJECT_FK
-             join dmalm_project prjpadre on PRJPADRE.DMALM_PROJECT_PK = wipadre.PROJECT_FK
-             where wifiglio.RANK_STATO = 1 
-             and wipadre.RANK_STATO = 1 
-             and wipadre.ID_REPOSITORY = 'SIRE' 
-             and wipadre.ID_REPOSITORY = wifiglio.ID_REPOSITORY 
-             and l.DATA_CARICAMENTO = ? 
-           UNION all
-            select distinct
-                prjpadre.ID_PROJECT AS ID_PROJECT_PADRE, 
-                prjfiglio.ID_PROJECT AS ID_PROJECT_FIGLIO, 
-                wipadre.ID_REPOSITORY as ID_REPOSITORY_PADRE, 
-                wifiglio.ID_REPOSITORY as ID_REPOSITORY_FIGLIO, 
-                wipadre.codice as ID_PADRE,
-                wifiglio.codice as ID_FIGLIO,
-                wipadre.type as TIPO_PADRE,
-                wifiglio.type as TIPO_FIGLIO, 
-                l.c_role as RUOLO, 
-                wipadre.DMALM_PK as PK_PADRE,
-                wifiglio.DMALM_PK as PK_FIGLIO, 
-                l.data_caricamento as DT_CARICAMENTO,
-                wipadre.titolo as TITOLO_WI_PADRE,
-                wifiglio.titolo as TITOLO_WI_FIGLIO, 
-                l.FK_URI_P_WORKITEM as URI_WI_PADRE,
-                l.FK_URI_WORKITEM as URI_WI_FIGLIO
-             from dmalm_siss_current_work_linked l  
-             join TOTAL wifiglio on l.FK_P_WORKITEM = wifiglio.uri
-             join TOTAL wipadre on l.FK_WORKITEM = wipadre.uri
-             join dmalm_project prjfiglio on PRJFIGLIO.DMALM_PROJECT_PK = wifiglio.PROJECT_FK
-             join dmalm_project prjpadre on PRJPADRE.DMALM_PROJECT_PK = wipadre.PROJECT_FK
-             where wifiglio.RANK_STATO = 1 
-             and wipadre.RANK_STATO = 1 
-             and wipadre.ID_REPOSITORY = 'SISS' 
-             and wipadre.ID_REPOSITORY = wifiglio.ID_REPOSITORY     
-             and l.DATA_CARICAMENTO = ? 
-             order by ID_PADRE, ID_FIGLIO, PK_PADRE, PK_FIGLIO
-        ) 
-	
+INSERT /*+ APPEND */ INTO DMALM_LINKED_WORKITEMS  (CODICE_WI_FIGLIO,
+                                    CODICE_WI_PADRE,
+                                    TIPO_WI_FIGLIO,
+                                    TIPO_WI_PADRE,
+                                    FK_WI_FIGLIO,
+                                    FK_WI_PADRE,
+                                    RUOLO,
+                                    DT_CARICAMENTO,
+                                    TITOLO_WI_FIGLIO,
+                                    TITOLO_WI_PADRE,
+                                    URI_WI_FIGLIO,
+                                    URI_WI_PADRE,
+                                    ID_REPOSITORY_FIGLIO,
+                                    ID_REPOSITORY_PADRE,
+                                    CODICE_PROJECT_FIGLIO,
+                                    CODICE_PROJECT_PADRE,
+                                    LINKED_WORKITEMS_PK)
+   SELECT ID_FIGLIO,
+          ID_PADRE,
+          TIPO_FIGLIO,
+          TIPO_PADRE,
+          PK_FIGLIO,
+          PK_PADRE,
+          RUOLO,
+          DT_CARICAMENTO,
+          TITOLO_WI_FIGLIO,
+          TITOLO_WI_PADRE,
+          URI_WI_FIGLIO,
+          URI_WI_PADRE,
+          ID_REPOSITORY_FIGLIO,
+          ID_REPOSITORY_PADRE,
+          ID_PROJECT_FIGLIO,
+          ID_PROJECT_PADRE,
+          LINKED_WORKITEMS_SEQ.NEXTVAL
+     FROM (
+SELECT    /*+ leading (l wifiglio wipadre) use_nl(wifliglio) use_nl(wipadre) index (wipadre) index(wifiglio) */
+             (select  prjpadre.ID_PROJECT from dmalm_project prjpadre where PRJPADRE.DMALM_PROJECT_PK = wipadre.PROJECT_FK) AS ID_PROJECT_PADRE,
+             (select prjfiglio.ID_PROJECT from dmalm_project prjfiglio where PRJFIGLIO.DMALM_PROJECT_PK = wifiglio.PROJECT_FK) AS ID_PROJECT_FIGLIO,
+                  wipadre.ID_REPOSITORY AS ID_REPOSITORY_PADRE,
+                  wifiglio.ID_REPOSITORY AS ID_REPOSITORY_FIGLIO,
+                  wipadre.codice AS ID_PADRE,
+                  wifiglio.codice AS ID_FIGLIO,
+                  wipadre.TYPE AS TIPO_PADRE,
+                  wifiglio.TYPE AS TIPO_FIGLIO,
+                  l.c_role AS RUOLO,
+                  wipadre.DMALM_PK AS PK_PADRE,
+                  wifiglio.DMALM_PK AS PK_FIGLIO,
+                  l.data_caricamento AS DT_CARICAMENTO,
+                  wipadre.titolo AS TITOLO_WI_PADRE,
+                  wifiglio.titolo AS TITOLO_WI_FIGLIO,
+                  l.FK_URI_P_WORKITEM AS URI_WI_PADRE,
+                  l.FK_URI_WORKITEM AS URI_WI_FIGLIO
+             FROM dmalm_sire_current_work_linked l
+                  JOIN TOTAL wifiglio
+                     ON l.FK_P_WORKITEM = wifiglio.uri
+                  JOIN TOTAL wipadre
+                     ON l.FK_WORKITEM = wipadre.uri
+              WHERE     wifiglio.RANK_STATO = 1
+                  AND wipadre.RANK_STATO = 1
+                  AND wipadre.ID_REPOSITORY = 'SIRE'
+                  AND wipadre.ID_REPOSITORY = wifiglio.ID_REPOSITORY
+                  AND l.DATA_CARICAMENTO = ?
+           UNION  SELECT  /*+ leading (l wifiglio wipadre) use_nl(wifliglio) use_nl(wipadre) index (wipadre) index(wifiglio) */
+              (select  prjpadre.ID_PROJECT from dmalm_project prjpadre where PRJPADRE.DMALM_PROJECT_PK = wipadre.PROJECT_FK) AS ID_PROJECT_PADRE,
+             (select prjfiglio.ID_PROJECT from dmalm_project prjfiglio where PRJFIGLIO.DMALM_PROJECT_PK = wifiglio.PROJECT_FK) AS ID_PROJECT_FIGLIO,
+                  wipadre.ID_REPOSITORY AS ID_REPOSITORY_PADRE,
+                  wifiglio.ID_REPOSITORY AS ID_REPOSITORY_FIGLIO,
+                  wipadre.codice AS ID_PADRE,
+                  wifiglio.codice AS ID_FIGLIO,
+                  wipadre.TYPE AS TIPO_PADRE,
+                  wifiglio.TYPE AS TIPO_FIGLIO,
+                  l.c_role AS RUOLO,
+                  wipadre.DMALM_PK AS PK_PADRE,
+                  wifiglio.DMALM_PK AS PK_FIGLIO,
+                  l.data_caricamento AS DT_CARICAMENTO,
+                  wipadre.titolo AS TITOLO_WI_PADRE,
+                  wifiglio.titolo AS TITOLO_WI_FIGLIO,
+                  l.FK_URI_P_WORKITEM AS URI_WI_PADRE,
+                  l.FK_URI_WORKITEM AS URI_WI_FIGLIO
+             FROM dmalm_siss_current_work_linked l
+                  JOIN TOTAL wifiglio
+                     ON l.FK_P_WORKITEM = wifiglio.uri
+                  JOIN TOTAL wipadre
+                     ON l.FK_WORKITEM = wipadre.uri
+            WHERE     wifiglio.RANK_STATO = 1
+                  AND wipadre.RANK_STATO = 1
+                  AND wipadre.ID_REPOSITORY = 'SISS'
+                  AND wipadre.ID_REPOSITORY = wifiglio.ID_REPOSITORY
+                  AND l.DATA_CARICAMENTO = ?
+                  order by ID_PADRE, ID_FIGLIO, PK_PADRE, PK_FIGLIO ) 
