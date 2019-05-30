@@ -45,10 +45,9 @@ public class ReleaseDiProgettoDAO {
 		Connection connection = null;
 
 		DmalmReleaseDiProgetto bean = null;
-//		List<DmalmReleaseDiProgetto> releases = new ArrayList<DmalmReleaseDiProgetto>(
-//				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.release));
+		List<DmalmReleaseDiProgetto> releases = new ArrayList<DmalmReleaseDiProgetto>(
+				QueryUtils.getCountByWIType(Workitem_Type.EnumWorkitemType.release));
 
-		List<DmalmReleaseDiProgetto> releases = new ArrayList<DmalmReleaseDiProgetto>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
