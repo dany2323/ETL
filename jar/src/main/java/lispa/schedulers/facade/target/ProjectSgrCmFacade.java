@@ -200,9 +200,11 @@ public class ProjectSgrCmFacade {
 									.getUnitaOrganizzativaByCodiceArea(
 											codiceAreaUOElettra, dataEsecuzione);
 							unitaOrganizzativaFk=0;
-							for(Timestamp t:map.keySet()) {
-								unitaOrganizzativaFk = map.get(t);
-								dataFineValidita=t;
+							if(!map.isEmpty()) {
+								for(Timestamp t:map.keySet()) {
+									unitaOrganizzativaFk = map.get(t);
+									dataFineValidita=t;
+								}
 							}
 							
 						}

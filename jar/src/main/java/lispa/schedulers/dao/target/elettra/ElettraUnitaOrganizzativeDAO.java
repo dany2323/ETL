@@ -359,7 +359,7 @@ public class ElettraUnitaOrganizzativeDAO {
 	public static Map<Timestamp, Integer> getUnitaOrganizzativaByCodiceArea(String codiceArea,
 			Timestamp dataUltimaModifica) throws DAOException {
 		HashMap <Timestamp,Integer> result=new HashMap<>();
-		result.put(dataUltimaModifica,0);
+//		result.put(dataUltimaModifica,0);
 
 		if (codiceArea == null || dataUltimaModifica == null) {
 			return result;
