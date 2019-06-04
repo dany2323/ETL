@@ -240,7 +240,7 @@ public class ElettraUnitaOrganizzativeFacade {
 			unitaOrganizzativeFlat+=insertedUnitaOrganizzativa.getCodiceArea() + ";";
 		}
 		
-		System.out.println("Flat: " + unitaOrganizzativeFlat);
+//		System.out.println("Flat: " + unitaOrganizzativeFlat);
 		
 		idUnitaOrganizzativaFlat++;
 		inserisciLista(idUnitaOrganizzativaFlat, insertedUnitaOrganizzativeList,
@@ -287,7 +287,7 @@ public class ElettraUnitaOrganizzativeFacade {
 			List<DmalmElUnitaOrganizzative> insertedUnitaOrganizzativeList,
 			Timestamp dataEsecuzione) throws Exception {
 		
-		if(insertedUnitaOrganizzativeList.size() > 14) {
+		if(insertedUnitaOrganizzativeList.size() > 15) {
 			String unitaOrganizzativeFlat = "";
 			for (DmalmElUnitaOrganizzative insertedUnitaOrganizzativa : insertedUnitaOrganizzativeList) {
 				unitaOrganizzativeFlat+=insertedUnitaOrganizzativa.getCodiceArea() + ";";
