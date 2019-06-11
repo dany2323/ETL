@@ -13,10 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.utils.QueryUtils;
+
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.CURRENT_CURSOR_NUMBER;;
 
 
@@ -179,5 +182,24 @@ public class UtilsDAO {
 		}
 		
 		return maxValue;
+	}
+	public static void killsBOSessions() throws DAOException {
+		ConnectionManager cm = null;
+		Connection conn = null;
+		
+		try {
+			cm = ConnectionManager.getInstance();
+			conn = cm.getConnectionOracle();
+			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.STORED_PROCEDURE_KILL_BO_SESSIONS,0);
+			try(CallableStatement callableStatement=conn.prepareCall(procedure) ){
+				callableStatement.execute();
+			} catch (Exception e) {
+				logger.debug(e.getMessage());
+			}
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			throw new DAOException(e);
+		}
+		
 	}
 }

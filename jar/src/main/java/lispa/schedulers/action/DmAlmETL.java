@@ -2,7 +2,12 @@ package lispa.schedulers.action;
 
 import java.sql.Timestamp;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.UtilsDAO;
+import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.cleaning.CheckAnomaliaDifettoProdottoFacade;
 import lispa.schedulers.facade.target.SvecchiamentoFacade;
@@ -14,11 +19,8 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
-import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MailUtil;
 import lispa.schedulers.utils.StringUtils;
-
-import org.apache.log4j.Logger;
 
 public class DmAlmETL {
 
@@ -38,8 +40,8 @@ public class DmAlmETL {
 		DmAlmConfigReaderProperties.setFileProperties(args[1]);
 		Log4JConfiguration.inizialize();
 
-		String ambiente = DmAlmConfigReader.getInstance().getProperty(
-				DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
+		String ambiente = DmAlmConfigReader.getInstance()
+				.getProperty(DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 
 		logger.info("*** Eseguo DmAlmEtl v"
 				+ DmAlmConfigReaderProperties.VERSIONE_ETL + " ***");
@@ -49,20 +51,26 @@ public class DmAlmETL {
 		logger.info("Esecuzione SFERA: "
 				+ ExecutionManager.getInstance().isExecutionSfera());
 		/*
-		logger.info("Esecuzione EDMA/ORESTE/SGR_CM: "
-				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
-		*/
+		 * logger.info("Esecuzione EDMA/ORESTE/SGR_CM: " +
+		 * ExecutionManager.getInstance().isExecutionElettraSgrcm());
+		 */
 		logger.info("Esecuzione EDMA/SGR_CM: "
 				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
-		
+
 		logger.info("Esecuzione MPS: "
 				+ ExecutionManager.getInstance().isExecutionMps());
-		
+
 		logger.info("Esecuzione CALIPSO: "
 				+ ExecutionManager.getInstance().isExecutionCalipso());
-
+		logger.info("START KILL_BO_SESSIONS PROCEDURE");
+		try {
+			UtilsDAO.killsBOSessions();
+		} catch (DAOException e1) {
+			logger.info(e1.getMessage());
+		}
+		logger.info("STOP KILL_BO_SESSIONS PROCEDURE");
 		logger.info("START DmAlmFillStaging.doWork()");
-		DmAlmFillStaging.doWork(); //Commentato Thread ORESTE all'interno
+		DmAlmFillStaging.doWork(); // Commentato Thread ORESTE all'interno
 		logger.info("STOP DmAlmFillStaging.doWork()");
 
 		if (!RecoverManager.getInstance().isRecovered()) {
@@ -76,7 +84,7 @@ public class DmAlmETL {
 			logger.info("START DmAlmFillTarget.doWork()");
 			DmAlmFillTarget.doWork();
 			logger.info("STOP DmAlmFillTarget.doWork()");
-			
+
 			try {
 				ConnectionManager.getInstance().dismiss();
 			} catch (Exception e) {
@@ -84,9 +92,9 @@ public class DmAlmETL {
 			}
 
 			logger.info("START DmAlmCleaning.doWork()");
-			DmAlmCleaning.doWork(); //Commentati Cleaning Oreste all'interno
+			DmAlmCleaning.doWork(); // Commentati Cleaning Oreste all'interno
 			logger.info("STOP DmAlmCleaning.doWork()");
-			
+
 			// ATTIVITA' POST TARGET
 			// se non è stato eseguito il recover passo agli step successivi
 			if (!RecoverManager.getInstance().isRecovered()) {
@@ -96,9 +104,11 @@ public class DmAlmETL {
 
 				// se errore non eseguo gli step successivi
 				if (!ErrorManager.getInstance().hasError()) {
-					logger.info("START DmAlmCheckLinkSferaSgrCmElettra.doWork()");
+					logger.info(
+							"START DmAlmCheckLinkSferaSgrCmElettra.doWork()");
 					DmAlmCheckLinkSferaSgrCmElettra.doWork();
-					logger.info("STOP DmAlmCheckLinkSferaSgrCmElettra.doWork()");
+					logger.info(
+							"STOP DmAlmCheckLinkSferaSgrCmElettra.doWork()");
 				}
 
 				// se errore non eseguo gli step successivi
@@ -111,9 +121,10 @@ public class DmAlmETL {
 				// gestione esecuzione effettuata direttamente nel facade
 				CheckAnomaliaDifettoProdottoFacade.execute();
 
-				// Gestione delle filiere, gestione esecuzione effettuata direttamente nel facade
+				// Gestione delle filiere, gestione esecuzione effettuata
+				// direttamente nel facade
 				DmAlmFiliere.doWork();
-				
+
 				// pulizia tabelle esiti e errori caricamento
 				SvecchiamentoFacade.execute();
 
@@ -122,9 +133,12 @@ public class DmAlmETL {
 				if (ErrorManager.getInstance().hasError()) {
 					// SFERA/ELETTRA/SGRCM
 					if (ExecutionManager.getInstance().isExecutionSfera()
-							|| ExecutionManager.getInstance().isExecutionElettraSgrcm()
-							|| ExecutionManager.getInstance().isExecutionCalipso()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+							|| ExecutionManager.getInstance()
+									.isExecutionElettraSgrcm()
+							|| ExecutionManager.getInstance()
+									.isExecutionCalipso()) {
+						RecoverManager.getInstance()
+								.startRecoverTargetByProcedure();
 						RecoverManager.getInstance().startRecoverStaging();
 					}
 
@@ -136,19 +150,23 @@ public class DmAlmETL {
 				}
 			}
 		}
-		
+
 		if (!RecoverManager.getInstance().isRecovered()) {
-			List<String> listMessage = StringUtils.getLogFromStoredProcedureByTimestamp(DmAlmConstants.STORED_PROCEDURE_VERIFICA_ESITO_ETL);
-			if (listMessage != null) {	
-				for(String message : listMessage) {
+			List<String> listMessage = StringUtils
+					.getLogFromStoredProcedureByTimestamp(
+							DmAlmConstants.STORED_PROCEDURE_VERIFICA_ESITO_ETL);
+			if (listMessage != null) {
+				for (String message : listMessage) {
 					logger.info(message);
 				}
 			} else {
-				logger.info("*** NESSUNA INFORMAZIONE DAI LOG DELLA STORED PROCEDURE ***");
+				logger.info(
+						"*** NESSUNA INFORMAZIONE DAI LOG DELLA STORED PROCEDURE ***");
 			}
 		}
 		// se errore nella Stored Procedure effettuo il ripristino di tutto
-		if (ErrorManager.getInstance().hasError() && !RecoverManager.getInstance().isRecovered()) {
+		if (ErrorManager.getInstance().hasError()
+				&& !RecoverManager.getInstance().isRecovered()) {
 			// SFERA/ELETTRA/SGRCM
 			if (ExecutionManager.getInstance().isExecutionSfera()
 					|| ExecutionManager.getInstance()
@@ -179,9 +197,18 @@ public class DmAlmETL {
 				esito += DmAlmConstants.ETLMPSKO;
 
 			esitoBody = DmAlmConstants.ETLOK;
-			esitoBody += "\nEDMA/SGR_CM: " + (ExecutionManager.getInstance().isExecutionElettraSgrcm()?"Eseguito":"NON eseguito");
-			esitoBody += "\nSFERA: " + (ExecutionManager.getInstance().isExecutionSfera()?"Eseguito":"NON eseguito");
-			esitoBody += "\nMPS: " + (ExecutionManager.getInstance().isExecutionMps()?"Eseguito":"NON eseguito");
+			esitoBody += "\nEDMA/SGR_CM: "
+					+ (ExecutionManager.getInstance().isExecutionElettraSgrcm()
+							? "Eseguito"
+							: "NON eseguito");
+			esitoBody += "\nSFERA: "
+					+ (ExecutionManager.getInstance().isExecutionSfera()
+							? "Eseguito"
+							: "NON eseguito");
+			esitoBody += "\nMPS: "
+					+ (ExecutionManager.getInstance().isExecutionMps()
+							? "Eseguito"
+							: "NON eseguito");
 			if (RecoverManager.getInstance().isRecoveredStagingMps())
 				esitoBody += DmAlmConstants.ETLMPSKO;
 		}
@@ -193,7 +220,7 @@ public class DmAlmETL {
 
 		MailUtil.sendMail(ambiente + " - " + DmAlmConstants.SUBJECT
 				+ new Timestamp(System.currentTimeMillis()) + " - " + esito,
-				ambiente + " - " + esitoBody, DataEsecuzione.getInstance()
-						.getDataEsecuzione());
+				ambiente + " - " + esitoBody,
+				DataEsecuzione.getInstance().getDataEsecuzione());
 	}
 }
