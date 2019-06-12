@@ -37,8 +37,8 @@ public class CalipsoSchedaServizioFacade {
 			dtFineCaricamento = new Date();
 
 			try {
-				int righeNuove = CalipsoSchedaServizioDAO.getRigheInseriteModificateSchedaServizio(DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO, dataEsecuzione);
-				int righeModificate = CalipsoSchedaServizioDAO.getRigheInseriteModificateSchedaServizio(DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO_STOR, dataEsecuzione);
+				int righeNuove = CalipsoSchedaServizioDAO.getRigheInseriteModificateSchedaServizio("INSERITE", dataEsecuzione);
+				int righeModificate = CalipsoSchedaServizioDAO.getRigheInseriteModificateSchedaServizio("MODIFICATE", dataEsecuzione);
 				EsitiCaricamentoDAO
 						.insert(dataEsecuzione,
 								DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO,
