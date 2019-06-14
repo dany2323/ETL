@@ -186,7 +186,7 @@ public final class DmAlmConstants {
 	public static final String SQL_CLOSE_PROJECT_PRODOTTI_ARCHITETTURE = "closeprojectprodottiarchitetture.sql";
 	
 	//Query per procedura di ripristino: attenzione questi file contengono istruzioni sql multiple
-	public static final String BACKUP_TARGET = "backup_target.sql";
+//	public static final String BACKUP_TARGET = "backup_target.sql";
 	public static final String BACKUP_TARGET_WITH_PROCEDURE = "backup_target_with_procedure.sql";
 	public static final String BACKUP_MPS_TARGET = "backup_mps_target.sql";
 	public static final String TRUNCATE_BACKUP_TABLES = "truncate_backup_tables.sql";
