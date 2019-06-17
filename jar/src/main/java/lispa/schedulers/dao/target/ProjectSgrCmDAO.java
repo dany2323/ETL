@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -164,9 +165,14 @@ public class ProjectSgrCmDAO {
 					bean.setDmalmUnitaOrganizzativaFk(0);
 				} else {
 					// UO Elettra
-					bean.setDmalmUnitaOrganizzativaFk(ElettraUnitaOrganizzativeDAO
-							.getUnitaOrganizzativaByCodiceArea(codiceAreaUOElettra,
-									rs.getTimestamp("C_CREATED")));
+					Map<Timestamp, Integer> map = ElettraUnitaOrganizzativeDAO
+					.getUnitaOrganizzativaByCodiceArea(codiceAreaUOElettra,
+							rs.getTimestamp("C_CREATED"));
+					for(Timestamp i: map.keySet())
+					{
+						bean.setDmalmUnitaOrganizzativaFk(map.get(i));
+					}
+					
 				}
 				
 				bean.setDmalmUnitaOrganizzativaFlatFk(null);
@@ -260,11 +266,9 @@ public class ProjectSgrCmDAO {
 					+ project.size());
 
 			if (rs != null) {
-				logger.debug("rs close");
 				rs.close();
 			}
 			if (ps != null) {
-				logger.debug("ps close");
 				ps.close();
 			}
 		} catch (DAOException e) {
@@ -275,12 +279,10 @@ public class ProjectSgrCmDAO {
 
 		} finally {
 			if (cm != null) {
-				logger.debug("connection close");
 				cm.closeConnection(connection);
 			}
 		}
 
-		logger.debug("return");
 		return project;
 	}
 
@@ -1312,42 +1314,22 @@ public class ProjectSgrCmDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> relListSire = new ArrayList<Tuple>();
-		List<Tuple> relListSiss = new ArrayList<Tuple>();
+		List<Tuple> relList = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			SQLQuery querySire = new SQLQuery(connection, dialect);
-
+			SQLQuery query = new SQLQuery(connection, dialect);
+			connection.setAutoCommit(false);
+			
 			// tutti i Project non movimentati in History Sire
-			relListSire = querySire
+			relList = query
 					.from(proj)
 					.where(proj.dtFineValidita.eq(DateUtils
 							.setDtFineValidita9999()))
-					.where(proj.idRepository.eq(DmAlmConstants.REPOSITORY_SIRE))
-					.where(proj.idProject.notIn(new SQLSubQuery()
-							.from(qSireHistoryProject)
-							.where(qSireHistoryProject.dataCaricamento.eq(
-									dataEsecuzione).and(
-									qSireHistoryProject.cId.isNotNull()))
-							.list(qSireHistoryProject.cId))).list(proj.all());
-
-			SQLQuery querySiss = new SQLQuery(connection, dialect);
-
-			// tutti i Project non movimentati in History Siss
-			relListSiss = querySiss
-					.from(proj)
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
-					.where(proj.idRepository.eq(DmAlmConstants.REPOSITORY_SISS))
-					.where(proj.idProject.notIn(new SQLSubQuery()
-							.from(qSissHistoryProject)
-							.where(qSissHistoryProject.dataCaricamento.eq(
-									dataEsecuzione).and(
-									qSissHistoryProject.cId.isNotNull()))
-							.list(qSissHistoryProject.cId))).list(proj.all());
+					.list(proj.all());
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			throw new DAOException(e);
@@ -1356,9 +1338,7 @@ public class ProjectSgrCmDAO {
 				cm.closeConnection(connection);
 		}
 
-		relListSire.addAll(relListSiss);
-
-		return relListSire;
+		return relList;
 	}
 
 	public static List<DmalmProject> getProjectToLinkAndSplit(
@@ -1403,7 +1383,7 @@ public class ProjectSgrCmDAO {
 					d.setSiglaProject(t.get(proj.siglaProject));
 					d.setDmalmProjectPk(t.get(proj.dmalmProjectPrimaryKey));
 					d.setDtInizioValidita(t.get(proj.dtInizioValidita));
-					d.setDtFineValidita(t.get(proj.dtFineValidita).toString());
+					d.setDtFineValidita(t.get(proj.dtFineValidita));
 					ret.add(d);
 				}
 			} else {
@@ -1439,8 +1419,7 @@ public class ProjectSgrCmDAO {
 						d.setSiglaProject(t.get(proj.siglaProject));
 						d.setDmalmProjectPk(t.get(proj.dmalmProjectPrimaryKey));
 						d.setDtInizioValidita(t.get(proj.dtInizioValidita));
-						d.setDtFineValidita(t.get(proj.dtFineValidita)
-								.toString());
+						d.setDtFineValidita(t.get(proj.dtFineValidita));
 						ret.add(d);
 					}
 				} else {
@@ -1482,15 +1461,14 @@ public class ProjectSgrCmDAO {
 							d.setDmalmProjectPk(t
 									.get(proj.dmalmProjectPrimaryKey));
 							d.setDtInizioValidita(t.get(proj.dtInizioValidita));
-							d.setDtFineValidita(t.get(proj.dtFineValidita)
-									.toString());
+							d.setDtFineValidita(t.get(proj.dtFineValidita));
 							ret.add(d);
 						}
 					} else {
 						DmalmProject d = new DmalmProject();
 						d.setDmalmProjectPk(0);
 						d.setDtInizioValidita(inizio);
-						d.setDtFineValidita(fine.toString());
+						d.setDtFineValidita(fine);
 						ret.add(d);
 					}
 				}
@@ -1559,7 +1537,7 @@ public class ProjectSgrCmDAO {
 			ret.setDmalmUnitaOrganizzativaFlatFk(t.get(proj.dmalmUnitaOrganizzativaFlatFk));
 			ret.setDtAnnullamento(t.get(proj.dtAnnullamento));
 			ret.setDtCaricamento(t.get(proj.dtCaricamento));
-			ret.setDtFineValidita(t.get(proj.dtFineValidita).toString());
+			ret.setDtFineValidita(t.get(proj.dtFineValidita));
 			ret.setDtInizioValidita(t.get(proj.dtInizioValidita));
 			ret.setFkLead(t.get(proj.fkLead));
 			ret.setFkProjectgroup(t.get(proj.fkProjectgroup));
@@ -1630,7 +1608,7 @@ public class ProjectSgrCmDAO {
 			ret.setDmalmUnitaOrganizzativaFlatFk(t.get(proj.dmalmUnitaOrganizzativaFlatFk));
 			ret.setDtAnnullamento(t.get(proj.dtAnnullamento));
 			ret.setDtCaricamento(t.get(proj.dtCaricamento));
-			ret.setDtFineValidita(t.get(proj.dtFineValidita).toString());
+			ret.setDtFineValidita(t.get(proj.dtFineValidita));
 			ret.setDtInizioValidita(t.get(proj.dtInizioValidita));
 			ret.setFkLead(t.get(proj.fkLead));
 			ret.setFkProjectgroup(t.get(proj.fkProjectgroup));
@@ -1704,7 +1682,7 @@ public class ProjectSgrCmDAO {
 				p.setDmalmUnitaOrganizzativaFlatFk(t.get(proj.dmalmUnitaOrganizzativaFlatFk));
 				p.setDtAnnullamento(t.get(proj.dtAnnullamento));
 				p.setDtCaricamento(t.get(proj.dtCaricamento));
-				p.setDtFineValidita(t.get(proj.dtFineValidita).toString());
+				p.setDtFineValidita(t.get(proj.dtFineValidita));
 				p.setDtInizioValidita(t.get(proj.dtInizioValidita));
 				p.setFkLead(t.get(proj.fkLead));
 				p.setFkProjectgroup(t.get(proj.fkProjectgroup));
@@ -1776,7 +1754,7 @@ public class ProjectSgrCmDAO {
 			ret.setDmalmUnitaOrganizzativaFlatFk(t.get(proj.dmalmUnitaOrganizzativaFlatFk));
 			ret.setDtAnnullamento(t.get(proj.dtAnnullamento));
 			ret.setDtCaricamento(t.get(proj.dtCaricamento));
-			ret.setDtFineValidita(t.get(proj.dtFineValidita).toString());
+			ret.setDtFineValidita(t.get(proj.dtFineValidita));
 			ret.setDtInizioValidita(t.get(proj.dtInizioValidita));
 			ret.setFkLead(t.get(proj.fkLead));
 			ret.setFkProjectgroup(t.get(proj.fkProjectgroup));
@@ -1844,7 +1822,7 @@ public class ProjectSgrCmDAO {
 				p.setDmalmUnitaOrganizzativaFlatFk(t.get(proj.dmalmUnitaOrganizzativaFlatFk));
 				p.setDtAnnullamento(t.get(proj.dtAnnullamento));
 				p.setDtCaricamento(t.get(proj.dtCaricamento));
-				p.setDtFineValidita(t.get(proj.dtFineValidita).toString());
+				p.setDtFineValidita(t.get(proj.dtFineValidita));
 				p.setDtInizioValidita(t.get(proj.dtInizioValidita));
 				p.setFkLead(t.get(proj.fkLead));
 				p.setFkProjectgroup(t.get(proj.fkProjectgroup));
@@ -1972,7 +1950,7 @@ public class ProjectSgrCmDAO {
 				p.setDmalmUnitaOrganizzativaFlatFk(t.get(proj.dmalmUnitaOrganizzativaFlatFk));
 				p.setDtAnnullamento(t.get(proj.dtAnnullamento));
 				p.setDtCaricamento(t.get(proj.dtCaricamento));
-				p.setDtFineValidita(t.get(proj.dtFineValidita).toString());
+				p.setDtFineValidita(t.get(proj.dtFineValidita));
 				p.setDtInizioValidita(t.get(proj.dtInizioValidita));
 				p.setFkLead(t.get(proj.fkLead));
 				p.setFkProjectgroup(t.get(proj.fkProjectgroup));
