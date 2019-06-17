@@ -13,7 +13,6 @@ import com.mysema.query.Tuple;
 
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
-import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
@@ -21,12 +20,10 @@ import lispa.schedulers.dao.target.ProjectUnitaOrganizzativaEccezioniDAO;
 import lispa.schedulers.dao.target.StrutturaOrganizzativaEdmaLispaDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.utils.BeanUtils;
-import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
 
 public class ProjectSgrCmFacade {
@@ -34,11 +31,12 @@ public class ProjectSgrCmFacade {
 	private static Logger logger = Logger.getLogger(ProjectSgrCmFacade.class);
 	private static Map<Timestamp, Integer> map;
 
-	public static void execute(Timestamp dataEsecuzione) throws Exception,
-			DAOException {
+	private ProjectSgrCmFacade() {}
+	public static void execute(Timestamp dataEsecuzione)
+			throws Exception {
 
-		List<DmalmProject> staging_projects = new ArrayList<DmalmProject>();
-		List<Tuple> target_projects = new ArrayList<Tuple>();
+		List<DmalmProject> stagingProjects = new ArrayList<>();
+		List<Tuple> targetProjects = new ArrayList<>();
 		QDmalmProject proj = QDmalmProject.dmalmProject;
 
 		int righeNuove = 0;
@@ -46,101 +44,44 @@ public class ProjectSgrCmFacade {
 
 		Date dtInizioCaricamento = new Date();
 		Date dtFineCaricamento = null;
-		DmalmProject project_tmp = null;
-		
+		DmalmProject projectTmp = null;
+
 		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 
 		try {
-			// Import CSV con i progetti per cui si applica l'eccezione del legame con le UO
-			
-			staging_projects = ProjectSgrCmDAO.getAllProject(dataEsecuzione);
+			// Import CSV con i progetti per cui si applica l'eccezione del
+			// legame con le UO
 
-			for (DmalmProject project : staging_projects) {
-				project_tmp = project;
+			stagingProjects = ProjectSgrCmDAO.getAllProject(dataEsecuzione);
+
+			for (DmalmProject project : stagingProjects) {
+				projectTmp = project;
 				// Ricerco nel db target un record con idProject =
 				// project.getIdProject e data fine validita uguale a 31-12-9999
 
-				target_projects = ProjectSgrCmDAO.getProject(project);
-				logger.debug("target_projects size: "+target_projects.size());
-				
+				targetProjects = ProjectSgrCmDAO.getProject(project);
+				logger.debug("target_projects size: " + targetProjects.size());
+
 				// se non trovo almento un record, inserisco il project nel
 				// target
-				if (target_projects.size() == 0) {
+				if (targetProjects.isEmpty()) {
 					righeNuove++;
 					ProjectSgrCmDAO.insertProject(project);
-					logger.debug("Project insert done");
 				} else {
-					boolean modificato = false;
 
-					for (Tuple row : target_projects) {
+					for (Tuple row : targetProjects) {
 						if (row != null) {
-							if (BeanUtils.areDifferent(
-									row.get(proj.nomeCompletoProject),
-									project.getNomeCompletoProject())) {
-								modificato = true;
-							}
-							if (BeanUtils.areDifferent(
-									row.get(proj.siglaProject),
-									project.getSiglaProject())) {
-								modificato = true;
-							}
-							if (BeanUtils.areDifferent(
-									row.get(proj.pathProject),
-									project.getPathProject())) {
-								modificato = true;
-							}
-							if (BeanUtils.areDifferent(
-									row.get(proj.serviceManagers),
-									project.getServiceManagers())) {
-								modificato = true;
-							}
-							if (BeanUtils.areDifferent(
-									row.get(proj.annullato),
-									project.getAnnullato())) {
-								modificato = true;
-							}
-							// Edma
-							if (BeanUtils.areDifferent(
-									row.get(proj.dmalmStrutturaOrgFk02),
-									project.getDmalmStrutturaOrgFk02())) {
-								modificato = true;
-							}
-							// Elettra
-							if (BeanUtils.areDifferent(
-									row.get(proj.dmalmUnitaOrganizzativaFk),
-									project.getDmalmUnitaOrganizzativaFk())) {
-								modificato = true;
-							}
-
-							if (modificato) {
-								logger.debug("Project modified");
-								righeModificate++;
-								if(project.getAnnullato()==null){
+							righeModificate++;
+							
 								// STORICIZZO
 								// aggiorno la data di fine validita sul record
 								// corrente
 								ProjectSgrCmDAO.updateDataFineValidita(
 										project.getcCreated(), project);
-								logger.debug("Old Project updated");
 								// inserisco un nuovo record
 								ProjectSgrCmDAO.insertProjectUpdate(
 										dataEsecuzione, project, true);
-								logger.debug("New Project inserted");
-								}
-								else
-								{
-									logger.debug("Project not modified");
-									ProjectSgrCmDAO.updateDmalmProject(project);
-									logger.debug("Project updated");
-								}
-							} else {
-								// Aggiorno lo stesso
-								logger.debug("Project not modified");
-								ProjectSgrCmDAO.updateDmalmProject(project);
-								logger.debug("Project updated");
-							}
 						}
-
 					}
 				}
 			}
@@ -158,18 +99,20 @@ public class ProjectSgrCmFacade {
 
 			Integer strutturaOrgFk02;
 			Integer unitaOrganizzativaFk;
-			Timestamp dataFineValidita=null;
+			Timestamp dataFineValidita = null;
 
 			for (Tuple row : listaProgettiNonMovimentati) {
 				if (row != null) {
-					//Edma
+					// Edma
 					// FK Struttura Organizzativa
-					String codiceAreaUOEdma = ProjectSgrCmDAO.gestioneCodiceAreaUO(
-							eccezioniProjectUO, row.get(proj.idProject),
-							row.get(proj.idRepository),
-							row.get(proj.nomeCompletoProject),
-							row.get(proj.cTemplate),
-							row.get(proj.fkProjectgroup), dataEsecuzione, false);
+					String codiceAreaUOEdma = ProjectSgrCmDAO
+							.gestioneCodiceAreaUO(eccezioniProjectUO,
+									row.get(proj.idProject),
+									row.get(proj.idRepository),
+									row.get(proj.nomeCompletoProject),
+									row.get(proj.cTemplate),
+									row.get(proj.fkProjectgroup),
+									dataEsecuzione, false);
 
 					if (codiceAreaUOEdma.equals(DmAlmConstants.NON_PRESENTE)) {
 						strutturaOrgFk02 = 0;
@@ -180,36 +123,41 @@ public class ProjectSgrCmFacade {
 										codiceAreaUOEdma, dataEsecuzione);
 					}
 
-					//Elettra
+					// Elettra
 					// FK Unità Organizzativa
-					String codiceAreaUOElettra = ProjectSgrCmDAO.gestioneCodiceAreaUO(
-							eccezioniProjectUO, row.get(proj.idProject),
-							row.get(proj.idRepository),
-							row.get(proj.nomeCompletoProject),
-							row.get(proj.cTemplate),
-							row.get(proj.fkProjectgroup), dataEsecuzione, true);
+					String codiceAreaUOElettra = ProjectSgrCmDAO
+							.gestioneCodiceAreaUO(eccezioniProjectUO,
+									row.get(proj.idProject),
+									row.get(proj.idRepository),
+									row.get(proj.nomeCompletoProject),
+									row.get(proj.cTemplate),
+									row.get(proj.fkProjectgroup),
+									dataEsecuzione, true);
 
-					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
+					if (codiceAreaUOElettra
+							.equals(DmAlmConstants.NON_PRESENTE)) {
 						unitaOrganizzativaFk = 0;
 					} else {
-						if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
+						if (codiceAreaUOElettra
+								.equals(DmAlmConstants.NON_PRESENTE)) {
 							unitaOrganizzativaFk = 0;
 						} else {
-							
+
 							map = ElettraUnitaOrganizzativeDAO
 									.getUnitaOrganizzativaByCodiceArea(
-											codiceAreaUOElettra, dataEsecuzione);
-							unitaOrganizzativaFk=0;
-							if(!map.isEmpty()) {
-								for(Timestamp t:map.keySet()) {
-									unitaOrganizzativaFk = map.get(t);
-									dataFineValidita=t;
+											codiceAreaUOElettra,
+											dataEsecuzione);
+							unitaOrganizzativaFk = 0;
+							if (!map.isEmpty()) {
+								for (Map.Entry<Timestamp, Integer> entry : map.entrySet()) {
+									unitaOrganizzativaFk = entry.getValue();
+									dataFineValidita = entry.getKey();
 								}
 							}
-							
+
 						}
 					}
-					
+
 					if (BeanUtils.areDifferent(
 							row.get(proj.dmalmStrutturaOrgFk02),
 							strutturaOrgFk02)
@@ -223,11 +171,12 @@ public class ProjectSgrCmFacade {
 						bean.setIdProject(row.get(proj.idProject));
 						bean.setIdRepository(row.get(proj.idRepository));
 						bean.setcTemplate(row.get(proj.cTemplate));
-						bean.setDmalmAreaTematicaFk01(row
-								.get(proj.dmalmAreaTematicaFk01));
+						bean.setDmalmAreaTematicaFk01(
+								row.get(proj.dmalmAreaTematicaFk01));
 						bean.setDmalmStrutturaOrgFk02(strutturaOrgFk02);
 						bean.setDmalmUnitaOrganizzativaFk(unitaOrganizzativaFk);
-						bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
+						bean.setDmalmUnitaOrganizzativaFlatFk(
+								row.get(proj.dmalmUnitaOrganizzativaFlatFk));
 						bean.setFlAttivo(row.get(proj.flAttivo));
 						bean.setPathProject(row.get(proj.pathProject));
 						bean.setDtInizioValidita(dataFineValidita);
@@ -241,53 +190,45 @@ public class ProjectSgrCmFacade {
 						bean.setcFinish(row.get(proj.cFinish));
 						bean.setcUri(row.get(proj.cUri));
 						bean.setcStart(row.get(proj.cStart));
-						bean.setFkUriProjectgroup(row
-								.get(proj.fkUriProjectgroup));
+						bean.setFkUriProjectgroup(
+								row.get(proj.fkUriProjectgroup));
 						bean.setcActive(row.get(proj.cActive));
 						bean.setFkProjectgroup(row.get(proj.fkProjectgroup));
 						bean.setFkLead(row.get(proj.fkLead));
-						bean.setcLockworkrecordsdate(row
-								.get(proj.cLockworkrecordsdate));
+						bean.setcLockworkrecordsdate(
+								row.get(proj.cLockworkrecordsdate));
 						bean.setcRev(row.get(proj.cRev));
 						bean.setcDescription(row.get(proj.cDescription));
 						bean.setSiglaProject(row.get(proj.siglaProject));
-						bean.setNomeCompletoProject(row
-								.get(proj.nomeCompletoProject));
+						bean.setNomeCompletoProject(
+								row.get(proj.nomeCompletoProject));
 						bean.setDtCaricamento(dataEsecuzione);
 						bean.setDtFineValidita(row.get(proj.dtFineValidita));
-						if(dataFineValidita==null) {
-							dataFineValidita=dataEsecuzione;
+						if (dataFineValidita == null) {
+							dataFineValidita = dataEsecuzione;
 						}
-						if(bean.getAnnullato()==null && dataFineValidita.compareTo(bean.getDtFineValidita())<0 )
-						{
-						// STORICIZZO
-						// aggiorno la data di fine validita sul record
-						// corrente 
-						
-						ProjectSgrCmDAO.updateDataFineValidita(dataFineValidita,
-								bean); 
+						if (bean.getAnnullato() == null && dataFineValidita
+								.compareTo(bean.getDtFineValidita()) < 0) {
+							// STORICIZZO
+							// aggiorno la data di fine validita sul record
+							// corrente
 
-						// inserisco un nuovo record
-						ProjectSgrCmDAO.insertProjectUpdate(dataFineValidita,
-								bean, false);
-						}
-						else
-						{
+							ProjectSgrCmDAO.updateDataFineValidita(
+									dataFineValidita, bean);
+
+							// inserisco un nuovo record
+							ProjectSgrCmDAO.insertProjectUpdate(
+									dataFineValidita, bean, false);
+						} else {
 							ProjectSgrCmDAO.updateDmalmProject(bean);
 						}
 					}
 				}
 			}
-			updateFlatProject();			
-		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(LogUtils.objectToString(project_tmp));
-			logger.error(e.getMessage(), e);
-
-			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+			updateFlatProject();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(LogUtils.objectToString(project_tmp));
+			logger.error(LogUtils.objectToString(projectTmp));
 			logger.error(e.getMessage(), e);
 
 			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
@@ -318,7 +259,8 @@ public class ProjectSgrCmFacade {
 					DmAlmConstants.M_SEPARATOR);
 			logger.info("FINE Update Project UnitaOrganizzativaFlatFk");
 		} catch (Exception e) {
-			//non viene emesso un errore bloccante in quanto la Fk è recuperabile dopo l'esecuzione
+			// non viene emesso un errore bloccante in quanto la Fk è
+			// recuperabile dopo l'esecuzione
 			logger.error(e.getMessage(), e);
 		}
 	}
