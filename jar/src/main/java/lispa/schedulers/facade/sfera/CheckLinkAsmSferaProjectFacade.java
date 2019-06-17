@@ -5,6 +5,16 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.h2.util.StringUtils;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLInsertClause;
+
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -21,16 +31,6 @@ import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.utils.DateUtils;
-
-import org.apache.log4j.Logger;
-import org.h2.util.StringUtils;
-
-import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLSubQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class CheckLinkAsmSferaProjectFacade {
 	private static Logger logger = Logger
@@ -202,7 +202,7 @@ public class CheckLinkAsmSferaProjectFacade {
 			throws DAOException {
 		try {
 			List<Tuple> r = new ArrayList<Tuple>();
-			List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(sigla);
+			List<Tuple> dmAlmSourceElProdEccezzRow = DmAlmSourceElProdEccezDAO.getRow(sigla);
 			if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
 			
 				if (sigla.contains(".")) {
@@ -216,7 +216,7 @@ public class CheckLinkAsmSferaProjectFacade {
 			if(pFound.getDtInizioValidita().after(ta.get(dmalmAsm.dataInizioValidita))) {
 				inizioVal = pFound.getDtInizioValidita();
 			}
-			Timestamp pFoundFineValidita = DateUtils.stringToTimestamp(pFound.getDtFineValidita().substring(0, 19), "yyyy-MM-dd HH:mm:ss");
+			Timestamp pFoundFineValidita = pFound.getDtFineValidita();
 			if(pFoundFineValidita.before(ta.get(dmalmAsm.dataInizioValidita))) {
 				fineVal = pFoundFineValidita;
 			}

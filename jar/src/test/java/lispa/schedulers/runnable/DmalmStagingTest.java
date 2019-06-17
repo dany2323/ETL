@@ -570,7 +570,7 @@ public class DmalmStagingTest extends TestCase {
 					.getAllProjectUOException();
 
 			// Integer strutturaOrgFk02;
-			Integer unitaOrganizzativaFk;
+			Integer unitaOrganizzativaFk=0;
 
 			for (Tuple row : listaProgettiNonMovimentati) {
 				if (row != null) {
@@ -585,15 +585,15 @@ public class DmalmStagingTest extends TestCase {
 									.get(proj.fkProjectgroup), DataEsecuzione
 									.getInstance().getDataEsecuzione(), true);
 
-					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
-						unitaOrganizzativaFk = 0;
-					} else {
-						unitaOrganizzativaFk = ElettraUnitaOrganizzativeDAO
-								.getUnitaOrganizzativaByCodiceArea(
-										codiceAreaUOElettra, DataEsecuzione
-												.getInstance()
-												.getDataEsecuzione());
-					}
+//					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
+//						unitaOrganizzativaFk = 0;
+//					} else {
+//						unitaOrganizzativaFk = ElettraUnitaOrganizzativeDAO
+//								.getUnitaOrganizzativaByCodiceArea(
+//										codiceAreaUOElettra, DataEsecuzione
+//												.getInstance()
+//												.getDataEsecuzione());
+//					}
 
 					logger.debug("update dmalm_project set DMALM_UNITAORGANIZZATIVA_FK_03 = "
 							+ unitaOrganizzativaFk
