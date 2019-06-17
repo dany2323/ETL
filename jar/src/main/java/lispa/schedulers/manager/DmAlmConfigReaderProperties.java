@@ -177,6 +177,8 @@ public class DmAlmConfigReaderProperties
 	public static final String SIRE_SVN_STATOWORKITEM_RICHIESTAGESTIONE_FILE = "sire.svn.stato_workitem_richiestagestione";
 	public static final String SIRE_SVN_STATOWORKITEM_RELEASESERVIZI_FILE = "sire.svn.stato_workitem_releaseservizi";
 	public static final String SIRE_SVN_STATOWORKITEM_CLASSIFICATORE_FILE = "sire.svn.stato_workitem_classificatore";
+	public static final String SIRE_SVN_STATOWORKITEM_CLASSIFICATORE_GENERICO_FILE = "sire.svn.stato_workitem_classificatore_generico";
+	public static final String SIRE_SVN_STATOWORKITEM_SUP = "sire.svn.stato_workitem_sup";
 	
 	public static final String SIRE_SVN_PROJECTROLES_FILE_SVILUPPO = "sire.svn.project_roles.sviluppo";
 	public static final String SIRE_SVN_PROJECTROLES_FILE_DEMAND = "sire.svn.project_roles.demand";
@@ -225,6 +227,8 @@ public class DmAlmConfigReaderProperties
 	public static final String SISS_SVN_STATOWORKITEM_RICHIESTAGESTIONE_FILE = "siss.svn.stato_workitem_richiestagestione";
 	public static final String SISS_SVN_STATOWORKITEM_RELEASESERVIZI_FILE = "siss.svn.stato_workitem_releaseservizi";
 	public static final String SISS_SVN_STATOWORKITEM_CLASSIFICATORE_FILE = "siss.svn.stato_workitem_classificatore";
+	public static final String SISS_SVN_STATOWORKITEM_CLASSIFICATORE_GENERICO_FILE = "siss.svn.stato_workitem_classificatore_generico";
+	public static final String SISS_SVN_STATOWORKITEM_SUP = "siss.svn.stato_workitem_sup";
 	
 	public static final String SISS_SVN_PROJECTROLES_FILE_SVILUPPO = "siss.svn.project_roles.sviluppo";
 	public static final String SISS_SVN_PROJECTROLES_FILE_DEMAND = "siss.svn.project_roles.demand";
