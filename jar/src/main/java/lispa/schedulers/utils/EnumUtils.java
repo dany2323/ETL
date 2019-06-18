@@ -219,7 +219,11 @@ public class EnumUtils {
 			break;
 		case "classificatore":	
 			template="Tutti tranne Demand";
+			break;	
+		case "sup":	
+			template=Template_Type.SVILUPPO.toString();
 			break;
+		
 
 		default:
 			template= null;
