@@ -134,11 +134,10 @@ public class StgCalipsoSchedaServizioDAO {
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
-			String sql = QueryUtils.getCallProcedure("CALIPSO.FILL_STAGING", 2);
+			String sql = QueryUtils.getCallProcedure("CALIPSO.FILL_STAGING", 1);
 
 			cs = connection.prepareCall(sql);
 			cs.setTimestamp(1, dataCaricamento);
-			cs.setTimestamp(2, DateUtils.setDtFineValidita9999());
 			cs.execute();
 			
 			connection.commit();

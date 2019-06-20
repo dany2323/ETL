@@ -19,6 +19,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.RecoverManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MailUtil;
 import lispa.schedulers.utils.StringUtils;
 
@@ -39,7 +40,8 @@ public class DmAlmETL {
 	public static void main(String[] args) throws PropertiesReaderException {
 		DmAlmConfigReaderProperties.setFileProperties(args[1]);
 		Log4JConfiguration.inizialize();
-
+//		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp(args[2], "yyyy-MM-dd HH:mm:00"));
+		
 		String ambiente = DmAlmConfigReader.getInstance()
 				.getProperty(DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 
@@ -207,6 +209,10 @@ public class DmAlmETL {
 							: "NON eseguito");
 			esitoBody += "\nMPS: "
 					+ (ExecutionManager.getInstance().isExecutionMps()
+							? "Eseguito"
+							: "NON eseguito");
+			esitoBody += "\nCALIPSO: "
+					+ (ExecutionManager.getInstance().isExecutionCalipso()
 							? "Eseguito"
 							: "NON eseguito");
 			if (RecoverManager.getInstance().isRecoveredStagingMps())
