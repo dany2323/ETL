@@ -10,6 +10,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProject;
+import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.svn.ProjectTemplateINI;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Template_Type;
@@ -45,7 +46,7 @@ public class SissHistoryProjectDAO {
 		Connection connOracle = null;
 		Connection connH2 = null;
 		List<Tuple> projects = null;
-
+		QDmalmProject dmalmProject= QDmalmProject.dmalmProject;
 		try {
 			logger.debug("SissHistoryProjectDAO.fillSissHistoryProject - minRevision: " + minRevision + ", maxRevision: " + maxRevision);
 			
@@ -61,15 +62,18 @@ public class SissHistoryProjectDAO {
 					setPrintSchema(true);
 				}
 			};
+			SQLQuery query2 = new SQLQuery(connOracle, dialect);
 
+			List<String> cPk = query2.distinct().from(dmalmProject).where(dmalmProject.cPk.isNotNull()).list(dmalmProject.cPk);
 			SQLQuery query = new SQLQuery(connH2, dialect);
-
+			
 			projects = query
 					.from(fonteProjects, fonteRevisions)
 					.where(fonteRevisions.cName.castToNum(Long.class).eq(
 							fonteProjects.cRev))
 					.where(fonteProjects.cRev.gt(minRevision))
 					.where(fonteProjects.cRev.loe(maxRevision))
+					.where(fonteProjects.cPk.notIn(cPk))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
 					.where(fonteProjects.cId.notIn(new SQLSubQuery()
 							.from(fonteProjects2)

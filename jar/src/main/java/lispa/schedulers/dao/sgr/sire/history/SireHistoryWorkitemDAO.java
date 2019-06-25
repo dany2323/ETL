@@ -25,7 +25,9 @@ import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitem;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
 import lispa.schedulers.queryimplementation.target.QDmalmStatoWorkitem;
+import lispa.schedulers.queryimplementation.target.QTotal;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
@@ -48,6 +50,7 @@ import org.w3c.dom.NodeList;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
@@ -60,7 +63,7 @@ public class SireHistoryWorkitemDAO {
 			.getLogger(SireHistoryWorkitemDAO.class);
 
 	private static QSireHistoryWorkitem stgWorkItems = QSireHistoryWorkitem.sireHistoryWorkitem;
-
+	private static QTotal total=QTotal.total;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
 
 	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance()
@@ -424,6 +427,157 @@ public class SireHistoryWorkitemDAO {
 		} catch (PropertiesReaderException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
+		} catch (Exception e) {
+			Throwable cause = e;
+			while (cause.getCause() != null)
+				cause = cause.getCause();
+			String message = cause.getMessage();
+			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK)) {
+				ErrorManager.getInstance().exceptionDeadlock(false, e);
+			} else {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+			}
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(OracleConnection);
+			}
+			if (cm != null) {
+				cm.closeConnection(SireHistoryConnection);
+			}
+		}
+	}
+	
+	public static void fillSireHistoryWorkitemWithNoProjectFk() throws Exception {
+
+		ConnectionManager cm = null;
+		Connection OracleConnection = null;
+		Connection SireHistoryConnection = null;
+
+		List<Tuple> historyworkitems = new ArrayList<Tuple>();
+
+		try {
+
+			cm = ConnectionManager.getInstance();
+
+			SireHistoryConnection = cm.getConnectionSIREHistory();
+			OracleConnection = cm.getConnectionOracle();
+
+			OracleConnection.setAutoCommit(true);
+
+			SQLTemplates dialect = new HSQLDBTemplates() {
+				{
+					setPrintSchema(true);
+				}
+			};
+
+			SQLQuery queryHistory = null;
+
+			if (!ConnectionManager.getInstance().isAlive(SireHistoryConnection)) {
+				if (cm != null)
+					cm.closeConnection(SireHistoryConnection);
+				SireHistoryConnection = cm.getConnectionSIREHistory();
+			}
+			Connection connOracle = cm.getConnectionOracle();
+			SQLTemplates dialect2 = new HSQLDBTemplates();
+
+			List<String> cPk = new SQLQuery(connOracle,dialect2).distinct()
+					.from(total)
+					.where(total.projectFk.eq(0))
+					.where(total.idRepository.eq(DmAlmConstants.REPOSITORY_SIRE))
+					.where(total.stgPk.notIn(new SQLSubQuery()
+							.from(stgWorkItems)
+							.list(stgWorkItems.cPk)))
+					.list(total.stgPk);
+
+
+			queryHistory = new SQLQuery(SireHistoryConnection, dialect);
+			historyworkitems = queryHistory
+					.from(fonteHistoryWorkItems)
+					.where(fonteHistoryWorkItems.cPk.in(cPk))
+					.list(fonteHistoryWorkItems.all());
+
+			
+
+			SQLInsertClause insert = new SQLInsertClause(OracleConnection,
+					dialect, stgWorkItems);
+
+			int batch_size_counter = 0;
+
+			for (Tuple hist : historyworkitems) {
+				batch_size_counter++;
+				insert.columns(stgWorkItems.fkModule, stgWorkItems.cIsLocal,
+						stgWorkItems.cPriority, stgWorkItems.cAutosuspect,
+						stgWorkItems.cResolution, stgWorkItems.cCreated,
+						stgWorkItems.cOutlinenumber, stgWorkItems.fkProject,
+						stgWorkItems.cDeleted, stgWorkItems.cPlannedend,
+						stgWorkItems.cUpdated, stgWorkItems.fkAuthor,
+						stgWorkItems.cUri, stgWorkItems.fkUriModule,
+						stgWorkItems.cTimespent, stgWorkItems.cStatus,
+						stgWorkItems.cSeverity, stgWorkItems.cResolvedon,
+						stgWorkItems.fkUriProject, stgWorkItems.cTitle,
+						stgWorkItems.cId, stgWorkItems.cRev,
+						stgWorkItems.cPlannedstart, stgWorkItems.fkUriAuthor,
+						stgWorkItems.cDuedate, stgWorkItems.cRemainingestimate,
+						stgWorkItems.cType, stgWorkItems.cPk,
+						stgWorkItems.cLocation, stgWorkItems.fkTimepoint,
+						stgWorkItems.cInitialestimate,
+						stgWorkItems.fkUriTimepoint,
+						stgWorkItems.cPreviousstatus,
+						stgWorkItems.dataCaricamento,
+						stgWorkItems.dmalmHistoryWorkitemPk)
+						.values(hist.get(fonteHistoryWorkItems.fkModule),
+								hist.get(fonteHistoryWorkItems.cIsLocal),
+								hist.get(fonteHistoryWorkItems.cPriority),
+								hist.get(fonteHistoryWorkItems.cAutosuspect),
+								hist.get(fonteHistoryWorkItems.cResolution),
+								hist.get(fonteHistoryWorkItems.cCreated),
+								hist.get(fonteHistoryWorkItems.cOutlinenumber),
+								hist.get(fonteHistoryWorkItems.fkProject),
+								hist.get(fonteHistoryWorkItems.cDeleted),
+								hist.get(fonteHistoryWorkItems.cPlannedend),
+								hist.get(fonteHistoryWorkItems.cUpdated),
+								StringUtils.getMaskedValue(hist.get(fonteHistoryWorkItems.fkAuthor)),
+								hist.get(fonteHistoryWorkItems.cUri),
+								hist.get(fonteHistoryWorkItems.fkUriModule),
+								hist.get(fonteHistoryWorkItems.cTimespent),
+								hist.get(fonteHistoryWorkItems.cStatus),
+								hist.get(fonteHistoryWorkItems.cSeverity),
+								hist.get(fonteHistoryWorkItems.cResolvedon),
+								hist.get(fonteHistoryWorkItems.fkUriProject),
+								hist.get(fonteHistoryWorkItems.cTitle)!=null?hist.get(fonteHistoryWorkItems.cTitle).substring(0, Math.min(hist.get(fonteHistoryWorkItems.cTitle).length(), 999)):null,
+								hist.get(fonteHistoryWorkItems.cId),
+								hist.get(fonteHistoryWorkItems.cRev),
+								hist.get(fonteHistoryWorkItems.cPlannedstart),
+								StringUtils.getMaskedValue(hist.get(fonteHistoryWorkItems.fkUriAuthor)),
+								hist.get(fonteHistoryWorkItems.cDuedate),
+								hist.get(fonteHistoryWorkItems.cRemainingestimate),
+								hist.get(fonteHistoryWorkItems.cType),
+								hist.get(fonteHistoryWorkItems.cPk),
+								hist.get(fonteHistoryWorkItems.cLocation),
+								hist.get(fonteHistoryWorkItems.fkTimepoint),
+								hist.get(fonteHistoryWorkItems.cInitialestimate),
+								hist.get(fonteHistoryWorkItems.fkUriTimepoint),
+								hist.get(fonteHistoryWorkItems.cPreviousstatus),
+								dataEsecuzione,
+								StringTemplate
+										.create("HISTORY_WORKITEM_SEQ.nextval")
+
+						).addBatch();
+				if (!historyworkitems.isEmpty()
+						&& batch_size_counter == DmAlmConstants.BATCH_SIZE) {
+					insert.execute();
+					batch_size_counter = 0;
+					insert = new SQLInsertClause(OracleConnection, dialect,
+							stgWorkItems);
+				}
+
+			}
+
+			if (!insert.isEmpty()) {
+				insert.execute();
+			}
+
+			ErrorManager.getInstance().resetDeadlock();
 		} catch (Exception e) {
 			Throwable cause = e;
 			while (cause.getCause() != null)

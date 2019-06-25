@@ -41,6 +41,7 @@ public class DmAlmConfigReaderProperties
 	public static final String SQL_STRUTTURAORGANIZZATIVA 		= "strutturaorganizzativa.sql";
 	public static final String SQL_STATOWORKITEM 				= "statoworkitem.sql";
 	public static final String SQL_PROJECT 						= "project.sql";
+	public static final String SQL_PROJECT_MIN_DATA 			= "projectwithmindata.sql";
 	public static final String SQL_TEMPO 						= "tempo.sql";
 	public static final String SQL_AREATEMATICA 				= "areatematica.sql";
 	public static final String SQL_LINKEDWORKITEMS				= "linkedworkitems.sql";

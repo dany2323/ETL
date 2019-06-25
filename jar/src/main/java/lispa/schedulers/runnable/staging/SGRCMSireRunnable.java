@@ -26,10 +26,6 @@ public class SGRCMSireRunnable implements Runnable {
 	public void run() {
 		logger.info("START FillStagingSgrCmSire");
 				
-		// SIRE CURRENT
-		FillSGRCMFacade.delete(REPOSITORY_SIRE, SCHEMA_CURRENT, logger, dataEsecuzioneDeleted);
-		FillSGRCMFacade.execute(REPOSITORY_SIRE, SCHEMA_CURRENT, logger);
-		
 		// SIRE HISTORY
 		FillSGRCMFacade.delete(REPOSITORY_SIRE, SCHEMA_HISTORY, logger, dataEsecuzioneDeleted);
 		FillSGRCMFacade.execute(REPOSITORY_SIRE, SCHEMA_HISTORY, logger);

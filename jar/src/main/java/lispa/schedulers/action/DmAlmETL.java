@@ -43,25 +43,6 @@ public class DmAlmETL {
 		String ambiente = DmAlmConfigReader.getInstance()
 				.getProperty(DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 
-		logger.info("*** Eseguo DmAlmEtl v"
-				+ DmAlmConfigReaderProperties.VERSIONE_ETL + " ***");
-
-		logger.info("Ambiente: " + ambiente);
-
-		logger.info("Esecuzione SFERA: "
-				+ ExecutionManager.getInstance().isExecutionSfera());
-		/*
-		 * logger.info("Esecuzione EDMA/ORESTE/SGR_CM: " +
-		 * ExecutionManager.getInstance().isExecutionElettraSgrcm());
-		 */
-		logger.info("Esecuzione EDMA/SGR_CM: "
-				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
-
-		logger.info("Esecuzione MPS: "
-				+ ExecutionManager.getInstance().isExecutionMps());
-
-		logger.info("Esecuzione CALIPSO: "
-				+ ExecutionManager.getInstance().isExecutionCalipso());
 		logger.info("START KILL_BO_SESSIONS PROCEDURE");
 		try {
 			UtilsDAO.killsBOSessions();
@@ -69,9 +50,9 @@ public class DmAlmETL {
 			logger.info(e1.getMessage());
 		}
 		logger.info("STOP KILL_BO_SESSIONS PROCEDURE");
-		logger.info("START DmAlmFillStaging.doWork()");
+		logger.info("START Recupero project mancanti");
 		DmAlmFillStaging.doWork(); // Commentato Thread ORESTE all'interno
-		logger.info("STOP DmAlmFillStaging.doWork()");
+		logger.info("STOP Recupero project mancanti");
 
 		if (!RecoverManager.getInstance().isRecovered()) {
 

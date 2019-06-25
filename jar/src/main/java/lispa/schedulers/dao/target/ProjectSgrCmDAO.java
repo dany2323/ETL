@@ -1,6 +1,7 @@
 package lispa.schedulers.dao.target;
 
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_PROJECT;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_PROJECT_MIN_DATA;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -271,6 +272,205 @@ public class ProjectSgrCmDAO {
 			if (ps != null) {
 				ps.close();
 			}
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+
+		return project;
+	}
+
+	
+	
+	public static List<DmalmProject> getAllProjectMinData(Timestamp dataEsecuzione)
+			throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		DmalmProject bean = null;
+		List<DmalmProject> project = new LinkedList<DmalmProject>();
+		List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO = new LinkedList<DmalmProjectUnitaOrganizzativaEccezioni>();
+		
+
+		try {
+			// lista delle eccezioni Project/Unita organizzativa
+			eccezioniProjectUO = ProjectUnitaOrganizzativaEccezioniDAO
+					.getAllProjectUOException();
+
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = QueryManager.getInstance().getQuery(SQL_PROJECT_MIN_DATA);
+			try(PreparedStatement ps = connection.prepareStatement(sql);){
+	
+				ps.setTimestamp(1, dataEsecuzione);
+				ps.setTimestamp(2, dataEsecuzione);
+				ps.setFetchSize(DmAlmConstants.FETCH_SIZE);
+				try(ResultSet rs = ps.executeQuery();){
+		
+					logger.debug("ProjectSgrCmDAO.getAllProject - Query eseguita!");
+		
+					while (rs.next()) {
+						bean = new DmalmProject();
+		
+						bean.setDmalmProjectPk(rs.getInt("DMALM_PROJECT_PK"));
+		
+						String template = rs.getString("TEMPLATE");
+						bean.setcTemplate(template);
+		
+						// FK AREA TEMATICA SOLO PER TEMPLATE SVILUPPO
+						if (DmAlmConstants.SVILUPPO.equals(template)) {
+							bean.setDmalmAreaTematicaFk01(AreaTematicaSgrCmDAO
+									.getIdAreaTematicabyCodice(rs
+											.getString("ID_PROJECT")));
+						} else {
+							bean.setDmalmAreaTematicaFk01(0);
+						}
+		
+						//Edma
+						// FK Struttura Organizzativa
+						String codiceAreaUOEdma = gestioneCodiceAreaUO(eccezioniProjectUO,
+								rs.getString("ID_PROJECT"),
+								rs.getString("ID_REPOSITORY"),
+								rs.getString("NOME_COMPLETO_PROJECT"),
+								rs.getString("TEMPLATE"),
+								rs.getString("FK_PROJECTGROUP"), dataEsecuzione, false);
+		
+						if (codiceAreaUOEdma.equals(DmAlmConstants.NON_PRESENTE)) {
+							bean.setDmalmStrutturaOrgFk02(0);
+						} else {
+							bean.setDmalmStrutturaOrgFk02(StrutturaOrganizzativaEdmaLispaDAO
+									.getIdStrutturaOrganizzativaByCodiceUpdate(
+											codiceAreaUOEdma, rs.getTimestamp("C_CREATED")));
+						}
+		
+						//Elettra
+						// FK Unità Organizzativa
+						String codiceAreaUOElettra = gestioneCodiceAreaUO(eccezioniProjectUO,
+								rs.getString("ID_PROJECT"),
+								rs.getString("ID_REPOSITORY"),
+								rs.getString("NOME_COMPLETO_PROJECT"),
+								rs.getString("TEMPLATE"),
+								rs.getString("FK_PROJECTGROUP"), dataEsecuzione, true);
+						
+						if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
+							bean.setDmalmUnitaOrganizzativaFk(0);
+						} else {
+							// UO Elettra
+							Map<Timestamp, Integer> map = ElettraUnitaOrganizzativeDAO
+							.getUnitaOrganizzativaByCodiceArea(codiceAreaUOElettra,
+									rs.getTimestamp("C_CREATED"));
+							for(Timestamp i: map.keySet())
+							{
+								bean.setDmalmUnitaOrganizzativaFk(map.get(i));
+							}
+							
+						}
+						
+						bean.setDmalmUnitaOrganizzativaFlatFk(null);
+						bean.setFlAttivo(rs.getBoolean("FL_ATTIVO"));
+						bean.setIdProject(rs.getString("ID_PROJECT"));
+						bean.setIdRepository(rs.getString("ID_REPOSITORY"));
+						bean.setPathProject(rs.getString("PATH_PROJECT"));
+		
+						bean.setcCreated(rs.getTimestamp("C_CREATED"));
+						
+						String servMan = "";
+						if (rs.getString("ID_REPOSITORY").equals(DmAlmConstants.REPOSITORY_SIRE)) {
+							String urlSire = DmAlmConfigReader.getInstance().getProperty(
+									DmAlmConfigReaderProperties.SIRE_SVN_URL);
+							String nameSire = DmAlmConfigReader.getInstance().getProperty(
+									DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
+							String pswSire = DmAlmConfigReader.getInstance().getProperty(
+									DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+		
+							SVNRepository repository = SVNRepositoryFactory.create(SVNURL
+									.parseURIEncoded(urlSire));
+							ISVNAuthenticationManager authManagerSire = SVNWCUtil.createDefaultAuthenticationManager(nameSire,
+									pswSire);
+							repository.setAuthenticationManager(authManagerSire);
+							
+							servMan = getServiceManager(rs.getString("ID_REPOSITORY"), rs.getString("ID_PROJECT"), 
+									SIREUserRolesXML.getProjectSVNPath(rs.getString("PATH_PROJECT")), -1, repository);
+						}
+						if (rs.getString("ID_REPOSITORY").equals(DmAlmConstants.REPOSITORY_SISS)) {
+							String urlSiss = DmAlmConfigReader.getInstance().getProperty(
+									DmAlmConfigReaderProperties.SISS_SVN_URL);
+							String nameSiss = DmAlmConfigReader.getInstance().getProperty(
+									DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
+							String pswSiss = DmAlmConfigReader.getInstance().getProperty(
+									DmAlmConfigReaderProperties.SISS_SVN_PSW);
+							
+							SVNRepository repository = SVNRepositoryFactory.create(SVNURL
+									.parseURIEncoded(urlSiss));
+							ISVNAuthenticationManager authManagerSiss = SVNWCUtil.createDefaultAuthenticationManager(nameSiss,
+									pswSiss);
+							repository.setAuthenticationManager(authManagerSiss);
+							
+							servMan = getServiceManager(rs.getString("ID_REPOSITORY"), rs.getString("ID_PROJECT"), 
+									SIREUserRolesXML.getProjectSVNPath(rs.getString("PATH_PROJECT")), -1, repository);
+						}
+						 
+						bean.setServiceManagers(servMan);
+		
+						bean.setcTrackerprefix(rs.getString("C_TRACKERPREFIX"));
+		
+						bean.setcIsLocal(rs.getInt("C_IS_LOCAL"));
+		
+						bean.setcPk(rs.getString("C_PK"));
+		
+						bean.setFkUriLead(rs.getString("FK_URI_LEAD"));
+		
+						bean.setcDeleted(rs.getInt("C_DELETED"));
+		
+						bean.setcFinish(rs.getTimestamp("C_FINISH"));
+		
+						bean.setcUri(rs.getString("C_URI"));
+		
+						bean.setcStart(rs.getTimestamp("C_START"));
+		
+						bean.setFkUriProjectgroup(rs.getString("FK_URI_PROJECTGROUP"));
+		
+						bean.setcActive(rs.getInt("C_ACTIVE"));
+		
+						bean.setFkProjectgroup(rs.getString("FK_PROJECTGROUP"));
+		
+						bean.setFkLead(rs.getString("FK_LEAD"));
+		
+						bean.setcLockworkrecordsdate(rs
+								.getTimestamp("C_LOCKWORKRECORDSDATE"));
+		
+						bean.setcRev(rs.getLong("N_REVISION"));
+		
+						bean.setcDescription(rs.getString("C_DESCRIPTION"));
+		
+						bean.setSiglaProject(rs.getString("SIGLA_PROJECT"));
+		
+						bean.setNomeCompletoProject(rs
+								.getString("NOME_COMPLETO_PROJECT"));
+		
+						bean.setDtCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
+		
+						project.add(bean);
+					}
+		
+					logger.debug("ProjectSgrCmDAO. getAllProject - project.size: "
+							+ project.size());
+				}catch (Exception e) {
+					ErrorManager.getInstance().exceptionOccurred(true, e);
+				}
+			}catch (Exception e) {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+			}
+			
+			
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
@@ -734,6 +934,76 @@ public class ProjectSgrCmDAO {
 							pkValue == true ? project.getcCreated() : project
 									.getDtInizioValidita(),
 							DateUtils.setDtFineValidita9999(), // 31/12/9999
+							project.getFlAttivo(), project.getIdProject(),
+							project.getIdRepository(),
+							project.getNomeCompletoProject(),
+							project.getPathProject(),
+							project.getServiceManagers(),
+							project.getSiglaProject(),
+							project.getDmalmStrutturaOrgFk02(),
+							project.getDmalmUnitaOrganizzativaFk(),
+							project.getDmalmUnitaOrganizzativaFlatFk(),
+							project.getcTemplate(), project.getcCreated(),
+							project.getcTrackerprefix(), project.getcIsLocal(),
+							project.getcPk(), project.getFkUriLead(),
+							project.getcDeleted(), project.getcFinish(),
+							project.getcUri(), project.getcStart(),
+							project.getFkUriProjectgroup(),
+							project.getcActive(), project.getFkProjectgroup(),
+							project.getFkLead(),
+							project.getcLockworkrecordsdate(),
+							project.getcRev(), project.getcDescription(),
+							project.getDtAnnullamento(), project.getAnnullato())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+			logger.error(e.getMessage(), e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+	}
+	
+	public static void insertProjectWithDtFineValidita(Timestamp dataFineValidita,
+			DmalmProject project) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLInsertClause(connection, dialect, proj)
+					.columns(proj.dmalmProjectPrimaryKey,
+							proj.dmalmAreaTematicaFk01, proj.dtCaricamento,
+							proj.dtInizioValidita, proj.dtFineValidita,
+							proj.flAttivo, proj.idProject, proj.idRepository,
+							proj.nomeCompletoProject, proj.pathProject,
+							proj.serviceManagers, proj.siglaProject,
+							proj.dmalmStrutturaOrgFk02,
+							proj.dmalmUnitaOrganizzativaFk,
+							proj.dmalmUnitaOrganizzativaFlatFk,
+							proj.cTemplate,
+							proj.cCreated, proj.cTrackerprefix, proj.cIsLocal,
+							proj.cPk, proj.fkUriLead, proj.cDeleted,
+							proj.cFinish, proj.cUri, proj.cStart,
+							proj.fkUriProjectgroup, proj.cActive,
+							proj.fkProjectgroup, proj.fkLead,
+							proj.cLockworkrecordsdate, proj.cRev,
+							proj.cDescription, proj.dtAnnullamento,
+							proj.annullato)
+					.values(project.getDmalmProjectPk(),
+							project.getDmalmAreaTematicaFk01(),
+							project.getDtCaricamento(),
+							project.getcCreated(),
+							dataFineValidita, 
 							project.getFlAttivo(), project.getIdProject(),
 							project.getIdRepository(),
 							project.getNomeCompletoProject(),

@@ -12,6 +12,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryProject;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProject;
+import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.svn.ProjectTemplateINI;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Template_Type;
@@ -39,7 +40,7 @@ public class SireHistoryProjectDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
 
 	private static QSireHistoryProject stgProjects = QSireHistoryProject.sireHistoryProject;
-
+	private static QDmalmProject dmalmProject= QDmalmProject.dmalmProject;
 	public static void fillSireHistoryProject(long minRevision, long maxRevision)
 			throws SQLException, DAOException {
 
@@ -63,6 +64,9 @@ public class SireHistoryProjectDAO {
 					setPrintSchema(true);
 				}
 			};
+			SQLQuery query2 = new SQLQuery(connOracle, dialect);
+
+			List<String> cPk = query2.distinct().from(dmalmProject).where(dmalmProject.cPk.isNotNull()).list(dmalmProject.cPk);
 
 			SQLQuery query = new SQLQuery(connH2, dialect);
 
@@ -71,6 +75,7 @@ public class SireHistoryProjectDAO {
 					.where(fonteRevisions.cName.castToNum(Long.class).eq(
 							fonteProjects.cRev))
 					.where(fonteProjects.cRev.gt(minRevision).and(fonteProjects.cRev.loe(maxRevision)))
+					.where(fonteProjects.cPk.notIn(cPk))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
 					.where(fonteProjects.cId.notIn(new SQLSubQuery()
 							.from(fonteProjects2)

@@ -34,6 +34,7 @@ public class QTotal extends com.mysema.query.sql.RelationalPathBase<Total> {
 
     public final StringPath type = createString("TYPE");
 
+    public final NumberPath<Integer> projectFk = createNumber("PROJECT_FK", Integer.class);
     public QTotal(String variable) {
         super(Total.class, forVariable(variable), "DMALM", "TOTAL");
     }

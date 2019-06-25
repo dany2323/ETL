@@ -5,6 +5,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOC
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING_DAY_DELETE;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
 
 import junit.framework.TestCase;
 import lispa.schedulers.action.DmAlmETL;
@@ -28,10 +32,14 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
 import lispa.schedulers.dao.target.ProjectUnitaOrganizzativaEccezioniDAO;
 import lispa.schedulers.dao.target.StrutturaOrganizzativaEdmaLispaDAO;
+import lispa.schedulers.dao.target.TotalDao;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
@@ -39,6 +47,7 @@ import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
 import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
 import lispa.schedulers.facade.sfera.target.MisuraFacade;
+import lispa.schedulers.facade.target.ProjectSgrCmFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
@@ -46,7 +55,10 @@ import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitem;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
+import lispa.schedulers.queryimplementation.target.QTotal;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
@@ -69,137 +81,54 @@ public class TestWI extends TestCase {
 	private int unitaOrganizzativaFk;
 	private int righeModificate;
 	private boolean modificato;
+	private DmalmProject projectTmp;
 
 	public void testProvenienzaDifetto(){
 		try {
 			DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm.properties");
 			QDmalmElUnitaOrganizzativeFlat flat= QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
+			SQLTemplates dialect = new HSQLDBTemplates();
+			Connection connection = ConnectionManager.getInstance().getConnectionOracle();
 
 			QDmalmProject proj = QDmalmProject.dmalmProject;
-
+			QTotal total=QTotal.total;
+			QSissHistoryWorkitem sisshistoryworkitem=QSissHistoryWorkitem.sissHistoryWorkitem;
+			QSireHistoryWorkitem sirehistoryworkitem=QSireHistoryWorkitem.sireHistoryWorkitem;
 			Log4JConfiguration.inizialize();
-			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2019-05-10 20:40:00","yyyy-MM-dd HH:mm:00"));
-			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
-					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());
-			List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO = ProjectUnitaOrganizzativaEccezioniDAO
-					.getAllProjectUOException();
-			Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2000-01-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+			
+//			SissHistoryProjectDAO.fillSissHistoryProject(0, 2000000);
+//			SireHistoryProjectDAO.fillSireHistoryProject(0, 2000000);
+			
+//			SireHistoryWorkitemDAO.fillSireHistoryWorkitemWithNoProjectFk();
+			SissHistoryWorkitemDAO.fillSissHistoryWorkitemWithNoProjectFk();
+//			List <DmalmProject >stagingProjects = ProjectSgrCmDAO.getAllProjectMinData(DataEsecuzione.getInstance().getDataEsecuzione());
 //
-			for (Tuple row : listaProgettiNonMovimentati) {
-				if (row != null) {
-					//Edma
-					// FK Struttura Organizzativa
-					String codiceAreaUOEdma = ProjectSgrCmDAO.gestioneCodiceAreaUO(
-							eccezioniProjectUO, row.get(proj.idProject),
-							row.get(proj.idRepository),
-							row.get(proj.nomeCompletoProject),
-							row.get(proj.cTemplate),
-							row.get(proj.fkProjectgroup), dataEsecuzione, false);
-
-					if (codiceAreaUOEdma.equals(DmAlmConstants.NON_PRESENTE)) {
-						strutturaOrgFk02 = 0;
-					} else {
-						// UO Edma
-						strutturaOrgFk02 = StrutturaOrganizzativaEdmaLispaDAO
-								.getIdStrutturaOrganizzativaByCodiceUpdate(
-										codiceAreaUOEdma, dataEsecuzione);
-					}
-
-					//Elettra
-					// FK Unità Organizzativa
-					String codiceAreaUOElettra = ProjectSgrCmDAO.gestioneCodiceAreaUO(
-							eccezioniProjectUO, row.get(proj.idProject),
-							row.get(proj.idRepository),
-							row.get(proj.nomeCompletoProject),
-							row.get(proj.cTemplate),
-							row.get(proj.fkProjectgroup), dataEsecuzione, true);
-					Map<Timestamp, Integer> map;
-					Timestamp dataFineValidita=null;
-					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
-						unitaOrganizzativaFk = 0;
-					} else {
-						
-						map = ElettraUnitaOrganizzativeDAO
-								.getUnitaOrganizzativaByCodiceArea(
-										codiceAreaUOElettra, dataEsecuzione);
-						unitaOrganizzativaFk=0;
-						for(Timestamp t:map.keySet()) {
-							unitaOrganizzativaFk = map.get(t);
-							dataFineValidita=t;
-						}
-						
-					}
-					
-					if (BeanUtils.areDifferent(
-							row.get(proj.dmalmStrutturaOrgFk02),
-							strutturaOrgFk02)
-							|| BeanUtils.areDifferent(
-									row.get(proj.dmalmUnitaOrganizzativaFk),
-									unitaOrganizzativaFk)) {
-
-						righeModificate++;
-						modificato=true;
-						DmalmProject bean = new DmalmProject();
-
-						bean.setIdProject(row.get(proj.idProject));
-						bean.setIdRepository(row.get(proj.idRepository));
-						bean.setcTemplate(row.get(proj.cTemplate));
-						bean.setDmalmAreaTematicaFk01(row
-								.get(proj.dmalmAreaTematicaFk01));
-						bean.setDmalmStrutturaOrgFk02(strutturaOrgFk02);
-						bean.setDmalmUnitaOrganizzativaFk(unitaOrganizzativaFk);
-						bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
-						bean.setFlAttivo(row.get(proj.flAttivo));
-						bean.setPathProject(row.get(proj.pathProject));
-						bean.setDtInizioValidita(dataFineValidita);
-						bean.setcCreated(dataEsecuzione);
-						bean.setServiceManagers(row.get(proj.serviceManagers));
-						bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
-						bean.setcIsLocal(row.get(proj.cIsLocal));
-						bean.setcPk(row.get(proj.cPk));
-						bean.setFkUriLead(row.get(proj.fkUriLead));
-						bean.setcDeleted(row.get(proj.cDeleted));
-						bean.setcFinish(row.get(proj.cFinish));
-						bean.setcUri(row.get(proj.cUri));
-						bean.setcStart(row.get(proj.cStart));
-						bean.setFkUriProjectgroup(row
-								.get(proj.fkUriProjectgroup));
-						bean.setcActive(row.get(proj.cActive));
-						bean.setFkProjectgroup(row.get(proj.fkProjectgroup));
-						bean.setFkLead(row.get(proj.fkLead));
-						bean.setcLockworkrecordsdate(row
-								.get(proj.cLockworkrecordsdate));
-						bean.setcRev(row.get(proj.cRev));
-						bean.setcDescription(row.get(proj.cDescription));
-						bean.setSiglaProject(row.get(proj.siglaProject));
-						bean.setNomeCompletoProject(row
-								.get(proj.nomeCompletoProject));
-						bean.setDtCaricamento(dataEsecuzione);
-						bean.setDtFineValidita(row.get(proj.dtFineValidita));
-						if(dataFineValidita==null) {
-							dataFineValidita=dataEsecuzione;
-						}
-						if(bean.getAnnullato()==null && dataFineValidita.compareTo(bean.getDtFineValidita())<0 )
-						{
-						// STORICIZZO
-						// aggiorno la data di fine validita sul record
-						// corrente 
-						
-						ProjectSgrCmDAO.updateDataFineValidita(dataFineValidita,
-								bean); 
-
-						// inserisco un nuovo record
-						ProjectSgrCmDAO.insertProjectUpdate(dataFineValidita,
-								bean, false);
-						}
-						else
-						{
-							ProjectSgrCmDAO.updateDmalmProject(bean);
-						}
-					}
-				}
-			}
-			updateFlatProject();
+//			for (DmalmProject project : stagingProjects) {
+//				List<Timestamp> row = new SQLQuery(connection,dialect)
+//						.from(proj)
+//						.where(proj.idProject.eq(project.getIdProject()))
+//						.where(proj.idRepository.eq(project.getIdRepository()))
+//						.list(proj.dtInizioValidita.min());
+//				if(!row.isEmpty()) {
+//					ProjectSgrCmDAO.insertProjectWithDtFineValidita(DateUtils.addSecondsToTimestamp(row.get(0),-1), project);
+//
+//				}
+//				else {
+//					logger.info("Il progetto "+project.getIdProject()+" lo carico dopo");
+//				}
+//			}
+//			
+//			
+//			List<Tuple> rows = new SQLQuery(connection,dialect).from(total)
+//					.join(sisshistoryworkitem).on(sisshistoryworkitem.cPk.eq(total.stgPk))
+//					.where(total.projectFk.eq(0)).list(total.stgPk,total.type);
+//			
+//			for (Tuple row:rows) {
+//				
+//				
+//			}
+//			ProjectSgrCmFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
 //			listaProgettiNonMovimentati = ProjectSgrCmDAO
 //					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());
 //			for (Tuple row : listaProgettiNonMovimentati) {

@@ -168,18 +168,7 @@ public class FillSIREHistoryFacade {
 		try {
 			logger.debug("START SIREHistoryFacade.fill()");
 
-			Map<EnumWorkitemType, Long> minRevisionsByType = SireHistoryWorkitemDAO
-					.getMinRevisionByType();
-
-			// Specifica: recupero il numero di revisione più alto alla fonte
-			// polarion.REVISION
-			// presente nella fonte fino ad un ora prima della data di
-			// esecuzione dell ETL
 			long polarion_maxRevision = SireHistoryRevisionDAO.getMaxRevision();
-
-			// Recupero il numero di revisione più alto presente nella tabella
-			// dmalm.USER
-			long user_minRevision = SireHistoryUserDAO.getMinRevision();
 
 			// Recupero il numero di revisione più alto presente nella tabella
 			// dmalm.PROJECT
@@ -191,36 +180,14 @@ public class FillSIREHistoryFacade {
 
 			// Recupero il numero di revisione più alto presente nella tabella
 			// dmalm.ATTACHMENT
-			long attachment_minRevision = SireHistoryAttachmentDAO
-					.getMinRevision();
-
+		
 			revision = new Thread(new SireHistoryRevisionRunnable(
 					revision_minRevision, polarion_maxRevision, logger));
-			user = new Thread(new SireHistoryUserRunnable(user_minRevision,
-					polarion_maxRevision, logger));
+			
 			project = new Thread(new SireHistoryProjectRunnable(
-					project_minRevision, polarion_maxRevision, logger));
+					0, polarion_maxRevision, logger));
 			projectGroup = new Thread(new SireHistoryProjectGroupRunnable(
 					logger));
-			workitemUserAssignee = new Thread(
-					new SireHistoryWorkitemUserAssignedRunnable(
-							minRevisionsByType, polarion_maxRevision, logger));
-
-			// 8.10.2015 i dati sono letti da Current e non più da History
-			// workitemLinked = new Thread(new
-			// SireHistoryWorkitemLinkedRunnable(minRevisionsByType,
-			// polarion_maxRevision, logger));
-
-			// 2.2.2016 DM_ALM-142 non più utilizzata
-			// vLink = new Thread(new SireHistoryVWorkitemLinkRunnable(logger));
-
-			attachment = new Thread(new SireHistoryAttachmentRunnable(
-					attachment_minRevision, polarion_maxRevision, logger));
-			hyperlink = new Thread(new SireHistoryHyperlinkRunnable(
-					minRevisionsByType, polarion_maxRevision, logger));
-			userRoles = new Thread(new SireUserRolesRunnable(logger));
-
-			schede_servizio = new Thread(new SireSchedeServizioRunnable(logger));
 
 			project.start();
 			project.join();
@@ -228,204 +195,10 @@ public class FillSIREHistoryFacade {
 			revision.start();
 			revision.join();
 
-			user.start();
-			user.join();
-
 			projectGroup.start();
 			projectGroup.join();
 
-			workitemUserAssignee.start();
-			workitemUserAssignee.join();
-			// workitem.start();
-
-			// workitemLinked.start();
-			// workitemLinked.join();
-
-			attachment.start();
-			attachment.join();
-
-			hyperlink.start();
-			hyperlink.join();
-
-			schede_servizio.start();
-			schede_servizio.join();
-
-			// Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-
-			// Drop degli indici prima dell'elaborazione di HISTORY_WORKITEM e
-			// HISTORY_CF_WORKITEM
-			logger.debug("START DROP SIRE INDEXES");
-			SireHistoryWorkitemDAO.dropIndexes();
-			logger.debug("STOP DROP SIRE INDEXES");
-
-			retry = Integer.parseInt(DmAlmConfigReader.getInstance()
-					.getProperty(DMALM_DEADLOCK_RETRY));
-			wait = Integer.parseInt(DmAlmConfigReader.getInstance()
-					.getProperty(DMALM_DEADLOCK_WAIT));
-			
-			logger.debug("START SireHistoryWorkitem - numero wi: "
-					+ Workitem_Type.EnumWorkitemType.values().length);
-			
-			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
-				logger.debug("START TYPE: SIRE " + type.toString());
-				int tentativi = 0;
-				ErrorManager.getInstance().resetDeadlock();
-				ErrorManager.getInstance().resetCFDeadlock();
-				boolean inDeadLock = false;
-				boolean cfDeadlock = false;
-
-				tentativi++;
-				logger.debug("Tentativo " + tentativi);
-				SireHistoryWorkitemDAO.fillSireHistoryWorkitem(
-						minRevisionsByType, Long.MAX_VALUE, type);
-
-				inDeadLock = ErrorManager.getInstance().hasDeadLock();
-				if (!inDeadLock) {
-					List<String> customFields = EnumUtils
-							.getCFEnumerationByType(type);
-					SireHistoryCfWorkitemDAO
-							.fillSireHistoryCfWorkitemByWorkitemType(
-									minRevisionsByType.get(type),
-									Long.MAX_VALUE, type, customFields);
-					cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
-				}
-				
-				logger.debug("Fine tentativo " + tentativi + " - WI deadlock "
-						+ inDeadLock + " - CF deadlock " + cfDeadlock);
-				
-				if (inDeadLock || cfDeadlock) {
-					while (inDeadLock || cfDeadlock) {
-
-						tentativi++;
-
-						if (tentativi > retry) {
-							logger.debug("Raggiunto limite tentativi: "
-									+ tentativi);
-							Exception e = new Exception("Deadlock detected");
-							ErrorManager.getInstance().exceptionOccurred(true,
-									e);
-							return;
-						}
-
-						logger.debug("Errore, aspetto 3 minuti");
-						logger.debug("Tentativo " + tentativi);
-						TimeUnit.MINUTES.sleep(wait);
-						
-						if (inDeadLock) {
-							SireHistoryWorkitemDAO.fillSireHistoryWorkitem(
-									minRevisionsByType, Long.MAX_VALUE, type);
-							inDeadLock = ErrorManager.getInstance()
-									.hasDeadLock();
-							if (!inDeadLock) {
-								logger.debug("Non in deadlock -> provo i CF");
-								List<String> customFields = EnumUtils
-										.getCFEnumerationByType(type);
-								
-								SireHistoryCfWorkitemDAO
-										.fillSireHistoryCfWorkitemByWorkitemType(
-												minRevisionsByType.get(type),
-												Long.MAX_VALUE, type,
-												customFields);
-								cfDeadlock = ErrorManager.getInstance()
-										.hascfDeadLock();
-								logger.debug("I CF sono in deadlock "
-										+ cfDeadlock);
-							}
-						} else {
-							if (cfDeadlock) {
-								logger.debug("Scarico soltanto i CF");
-								
-								List<String> customFields = EnumUtils
-										.getCFEnumerationByType(type);
-								
-								SireHistoryCfWorkitemDAO
-										.fillSireHistoryCfWorkitemByWorkitemType(
-												minRevisionsByType.get(type),
-												Long.MAX_VALUE, type,
-												customFields);
-								
-								cfDeadlock = ErrorManager.getInstance()
-										.hascfDeadLock();
-								
-								logger.debug("I CF sono in deadlock "
-										+ cfDeadlock);
-							}
-						}
-					}
-				}
-			}
-
-			logger.debug("START delete not matching CFs SIRE");
-			SireHistoryCfWorkitemDAO.deleteNotMatchingCFS();
-			logger.debug("STOP delete not matching CFs SIRE");
-
-			logger.debug("START Update CF SIRE");
-			SireHistoryCfWorkitemDAO.updateCFonWorkItem();
-			logger.debug("STOP Update CF SIRE");
-
-			// Rebuild degli indici dopo l'elaborazione di HISTORY_WORKITEM e
-			// HISTORY_CF_WORKITEM
-			logger.debug("START REBUILD SIRE INDEXES");
-			SireHistoryWorkitemDAO.rebuildIndexes();
-			logger.debug("STOP REBUILD SIRE INDEXES");
-
 			ConnectionManager.getInstance().dismiss();
-
-			// TRIFASICO
-			// List<Thread> workitems = new ArrayList<Thread>();
-			//
-			// for(int i = 0; i < 7; i++) {
-			// Workitem_Type type = Workitem_Type.values()[i];
-			// Thread wi = new Thread(new
-			// SireHistoryWorkitemRunnable(minRevisionsByType, Long.MAX_VALUE,
-			// logger, type));
-			// if(type.toString().equalsIgnoreCase(DmAlmConstants.WORKITEM_TYPE_DOCUMENTO))
-			// wi.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
-			// workitems.add(wi);
-			// wi.start();
-			// }
-			// for(Thread wi : workitems)
-			// wi.join();
-			//
-			// workitems.clear();
-			//
-			// for(int i = 7; i < 14; i++) {
-			// Workitem_Type type = Workitem_Type.values()[i];
-			// Thread wi = new Thread(new
-			// SireHistoryWorkitemRunnable(minRevisionsByType, Long.MAX_VALUE,
-			// logger, type));
-			// if(type.toString().equalsIgnoreCase(DmAlmConstants.WORKITEM_TYPE_RELEASEPROGETTO))
-			// wi.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
-			// workitems.add(wi);
-			// wi.start();
-			// }
-			// for(Thread wi : workitems)
-			// wi.join();
-			//
-			// workitems.clear();
-			//
-			// for(int i = 14; i < Workitem_Type.values().length; i++) {
-			// Workitem_Type type = Workitem_Type.values()[i];
-			// Thread wi = new Thread(new
-			// SireHistoryWorkitemRunnable(minRevisionsByType, Long.MAX_VALUE,
-			// logger, type));
-			// if(type.toString().equalsIgnoreCase(DmAlmConstants.WORKITEM_TYPE_MANUTENZIONE))
-			// wi.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
-			// workitems.add(wi);
-			// wi.start();
-			// }
-			// for(Thread wi : workitems)
-			// wi.join();
-			//
-			// workitems.clear();
-			//
-			// //workitem.join();
-
-			// vLink.start();
-			// vLink.join();
-
-			userRoles.start();
-			userRoles.join();
 
 			logger.debug("STOP SIREHistoryFacade.fill()");
 		} catch (DAOException e) {

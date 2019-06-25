@@ -136,57 +136,17 @@ public class DmAlmFillStaging {
 					return;
 				}
 
-				//oreste.start();
-				//oreste.join();
+			
 
-				if (lispa.schedulers.manager.ErrorManager.getInstance()
-						.hasError()) {
-					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
-					return;
-				}
-
-				// Gestione Elettra
-				StagingElettraFacade.executeStaging(dataEsecuzioneDeleted);
-				if (lispa.schedulers.manager.ErrorManager.getInstance()
-						.hasError()) {
-					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
-					return;
-				}
 				
 				// SGR_CM parte dolo dopo il completamento di EDMA e ORESTE
 				siss.start();
 				siss.join();
 
-				if (lispa.schedulers.manager.ErrorManager.getInstance()
-						.hasError()) {
-					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
-
-					return;
-				}
-
 				sire.start();
 				sire.join();
 
-				if (lispa.schedulers.manager.ErrorManager.getInstance()
-						.hasError()) {
-					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
-
-					return;
-				}
-
-				FillCurrentWorkitems.delete(logger);
-				FillCurrentWorkitems.execute(logger);
-
-				if (lispa.schedulers.manager.ErrorManager.getInstance()
-						.hasError()) {
-					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
-					return;
-				}
+			
 			}
 
 			if (lispa.schedulers.manager.ErrorManager.getInstance().hasError()) {
@@ -195,56 +155,6 @@ public class DmAlmFillStaging {
 				return;
 			}
 
-			// SFERA
-			if (ExecutionManager.getInstance().isExecutionSfera()) {
-				StgMisuraFacade.deleteStgMisura(logger, dataEsecuzioneDeleted);
-				StgMisuraFacade.fillStgMisura();
-			}
-			
-			// Aggiunto checkpoint di recovery in data 19/04/17
-			if (lispa.schedulers.manager.ErrorManager.getInstance()
-					.hasError()) {
-				logger.fatal("ERRORE: Inizio procedura di ripristino");
-				RecoverManager.getInstance().startRecoverStaging();
-				return;
-			}
-
-			//CALIPSO
-			if (ExecutionManager.getInstance().isExecutionCalipso()) {
-				StagingCalipsoFacade.executeStaging(dataEsecuzioneDeleted);
-				if (lispa.schedulers.manager.ErrorManager.getInstance()
-						.hasError()) {
-					logger.fatal("ERRORE: Inizio procedura di ripristino");
-					RecoverManager.getInstance().startRecoverStaging();
-					return;
-				}
-			}
-			
-			// MPS
-			if (ExecutionManager.getInstance().isExecutionMps()) {
-
-				if (!ErrorManager.getInstance().hasError()) {
-					logger.info("START: FillStaging MPS");
-
-					// Svuotamento tabelle Staging MPS (non c'è storicizzazione)
-					StgMpsFacade.deleteStgMps();
-
-					StgMpsFacade.fillStgMps();
-
-					if (ErrorManager.getInstance().hasError()) {
-						logger.fatal("ERRORE: Inizio procedura di ripristino MPS");
-
-						// in caso di errore viene chiamato soltanto il recover
-						// di MPS
-						RecoverManager.getInstance().startRecoverStgMps();
-						// reset dell'errore in modo da mandare avanti l'ETL
-						// senza MPS
-						ErrorManager.getInstance().resetError();
-					}
-
-					logger.info("STOP: FillStaging MPS");
-				}
-			}
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
