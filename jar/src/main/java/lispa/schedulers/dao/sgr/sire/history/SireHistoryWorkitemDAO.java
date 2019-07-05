@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -360,7 +361,7 @@ public class SireHistoryWorkitemDAO {
 								hist.get(fonteHistoryWorkItems.cSeverity),
 								hist.get(fonteHistoryWorkItems.cResolvedon),
 								hist.get(fonteHistoryWorkItems.fkUriProject),
-								hist.get(fonteHistoryWorkItems.cTitle)!=null?hist.get(fonteHistoryWorkItems.cTitle).substring(0, Math.min(hist.get(fonteHistoryWorkItems.cTitle).length(), 3999)):null,
+								hist.get(fonteHistoryWorkItems.cTitle)!=null?hist.get(fonteHistoryWorkItems.cTitle).substring(0, Math.min(hist.get(fonteHistoryWorkItems.cTitle).length(), 999)):null,
 								hist.get(fonteHistoryWorkItems.cId),
 								hist.get(fonteHistoryWorkItems.cRev),
 								hist.get(fonteHistoryWorkItems.cPlannedstart),
@@ -446,8 +447,7 @@ public class SireHistoryWorkitemDAO {
 	public static void delete(Timestamp dataEsecuzioneDeleted) throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		PreparedStatement ps = null;
-
+		List <Integer> listPk = new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -458,20 +458,44 @@ public class SireHistoryWorkitemDAO {
 			// 'chiuso', 'chiuso_falso', 'in_esercizio', 'in_esecuzione', 'completo', 'eseguito'
 			// i "defect" non sono eliminati altrimenti la query non riesce a calcolare la data chiusura
 			// nei casi di riapertura e nuova chiusura
+			String subSql=QueryManager
+					.getInstance()
+					.getQuery(
+							DmAlmConfigReaderProperties.SQL_GET_MAX_PK_WORKITEM_TYPE_SIRE);
 			
-			String sql = QueryManager
+			try(PreparedStatement ps2=connection.prepareStatement(subSql);){
+	
+				try(ResultSet rs = ps2.executeQuery();){
+					while (rs.next()) {						
+						listPk.add(rs.getInt(1));
+					}
+					int numberInParameters = listPk.size();
+					String parameters = "";
+					while (numberInParameters > 0) {
+						parameters += "?,";
+						numberInParameters--;
+					}
+					parameters = parameters.substring(0, parameters.length()-1);
+					String query=QueryManager
 					.getInstance()
 					.getQuery(
 							DmAlmConfigReaderProperties.SQL_DELETE_SIRE_HISTORY_WORKITEM);
-
-			ps = connection.prepareStatement(sql);
-			ps.setTimestamp(1, dataEsecuzioneDeleted);
-			ps.setTimestamp(2, DataEsecuzione.getInstance().getDataEsecuzione());
-
-			ps.executeUpdate();
-			ps.close();
-
-			connection.commit();
+					String sql = query.replace("!", parameters);
+					try(PreparedStatement ps = connection.prepareStatement(sql);){
+						ps.setTimestamp(1, dataEsecuzioneDeleted);
+						//Array array=connection.createArrayOf("NUMBER", listPk.toArray());
+						for (int i=0;i<listPk.size();i++) {
+							ps.setInt(i+2, listPk.get(i));
+						}
+						ps.setTimestamp(listPk.size()+2, DataEsecuzione.getInstance().getDataEsecuzione());
+						
+						ps.execute();
+						ps.close();
+			
+						connection.commit();
+					}
+				}
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 

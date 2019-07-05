@@ -41,7 +41,7 @@ public class SissHistoryCfWorkitemDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
 
-	public static void delete(Timestamp dataEsecuzione) throws Exception {
+	public static void delete() throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -56,11 +56,7 @@ public class SissHistoryCfWorkitemDAO {
 			};
 			QSissHistoryCfWorkitem stgCFWorkItems = QSissHistoryCfWorkitem.sissHistoryCfWorkitem;
 
-			new SQLDeleteClause(connection, dialect, stgCFWorkItems).where(
-					stgCFWorkItems.dataCaricamento.lt(dataEsecuzione).or(
-							stgCFWorkItems.dataCaricamento.eq(DataEsecuzione
-									.getInstance().getDataEsecuzione())))
-					.execute();
+			new SQLDeleteClause(connection, dialect, stgCFWorkItems).execute();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

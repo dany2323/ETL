@@ -85,6 +85,9 @@ public class DmAlmMisuraDAO {
 			String sql = QueryManager.getInstance().getQuery(
 					DmAlmConfigReaderProperties.SQL_STG_MISURES);
 			ps = connection.prepareStatement(sql);
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
 
 			ps.setTimestamp(1, dataEsecuzione);
 			rs = ps.executeQuery();

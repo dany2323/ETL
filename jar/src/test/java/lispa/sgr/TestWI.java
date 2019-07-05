@@ -18,12 +18,9 @@ import com.mysema.query.Tuple;
 
 import junit.framework.TestCase;
 import lispa.schedulers.action.DmAlmETL;
-import lispa.schedulers.action.DmAlmFiliere;
-import lispa.schedulers.action.DmAlmFillStaging;
-import lispa.schedulers.bean.staging.elettra.StgElProdotti;
-import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
-import lispa.schedulers.bean.target.sfera.DmalmAsmProdottiArchitetture;
-import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.bean.target.DmalmPersonale;
+import lispa.schedulers.bean.target.DmalmProject;
+import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.elettra.StgElPersonaleDAO;
 import lispa.schedulers.dao.elettra.StgElProdottiDAO;
@@ -33,13 +30,6 @@ import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmProdottiArchitettureDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
-import lispa.schedulers.dao.sgr.siss.history.SissHistoryCfWorkitemDAO;
-import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
-import lispa.schedulers.dao.target.DifettoProdottoOdsDAO;
-import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
-import lispa.schedulers.dao.target.ProjectSgrCmDAO;
-import lispa.schedulers.dao.target.elettra.ElettraFunzionalitaDAO;
-import lispa.schedulers.dao.target.elettra.ElettraModuliDAO;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.fatti.DifettoDAO;
@@ -69,9 +59,12 @@ import lispa.schedulers.facade.target.fatti.RichiestaSupportoFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
+import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.manager.RecoverManager;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
@@ -91,27 +84,12 @@ public class TestWI extends TestCase {
 	private static Logger logger = Logger.getLogger(DmAlmETL.class);
 	private int retry;
 	private int wait;
-	private Map<EnumWorkitemType, Long> minRevisionsByType;
 	
-	private static QDmalmAsm dmalmAsm = QDmalmAsm.dmalmAsm;
-	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
-	private static QDmalmAsmProdottiArchitetture qDmalmAsmProdottiArchitetture = QDmalmAsmProdottiArchitetture.qDmalmAsmProdottiArchitetture;
-	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
 	public void testProvenienzaDifetto(){
 		try {
 			Log4JConfiguration.inizialize();
-			//DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-07-01 00:00:00","yyyy-MM-dd HH:mm:00"));
-			int days;
-			try {
-				days = Integer.parseInt(DmAlmConfigReader.getInstance()
-						.getProperty(DMALM_STAGING_DAY_DELETE));
-			} catch (PropertiesReaderException | NumberFormatException e) {
-				days = DEFAULT_DAY_DELETE;
-				logger.debug(e.getMessage(), e);
 			}
-			final Timestamp dataEsecuzioneDeleted = DateUtils
-					.getAddDayToDate(-days);
 			
 			//loadWiAndCustomFieldInStaging("classificatore", 0L, 2000000L);
 //			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-09-04 11:47:00","yyyy-MM-dd HH:mm:00"));
@@ -362,7 +340,20 @@ public class TestWI extends TestCase {
 			e.printStackTrace();
 		}
 	}
+	private static void updateFlatProject() {
+		try {
+			QueryManager qm = QueryManager.getInstance();
 
+			logger.info("INIZIO Update Project UnitaOrganizzativaFlatFk");
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_PROJECT_UOFLATFK,
+					DmAlmConstants.M_SEPARATOR);
+			logger.info("FINE Update Project UnitaOrganizzativaFlatFk");
+		} catch (Exception e) {
+			//non viene emesso un errore bloccante in quanto la Fk è recuperabile dopo l'esecuzione
+			logger.error(e.getMessage(), e);
+		}
+	}
 	private void loadWiAndCustomFieldInStaging(String typeWi,long minRev, long maxRev) throws Exception {
 		Map<EnumWorkitemType, Long> minRevisionsByType = SireHistoryWorkitemDAO
 				.getMinRevisionByType();

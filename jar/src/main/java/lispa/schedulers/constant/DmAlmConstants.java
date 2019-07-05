@@ -675,6 +675,8 @@ public final class DmAlmConstants {
 	public static final String STORED_PROCEDURE_PROG_SV_DEM = "STOR_PROG_SV_DEM_BY_PROJ";
 	public static final String STORED_PROCEDURE_CLASS = "STOR_CLASS_BY_PROJ";
 
+	public static final String STORED_PROCEDURE_KILL_BO_SESSIONS="KILL_BO_SESSIONS";
+	
 	public static String FUNCTION_BACKUP_TARGET = "BACKUP_TARGET";
 	public static String RECOVER_TARGET_SGR_ELETTRA = "RECOVER_TARGET_SGR_ELETTRA";
 

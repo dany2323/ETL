@@ -73,6 +73,8 @@ public class DmAlmConfigReaderProperties
 	
 	public static final String SQL_DELETE_SIRE_HISTORY_WORKITEM	= "deletesirehistoryworkitem.sql";
 	public static final String SQL_DELETE_SISS_HISTORY_WORKITEM	= "deletesisshistoryworkitem.sql";
+	public static final String SQL_GET_MAX_PK_WORKITEM_TYPE_SISS = "getmaxpkworkitemtypesiss.sql";
+	public static final String SQL_GET_MAX_PK_WORKITEM_TYPE_SIRE = "getmaxpkworkitemtypesire.sql";
 	
 	//SQL Project eliminati tra un'esecuzione e l'altra
 	public static final String SQL_DELETED_SIRE_PROJECTS							= "deletedsireprojects.sql";
@@ -301,6 +303,7 @@ public class DmAlmConfigReaderProperties
 	public static final String SQL_STG_RILASCIES = "stg_mps_rilasci.sql";
 
 	public static final String SQL_ELETTRAFUNZIONALITA_BY_MODULO_PK = "funzionalita_by_modulo_pk.sql";
+	
 	
 	public static void setFileProperties(String fileProperties) {
 		PROPERTIES_READER_FILE_NAME = fileProperties;

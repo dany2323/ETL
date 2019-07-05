@@ -2,6 +2,7 @@ package lispa.schedulers.dao.sgr.sire.history;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryCfWorkitem;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRelWorkUserAss;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
@@ -127,6 +129,28 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 		
 	} 
+	
+	public static void delete() throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+
+			new SQLDeleteClause(connection, dialect, stgWorkitemUserAssignees).execute();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+	}
 	public static void recoverSireHistoryWIUserAssigned() throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;

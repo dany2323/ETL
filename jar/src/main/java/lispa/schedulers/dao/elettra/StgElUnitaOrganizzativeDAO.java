@@ -165,6 +165,266 @@ public class StgElUnitaOrganizzativeDAO {
 							DmAlmConstants.ROOT_UO_CD_ENTE, null,
 							DataEsecuzione.getInstance().getDataEsecuzione())
 					.execute();
+			
+			//Gestione UO Fittizie 15 livelli  test DM_ALM-470
+			
+			righeInserite += new SQLInsertClause(connection, dialect,
+					qStgElUnitaOrganizzative)
+					.columns(qStgElUnitaOrganizzative.unitaOrganizzativaPk,
+							qStgElUnitaOrganizzative.idEdma,
+							qStgElUnitaOrganizzative.codiceArea,
+							qStgElUnitaOrganizzative.dataInizioValiditaEdma,
+							qStgElUnitaOrganizzative.dataFineValiditaEdma,
+							qStgElUnitaOrganizzative.descrizioneArea,
+							qStgElUnitaOrganizzative.dataAttivazione,
+							qStgElUnitaOrganizzative.dataDisattivazione,
+							qStgElUnitaOrganizzative.note,
+							qStgElUnitaOrganizzative.interno,
+							qStgElUnitaOrganizzative.codiceResponsabile,
+							qStgElUnitaOrganizzative.indirizzoEmail,
+							qStgElUnitaOrganizzative.idTipologiaUfficio,
+							qStgElUnitaOrganizzative.idGradoUfficio,
+							qStgElUnitaOrganizzative.idSede,
+							qStgElUnitaOrganizzative.codiceUOSuperiore,
+							qStgElUnitaOrganizzative.codiceEnte,
+							qStgElUnitaOrganizzative.codiceVisibilita,
+							qStgElUnitaOrganizzative.dataCaricamento)
+					.values(StringTemplate
+							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
+							"UO_8", "UO_8",
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999(),
+							"UO_8", null, null, null, 1,
+							null, null, 0, 0, 0, "LIW015",
+							"UO_8", null,
+							DataEsecuzione.getInstance().getDataEsecuzione())
+					.execute();
+
+			righeInserite += new SQLInsertClause(connection, dialect,
+					qStgElUnitaOrganizzative)
+					.columns(qStgElUnitaOrganizzative.unitaOrganizzativaPk,
+							qStgElUnitaOrganizzative.idEdma,
+							qStgElUnitaOrganizzative.codiceArea,
+							qStgElUnitaOrganizzative.dataInizioValiditaEdma,
+							qStgElUnitaOrganizzative.dataFineValiditaEdma,
+							qStgElUnitaOrganizzative.descrizioneArea,
+							qStgElUnitaOrganizzative.dataAttivazione,
+							qStgElUnitaOrganizzative.dataDisattivazione,
+							qStgElUnitaOrganizzative.note,
+							qStgElUnitaOrganizzative.interno,
+							qStgElUnitaOrganizzative.codiceResponsabile,
+							qStgElUnitaOrganizzative.indirizzoEmail,
+							qStgElUnitaOrganizzative.idTipologiaUfficio,
+							qStgElUnitaOrganizzative.idGradoUfficio,
+							qStgElUnitaOrganizzative.idSede,
+							qStgElUnitaOrganizzative.codiceUOSuperiore,
+							qStgElUnitaOrganizzative.codiceEnte,
+							qStgElUnitaOrganizzative.codiceVisibilita,
+							qStgElUnitaOrganizzative.dataCaricamento)
+					.values(StringTemplate
+							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
+							"UO_9", "UO_9",
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999(),
+							DmAlmConstants.ROOT_UO_DESC, null, null, null, 1,
+							null, null, 0, 0, 0, "UO_8",
+							"UO_9", null,
+							DataEsecuzione.getInstance().getDataEsecuzione())
+					.execute();
+
+			righeInserite += new SQLInsertClause(connection, dialect,
+					qStgElUnitaOrganizzative)
+					.columns(qStgElUnitaOrganizzative.unitaOrganizzativaPk,
+							qStgElUnitaOrganizzative.idEdma,
+							qStgElUnitaOrganizzative.codiceArea,
+							qStgElUnitaOrganizzative.dataInizioValiditaEdma,
+							qStgElUnitaOrganizzative.dataFineValiditaEdma,
+							qStgElUnitaOrganizzative.descrizioneArea,
+							qStgElUnitaOrganizzative.dataAttivazione,
+							qStgElUnitaOrganizzative.dataDisattivazione,
+							qStgElUnitaOrganizzative.note,
+							qStgElUnitaOrganizzative.interno,
+							qStgElUnitaOrganizzative.codiceResponsabile,
+							qStgElUnitaOrganizzative.indirizzoEmail,
+							qStgElUnitaOrganizzative.idTipologiaUfficio,
+							qStgElUnitaOrganizzative.idGradoUfficio,
+							qStgElUnitaOrganizzative.idSede,
+							qStgElUnitaOrganizzative.codiceUOSuperiore,
+							qStgElUnitaOrganizzative.codiceEnte,
+							qStgElUnitaOrganizzative.codiceVisibilita,
+							qStgElUnitaOrganizzative.dataCaricamento)
+					.values(StringTemplate
+							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
+							"UO_10", "UO_10",
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999(),
+							DmAlmConstants.ROOT_UO_DESC, null, null, null, 1,
+							null, null, 0, 0, 0, "UO_9",
+							"UO_10", null,
+							DataEsecuzione.getInstance().getDataEsecuzione())
+					.execute();
+
+			righeInserite += new SQLInsertClause(connection, dialect,
+					qStgElUnitaOrganizzative)
+					.columns(qStgElUnitaOrganizzative.unitaOrganizzativaPk,
+							qStgElUnitaOrganizzative.idEdma,
+							qStgElUnitaOrganizzative.codiceArea,
+							qStgElUnitaOrganizzative.dataInizioValiditaEdma,
+							qStgElUnitaOrganizzative.dataFineValiditaEdma,
+							qStgElUnitaOrganizzative.descrizioneArea,
+							qStgElUnitaOrganizzative.dataAttivazione,
+							qStgElUnitaOrganizzative.dataDisattivazione,
+							qStgElUnitaOrganizzative.note,
+							qStgElUnitaOrganizzative.interno,
+							qStgElUnitaOrganizzative.codiceResponsabile,
+							qStgElUnitaOrganizzative.indirizzoEmail,
+							qStgElUnitaOrganizzative.idTipologiaUfficio,
+							qStgElUnitaOrganizzative.idGradoUfficio,
+							qStgElUnitaOrganizzative.idSede,
+							qStgElUnitaOrganizzative.codiceUOSuperiore,
+							qStgElUnitaOrganizzative.codiceEnte,
+							qStgElUnitaOrganizzative.codiceVisibilita,
+							qStgElUnitaOrganizzative.dataCaricamento)
+					.values(StringTemplate
+							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
+							"UO_11", "UO_11",
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999(),
+							"UO_11", null, null, null, 1,
+							null, null, 0, 0, 0, "UO_10",
+							"UO_11", null,
+							DataEsecuzione.getInstance().getDataEsecuzione())
+					.execute();
+
+			righeInserite += new SQLInsertClause(connection, dialect,
+					qStgElUnitaOrganizzative)
+					.columns(qStgElUnitaOrganizzative.unitaOrganizzativaPk,
+							qStgElUnitaOrganizzative.idEdma,
+							qStgElUnitaOrganizzative.codiceArea,
+							qStgElUnitaOrganizzative.dataInizioValiditaEdma,
+							qStgElUnitaOrganizzative.dataFineValiditaEdma,
+							qStgElUnitaOrganizzative.descrizioneArea,
+							qStgElUnitaOrganizzative.dataAttivazione,
+							qStgElUnitaOrganizzative.dataDisattivazione,
+							qStgElUnitaOrganizzative.note,
+							qStgElUnitaOrganizzative.interno,
+							qStgElUnitaOrganizzative.codiceResponsabile,
+							qStgElUnitaOrganizzative.indirizzoEmail,
+							qStgElUnitaOrganizzative.idTipologiaUfficio,
+							qStgElUnitaOrganizzative.idGradoUfficio,
+							qStgElUnitaOrganizzative.idSede,
+							qStgElUnitaOrganizzative.codiceUOSuperiore,
+							qStgElUnitaOrganizzative.codiceEnte,
+							qStgElUnitaOrganizzative.codiceVisibilita,
+							qStgElUnitaOrganizzative.dataCaricamento)
+					.values(StringTemplate
+							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
+							"UO_12", "UO_12",
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999(),
+							"UO_12", null, null, null, 1,
+							null, null, 0, 0, 0, "UO_11",
+							"UO_12", null,
+							DataEsecuzione.getInstance().getDataEsecuzione())
+					.execute();
+
+			righeInserite += new SQLInsertClause(connection, dialect,
+					qStgElUnitaOrganizzative)
+					.columns(qStgElUnitaOrganizzative.unitaOrganizzativaPk,
+							qStgElUnitaOrganizzative.idEdma,
+							qStgElUnitaOrganizzative.codiceArea,
+							qStgElUnitaOrganizzative.dataInizioValiditaEdma,
+							qStgElUnitaOrganizzative.dataFineValiditaEdma,
+							qStgElUnitaOrganizzative.descrizioneArea,
+							qStgElUnitaOrganizzative.dataAttivazione,
+							qStgElUnitaOrganizzative.dataDisattivazione,
+							qStgElUnitaOrganizzative.note,
+							qStgElUnitaOrganizzative.interno,
+							qStgElUnitaOrganizzative.codiceResponsabile,
+							qStgElUnitaOrganizzative.indirizzoEmail,
+							qStgElUnitaOrganizzative.idTipologiaUfficio,
+							qStgElUnitaOrganizzative.idGradoUfficio,
+							qStgElUnitaOrganizzative.idSede,
+							qStgElUnitaOrganizzative.codiceUOSuperiore,
+							qStgElUnitaOrganizzative.codiceEnte,
+							qStgElUnitaOrganizzative.codiceVisibilita,
+							qStgElUnitaOrganizzative.dataCaricamento)
+					.values(StringTemplate
+							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
+							"UO_13", "UO_13",
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999(),
+							"UO_13", null, null, null, 1,
+							null, null, 0, 0, 0, "UO_12",
+							"UO_13", null,
+							DataEsecuzione.getInstance().getDataEsecuzione())
+					.execute();
+
+			righeInserite += new SQLInsertClause(connection, dialect,
+					qStgElUnitaOrganizzative)
+					.columns(qStgElUnitaOrganizzative.unitaOrganizzativaPk,
+							qStgElUnitaOrganizzative.idEdma,
+							qStgElUnitaOrganizzative.codiceArea,
+							qStgElUnitaOrganizzative.dataInizioValiditaEdma,
+							qStgElUnitaOrganizzative.dataFineValiditaEdma,
+							qStgElUnitaOrganizzative.descrizioneArea,
+							qStgElUnitaOrganizzative.dataAttivazione,
+							qStgElUnitaOrganizzative.dataDisattivazione,
+							qStgElUnitaOrganizzative.note,
+							qStgElUnitaOrganizzative.interno,
+							qStgElUnitaOrganizzative.codiceResponsabile,
+							qStgElUnitaOrganizzative.indirizzoEmail,
+							qStgElUnitaOrganizzative.idTipologiaUfficio,
+							qStgElUnitaOrganizzative.idGradoUfficio,
+							qStgElUnitaOrganizzative.idSede,
+							qStgElUnitaOrganizzative.codiceUOSuperiore,
+							qStgElUnitaOrganizzative.codiceEnte,
+							qStgElUnitaOrganizzative.codiceVisibilita,
+							qStgElUnitaOrganizzative.dataCaricamento)
+					.values(StringTemplate
+							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
+							"UO_14", "UO_14",
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999(),
+							"UO_14", null, null, null, 1,
+							null, null, 0, 0, 0, "UO_13",
+							"UO_14", null,
+							DataEsecuzione.getInstance().getDataEsecuzione())
+					.execute();
+				
+			righeInserite += new SQLInsertClause(connection, dialect,
+					qStgElUnitaOrganizzative)
+					.columns(qStgElUnitaOrganizzative.unitaOrganizzativaPk,
+							qStgElUnitaOrganizzative.idEdma,
+							qStgElUnitaOrganizzative.codiceArea,
+							qStgElUnitaOrganizzative.dataInizioValiditaEdma,
+							qStgElUnitaOrganizzative.dataFineValiditaEdma,
+							qStgElUnitaOrganizzative.descrizioneArea,
+							qStgElUnitaOrganizzative.dataAttivazione,
+							qStgElUnitaOrganizzative.dataDisattivazione,
+							qStgElUnitaOrganizzative.note,
+							qStgElUnitaOrganizzative.interno,
+							qStgElUnitaOrganizzative.codiceResponsabile,
+							qStgElUnitaOrganizzative.indirizzoEmail,
+							qStgElUnitaOrganizzative.idTipologiaUfficio,
+							qStgElUnitaOrganizzative.idGradoUfficio,
+							qStgElUnitaOrganizzative.idSede,
+							qStgElUnitaOrganizzative.codiceUOSuperiore,
+							qStgElUnitaOrganizzative.codiceEnte,
+							qStgElUnitaOrganizzative.codiceVisibilita,
+							qStgElUnitaOrganizzative.dataCaricamento)
+					.values(StringTemplate
+							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
+							"UO_15", "UO_15",
+							DateUtils.setDtInizioValidita1900(),
+							DateUtils.setDtFineValidita9999(),
+							"UO_15", null, null, null, 1,
+							null, null, 0, 0, 0, "UO_14",
+							"UO_15", null,
+							DataEsecuzione.getInstance().getDataEsecuzione())
+					.execute();
+			//Fine gestione UO Fittizie 15 livelli  test DM_ALM-470
+			
 
 			connection.commit();
 

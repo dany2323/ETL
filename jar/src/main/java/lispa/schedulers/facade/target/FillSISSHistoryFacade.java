@@ -21,6 +21,7 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryUserDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
 import lispa.schedulers.dao.target.SchedeServizioDAO;
 import lispa.schedulers.exception.DAOException;
@@ -130,7 +131,7 @@ public class FillSISSHistoryFacade {
 			//logger.debug("STOP UserRolesDAO.delete  " + new Date());
 
 			logger.debug("START SissHistoryCfWorkitemDAO.delete  " + new Date());
-			SissHistoryCfWorkitemDAO.delete(dataEsecuzione);
+			SissHistoryCfWorkitemDAO.delete();
 			logger.debug("STOP SissHistoryCfWorkitemDAO.delete  " + new Date());
 
 			logger.debug("START SissHistoryWorkitemDAO.delete  " + new Date());
@@ -140,6 +141,7 @@ public class FillSISSHistoryFacade {
 			logger.debug("START SchedeServizioDAO.delete  " + new Date());
 			SchedeServizioDAO.delete(dataEsecuzione,
 					DmAlmConstants.REPOSITORY_SISS);
+			SissHistoryWorkitemUserAssignedDAO.delete();
 			logger.debug("STOP SchedeServizioDAO.delete  " + new Date());
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
