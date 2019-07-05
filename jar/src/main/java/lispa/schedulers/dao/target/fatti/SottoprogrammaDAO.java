@@ -591,4 +591,40 @@ public class SottoprogrammaDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(
+			DmalmSottoprogramma subprogram) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, sottoprogramma)
+					.where(sottoprogramma.stgPk.eq(subprogram.getStgPk()))
+					.set(sottoprogramma.dmalmProjectFk02,
+							subprogram.getDmalmProjectFk02())
+					.set(sottoprogramma.dmalmStatoWorkitemFk03,
+							subprogram.getDmalmStatoWorkitemFk03())
+					.execute();
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+
+	}
+
 }

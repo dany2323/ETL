@@ -62,6 +62,7 @@ public class ProgrammaOdsDAO {
 
 			connection.setAutoCommit(false);
 			for (DmalmProgramma programma : staging_programma) {
+				logger.info("Cid "+programma.getCodice()+ " Cpk "+ programma.getStgPk());
 				new SQLInsertClause(connection, dialect, programmaODS)
 						.columns(programmaODS.assignee,
 								programmaODS.cdProgramma,

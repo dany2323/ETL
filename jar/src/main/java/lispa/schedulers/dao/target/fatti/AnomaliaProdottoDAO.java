@@ -785,4 +785,41 @@ public class AnomaliaProdottoDAO {
 			return false;
 		}
 	}
+
+	public static void updateProjectAndStatus(DmalmAnomaliaProdotto anomalia) {
+		
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+			new SQLUpdateClause(connection, dialect, anomaliaProdotto)
+
+					.where(anomaliaProdotto.stgPk.eq(anomalia.getStgPk()))
+					.set(anomaliaProdotto.dmalmProjectFk02,
+							anomalia.getDmalmProjectFk02())
+					.set(anomaliaProdotto.dmalmStatoWorkitemFk03, anomalia.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null) {
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
 }

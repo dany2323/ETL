@@ -740,20 +740,20 @@ public class SissHistoryWorkitemDAO {
 				Connection connOracle = cm.getConnectionOracle();
 				SQLTemplates dialect2 = new HSQLDBTemplates();
 
-				List<String> cPk = new SQLQuery(connOracle,dialect2).distinct()
+				List<String> cId = new SQLQuery(connOracle,dialect2).distinct()
 						.from(total)
 						.where(total.projectFk.eq(0))
 						.where(total.idRepository.eq(DmAlmConstants.REPOSITORY_SISS))
-						.where(total.stgPk.notIn(new SQLSubQuery()
-								.from(stgWorkItems)
-								.list(stgWorkItems.cPk)))
-						.list(total.stgPk);
+//						.where(total.stgPk.notIn(new SQLSubQuery()
+//								.from(stgWorkItems)
+//								.list(stgWorkItems.cPk)))
+						.list(total.codice);
 
 
 				queryHistory = new SQLQuery(SissHistoryConnection, dialect);
 				historyworkitems = queryHistory
 						.from(fonteHistoryWorkItems)
-						.where(fonteHistoryWorkItems.cPk.in(cPk))
+						.where(fonteHistoryWorkItems.cId.in(cId))
 						.list(fonteHistoryWorkItems.all());
 
 				

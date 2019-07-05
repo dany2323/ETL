@@ -133,7 +133,7 @@ public class PeiFacade {
 								modificato = true;
 							}
 							
-							if(modificato)
+							if(modificato && row.get(p.dmalmProjectFk02)!=0)
 							{
 								
 								righeModificate++;
@@ -204,6 +204,57 @@ public class PeiFacade {
 				
 			}
 		}
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmPei> staging_peis = new ArrayList<DmalmPei>();
+	
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_peis  = PeiDAO.getAllPei(dataEsecuzione);
+			
+			PeiOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento PEI ODS, "+staging_peis.size()+ " pei");
+			
+			PeiOdsDAO.insert(staging_peis, dataEsecuzione);
+			
+			List<DmalmPei> x = PeiOdsDAO.getAll();
+			
+			logger.debug("STOP -> Popolamento PEI ODS, "+staging_peis.size()+ " pei");
+			
+			for(DmalmPei pei : x)
+			{   			
+				PeiDAO.updateProjectAndStatus(pei);
+				
+			}
+			
+			
+//			PeiDAO.updateUOFK();
+//			
+//			PeiDAO.updateTempoFK();
+//
+//			PeiDAO.updateRankInMonth();
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		
 	}	
 	
 }

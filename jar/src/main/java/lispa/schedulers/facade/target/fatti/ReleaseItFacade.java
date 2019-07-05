@@ -135,7 +135,7 @@ public class ReleaseItFacade {
 							{
 								modificato=true;
 							}
-							if(modificato)
+							if(modificato && row.get(rel_it.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -165,6 +165,93 @@ public class ReleaseItFacade {
 //			ReleaseItDAO.updateRankInMonth();
 //			
 //			ReleaseItDAO.updateTempoFK();
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(release_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(release_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_RELEASE_IT, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
+
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmReleaseIt> staging_release_IT = new ArrayList<DmalmReleaseIt>();
+		List<Tuple> target_release_IT = new ArrayList<Tuple>();
+		QDmalmReleaseIt rel_it = QDmalmReleaseIt.dmalmReleaseIt;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmReleaseIt release_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_release_IT  = ReleaseItDAO.getAllReleaseIt(dataEsecuzione);
+			
+			ReleaseItOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento ReleaseIt ODS, "+staging_release_IT.size()+ " releaseIt");
+			
+			ReleaseItOdsDAO.insert(staging_release_IT, dataEsecuzione);
+			
+			List<DmalmReleaseIt> x = ReleaseItOdsDAO.getAll();
+			
+			logger.debug("STOP -> ReleaseIt ODS, "+staging_release_IT.size()+ " releaseIt");
+			
+			for(DmalmReleaseIt release : x)
+			{   
+				
+				release_tmp = release;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				ReleaseItDAO.updateProjectAndStatus(release);
+
+			}
+			
+			
 		}
 		catch (DAOException e) 
 		{

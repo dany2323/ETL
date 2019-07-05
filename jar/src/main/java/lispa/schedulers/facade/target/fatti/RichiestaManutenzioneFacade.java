@@ -124,7 +124,7 @@ private static Logger logger = Logger.getLogger(RichiestaManutenzioneFacade.clas
 								modificato = true;
 							}
 
-							if(modificato)
+							if(modificato && row.get(rich.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -197,6 +197,98 @@ private static Logger logger = Logger.getLogger(RichiestaManutenzioneFacade.clas
 			}
 		}
 
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+	
+		List<DmalmRichiestaManutenzione> staging_richieste = new ArrayList<DmalmRichiestaManutenzione>();
+		List<Tuple> target_richieste = new ArrayList<Tuple>();
+		QDmalmRichiestaManutenzione rich = QDmalmRichiestaManutenzione.dmalmRichiestaManutenzione;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmRichiestaManutenzione richiesta_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_richieste  = RichiestaManutenzioneDAO.getAllRichiestaManutenzione(dataEsecuzione);
+			
+			RichiestaManutenzioneOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Richiesta Manutenzione ODS, "+staging_richieste.size()+ " richieste");
+			
+			RichiestaManutenzioneOdsDAO.insert(staging_richieste, dataEsecuzione);
+			
+			List<DmalmRichiestaManutenzione> x = RichiestaManutenzioneOdsDAO.getAll();
+			
+			logger.debug("STOP -> Popolamento Richiesta Manutenzione ODS, "+staging_richieste.size()+ " richieste");
+			
+			for(DmalmRichiestaManutenzione richiesta : x)
+			{   
+				
+				richiesta_tmp = richiesta;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				RichiestaManutenzioneDAO.updateProjectAndStatus(richiesta);
+
+			}
+			
+			
+//			RichiestaManutenzioneDAO.updateUOFK();
+//
+//			RichiestaManutenzioneDAO.updateRankInMonth();
+//			
+//			RichiestaManutenzioneDAO.updateTempoFK();
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(richiesta_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(richiesta_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_RICHIESTA_MANUTENZIONE, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
+		
 	}
 	
 }

@@ -124,7 +124,7 @@ public class ReleaseServiziFacade {
 								modificato = true;
 							}
 														
-							if(modificato)
+							if(modificato && row.get(releaseservizi.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -199,6 +199,92 @@ public class ReleaseServiziFacade {
 			}
 		}
 
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmReleaseServizi> staging_releaseservizi = new ArrayList<DmalmReleaseServizi>();
+		List<Tuple> target_releaseservizi = new ArrayList<Tuple>();
+		QDmalmReleaseServizi releaseservizi = QDmalmReleaseServizi.dmalmReleaseServizi;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmReleaseServizi releaseservizi_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_releaseservizi  = ReleaseServiziDAO.getAllReleaseServizi(dataEsecuzione);
+			
+			ReleaseServiziOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento ReleaseServizi ODS, "+staging_releaseservizi.size()+ " ReleaseServizi");
+			
+			ReleaseServiziOdsDAO.insert(staging_releaseservizi, dataEsecuzione);
+			
+			List<DmalmReleaseServizi> x = ReleaseServiziOdsDAO.getAll();
+			
+			logger.debug("STOP -> ReleaseServizi ODS, "+staging_releaseservizi.size()+ " ReleaseServizi");
+			
+			for(DmalmReleaseServizi release : x)
+			{   
+				
+				releaseservizi_tmp = release;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				ReleaseServiziDAO.updateProjectAndStatus(release);
+
+			}
+			
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(releaseservizi_tmp));
+			logger.error(e.getMessage(), e);
+			e.printStackTrace();
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(releaseservizi_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_RELEASE_SERVIZI, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
 	}
 
 

@@ -709,4 +709,38 @@ public class ProgettoDemandDAO {
 			return false;
 		}
 	}
+
+	public static void updateProjectAndStatus(DmalmProgettoDemand progetto) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, progettoDemand)
+					.where(progettoDemand.stgPk.eq(progetto.getStgPk()))
+					.set(progettoDemand.dmalmProjectFk02,
+							progetto.getDmalmProjectFk02())
+					.set(progettoDemand.dmalmStatoWorkitemFk03,
+							progetto.getDmalmStatoWorkitemFk03())
+					.execute();
+			connection.commit();
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+	}
 }

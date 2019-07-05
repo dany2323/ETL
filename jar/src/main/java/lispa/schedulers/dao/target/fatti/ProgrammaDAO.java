@@ -538,4 +538,38 @@ public class ProgrammaDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(DmalmProgramma program) {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, prog)
+					.where(prog.stgPk.eq(program.getStgPk()))
+					.set(prog.dmalmProjectFk02, program.getDmalmProjectFk02())
+					.set(prog.dmalmStatoWorkitemFk03,
+							program.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+	}
+
 }

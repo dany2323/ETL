@@ -136,7 +136,7 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 								modificato = true;
 							}
 							
-							if(modificato)
+							if(modificato && row.get(c.dmalmProjectFk02)!=0)
 							{
 								// STORICIZZO
 								righeModificate++;								
@@ -192,9 +192,79 @@ private static Logger logger = Logger.getLogger(PeiFacade.class);
 		}
 		
 		
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
 		
+		List <DmalmClassificatore> stgClassDem = new ArrayList<>();
+		List <DmalmClassificatore> stgClass = new ArrayList<>();
+		List <Tuple> targetClass = new ArrayList<>();
+		QDmalmClassificatore c = QDmalmClassificatore.dmalmClassificatore;
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
 		
+		DmalmClassificatore temp = null;
 		
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
 		
+		try{
+			stgClassDem = ClassificatoreDAO.getAllClassDem(dataEsecuzione);
+			stgClass = ClassificatoreDAO.getAllClass(dataEsecuzione);
+
+			ClassificatoreOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento CLASSIFICATORE ODS, "+stgClassDem.size()+ " Classificatore demand");
+			ClassificatoreOdsDAO.insert(stgClassDem);
+			logger.debug("STOP -> Popolamento CLASSIFICATORE DEMAND ODS, "+stgClassDem.size()+ " Classificatore demand");
+			
+			logger.debug("START -> Popolamento CLASSIFICATORE ODS, "+stgClass.size()+ " Classificatore");
+			ClassificatoreOdsDAO.insert(stgClass);
+			logger.debug("STOP -> Popolamento CLASSIFICATORE DEMAND ODS, "+stgClass.size()+ " Classificatore");
+			
+			List<DmalmClassificatore> x = ClassificatoreOdsDAO.getAll();
+
+			for (DmalmClassificatore classificatore : x) {
+				
+				temp = classificatore;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+				ClassificatoreDAO.updateProjectAndStatus(classificatore);
+			}
+			
+			
+		}catch (Exception e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(temp));
+			logger.error(e.getMessage(), e);
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_CLASSIFICATORE, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
 	}
 }

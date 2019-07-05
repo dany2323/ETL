@@ -126,11 +126,10 @@ private static Logger logger = Logger.getLogger(TestCaseFacade.class);
 							}
 							if(!modificato && BeanUtils.areDifferent(row.get(tstcs.annullato), testcase.getAnnullato()))
 							{
-								logger.debug("_______________________________________________----_________________________________________");
 								modificato = true;
 							}
 
-							if(modificato)
+							if(modificato && row.get(tstcs.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -204,6 +203,92 @@ private static Logger logger = Logger.getLogger(TestCaseFacade.class);
 			}
 		}
 
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmTestcase> staging_testcases = new ArrayList<DmalmTestcase>();
+		List<Tuple> target_testcases = new ArrayList<Tuple>();
+		QDmalmTestcase tstcs = QDmalmTestcase.dmalmTestcase;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmTestcase testcase_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_testcases  = TestCaseDAO.getAllTestcase(dataEsecuzione);
+			
+			TestCaseOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Testcase ODS, "+staging_testcases.size()+ " testcase");
+			
+			TestCaseOdsDAO.insert(staging_testcases, dataEsecuzione);
+			
+			List<DmalmTestcase> x = TestCaseOdsDAO.getAll();
+			
+			logger.debug("STOP -> Popolamento Testcase ODS, "+staging_testcases.size()+ " testcase");
+			
+			for(DmalmTestcase testcase : x)
+			{   
+				
+				testcase_tmp = testcase;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				TestCaseDAO.updateProjectAndStatus(testcase);
+
+			}
+			
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(testcase_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(testcase_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_TESTCASE, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
+		
 	}
 	
 }

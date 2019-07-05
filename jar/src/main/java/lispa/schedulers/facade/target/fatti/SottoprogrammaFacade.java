@@ -123,7 +123,7 @@ public class SottoprogrammaFacade {
 								modificato = true;
 							}
 							
-							if(modificato)
+							if(modificato && row.get(sottoprog.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -194,5 +194,90 @@ public class SottoprogrammaFacade {
 			}
 		}
 
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		List<DmalmSottoprogramma> staging_sottoprogramma = new ArrayList<DmalmSottoprogramma>();
+		List<Tuple> target_sottoprogramma = new ArrayList<Tuple>();
+		QDmalmSottoprogramma sottoprog = QDmalmSottoprogramma.dmalmSottoprogramma;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmSottoprogramma sottoprogramma_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_sottoprogramma  = SottoprogrammaDAO.getAllSottoprogramma(dataEsecuzione);
+			
+			SottoprogrammaOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Sottoprogramma ODS, "+staging_sottoprogramma.size()+ " sottoprogrammi");
+			
+			SottoprogrammaOdsDAO.insert(staging_sottoprogramma, dataEsecuzione);
+			
+			List<DmalmSottoprogramma> x = SottoprogrammaOdsDAO.getAll();
+			
+			logger.debug("STOP -> Sottoprogramma ODS, "+staging_sottoprogramma.size()+ " sottoprogrammi");
+			
+			for(DmalmSottoprogramma sottoprogramma : x)
+			{   
+				
+				sottoprogramma_tmp = sottoprogramma;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				SottoprogrammaDAO.updateProjectAndStatus(sottoprogramma);
+
+			}
+			
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(sottoprogramma_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(sottoprogramma_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_SOTTOPROGRAMMA, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
+		
 	}
 }

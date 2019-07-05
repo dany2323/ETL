@@ -116,7 +116,7 @@ public class AnomaliaAssistenzaFacade {
 								modificato = true;
 							}
 
-							if(modificato)
+							if(modificato && row.get(anom_ass.dmalmProjectFk02)!=0)
 							{
 								
 								righeModificate++;
@@ -190,6 +190,93 @@ public class AnomaliaAssistenzaFacade {
 			}
 		}
 
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+
+		List<DmalmAnomaliaAssistenza> staging_anomalie_assistenza = new ArrayList<DmalmAnomaliaAssistenza>();
+		List<Tuple> target_anomalie_assistenza = new ArrayList<Tuple>();
+		QDmalmAnomaliaAssistenza anom_ass = QDmalmAnomaliaAssistenza.dmalmAnomaliaAssistenza;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmAnomaliaAssistenza anomalia_assistenza_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_anomalie_assistenza  = AnomaliaAssistenzaDAO.getAllAnomaliaAssistenza(dataEsecuzione);
+			
+			AnomaliaAssistenzaOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Anomalia Assistenza ODS, "+staging_anomalie_assistenza.size()+ " anomalie");
+			
+			AnomaliaAssistenzaOdsDAO.insert(staging_anomalie_assistenza, dataEsecuzione);
+			
+			List<DmalmAnomaliaAssistenza> x = AnomaliaAssistenzaOdsDAO.getAll();
+			
+			logger.debug("STOP -> Popolamento Anomalia Assistenza ODS, "+staging_anomalie_assistenza.size()+ " anomalie");
+			
+			for(DmalmAnomaliaAssistenza anomalia_assistenza : x)
+			{   			
+				
+				
+				anomalia_assistenza_tmp = anomalia_assistenza;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				AnomaliaAssistenzaDAO.updateProjectAndStatus(anomalia_assistenza);
+
+			}
+			
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(anomalia_assistenza_tmp));
+			logger.error(e.getMessage(), e);
+			e.printStackTrace();
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(anomalia_assistenza_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_ANOMALIA_ASSISTENZA, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
 	}
 	
 }

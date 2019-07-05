@@ -502,4 +502,42 @@ public class DocumentoDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(DmalmDocumento documento) {
+		
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, doc)
+
+					.where(doc.stgPk.eq(documento.getStgPk()))
+					.set(doc.dmalmProjectFk02, documento.getDmalmProjectFk02())
+					.set(doc.dmalmStatoWorkitemFk03,
+							documento.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+
+		
+	}
+
 }

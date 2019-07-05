@@ -531,4 +531,41 @@ public class TaskDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(DmalmTask task) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, tsk)
+
+					.where(tsk.stgPk.eq(task.getStgPk()))
+					
+					.set(tsk.dmalmProjectFk02, task.getDmalmProjectFk02())
+					.set(tsk.dmalmStatoWorkitemFk03,
+							task.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+	}
+
 }

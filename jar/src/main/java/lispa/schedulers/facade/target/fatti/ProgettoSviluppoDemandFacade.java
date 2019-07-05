@@ -142,7 +142,7 @@ public class ProgettoSviluppoDemandFacade {
 							
 
 
-							if(modificato)
+							if(modificato && row.get(progetto.dmalmProjectFk02)!=0)
 							{
 
 								righeModificate++;
@@ -217,6 +217,97 @@ public class ProgettoSviluppoDemandFacade {
 			}
 		}
 
+	}
+
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmProgettoSviluppoDem> staging_progettoSviluppoDem = new ArrayList<DmalmProgettoSviluppoDem>();
+		List<Tuple> target_progettoSviluppoDem = new ArrayList<Tuple>();
+
+		QDmalmProgettoSviluppoDem progetto = QDmalmProgettoSviluppoDem.dmalmProgettoSviluppoDem;
+
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+
+		DmalmProgettoSviluppoDem progetto_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_progettoSviluppoDem  = ProgettoSviluppoDemandDAO.getAllProgettoSviluppoDemand(dataEsecuzione);
+
+			ProgettoSviluppoDemandOdsDAO.delete();
+
+			logger.debug("START -> Popolamento Progetto Sviluppo DEMAND ODS, "+staging_progettoSviluppoDem.size()+ " progetti");
+
+			ProgettoSviluppoDemandOdsDAO.insert(staging_progettoSviluppoDem, dataEsecuzione);
+
+			List<DmalmProgettoSviluppoDem> x = ProgettoSviluppoDemandOdsDAO.getAll();
+
+			logger.debug("STOP -> Popolamento Progetto Sviluppo DEMAND ODS, "+staging_progettoSviluppoDem.size()+ " progetti");
+
+
+
+
+			for(DmalmProgettoSviluppoDem progettoSviluppoDem : x){   				
+
+
+				progetto_tmp = progettoSviluppoDem;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				ProgettoSviluppoDemandDAO.updateProjectAndStatus(progettoSviluppoDem);
+
+			}
+
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(progetto_tmp));
+			logger.error(e.getMessage(), e);
+			
+
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(progetto_tmp));
+			logger.error(e.getMessage(), e);
+			
+
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+
+				EsitiCaricamentoDAO.insert
+				(
+						dataEsecuzione,
+						DmAlmConstants.TARGET_PROGETTO_SVILUPPO_DEMAND, 
+						stato, 
+						new Timestamp(dtInizioCaricamento.getTime()), 
+						new Timestamp(dtFineCaricamento.getTime()), 
+						righeNuove, 
+						righeModificate, 
+						0, 
+						0
+						);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
+		
 	}
 
 

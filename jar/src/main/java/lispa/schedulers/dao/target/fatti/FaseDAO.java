@@ -533,4 +533,39 @@ public class FaseDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(DmalmFase fase) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, fs)
+
+					.where(fs.stgPk.eq(fase.getStgPk()))
+					.set(fs.dmalmProjectFk02, fase.getDmalmProjectFk02())
+					.set(fs.dmalmStatoWorkitemFk03,
+							fase.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+
 }

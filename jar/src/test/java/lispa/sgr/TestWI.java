@@ -48,13 +48,39 @@ import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
 import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
 import lispa.schedulers.facade.sfera.target.MisuraFacade;
 import lispa.schedulers.facade.target.ProjectSgrCmFacade;
+import lispa.schedulers.facade.target.fatti.AnomaliaAssistenzaFacade;
+import lispa.schedulers.facade.target.fatti.AnomaliaProdottoFacade;
+import lispa.schedulers.facade.target.fatti.BuildFacade;
+import lispa.schedulers.facade.target.fatti.ClassificatoreFacade;
+import lispa.schedulers.facade.target.fatti.DifettoProdottoFacade;
+import lispa.schedulers.facade.target.fatti.DocumentoFacade;
+import lispa.schedulers.facade.target.fatti.FaseFacade;
+import lispa.schedulers.facade.target.fatti.ManutenzioneFacade;
+import lispa.schedulers.facade.target.fatti.PeiFacade;
+import lispa.schedulers.facade.target.fatti.ProgettoDemandFacade;
+import lispa.schedulers.facade.target.fatti.ProgettoEseFacade;
+import lispa.schedulers.facade.target.fatti.ProgettoSviluppoDemandFacade;
+import lispa.schedulers.facade.target.fatti.ProgettoSviluppoSviluppoFacade;
+import lispa.schedulers.facade.target.fatti.ProgrammaFacade;
+import lispa.schedulers.facade.target.fatti.ReleaseDiProgettoFacade;
+import lispa.schedulers.facade.target.fatti.ReleaseItFacade;
+import lispa.schedulers.facade.target.fatti.ReleaseServiziFacade;
+import lispa.schedulers.facade.target.fatti.RichiestaGestioneFacade;
+import lispa.schedulers.facade.target.fatti.RichiestaManutenzioneFacade;
+import lispa.schedulers.facade.target.fatti.RichiestaSupportoFacade;
+import lispa.schedulers.facade.target.fatti.SottoprogrammaFacade;
+import lispa.schedulers.facade.target.fatti.TaskFacade;
+import lispa.schedulers.facade.target.fatti.TaskItFacade;
+import lispa.schedulers.facade.target.fatti.TestCaseFacade;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.manager.RecoverManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitem;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
@@ -96,12 +122,14 @@ public class TestWI extends TestCase {
 			QSireHistoryWorkitem sirehistoryworkitem=QSireHistoryWorkitem.sireHistoryWorkitem;
 			Log4JConfiguration.inizialize();
 			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2000-01-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+			Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
 			
-//			SissHistoryProjectDAO.fillSissHistoryProject(0, 2000000);
-//			SireHistoryProjectDAO.fillSireHistoryProject(0, 2000000);
+//			SissHistoryProjectDAO.fillSissHistoryProjectPkNotExist();
+//			SireHistoryProjectDAO.fillSireHistoryProjectPkNotExist();
 			
 //			SireHistoryWorkitemDAO.fillSireHistoryWorkitemWithNoProjectFk();
-			SissHistoryWorkitemDAO.fillSissHistoryWorkitemWithNoProjectFk();
+//			SissHistoryWorkitemDAO.fillSissHistoryWorkitemWithNoProjectFk();
+//			
 //			List <DmalmProject >stagingProjects = ProjectSgrCmDAO.getAllProjectMinData(DataEsecuzione.getInstance().getDataEsecuzione());
 //
 //			for (DmalmProject project : stagingProjects) {
@@ -118,414 +146,89 @@ public class TestWI extends TestCase {
 //					logger.info("Il progetto "+project.getIdProject()+" lo carico dopo");
 //				}
 //			}
-//			
-//			
-//			List<Tuple> rows = new SQLQuery(connection,dialect).from(total)
-//					.join(sisshistoryworkitem).on(sisshistoryworkitem.cPk.eq(total.stgPk))
-//					.where(total.projectFk.eq(0)).list(total.stgPk,total.type);
-//			
-//			for (Tuple row:rows) {
-//				
-//				
-//			}
-//			ProjectSgrCmFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-//			listaProgettiNonMovimentati = ProjectSgrCmDAO
-//					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());
-//			for (Tuple row : listaProgettiNonMovimentati) {
-//				
-//				DmalmElUnitaOrganizzativeFlat uoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
-//				if(uoFlat != null && uoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
-//					modificato=true;
-//					DmalmProject bean = new DmalmProject();
-//					
-//					bean.setIdProject(row.get(proj.idProject));
-//					bean.setIdRepository(row.get(proj.idRepository));
-//					bean.setcTemplate(row.get(proj.cTemplate));
-//					bean.setDmalmAreaTematicaFk01(row
-//							.get(proj.dmalmAreaTematicaFk01));
-//					bean.setDmalmStrutturaOrgFk02(row.get(proj.dmalmStrutturaOrgFk02));
-//					bean.setDmalmUnitaOrganizzativaFk(row.get(proj.dmalmUnitaOrganizzativaFk));
-//					bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
-//					bean.setFlAttivo(row.get(proj.flAttivo));
-//					bean.setPathProject(row.get(proj.pathProject));
-//					bean.setDtInizioValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(), 1).getTime()));
-//					bean.setcCreated(row.get(proj.cCreated));
-//					bean.setServiceManagers(row.get(proj.serviceManagers));
-//					bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
-//					bean.setcIsLocal(row.get(proj.cIsLocal));
-//					bean.setcPk(row.get(proj.cPk));
-//					bean.setFkUriLead(row.get(proj.fkUriLead));
-//					bean.setcDeleted(row.get(proj.cDeleted));
-//					bean.setcFinish(row.get(proj.cFinish));
-//					bean.setcUri(row.get(proj.cUri));
-//					bean.setcStart(row.get(proj.cStart));
-//					bean.setFkUriProjectgroup(row
-//							.get(proj.fkUriProjectgroup));
-//					bean.setcActive(row.get(proj.cActive));
-//					bean.setFkProjectgroup(row.get(proj.fkProjectgroup));
-//					bean.setFkLead(row.get(proj.fkLead));
-//					bean.setcLockworkrecordsdate(row
-//							.get(proj.cLockworkrecordsdate));
-//					bean.setcRev(row.get(proj.cRev));
-//					bean.setcDescription(row.get(proj.cDescription));
-//					bean.setSiglaProject(row.get(proj.siglaProject));
-//					bean.setNomeCompletoProject(row
-//							.get(proj.nomeCompletoProject));
-//					bean.setDtCaricamento(DataEsecuzione.getInstance().getDataEsecuzione());
-//
-//					ProjectSgrCmDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
-//							bean); 
-//
-//					// inserisco un nuovo record
-//					ProjectSgrCmDAO.insertProjectUpdate(new Timestamp(DateUtils.addSecondsToDate(uoFlat.getDataFineValidita(),1).getTime()),
-//							bean, false);
-//				}
-//			}
-//			updateFlatProject();
 			
-//			List<DmalmElPersonale> allPersonaleRecord = ElettraPersonaleDAO.getAllPersonale();
-//			int recordStoricizzati=0;
-//			ElettraUnitaOrganizzativeFacade.fillElettraUnitaOrganizzativeFlat(DataEsecuzione.getInstance().getDataEsecuzione());
-//			List<Tuple> activeAsm = DmAlmAsmDAO.gettAllAsmTargetActive();
-//			for(Tuple row:activeAsm){
-//				Tuple Flat= DmAlmAsmDAO.getUOFlatById(row.get(asm.unitaOrganizzativaFlatFk));
-//				DmalmAsm applicazioni = DmAlmAsmDAO.getBeanFromTuple(row);
-//				if(Flat.get(flat.dataFineValidita).before(row.get(asm.dataFineValidita))){
-//					// corrente
-//					System.out.println("ASM Da storicizzare "+applicazioni.getDmalmAsmPk());
-//					DmAlmAsmDAO.updateDataFineValidita(DateUtils.addSecondsToTimestamp(Flat.get(flat.dataFineValidita),1), applicazioni);
-////					DmAlmAsmDAO.updateDataFineValidita(
-////							new Timestamp(DateUtils.addSecondsToDate(Flat.get(flat.dataFineValidita).getTime())),1), DmAlmAsmDAO.getBeanFromTuple(row));
-//
-//					// inserisco un nuovo record
-//
-//					DmAlmAsmDAO.insertAsmUpdate(DateUtils.addSecondsToTimestamp(Flat.get(flat.dataFineValidita),1),
-//							applicazioni);
-//					
-//				}
-//			}
-//			for(DmalmElPersonale row:allPersonaleRecord){
-//				if(row.getUnitaOrganizzativaFlatFk()!=null){
-//					DmalmElUnitaOrganizzativeFlat UOFlat = ElettraPersonaleDAO.getFlatUOByPk(row.getUnitaOrganizzativaFlatFk());
-////					System.out.println("Chiavi "+row.get(qDmalmElPersonale.personalePk));
-//					if(UOFlat.getDataFineValidita().before(row.getDataFineValidita())){
-//						System.out.println("Attenzione, qualcosa non va su personale "+row.getPersonalePk());
-//						ElettraPersonaleDAO.updateDataFineValidita(
-//								new Timestamp(DateUtils.addSecondsToDate(UOFlat.getDataFineValidita(),1).getTime()),
-//								row.getPersonalePk());
-//
-//						// inserisco un nuovo record
-//						row.setPersonalePk(null);
-//						row.setDataCaricamento(DataEsecuzione.getInstance().getDataEsecuzione());
-//						ElettraPersonaleDAO.insertPersonaleUpdate(
-//								new Timestamp(DateUtils.addSecondsToDate(UOFlat.getDataFineValidita(),1).getTime()), row);
-//						recordStoricizzati++;
-//					}
-//				}
-//
-//			}
-//			ElettraUnitaOrganizzativeFacade.fillElettraUnitaOrganizzativeFlat(DataEsecuzione.getInstance().getDataEsecuzione());
-//			List<Tuple> listaProgettiNonMovimentati = ProjectSgrCmDAO
-//					.getAllProjectNotInHistory(DataEsecuzione.getInstance().getDataEsecuzione());
-//			QDmalmProject proj = QDmalmProject.dmalmProject;
-////			HashMap<Tuple, Timestamp> 
-//			for (Tuple row : listaProgettiNonMovimentati) {
-//				
-//				DmalmElUnitaOrganizzativeFlat UoFlat = ElettraUnitaOrganizzativeDAO.getUOFlatByPk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
-//				if(UoFlat != null && UoFlat.getDataFineValidita().before(DateUtils.setDtFineValidita9999())){
-//					System.out.println("Attenzione, qualcosa non va su Proj "+row.get(proj.idProject));
-//					DmalmProject bean = new DmalmProject();
-//
-//					bean.setIdProject(row.get(proj.idProject));
-//					bean.setIdRepository(row.get(proj.idRepository));
-//					bean.setcTemplate(row.get(proj.cTemplate));
-//					bean.setDmalmAreaTematicaFk01(row
-//							.get(proj.dmalmAreaTematicaFk01));
-//					bean.setDmalmStrutturaOrgFk02(row.get(proj.dmalmStrutturaOrgFk02));
-//					bean.setDmalmUnitaOrganizzativaFk(row.get(proj.dmalmUnitaOrganizzativaFk));
-//					bean.setDmalmUnitaOrganizzativaFlatFk(row.get(proj.dmalmUnitaOrganizzativaFlatFk));
-//					bean.setFlAttivo(row.get(proj.flAttivo));
-//					bean.setPathProject(row.get(proj.pathProject));
-//					bean.setDtInizioValidita(new Timestamp(DateUtils.addSecondsToDate(UoFlat.getDataFineValidita(), 1).getTime()));
-//					bean.setcCreated(row.get(proj.cCreated));
-//					bean.setServiceManagers(row.get(proj.serviceManagers));
-//					bean.setcTrackerprefix(row.get(proj.cTrackerprefix));
-//					bean.setcIsLocal(row.get(proj.cIsLocal));
-//					bean.setcPk(row.get(proj.cPk));
-//					bean.setFkUriLead(row.get(proj.fkUriLead));
-//					bean.setcDeleted(row.get(proj.cDeleted));
-//					bean.setcFinish(row.get(proj.cFinish));
-//					bean.setcUri(row.get(proj.cUri));
-//					bean.setcStart(row.get(proj.cStart));
-//					bean.setFkUriProjectgroup(row
-//							.get(proj.fkUriProjectgroup));
-//					bean.setcActive(row.get(proj.cActive));
-//					bean.setFkProjectgroup(row.get(proj.fkProjectgroup));
-//					bean.setFkLead(row.get(proj.fkLead));
-//					bean.setcLockworkrecordsdate(row
-//							.get(proj.cLockworkrecordsdate));
-//					bean.setcRev(row.get(proj.cRev));
-//					bean.setcDescription(row.get(proj.cDescription));
-//					bean.setSiglaProject(row.get(proj.siglaProject));
-//					bean.setNomeCompletoProject(row
-//							.get(proj.nomeCompletoProject));
-//					bean.setDtCaricamento(DataEsecuzione.getInstance().getDataEsecuzione());
-//
-//					ProjectSgrCmDAO.updateDataFineValidita(new Timestamp(DateUtils.addSecondsToDate(UoFlat.getDataFineValidita(),1).getTime()),
-//							bean); 
-//
-//					// inserisco un nuovo record
-//					ProjectSgrCmDAO.insertProjectUpdate(new Timestamp(DateUtils.addSecondsToDate(UoFlat.getDataFineValidita(),1).getTime()),
-//							bean, false);
-////					DataEsecuzione.getInstance().getDataEsecuzione()
-//				}
-//			}
-//			CheckProjectStorFacade.execute();
-			//loadWiAndCustomFieldInStaging("classificatore", 0L, 2000000L);
-//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-09-04 11:47:00","yyyy-MM-dd HH:mm:00"));
-//
-//			ClassificatoreFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-			
-			//CostruzioneFilieraTemplateAssFunzionaleFacade.execute();
-//			StgMisuraFacade.deleteStgMisura(logger, dataEsecuzioneDeleted);
-//			StgMisuraFacade.FillStgMisura();
-//			
-//			AsmFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-//			
-//			// step 1 crea legami Asm/Prodotto
-//			// Prodotto Oreste
-//			CheckLinkAsmSferaProdottoFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione(), false);
-//			// ProdottiArchitetture Elettra
-//			//CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, false);
-//			
-//			// step 2 crea fk Asm/UO (Edma)
-//			// Struttura Organizzativa Edma
-//			CheckLinkAsmSferaStrutturaOrganizzativaFacade
-//					.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-//
-//			// step 3 crea i nuovi legami per eventuali asm storicizzate da
-//			// CheckLinkAsmSferaStrutturaOrganizzativaFacade
-//			// Prodotto Oreste
-//			//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
-//			// ProdottiArchitetture Elettra
-//			CheckLinkAsmSferaProdottiArchFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione(), false);
-//
-//			// step 4 crea fk Asm/UO (Elettra)
-//			// Unità Organizzativa Elettra
-//			CheckLinkAsmSferaUnitaOrganizzativaFacade
-//					.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-//
-//			// step 5 crea i nuovi legami per eventuali asm storicizzate da
-//			// CheckLinkAsmSferaUnitaOrganizzativaFacade
-//			// Prodotto Oreste
-//			//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, true);
-//			// ProdottiArchitetture Elettra
-//			CheckLinkAsmSferaProdottiArchFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione(), true);
-//			
-//			ProgettoSferaFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
 
-			//MisuraFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-
-//			if (ErrorManager.getInstance().hasError()) {
-//				RecoverManager.getInstance().startRecoverTargetByProcedure();
-//				RecoverManager.getInstance().startRecoverStaging();
+//			logger.info("START PeiFacade.execute " + new Date());
+//			PeiFacade.execute(dataEsecuzione);
 //
-//				// MPS
-//				if (ExecutionManager.getInstance().isExecutionMps())
-//					RecoverManager.getInstance().startRecoverStgMps();
+//			logger.info("START BuildFacade.execute " + new Date());
+//			BuildFacade.execute(dataEsecuzione);
 //
-//				return;
-//			}
-			//Carica Elettrra nellos taging
-//			StagingElettraFacade.executeStaging(dataEsecuzioneDeleted);
-//			ElettraFunzionalitaFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-//			//Carica le UO
-//			StgElUnitaOrganizzativeDAO.fillStaging();
-//			ElettraUnitaOrganizzativeFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
+//			logger.info("START ProgettoESEFacade.execute " + new Date());
+//			ProgettoEseFacade.execute(dataEsecuzione);
+//
+//			logger.info("START TestCaseFacade.execute " + new Date());
+//			TestCaseFacade.execute(dataEsecuzione);
+//
+//			logger.info("START FaseFacade.execute " + new Date());
+//			FaseFacade.execute(dataEsecuzione);
+//
+//			logger.info("START SottoprogrammaFacade.execute " + new Date());
+//			SottoprogrammaFacade.execute(dataEsecuzione);
+//
+//			logger.info("START ProgrammaFacade.execute " + new Date());
+//			ProgrammaFacade.execute(dataEsecuzione);
+//
+//			logger.info("START ProgettoSviluppoDemandFacade.execute "
+//					+ new Date());
+//			ProgettoSviluppoDemandFacade.execute(dataEsecuzione);
+//
+//			logger.info("START TaskItFacade.execute " + new Date());
+//			TaskItFacade.execute(dataEsecuzione);
+//
+//			logger.info("START ReleaseServiziFacade.execute " + new Date());
+//			ReleaseServiziFacade.execute(dataEsecuzione);
+//
+//			logger.info("START ProgettoDemandFacade.execute " + new Date());
+//			ProgettoDemandFacade.execute(dataEsecuzione);
+//
+//			logger.info("START RichiestaManutenzioneFacade.execute "
+//					+ new Date());
+//			RichiestaManutenzioneFacade.execute(dataEsecuzione);
 //			
-			//StgElProdottiDAO.fillStaging();
-			//ElettraProdottiArchitettureFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-			//StgElPersonaleDAO.fillStaging();
-			//ElettraPersonaleFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-			
-			//Annulla le UO
-			
-			//CheckAnnullamentiElettraFacade.execute(DateUtils.stringToTimestamp("2018-07-01 00:00:00","yyyy-MM-dd HH:mm:00"));
-			//Aggiorna le UO
-//			ProjectSgrCmFacade.storicizzaProjectElettra(DateUtils.stringToTimestamp("2018-07-01 00:00:00","yyyy-MM-dd HH:mm:00"));
-//			//Storicizza i WI figli dei project per cambio UO
-//			CheckProjectStorFacade.execute();
+//			logger.info("START ClassificatoreFacade.execute ");
+//			ClassificatoreFacade.execute(dataEsecuzione);
+//
+//			logger.info("START RichiestaGestioneFacade.execute "
+//					+ new Date());
+//			RichiestaGestioneFacade.execute(dataEsecuzione);
+//
+			logger.info("START Progetto_Svil_Svil_Facade.execute "
+					+ new Date());
+			ProgettoSviluppoSviluppoFacade.execute(dataEsecuzione);
+//
+//			logger.info("START AnomaliaAssistenzaFacade.execute "
+//					+ new Date());
+//			AnomaliaAssistenzaFacade.execute(dataEsecuzione);
+//
+//			logger.info("START AnomaliaFacade.execute " + new Date());
+//			AnomaliaProdottoFacade.execute(dataEsecuzione);
+//
+//			logger.info("START TaskFacade.execute " + new Date());
+//			TaskFacade.execute(dataEsecuzione);
+//
+//			logger.info("START ReleaseITFacade.execute " + new Date());
+//			ReleaseItFacade.execute(dataEsecuzione);
+//
+//			logger.info("START DifettoFacade.execute " + new Date());
+//			DifettoProdottoFacade.execute(dataEsecuzione);
+////
+//			logger.info("START ManutenzioneFacade.execute " + new Date());
+//			ManutenzioneFacade.execute(dataEsecuzione);
+//
+//			logger.info("START DocumentoFacade.execute " + new Date());
+//			DocumentoFacade.execute(dataEsecuzione);
+//
+			logger.info("START ReleaseDiProgettoFacade.execute "
+					+ new Date());
+			ReleaseDiProgettoFacade.execute(dataEsecuzione);
 //			
-//			//Aggiorna 
-//			ProjectSgrCmFacade.aggiornaUOFlatProject();
+//			// DM_ALM-350
+//			logger.info("START RichiestaSupporto.execute "
+//					+ new Date());
+//			RichiestaSupportoFacade.execute(dataEsecuzione);
 //			
-//			
-//			//Triplice
-//			CheckLinkAsmSferaProjectElFacade.execute();
 			
-			//Annulla Elettra
-			//CheckAnnullamentiElettraFacade.execute(DataEsecuzione.getInstance().getDataEsecuzione());
-			
-			//Date di annullamento dei prodotti
-//			List <Integer> prodottiAnnullati=ElettraProdottiArchitettureDAO.getAllTargetProdottoAnnullati();
-//			
-//			for(Integer prod:prodottiAnnullati){
-//				List <String> applicazioni=ProdottiArchitettureDAO.getAsmByProductPk(prod);
-//				if(applicazioni!=null && applicazioni.size()>0){
-//					for(String app:applicazioni){
-//						if(app.contains(DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE) || app.contains(DmAlmConstants.SFERA_ANNULLATO_FISICAMENTE)){
-//							Date dataAnnullamento=DateUtils.getDataAnnullamento(app, logger);
-//							logger.info("Prodotto PK:"+prod+" Data annullamento :"+dataAnnullamento);
-//							if(dataAnnullamento!=null){
-//								ElettraProdottiArchitettureDAO.updateDataAnnullamento(new Timestamp(dataAnnullamento.getTime()), prod);
-//							}
-//						}
-//					}
-//				}
-//			}
-			
-			//DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2016-02-28 21:00:00","yyyy-MM-dd HH:mm:00"));
-			//CheckProjectStorFacade.execute();
-			//RecoverManager.getInstance().startRecoverTargetByProcedure();
-			
-			//CheckLinkAsmSferaUnitaOrganizzativaFacade.execute(DateUtils.stringToTimestamp("2018-02-01 20:40:00",
-			//		"yyyy-MM-dd HH:mm:00"));
-			//CheckLinkAsmSferaProjectElFacade.execute();
-			
-			//CheckLinkAsmSferaProjectElFacade.execute();
-			//loadWiAndCustomFieldInStaging("sup",0L,100000L);
-
-			/*RichiestaSupportoFacade.execute(DateUtils.stringToTimestamp("2018-05-03 20:40:00",
-							"yyyy-MM-dd HH:mm:00")); */
-			/*DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2018-05-03 20:40:00",
-					"yyyy-MM-dd HH:mm:00"));
-			RecoverManager.getInstance().startRecoverTargetByProcedure();
-			
-			RecoverManager.getInstance().startRecoverStaging();*/
-//			
-//			List<DmalmDifettoProdotto> staging_difettoprodotto = new ArrayList<DmalmDifettoProdotto>();
-//			List<Tuple> target_difettoprodotto = new ArrayList<Tuple>();
-//			QDmalmDifettoProdotto dif = QDmalmDifettoProdotto.dmalmDifettoProdotto;
-//
-//			int righeNuove = 0;
-//			int righeModificate = 0;
-//
-//			Date dtInizioCaricamento = new Date();
-//			Date dtFineCaricamento = null;
-//
-//			DmalmDifettoProdotto difetto_tmp = null;
-//
-//			String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
-//
-//			Timestamp dataEsecuzione = DateUtils.stringToTimestamp("05-09-2017 10:40:00", "dd-MM-yyyy HH:mm:ss");
-//			staging_difettoprodotto = DifettoDAO
-//					.getAllDifettoProdotto(dataEsecuzione );
-//
-//			/*DifettoProdottoOdsDAO.delete();
-//
-//			logger.debug("START -> Popolamento Difetto ODS, "
-//					+ staging_difettoprodotto.size() + " difetti");
-//
-//			DifettoProdottoOdsDAO.insert(staging_difettoprodotto,
-//					dataEsecuzione);
-//			*/
-//			
-//			List<DmalmDifettoProdotto> x = DifettoProdottoOdsDAO.getAll();
-//
-//			logger.debug("STOP -> Popolamento Difetto ODS, "
-//					+ staging_difettoprodotto.size() + " difetti");
-//
-//				for (DmalmDifettoProdotto difetto : x) {
-//					if(difetto.getCdDifetto().equals("SIMP-744")) {
-//
-//					// Ricerco nel db target un record con idProject =
-//					// project.getIdProject e data fine validita uguale a 31-12-9999
-//					difetto_tmp = difetto;
-//					target_difettoprodotto = DifettoDAO.getDifettoProdotto(difetto);
-//		
-//					// se non trovo almento un record, inserisco il project nel
-//					// target
-//					if (target_difettoprodotto.size() == 0) {
-//						difetto.setDtCambioStatoDifetto(difetto
-//								.getDtModificaRecordDifetto());
-//						righeNuove++;
-//						DifettoDAO.insertDifettoProdotto(difetto);
-//					} else {
-//						boolean modificato = false;
-//		
-//						for (Tuple row : target_difettoprodotto) {
-//							if (row != null) {
-//		
-//								if (BeanUtils.areDifferent(
-//										row.get(dif.dmalmStatoWorkitemFk03),
-//										difetto.getDmalmStatoWorkitemFk03())) {
-//									difetto.setDtCambioStatoDifetto(difetto
-//											.getDtModificaRecordDifetto());
-//									modificato = true;
-//								} else {
-//									difetto.setDtCambioStatoDifetto(row
-//											.get(dif.dtCambioStatoDifetto));
-//								}
-//								if (!modificato
-//										&& BeanUtils.areDifferent(
-//												row.get(dif.dmalmProjectFk02),
-//												difetto.getDmalmProjectFk02())) {
-//									modificato = true;
-//								}
-//								if (!modificato
-//										&& BeanUtils.areDifferent(
-//												row.get(dif.numeroTestataDifetto),
-//												difetto.getNumeroTestataDifetto())) {
-//									modificato = true;
-//								}
-//								if (!modificato
-//										&& BeanUtils.areDifferent(
-//												row.get(dif.numeroLineaDifetto),
-//												difetto.getNumeroLineaDifetto())) {
-//									modificato = true;
-//								}
-//								if (!modificato
-//										&& BeanUtils.areDifferent(
-//												row.get(dif.dmalmUserFk06),
-//												difetto.getDmalmUserFk06())) {
-//									modificato = true;
-//								}
-//								if (!modificato
-//										&& BeanUtils.areDifferent(row.get(dif.uri),
-//												difetto.getUri())) {
-//									modificato = true;
-//								}
-//								if (!modificato
-//										&& BeanUtils.areDifferent(row.get(dif.annullato),
-//												difetto.getAnnullato())) {
-//									modificato = true;
-//								}
-//								if (!modificato
-//										&& BeanUtils.areDifferent(row.get(dif.provenienzaDifetto),
-//												difetto.getProvenienzaDifetto())) {
-//									modificato = true;
-//								}
-//		
-//								if (modificato) {
-//									righeModificate++;
-//		
-//									// STORICIZZO
-//									// imposto a zero il rank e il flagUltimaSituazione
-//									DifettoDAO.updateRankFlagUltimaSituazione(difetto,
-//											new Double(0), new Short("0"));
-//		
-//									// inserisco un nuovo record
-//									DifettoDAO.insertDifettoProdottoUpdate(
-//											dataEsecuzione, difetto, true);
-//								} else {
-//									// Aggiorno lo stesso
-//									DifettoDAO.updateDmalmDifettoProdotto(difetto);
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

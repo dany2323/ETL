@@ -30,6 +30,7 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.template.StringTemplate;
@@ -676,5 +677,78 @@ public class DifettoDAO {
 		} else {
 			return false;
 		}
+	}
+
+	public static void updateProjectAndStatus(DmalmDifettoProdotto difetto) {
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, difettoProdotto)
+
+					.where(difettoProdotto.stgPk.eq(difetto.getStgPk()))
+					.set(difettoProdotto.dmalmProjectFk02,
+							difetto.getDmalmProjectFk02())
+					.set(difettoProdotto.dmalmStatoWorkitemFk03,
+							difetto.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null) {
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	public static void deleteIfNotAnnullato(String idWi,String idRepository) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLDeleteClause(connection, dialect, difettoProdotto)
+
+					.where(difettoProdotto.cdDifetto.eq(idWi))
+					.where(difettoProdotto.idRepository.eq(idRepository))
+					.where(difettoProdotto.annullato.isNull())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null) {
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 }

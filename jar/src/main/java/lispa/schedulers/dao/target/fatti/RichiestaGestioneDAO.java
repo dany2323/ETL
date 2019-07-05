@@ -545,4 +545,40 @@ public class RichiestaGestioneDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(
+			DmalmRichiestaGestione richiesta) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, rchgs)
+
+					.where(rchgs.stgPk.eq(richiesta.getStgPk()))
+					.set(rchgs.dmalmProjectFk02,
+							richiesta.getDmalmProjectFk02())
+					.set(rchgs.dmalmStatoWorkitemFk03,
+							richiesta.getDmalmStatoWorkitemFk03());
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+
+	}
+
 }

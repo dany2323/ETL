@@ -126,7 +126,7 @@ public class ManutenzioneFacade {
 								modificato = true;
 							}
 
-							if(modificato)
+							if(modificato && row.get(man.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -156,6 +156,94 @@ public class ManutenzioneFacade {
 //			ManutenzioneDAO.updateRankInMonth();
 //			
 //			ManutenzioneDAO.updateTempoFK();
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(manutenzione_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(manutenzione_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_MANUTENZIONE, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
+
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmManutenzione> staging_manutenzioni = new ArrayList<DmalmManutenzione>();
+		List<Tuple> target_manutenzioni = new ArrayList<Tuple>();
+		QDmalmManutenzione man = QDmalmManutenzione.dmalmManutenzione;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmManutenzione manutenzione_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_manutenzioni  = ManutenzioneDAO.getAllManutenzione(dataEsecuzione);
+			
+			ManutenzioneOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Manutenzione ODS, "+staging_manutenzioni.size()+ " manutenzioni");
+			
+			ManutenzioneOdsDAO.insert(staging_manutenzioni, dataEsecuzione);
+			
+			List<DmalmManutenzione> x = ManutenzioneOdsDAO.getAll();
+			
+			logger.debug("STOP -> Popolamento Manutenzione ODS, "+staging_manutenzioni.size()+ " manutenzioni");
+			
+			for(DmalmManutenzione manutenzione : x)
+			{   
+				
+				manutenzione.setDmalmProgettoSferaFk(new Integer(0)); //puntamento al record Tappo
+
+				manutenzione_tmp = manutenzione;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				ManutenzioneDAO.updateProjectAndStatus(manutenzione);
+
+			}
+			
 		}
 		catch (DAOException e) 
 		{

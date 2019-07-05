@@ -160,7 +160,7 @@ public class ProgettoDemandFacade {
 							}
 							
 							
-							if (modificato) {
+							if (modificato && row.get(progDemand.dmalmProjectFk02)!=0) {
 								righeModificate++;
 								// STORICIZZO
 								// aggiorno la data di fine validita sul record
@@ -210,5 +210,78 @@ public class ProgettoDemandFacade {
 
 			}
 		}
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmProgettoDemand> staging_progettoDemand = new ArrayList<DmalmProgettoDemand>();
+		List<Tuple> target_progettoDemand = new ArrayList<Tuple>();
+		QDmalmProgettoDemand progDemand = QDmalmProgettoDemand.dmalmProgettoDemand;
+
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento = null;
+
+		DmalmProgettoDemand progetto_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try {
+			staging_progettoDemand = ProgettoDemandDAO
+					.getAllProgettoDemand(dataEsecuzione);
+
+			ProgettoDemandOdsDAO.delete();
+
+			logger.debug("START -> Popolamento ProgettoDemand ODS, "
+					+ staging_progettoDemand.size() + " progetti");
+
+			ProgettoDemandOdsDAO.insert(staging_progettoDemand, dataEsecuzione);
+
+			List<DmalmProgettoDemand> x = ProgettoDemandOdsDAO.getAll();
+
+			logger.debug("STOP -> ProgettoDemand ODS, "
+					+ staging_progettoDemand.size() + " progetti");
+
+			for (DmalmProgettoDemand progetto : x) {
+
+				progetto_tmp = progetto;
+				// Ricerco nel db target un record con idProject =
+				// project.getIdProject e data fine validita uguale a 31-12-9999
+
+				ProgettoDemandDAO
+						.updateProjectAndStatus(progetto);
+
+			}
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(progetto_tmp));
+			logger.error(e.getMessage(), e);
+
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(progetto_tmp));
+			logger.error(e.getMessage(), e);
+
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		} finally {
+			dtFineCaricamento = new Date();
+
+			try {
+
+				EsitiCaricamentoDAO.insert(dataEsecuzione,
+						DmAlmConstants.TARGET_PROGETTO_DEMAND, stato,
+						new Timestamp(dtInizioCaricamento.getTime()),
+						new Timestamp(dtFineCaricamento.getTime()), righeNuove,
+						righeModificate, 0, 0);
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+
+			}
+		}
+		
 	}
 }

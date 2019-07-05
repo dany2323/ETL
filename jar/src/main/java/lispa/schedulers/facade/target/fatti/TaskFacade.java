@@ -124,7 +124,7 @@ public class TaskFacade {
 								modificato = true;
 							}
 
-							if(modificato)
+							if(modificato && row.get(tsk.dmalmProjectFk02)!=0)
 							{
 								
 								righeModificate++;
@@ -198,6 +198,92 @@ public class TaskFacade {
 			}
 		}
 
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmTask> staging_tasks = new ArrayList<DmalmTask>();
+		List<Tuple> target_tasks = new ArrayList<Tuple>();
+		QDmalmTask tsk = QDmalmTask.dmalmTask;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmTask task_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_tasks  = TaskDAO.getAllTask(dataEsecuzione);
+			
+			TaskOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Task ODS, "+staging_tasks.size()+ " task");
+			
+			TaskOdsDAO.insert(staging_tasks, dataEsecuzione);
+			
+			List<DmalmTask> x = TaskOdsDAO.getAll();
+			
+			logger.debug("STOP -> Popolamento Task ODS, "+staging_tasks.size()+ " task");
+			
+			for(DmalmTask task : x)
+			{   			
+				
+				
+				task_tmp = task;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				TaskDAO.updateProjectAndStatus(task);
+
+			}
+			
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(task_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(task_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_TASK, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
 	}
 
 }

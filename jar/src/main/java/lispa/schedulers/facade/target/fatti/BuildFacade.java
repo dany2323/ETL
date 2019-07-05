@@ -125,7 +125,7 @@ public class BuildFacade {
 							}
 							
 							
-							if(modificato)
+							if(modificato && row.get(build_it.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -200,4 +200,48 @@ public class BuildFacade {
 
 	}
 
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmBuild> staging_build = new ArrayList<DmalmBuild>();
+		List<Tuple> target_build = new ArrayList<Tuple>();
+		QDmalmBuild build_it = QDmalmBuild.dmalmBuild;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmBuild build_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_build  = BuildDAO.getAllBuild(dataEsecuzione);
+			
+			BuildOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Build ODS, "+staging_build.size()+ " Build");
+			
+			BuildOdsDAO.insert(staging_build, dataEsecuzione);
+			
+			List<DmalmBuild> x = BuildOdsDAO.getAll();
+			
+			logger.debug("STOP -> Build ODS, "+staging_build.size()+ " Build");
+			
+			for(DmalmBuild build : x)
+			{   
+				
+				build_tmp = build;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				BuildDAO.updateProjectAndStatus(build);
+			}
+		
+		
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+	}
 }

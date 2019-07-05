@@ -498,4 +498,41 @@ public class BuildDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(DmalmBuild build) {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+			new SQLUpdateClause(connection, dialect, BuildDAO.build)
+					.where(BuildDAO.build.stgPk.eq(build.getStgPk()))
+					.set(BuildDAO.build.dmalmProjectFk02,
+							build.getDmalmProjectFk02())
+					.set(BuildDAO.build.dmalmStatoWorkitemFk03,
+							build.getDmalmStatoWorkitemFk03())
+					.set(BuildDAO.build.dmalmStrutturaOrgFk01,
+							build.getDmalmStrutturaOrgFk01())
+					.execute();
+					
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+
+		
+	}
+
 }

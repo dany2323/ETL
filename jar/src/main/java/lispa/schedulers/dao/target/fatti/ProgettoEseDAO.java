@@ -554,4 +554,40 @@ public class ProgettoEseDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(DmalmProgettoEse progetto) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, progettoEse)
+					.where(progettoEse.stgPk.eq(progetto.getStgPk()))
+					.set(progettoEse.dmalmProjectFk02,
+							progetto.getDmalmProjectFk02())
+					.set(progettoEse.dmalmStatoWorkitemFk03,
+							progetto.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					e.printStackTrace();
+				}
+		}
+
+		
+	}
+
 }

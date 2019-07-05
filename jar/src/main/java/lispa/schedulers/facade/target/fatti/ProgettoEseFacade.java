@@ -123,7 +123,7 @@ public class ProgettoEseFacade {
 								modificato = true;
 							}
 							
-							if(modificato)
+							if(modificato && row.get(progEse.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -153,6 +153,91 @@ public class ProgettoEseFacade {
 //			ProgettoEseDAO.updateTempoFK();
 //
 //			ProgettoEseDAO.updateRankInMonth();
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(progetto_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(progetto_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_PROGETTO_ESE, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
+
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmProgettoEse> staging_progettoEse = new ArrayList<DmalmProgettoEse>();
+		List<Tuple> target_progettoEse = new ArrayList<Tuple>();
+		QDmalmProgettoEse progEse = QDmalmProgettoEse.dmalmProgettoEse;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmProgettoEse progetto_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_progettoEse  = ProgettoEseDAO.getAllProgettoEse(dataEsecuzione);
+			
+			ProgettoEseOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento ProgettoEse ODS, "+staging_progettoEse.size()+ " progetti");
+			
+			ProgettoEseOdsDAO.insert(staging_progettoEse, dataEsecuzione);
+			
+			List<DmalmProgettoEse> x = ProgettoEseOdsDAO.getAll();
+			
+			logger.debug("STOP -> ProgettoEse ODS, "+staging_progettoEse.size()+ " progetti");
+			
+			for(DmalmProgettoEse progetto : x)
+			{   
+				
+				progetto_tmp = progetto;
+
+				ProgettoEseDAO.updateProjectAndStatus(progetto);
+
+			}
+			
 		}
 		catch (DAOException e) 
 		{

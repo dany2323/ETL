@@ -480,20 +480,20 @@ public class SireHistoryWorkitemDAO {
 			Connection connOracle = cm.getConnectionOracle();
 			SQLTemplates dialect2 = new HSQLDBTemplates();
 
-			List<String> cPk = new SQLQuery(connOracle,dialect2).distinct()
+			List<String> cId = new SQLQuery(connOracle,dialect2).distinct()
 					.from(total)
 					.where(total.projectFk.eq(0))
 					.where(total.idRepository.eq(DmAlmConstants.REPOSITORY_SIRE))
-					.where(total.stgPk.notIn(new SQLSubQuery()
-							.from(stgWorkItems)
-							.list(stgWorkItems.cPk)))
-					.list(total.stgPk);
+//					.where(total.stgPk.notIn(new SQLSubQuery()
+//							.from(stgWorkItems)
+//							.list(stgWorkItems.cPk)))
+					.list(total.codice);
 
 
 			queryHistory = new SQLQuery(SireHistoryConnection, dialect);
 			historyworkitems = queryHistory
 					.from(fonteHistoryWorkItems)
-					.where(fonteHistoryWorkItems.cPk.in(cPk))
+					.where(fonteHistoryWorkItems.cId.in(cId))
 					.list(fonteHistoryWorkItems.all());
 
 			
@@ -505,6 +505,7 @@ public class SireHistoryWorkitemDAO {
 
 			for (Tuple hist : historyworkitems) {
 				batch_size_counter++;
+				logger.info("cID: "+hist.get(fonteHistoryWorkItems.cId)+ " cPk : "+hist.get(fonteHistoryWorkItems.cPk));
 				insert.columns(stgWorkItems.fkModule, stgWorkItems.cIsLocal,
 						stgWorkItems.cPriority, stgWorkItems.cAutosuspect,
 						stgWorkItems.cResolution, stgWorkItems.cCreated,
@@ -561,10 +562,11 @@ public class SireHistoryWorkitemDAO {
 								dataEsecuzione,
 								StringTemplate
 										.create("HISTORY_WORKITEM_SEQ.nextval")
-
+//						).execute();
 						).addBatch();
 				if (!historyworkitems.isEmpty()
-						&& batch_size_counter == DmAlmConstants.BATCH_SIZE) {
+						&& batch_size_counter > 0) {
+//						&& batch_size_counter == DmAlmConstants.BATCH_SIZE) {
 					insert.execute();
 					batch_size_counter = 0;
 					insert = new SQLInsertClause(OracleConnection, dialect,
@@ -577,7 +579,7 @@ public class SireHistoryWorkitemDAO {
 				insert.execute();
 			}
 
-			ErrorManager.getInstance().resetDeadlock();
+ 			ErrorManager.getInstance().resetDeadlock();
 		} catch (Exception e) {
 			Throwable cause = e;
 			while (cause.getCause() != null)

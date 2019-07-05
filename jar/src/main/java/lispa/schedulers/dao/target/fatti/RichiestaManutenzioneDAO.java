@@ -607,4 +607,42 @@ public class RichiestaManutenzioneDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(
+			DmalmRichiestaManutenzione richiesta) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, rch_man)
+
+					.where(rch_man.stgPk.eq(richiesta.getStgPk()))
+					.set(rch_man.dmalmProjectFk02,
+							richiesta.getDmalmProjectFk02())
+					.set(rch_man.dmalmStatoWorkitemFk03,
+							richiesta.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+	}
+
 }

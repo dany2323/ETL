@@ -125,7 +125,7 @@ private static Logger logger = Logger.getLogger(FaseFacade.class);
 								modificato = true;
 							}
 
-							if(modificato)
+							if(modificato && row.get(fs.dmalmProjectFk02)!=0)
 							{
 								righeModificate++;
 								// STORICIZZO
@@ -197,6 +197,90 @@ private static Logger logger = Logger.getLogger(FaseFacade.class);
 			}
 		}
 
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+		
+		List<DmalmFase> staging_fasi = new ArrayList<DmalmFase>();
+		List<Tuple> target_fasi = new ArrayList<Tuple>();
+		QDmalmFase fs = QDmalmFase.dmalmFase;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmFase fase_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_fasi  = FaseDAO.getAllFase(dataEsecuzione);
+			
+			FaseOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Fase ODS, "+staging_fasi.size()+ " fasi");
+			
+			FaseOdsDAO.insert(staging_fasi, dataEsecuzione);
+			
+			List<DmalmFase> x = FaseOdsDAO.getAll();
+			
+			logger.debug("STOP -> Popolamento Fase ODS, "+staging_fasi.size()+ " fasi");
+			
+			for(DmalmFase fase : x)
+			{   
+				
+				fase_tmp = fase;
+
+				FaseDAO.updateProjectAndStatus(fase);
+
+			}
+			
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(fase_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(fase_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_FASE, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
 	}
 	
 }

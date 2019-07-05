@@ -593,4 +593,36 @@ public class AnomaliaAssistenzaDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(
+			DmalmAnomaliaAssistenza anomalia_assistenza) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+			new SQLUpdateClause(connection, dialect, anomass)
+					.where(anomass.stgPk.eq(anomalia_assistenza.getStgPk()))
+					.set(anomass.dmalmProjectFk02,
+							anomalia_assistenza.getDmalmProjectFk02())
+					.set(anomass.dmalmStatoWorkitemFk03,
+							anomalia_assistenza.getDmalmStatoWorkitemFk03());
+			connection.commit();
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+	}
+
 }

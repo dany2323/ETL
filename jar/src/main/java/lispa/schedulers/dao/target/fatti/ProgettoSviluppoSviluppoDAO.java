@@ -635,4 +635,45 @@ public class ProgettoSviluppoSviluppoDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(
+			DmalmProgettoSviluppoSvil progettoSviluppo) {
+		
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, progetto)
+
+					.where(progetto.stgPk.eq(progettoSviluppo.getStgPk()))
+
+					.set(progetto.dmalmProjectFk02,
+							progettoSviluppo.getDmalmProjectFk02())
+					.set(progetto.dmalmStatoWorkitemFk03,
+							progettoSviluppo.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+
+		
+	}
+
 }

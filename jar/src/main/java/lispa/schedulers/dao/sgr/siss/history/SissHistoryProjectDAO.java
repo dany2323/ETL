@@ -1,6 +1,7 @@
 package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,6 +148,118 @@ public class SissHistoryProjectDAO {
 				cm.closeConnection(connOracle);
 		}
 	}
+	
+	public static void fillSissHistoryProjectPkNotExist()
+			throws Exception {
+
+		ConnectionManager cm = null;
+		Connection connOracle = null;
+		Connection connH2 = null;
+		List<Tuple> projects = null;
+		QDmalmProject dmalmProject= QDmalmProject.dmalmProject;
+		try {
+			
+			cm = ConnectionManager.getInstance();
+			connOracle = cm.getConnectionOracle();
+			connH2 = cm.getConnectionSISSHistory();
+			projects = new ArrayList<Tuple>();
+
+			connOracle.setAutoCommit(false);
+
+			SQLTemplates dialect = new HSQLDBTemplates() {
+				{
+					setPrintSchema(true);
+				}
+			};
+			SQLQuery query2 = new SQLQuery(connOracle, dialect);
+
+			List<String> cPk = query2.distinct().from(dmalmProject).where(dmalmProject.cPk.isNotNull()).list(dmalmProject.cPk);
+			SQLQuery query = new SQLQuery(connH2, dialect);
+			
+			projects = query
+					.from(fonteProjects, fonteRevisions)
+					.where(fonteRevisions.cName.castToNum(Long.class).eq(
+							fonteProjects.cRev))
+					.where(fonteProjects.cPk.notIn(cPk))
+					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
+					.where(fonteProjects.cId.notIn(new SQLSubQuery()
+							.from(fonteProjects2)
+							.where(fonteProjects2.cName.like("%{READONLY}%"))
+							.list(fonteProjects2.cId)))
+					.list(fonteProjects.cTrackerprefix, fonteProjects.cIsLocal,
+							fonteProjects.cPk, fonteProjects.fkUriLead,
+							fonteProjects.cDeleted, fonteProjects.cFinish,
+							fonteProjects.cUri, fonteProjects.cStart,
+							fonteProjects.fkUriProjectgroup,
+							fonteProjects.cActive, fonteProjects.cLocation,
+							fonteProjects.fkProjectgroup, fonteProjects.fkLead,
+							fonteProjects.cLockworkrecordsdate,
+							fonteProjects.cName, fonteProjects.cId,
+							fonteProjects.cRev, fonteProjects.cDescription,
+							fonteRevisions.cName, fonteRevisions.cCreated);
+			
+			logger.debug("SissHistoryProjectDAO.fillSissHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
+			
+			for (Tuple row : projects) {
+				SQLQuery query3 = new SQLQuery(connOracle, dialect);
+				Long count=query3.from(stgProjects).where(stgProjects.cPk.eq(row.get(fonteProjects.cPk))).count();
+				if(count==0) {
+					new SQLInsertClause(connOracle, dialect, stgProjects)
+							.columns(stgProjects.cTrackerprefix,
+									stgProjects.cIsLocal, stgProjects.cPk,
+									stgProjects.fkUriLead, stgProjects.cDeleted,
+									stgProjects.cFinish, stgProjects.cUri,
+									stgProjects.cStart,
+									stgProjects.fkUriProjectgroup,
+									stgProjects.cActive, stgProjects.cLocation,
+									stgProjects.fkProjectgroup, stgProjects.fkLead,
+									stgProjects.cLockworkrecordsdate,
+									stgProjects.cName, stgProjects.cId,
+									stgProjects.dataCaricamento,
+									stgProjects.dmalmProjectPk, stgProjects.cRev,
+									stgProjects.cCreated, stgProjects.cDescription)
+							.values(row.get(fonteProjects.cTrackerprefix),
+									row.get(fonteProjects.cIsLocal),
+									row.get(fonteProjects.cPk),
+									StringUtils.getMaskedValue(row.get(fonteProjects.fkUriLead)),
+									row.get(fonteProjects.cDeleted),
+									row.get(fonteProjects.cFinish),
+									row.get(fonteProjects.cUri),
+									row.get(fonteProjects.cStart),
+									row.get(fonteProjects.fkUriProjectgroup),
+									row.get(fonteProjects.cActive),
+									row.get(fonteProjects.cLocation),
+									row.get(fonteProjects.fkProjectgroup),
+									StringUtils.getMaskedValue(row.get(fonteProjects.fkLead)),
+									row.get(fonteProjects.cLockworkrecordsdate),
+									row.get(fonteProjects.cName),
+									row.get(fonteProjects.cId),
+									DataEsecuzione.getInstance()
+											.getDataEsecuzione(),
+									StringTemplate
+											.create("HISTORY_PROJECT_SEQ.nextval"),
+									row.get(fonteProjects.cRev),
+									row.get(fonteRevisions.cCreated),
+									row.get(fonteProjects.cDescription)).execute();
+				}
+				else {
+					logger.info("CPK : "+row.get(fonteProjects.cPk)+" già esistente");
+				}
+			}
+			connOracle.commit();
+			ConnectionManager.getInstance().dismiss();
+			updateProjectTemplate(DataEsecuzione.getInstance().getDataEsecuzione());
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connH2);
+			if (cm != null)
+				cm.closeConnection(connOracle);
+		}
+	}
 
 	public static long getMinRevision() throws Exception {
 		ConnectionManager cm = null;
@@ -198,6 +311,52 @@ public class SissHistoryProjectDAO {
 					.distinct()
 					.where(stgProjects.cRev.gt(minRevision))
 					.where(stgProjects.cRev.loe(maxRevision))
+					.list(stgProjects.cUri, stgProjects.cLocation,
+							stgProjects.cRev);
+
+			for (Tuple location : projects) {
+
+				if (location != null
+						&& location.get(stgProjects.cLocation) != null
+						&& !location.get(stgProjects.cLocation).equals("")) {
+
+					String loc = location.get(stgProjects.cLocation);
+					long rev = location.get(stgProjects.cRev);
+					setTemplate(loc, rev, DmAlmConstants.REPOSITORY_SISS);
+				}
+			}
+
+			setAllSissTemplate();
+
+		} catch (Exception e) {
+
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if (cm != null)
+					cm.closeConnection(oracle);
+			} catch (DAOException e) {
+			}
+		}
+	}
+
+	public static void updateProjectTemplate(Timestamp dataEsecuzione) {
+
+		ConnectionManager cm = null;
+		Connection oracle = null;
+		List<Tuple> projects = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			oracle = cm.getConnectionOracle();
+
+			SQLTemplates dialect = new HSQLDBTemplates();
+			SQLQuery query = new SQLQuery(oracle, dialect);
+
+			projects = query
+					.from(stgProjects)
+					.distinct()
+					.where(stgProjects.dataCaricamento.eq(dataEsecuzione))
 					.list(stgProjects.cUri, stgProjects.cLocation,
 							stgProjects.cRev);
 

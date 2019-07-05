@@ -482,4 +482,40 @@ public class PeiDAO {
 		}
 	}
 
+	public static void updateProjectAndStatus(DmalmPei pei) {
+		
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			connection.setAutoCommit(false);
+
+			new SQLUpdateClause(connection, dialect, p)
+
+					.where(p.stgPk.eq(pei.getStgPk()))
+					.set(p.dmalmProjectFk02, pei.getDmalmProjectFk02())
+					.set(p.dmalmStatoWorkitemFk03,
+							pei.getDmalmStatoWorkitemFk03())
+					.execute();
+
+			connection.commit();
+
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null)
+				try {
+					cm.closeConnection(connection);
+				} catch (DAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+
+	}
+
 }

@@ -124,7 +124,7 @@ public class RichiestaGestioneFacade {
 								modificato = true;
 							}
 
-							if(modificato)
+							if(modificato && row.get(rcgs.dmalmProjectFk02)!=0)
 							{
 								
 								righeModificate++;
@@ -153,6 +153,92 @@ public class RichiestaGestioneFacade {
 //			RichiestaGestioneDAO.updateRankInMonth();
 //			
 //			RichiestaGestioneDAO.updateTempoFK();
+		}
+		catch (DAOException e) 
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(rich_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		catch(Exception e)
+		{
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			logger.error(LogUtils.objectToString(rich_tmp));
+			logger.error(e.getMessage(), e);
+			
+			
+			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		}
+		finally
+		{
+			dtFineCaricamento = new Date();
+
+			try {
+				
+				EsitiCaricamentoDAO.insert
+				(
+							dataEsecuzione,
+							DmAlmConstants.TARGET_RICHIESTA_GESTIONE, 
+							stato, 
+							new Timestamp(dtInizioCaricamento.getTime()), 
+							new Timestamp(dtFineCaricamento.getTime()), 
+							righeNuove, 
+							righeModificate, 
+							0, 
+							0
+				);	
+			} catch (DAOException | SQLException e) {
+
+				logger.error(e.getMessage(), e);
+				
+			}
+		}
+
+	}
+
+	public static void updateProjectAndStatus(Timestamp dataEsecuzione) {
+
+		List<DmalmRichiestaGestione> staging_richieste = new ArrayList<DmalmRichiestaGestione>();
+		List<Tuple> target_richieste = new ArrayList<Tuple>();
+		QDmalmRichiestaGestione rcgs = QDmalmRichiestaGestione.dmalmRichiestaGestione;
+		
+		int righeNuove = 0;
+		int righeModificate = 0;
+
+		Date dtInizioCaricamento = new Date();
+		Date dtFineCaricamento 	 = null;
+		
+		DmalmRichiestaGestione rich_tmp = null;
+
+		String stato = DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE;
+
+		try
+		{
+			staging_richieste  = RichiestaGestioneDAO.getAllRichiestaGestione(dataEsecuzione);
+			
+			RichiestaGestioneOdsDAO.delete();
+			
+			logger.debug("START -> Popolamento Richiesta Gestione ODS, "+staging_richieste.size()+ " richieste");
+			
+			RichiestaGestioneOdsDAO.insert(staging_richieste, dataEsecuzione);
+			
+			List<DmalmRichiestaGestione> x = RichiestaGestioneOdsDAO.getAll();
+			
+			logger.debug("STOP -> Popolamento Richiesta Gestione ODS, "+staging_richieste.size()+ " richieste");
+			
+			for(DmalmRichiestaGestione richiesta : x)
+			{   			
+				
+				
+				rich_tmp = richiesta;
+				// Ricerco nel db target un record con idProject = project.getIdProject e data fine validita uguale a 31-12-9999
+
+				RichiestaGestioneDAO.updateProjectAndStatus(richiesta);
+
+			}
 		}
 		catch (DAOException e) 
 		{
