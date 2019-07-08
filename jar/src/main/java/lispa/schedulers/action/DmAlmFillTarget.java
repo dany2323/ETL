@@ -132,64 +132,64 @@ public class DmAlmFillTarget {
 				// ELETTRA/SGRCM
 				if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
 					// -- Elettra inizio ------------------------------------------
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE)) {
-						ElettraUnitaOrganizzativeFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE);
-					}
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PERSONALE)) {
-						ElettraPersonaleFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_ELETTRA_PERSONALE);
-					}
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_CLASSIFICATORI)) {
-						ElettraClassificatoriFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_ELETTRA_CLASSIFICATORI);
-					}
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE)) {
-						ElettraProdottiArchitettureFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE);
-					}
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_MODULI)) {
-						ElettraModuliFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_ELETTRA_MODULI);
-					}
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_FUNZIONALITA)) {
-						ElettraFunzionalitaFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_ELETTRA_FUNZIONALITA);
-					}
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICO)) {
-						ElettraAmbienteTecnologicoFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICO);
-					}
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI)) {
-						ElettraAmbienteTecnologicoClassificatoriFacade
-								.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione: "
-								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI);
-					}
-					// -- Elettra Fine ------------------------------------------
-	
-					logger.info("START PersonaleEdmaFacade.execute " + new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_EDMA_PERSONALE)) {
-						PersonaleEdmaFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
-	
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE)) {
+//						ElettraUnitaOrganizzativeFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione: "
+//								+ DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE);
+//					}
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PERSONALE)) {
+//						ElettraPersonaleFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione: "
+//								+ DmAlmConstants.TARGET_ELETTRA_PERSONALE);
+//					}
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_CLASSIFICATORI)) {
+//						ElettraClassificatoriFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione: "
+//								+ DmAlmConstants.TARGET_ELETTRA_CLASSIFICATORI);
+//					}
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE)) {
+//						ElettraProdottiArchitettureFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione: "
+//								+ DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE);
+//					}
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_MODULI)) {
+//						ElettraModuliFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione: "
+//								+ DmAlmConstants.TARGET_ELETTRA_MODULI);
+//					}
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_FUNZIONALITA)) {
+//						ElettraFunzionalitaFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione: "
+//								+ DmAlmConstants.TARGET_ELETTRA_FUNZIONALITA);
+//					}
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICO)) {
+//						ElettraAmbienteTecnologicoFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione: "
+//								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICO);
+//					}
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI)) {
+//						ElettraAmbienteTecnologicoClassificatoriFacade
+//								.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione: "
+//								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI);
+//					}
+//					// -- Elettra Fine ------------------------------------------
+//	
+//					logger.info("START PersonaleEdmaFacade.execute " + new Date());
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_EDMA_PERSONALE)) {
+//						PersonaleEdmaFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione ");
+//					}
+//	
 					logger.info("START UserSgrCmFacade.execute " + new Date());
 					if (!alreadyExecuted(DmAlmConstants.TARGET_USER)) {
 						UserSgrCmFacade.execute(dataEsecuzione);
