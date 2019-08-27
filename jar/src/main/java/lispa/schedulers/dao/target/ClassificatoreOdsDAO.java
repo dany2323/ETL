@@ -135,9 +135,9 @@ public class ClassificatoreOdsDAO {
 									classificatore.getTagAlm(), classificatore.getTsTagAlm()).execute();
 	
 				}
-	
-				connection.commit();
 			}
+			
+			connection.commit();
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

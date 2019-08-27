@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
@@ -59,67 +60,73 @@ public class SottoprogrammaOdsDAO {
 			Timestamp dataEsecuzione) throws SQLException, DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<Integer>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
 			for (DmalmSottoprogramma sottoprogramma : staging_sottoprogramma) {
-				new SQLInsertClause(connection, dialect, sottoprogrammaODS)
-						.columns(sottoprogrammaODS.idRepository,
-								sottoprogrammaODS.dmalmSottoprogrammaPk,
-								sottoprogrammaODS.cdSottoprogramma,
-								sottoprogrammaODS.dtCreazioneSottoprogramma,
-								sottoprogrammaODS.dmalmProjectFk02,
-								sottoprogrammaODS.dmalmStatoWorkitemFk03,
-								sottoprogrammaODS.dtCambioStatoSottoprogramma,
-								sottoprogrammaODS.dtScadenzaSottoprogramma,
-								sottoprogrammaODS.dtModificaSottoprogramma,
-								sottoprogrammaODS.idAutoreSottoprogramma,
-								sottoprogrammaODS.dsAutoreSottoprogramma,
-								sottoprogrammaODS.titoloSottoprogramma,
-								sottoprogrammaODS.motivoRisoluzioneSottoprogr,
-								sottoprogrammaODS.dtRisoluzioneSottoprogramma,
-								sottoprogrammaODS.descrizioneSottoprogramma,
-								sottoprogrammaODS.codice,
-								sottoprogrammaODS.numeroLinea,
-								sottoprogrammaODS.numeroTestata,
-								sottoprogrammaODS.dtCompletamento,
-								sottoprogrammaODS.stgPk,
-								sottoprogrammaODS.dtCaricamentoSottoprogramma,
-								sottoprogrammaODS.dmalmTempoFk04,
-								sottoprogrammaODS.dmalmUserFk06,
-								sottoprogrammaODS.uri,
-								sottoprogrammaODS.severity, sottoprogrammaODS.priority,
-								sottoprogrammaODS.tagAlm, sottoprogrammaODS.tsTagAlm)
-						.values(sottoprogramma.getIdRepository(),
-								sottoprogramma.getDmalmSottoprogrammaPk(),
-								sottoprogramma.getCdSottoprogramma(),
-								sottoprogramma.getDtCreazioneSottoprogramma(),
-								sottoprogramma.getDmalmProjectFk02(),
-								sottoprogramma.getDmalmStatoWorkitemFk03(),
-								sottoprogramma.getDtCambioStatoSottoprogramma(),
-								sottoprogramma.getDtScadenzaSottoprogramma(),
-								sottoprogramma.getDtModificaSottoprogramma(),
-								sottoprogramma.getIdAutoreSottoprogramma(),
-								sottoprogramma.getDsAutoreSottoprogramma(),
-								sottoprogramma.getTitoloSottoprogramma(),
-								sottoprogramma.getMotivoRisoluzioneSottoprogr(),
-								sottoprogramma.getDtRisoluzioneSottoprogramma(),
-								sottoprogramma.getDescrizioneSottoprogramma(),
-								sottoprogramma.getCodice(),
-								sottoprogramma.getNumeroLinea(),
-								sottoprogramma.getNumeroTestata(),
-								sottoprogramma.getDtCompletamento(),
-								sottoprogramma.getStgPk(),
-								sottoprogramma.getDtCaricamentoSottoprogramma(),
-								sottoprogramma.getDmalmTempoFk04(),
-								sottoprogramma.getDmalmUserFk06(),
-								sottoprogramma.getUri(),
-								//DM_ALM-320
-								sottoprogramma.getSeverity(), sottoprogramma.getPriority(),
-								sottoprogramma.getTagAlm(), sottoprogramma.getTsTagAlm()).execute();
+				if(listPk.contains(sottoprogramma.getDmalmSottoprogrammaPk()))
+					logger.info("Trovata DmalmSottoprogrammaPk DUPLICATA!!!"+sottoprogramma.getDmalmSottoprogrammaPk());
+				else{
+					listPk.add(sottoprogramma.getDmalmSottoprogrammaPk());
+					new SQLInsertClause(connection, dialect, sottoprogrammaODS)
+							.columns(sottoprogrammaODS.idRepository,
+									sottoprogrammaODS.dmalmSottoprogrammaPk,
+									sottoprogrammaODS.cdSottoprogramma,
+									sottoprogrammaODS.dtCreazioneSottoprogramma,
+									sottoprogrammaODS.dmalmProjectFk02,
+									sottoprogrammaODS.dmalmStatoWorkitemFk03,
+									sottoprogrammaODS.dtCambioStatoSottoprogramma,
+									sottoprogrammaODS.dtScadenzaSottoprogramma,
+									sottoprogrammaODS.dtModificaSottoprogramma,
+									sottoprogrammaODS.idAutoreSottoprogramma,
+									sottoprogrammaODS.dsAutoreSottoprogramma,
+									sottoprogrammaODS.titoloSottoprogramma,
+									sottoprogrammaODS.motivoRisoluzioneSottoprogr,
+									sottoprogrammaODS.dtRisoluzioneSottoprogramma,
+									sottoprogrammaODS.descrizioneSottoprogramma,
+									sottoprogrammaODS.codice,
+									sottoprogrammaODS.numeroLinea,
+									sottoprogrammaODS.numeroTestata,
+									sottoprogrammaODS.dtCompletamento,
+									sottoprogrammaODS.stgPk,
+									sottoprogrammaODS.dtCaricamentoSottoprogramma,
+									sottoprogrammaODS.dmalmTempoFk04,
+									sottoprogrammaODS.dmalmUserFk06,
+									sottoprogrammaODS.uri,
+									sottoprogrammaODS.severity, sottoprogrammaODS.priority,
+									sottoprogrammaODS.tagAlm, sottoprogrammaODS.tsTagAlm)
+							.values(sottoprogramma.getIdRepository(),
+									sottoprogramma.getDmalmSottoprogrammaPk(),
+									sottoprogramma.getCdSottoprogramma(),
+									sottoprogramma.getDtCreazioneSottoprogramma(),
+									sottoprogramma.getDmalmProjectFk02(),
+									sottoprogramma.getDmalmStatoWorkitemFk03(),
+									sottoprogramma.getDtCambioStatoSottoprogramma(),
+									sottoprogramma.getDtScadenzaSottoprogramma(),
+									sottoprogramma.getDtModificaSottoprogramma(),
+									sottoprogramma.getIdAutoreSottoprogramma(),
+									sottoprogramma.getDsAutoreSottoprogramma(),
+									sottoprogramma.getTitoloSottoprogramma(),
+									sottoprogramma.getMotivoRisoluzioneSottoprogr(),
+									sottoprogramma.getDtRisoluzioneSottoprogramma(),
+									sottoprogramma.getDescrizioneSottoprogramma(),
+									sottoprogramma.getCodice(),
+									sottoprogramma.getNumeroLinea(),
+									sottoprogramma.getNumeroTestata(),
+									sottoprogramma.getDtCompletamento(),
+									sottoprogramma.getStgPk(),
+									sottoprogramma.getDtCaricamentoSottoprogramma(),
+									sottoprogramma.getDmalmTempoFk04(),
+									sottoprogramma.getDmalmUserFk06(),
+									sottoprogramma.getUri(),
+									//DM_ALM-320
+									sottoprogramma.getSeverity(), sottoprogramma.getPriority(),
+									sottoprogramma.getTagAlm(), sottoprogramma.getTsTagAlm()).execute();
+				}
 			}
 			connection.commit();
 		} catch (Exception e) {

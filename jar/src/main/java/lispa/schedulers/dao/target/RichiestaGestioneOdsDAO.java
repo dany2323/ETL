@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
@@ -60,7 +61,8 @@ public class RichiestaGestioneOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -68,62 +70,66 @@ public class RichiestaGestioneOdsDAO {
 			connection.setAutoCommit(false);
 
 			for (DmalmRichiestaGestione richiesta : staging_richieste) {
-
-				new SQLInsertClause(connection, dialect, richiestaODS)
-						.columns(richiestaODS.categoria,
-								richiestaODS.cdRichiestaGest,
-								richiestaODS.dataChiusura,
-								richiestaODS.dataDisponibilita,
-								richiestaODS.descrizioneRichiestaGest,
-								richiestaODS.dmalmProjectFk02,
-								richiestaODS.dmalmRichiestaGestPk,
-								richiestaODS.dmalmStatoWorkitemFk03,
-								richiestaODS.dmalmStrutturaOrgFk01,
-								richiestaODS.dmalmTempoFk04,
-								richiestaODS.dsAutoreRichiestaGest,
-								richiestaODS.dtCambioStatoRichiestaGest,
-								richiestaODS.dtCaricamentoRichiestaGest,
-								richiestaODS.dtCreazioneRichiestaGest,
-								richiestaODS.dtModificaRichiestaGest,
-								richiestaODS.dtRisoluzioneRichiestaGest,
-								richiestaODS.dtScadenzaRichiestaGest,
-								richiestaODS.dtStoricizzazione,
-								richiestaODS.idAutoreRichiestaGest,
-								richiestaODS.idRepository,
-								richiestaODS.motivoRisoluzioneRichGest,
-								richiestaODS.stgPk, richiestaODS.ticketid,
-								richiestaODS.titoloRichiestaGest,
-								richiestaODS.dmalmUserFk06, richiestaODS.uri,
-								richiestaODS.severity, richiestaODS.priority,
-								richiestaODS.tagAlm, richiestaODS.tsTagAlm)
-						.values(richiesta.getCategoria(),
-								richiesta.getCdRichiestaGest(),
-								richiesta.getDataChiusura(),
-								richiesta.getDataDisponibilita(),
-								richiesta.getDescrizioneRichiestaGest(),
-								richiesta.getDmalmProjectFk02(),
-								richiesta.getDmalmRichiestaGestPk(),
-								richiesta.getDmalmStatoWorkitemFk03(),
-								richiesta.getDmalmStrutturaOrgFk01(),
-								richiesta.getDmalmTempoFk04(),
-								richiesta.getDsAutoreRichiestaGest(),
-								richiesta.getDtCambioStatoRichiestaGest(),
-								richiesta.getDtCaricamentoRichiestaGest(),
-								richiesta.getDtCreazioneRichiestaGest(),
-								richiesta.getDtModificaRichiestaGest(),
-								richiesta.getDtRisoluzioneRichiestaGest(),
-								richiesta.getDtScadenzaRichiestaGest(),
-								richiesta.getDtModificaRichiestaGest(),
-								richiesta.getIdAutoreRichiestaGest(),
-								richiesta.getIdRepository(),
-								richiesta.getMotivoRisoluzioneRichGest(),
-								richiesta.getStgPk(), richiesta.getTicketid(),
-								richiesta.getTitoloRichiestaGest(),
-								richiesta.getDmalmUserFk06(),
-								richiesta.getUri(),
-								richiesta.getSeverity(), richiesta.getPriority(),
-								richiesta.getTagAlm(), richiesta.getTsTagAlm()).execute();
-
+				if(listPk.contains(richiesta.getDmalmRichiestaGestPk()))
+					logger.info("Trovata DmalmRichiestaGestPk DUPLICATA!!!"+richiesta.getDmalmRichiestaGestPk());
+				else{
+					
+					listPk.add(richiesta.getDmalmRichiestaGestPk());
+					new SQLInsertClause(connection, dialect, richiestaODS)
+							.columns(richiestaODS.categoria,
+									richiestaODS.cdRichiestaGest,
+									richiestaODS.dataChiusura,
+									richiestaODS.dataDisponibilita,
+									richiestaODS.descrizioneRichiestaGest,
+									richiestaODS.dmalmProjectFk02,
+									richiestaODS.dmalmRichiestaGestPk,
+									richiestaODS.dmalmStatoWorkitemFk03,
+									richiestaODS.dmalmStrutturaOrgFk01,
+									richiestaODS.dmalmTempoFk04,
+									richiestaODS.dsAutoreRichiestaGest,
+									richiestaODS.dtCambioStatoRichiestaGest,
+									richiestaODS.dtCaricamentoRichiestaGest,
+									richiestaODS.dtCreazioneRichiestaGest,
+									richiestaODS.dtModificaRichiestaGest,
+									richiestaODS.dtRisoluzioneRichiestaGest,
+									richiestaODS.dtScadenzaRichiestaGest,
+									richiestaODS.dtStoricizzazione,
+									richiestaODS.idAutoreRichiestaGest,
+									richiestaODS.idRepository,
+									richiestaODS.motivoRisoluzioneRichGest,
+									richiestaODS.stgPk, richiestaODS.ticketid,
+									richiestaODS.titoloRichiestaGest,
+									richiestaODS.dmalmUserFk06, richiestaODS.uri,
+									richiestaODS.severity, richiestaODS.priority,
+									richiestaODS.tagAlm, richiestaODS.tsTagAlm)
+							.values(richiesta.getCategoria(),
+									richiesta.getCdRichiestaGest(),
+									richiesta.getDataChiusura(),
+									richiesta.getDataDisponibilita(),
+									richiesta.getDescrizioneRichiestaGest(),
+									richiesta.getDmalmProjectFk02(),
+									richiesta.getDmalmRichiestaGestPk(),
+									richiesta.getDmalmStatoWorkitemFk03(),
+									richiesta.getDmalmStrutturaOrgFk01(),
+									richiesta.getDmalmTempoFk04(),
+									richiesta.getDsAutoreRichiestaGest(),
+									richiesta.getDtCambioStatoRichiestaGest(),
+									richiesta.getDtCaricamentoRichiestaGest(),
+									richiesta.getDtCreazioneRichiestaGest(),
+									richiesta.getDtModificaRichiestaGest(),
+									richiesta.getDtRisoluzioneRichiestaGest(),
+									richiesta.getDtScadenzaRichiestaGest(),
+									richiesta.getDtModificaRichiestaGest(),
+									richiesta.getIdAutoreRichiestaGest(),
+									richiesta.getIdRepository(),
+									richiesta.getMotivoRisoluzioneRichGest(),
+									richiesta.getStgPk(), richiesta.getTicketid(),
+									richiesta.getTitoloRichiestaGest(),
+									richiesta.getDmalmUserFk06(),
+									richiesta.getUri(),
+									richiesta.getSeverity(), richiesta.getPriority(),
+									richiesta.getTagAlm(), richiesta.getTsTagAlm()).execute();
+				}
 			}
 
 			connection.commit();

@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
@@ -55,71 +56,78 @@ public class ReleaseServiziOdsDAO {
 			Timestamp dataEsecuzione) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
 			for (DmalmReleaseServizi release : staging_releaseservizi) {
-				new SQLInsertClause(connection, dialect, releaseserviziODS)
-						.columns(releaseserviziODS.cdRelServizi,
-								releaseserviziODS.descrizioneRelServizi,
-								releaseserviziODS.dmalmRelServiziPk,
-								releaseserviziODS.dmalmProjectFk02,
-								releaseserviziODS.dmalmStatoWorkitemFk03,
-								releaseserviziODS.dmalmStrutturaOrgFk01,
-								releaseserviziODS.dmalmTempoFk04,
-								releaseserviziODS.dsAutoreRelServizi,
-								releaseserviziODS.dtCambioStatoRelServizi,
-								releaseserviziODS.dtCaricamentoRelServizi,
-								releaseserviziODS.dtCreazioneRelServizi,
-								releaseserviziODS.dtModificaRelServizi,
-								releaseserviziODS.dtRisoluzioneRelServizi,
-								releaseserviziODS.dtScadenzaRelServizi,
-								releaseserviziODS.dtStoricizzazione,
-								releaseserviziODS.idAutoreRelServizi,
-								releaseserviziODS.idRepository,
-								releaseserviziODS.motivoRisoluzioneRelServizi,
-								releaseserviziODS.rankStatoRelServizi,
-								releaseserviziODS.titoloRelServizi,
-								releaseserviziODS.stgPk,
-								releaseserviziODS.motivoSospensioneReleaseSer,
-								releaseserviziODS.previstoFermoServizioRel,
-								releaseserviziODS.richiestaAnalisiImpattiRel,
-								releaseserviziODS.dmalmUserFk06,
-								releaseserviziODS.uri,
-								releaseserviziODS.severity,
-								releaseserviziODS.priority,
-								releaseserviziODS.tagAlm, releaseserviziODS.tsTagAlm)
-						.values(release.getCdRelServizi(),
-								release.getDescrizioneRelServizi(),
-								release.getDmalmRelServiziPk(),
-								release.getDmalmProjectFk02(),
-								release.getDmalmStatoWorkitemFk03(),
-								release.getDmalmStrutturaOrgFk01(),
-								release.getDmalmTempoFk04(),
-								release.getDsAutoreRelServizi(),
-								release.getDtCambioStatoRelServizi(),
-								release.getDtCaricamentoRelServizi(),
-								release.getDtCreazioneRelServizi(),
-								release.getDtModificaRelServizi(),
-								release.getDtRisoluzioneRelServizi(),
-								release.getDtScadenzaRelServizi(),
-								release.getDtModificaRelServizi(),
-								release.getIdAutoreRelServizi(),
-								release.getIdRepository(),
-								release.getMotivoRisoluzioneRelServizi(),
-								new Double(1), release.getTitoloRelServizi(),
-								release.getStgPk(),
-								release.getMotivoSospensioneReleaseSer(),
-								release.getPrevistoFermoServizioRel(),
-								release.getRichiestaAnalisiImpattiRel(),
-								release.getDmalmUserFk06(), release.getUri(),
-								release.getSeverity(), release.getPriority(),
-								release.getTagAlm(), release.getTsTagAlm())
-						.execute();
-				connection.commit();
+				if(listPk.contains(release.getDmalmRelServiziPk()))
+					logger.info("Trovata DmalmRelServiziPk DUPLICATA!!!"+release.getDmalmRelServiziPk());
+				else{
+					
+					listPk.add(release.getDmalmRelServiziPk());
+					new SQLInsertClause(connection, dialect, releaseserviziODS)
+							.columns(releaseserviziODS.cdRelServizi,
+									releaseserviziODS.descrizioneRelServizi,
+									releaseserviziODS.dmalmRelServiziPk,
+									releaseserviziODS.dmalmProjectFk02,
+									releaseserviziODS.dmalmStatoWorkitemFk03,
+									releaseserviziODS.dmalmStrutturaOrgFk01,
+									releaseserviziODS.dmalmTempoFk04,
+									releaseserviziODS.dsAutoreRelServizi,
+									releaseserviziODS.dtCambioStatoRelServizi,
+									releaseserviziODS.dtCaricamentoRelServizi,
+									releaseserviziODS.dtCreazioneRelServizi,
+									releaseserviziODS.dtModificaRelServizi,
+									releaseserviziODS.dtRisoluzioneRelServizi,
+									releaseserviziODS.dtScadenzaRelServizi,
+									releaseserviziODS.dtStoricizzazione,
+									releaseserviziODS.idAutoreRelServizi,
+									releaseserviziODS.idRepository,
+									releaseserviziODS.motivoRisoluzioneRelServizi,
+									releaseserviziODS.rankStatoRelServizi,
+									releaseserviziODS.titoloRelServizi,
+									releaseserviziODS.stgPk,
+									releaseserviziODS.motivoSospensioneReleaseSer,
+									releaseserviziODS.previstoFermoServizioRel,
+									releaseserviziODS.richiestaAnalisiImpattiRel,
+									releaseserviziODS.dmalmUserFk06,
+									releaseserviziODS.uri,
+									releaseserviziODS.severity,
+									releaseserviziODS.priority,
+									releaseserviziODS.tagAlm, releaseserviziODS.tsTagAlm)
+							.values(release.getCdRelServizi(),
+									release.getDescrizioneRelServizi(),
+									release.getDmalmRelServiziPk(),
+									release.getDmalmProjectFk02(),
+									release.getDmalmStatoWorkitemFk03(),
+									release.getDmalmStrutturaOrgFk01(),
+									release.getDmalmTempoFk04(),
+									release.getDsAutoreRelServizi(),
+									release.getDtCambioStatoRelServizi(),
+									release.getDtCaricamentoRelServizi(),
+									release.getDtCreazioneRelServizi(),
+									release.getDtModificaRelServizi(),
+									release.getDtRisoluzioneRelServizi(),
+									release.getDtScadenzaRelServizi(),
+									release.getDtModificaRelServizi(),
+									release.getIdAutoreRelServizi(),
+									release.getIdRepository(),
+									release.getMotivoRisoluzioneRelServizi(),
+									new Double(1), release.getTitoloRelServizi(),
+									release.getStgPk(),
+									release.getMotivoSospensioneReleaseSer(),
+									release.getPrevistoFermoServizioRel(),
+									release.getRichiestaAnalisiImpattiRel(),
+									release.getDmalmUserFk06(), release.getUri(),
+									release.getSeverity(), release.getPriority(),
+									release.getTagAlm(), release.getTsTagAlm())
+							.execute();
+					connection.commit();
+				}
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

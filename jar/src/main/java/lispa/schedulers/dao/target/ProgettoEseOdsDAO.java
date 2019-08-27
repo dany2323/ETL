@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmProgettoEse;
@@ -53,66 +54,71 @@ public class ProgettoEseOdsDAO {
 			Timestamp dataEsecuzione) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
 			for (DmalmProgettoEse progetto : staging_progettoEse) {
-				new SQLInsertClause(connection, dialect, progettoEseOds)
-						.columns(progettoEseOds.cdProgettoEse,
-								progettoEseOds.descrizioneProgettoEse,
-								progettoEseOds.dmalmProgettoEsePk,
-								progettoEseOds.dmalmProjectFk02,
-								progettoEseOds.dmalmStatoWorkitemFk03,
-								progettoEseOds.dmalmStrutturaOrgFk01,
-								progettoEseOds.dmalmTempoFk04,
-								progettoEseOds.dsAutoreProgettoEse,
-								progettoEseOds.dtCambioStatoProgettoEse,
-								progettoEseOds.dtCaricamentoProgettoEse,
-								progettoEseOds.dtCreazioneProgettoEse,
-								progettoEseOds.dtModificaProgettoEse,
-								progettoEseOds.dtRisoluzioneProgettoEse,
-								progettoEseOds.dtScadenzaProgettoEse,
-								progettoEseOds.dtStoricizzazione,
-								progettoEseOds.idAutoreProgettoEse,
-								progettoEseOds.idRepository,
-								progettoEseOds.motivoRisoluzioneProgEse,
-								progettoEseOds.rankStatoProgettoEse,
-								progettoEseOds.titoloProgettoEse,
-								progettoEseOds.cfCodice, progettoEseOds.stgPk,
-								progettoEseOds.cfDtUltimaSottomissione,
-								progettoEseOds.dmalmUserFk06,
-								progettoEseOds.uri,
-								progettoEseOds.severity, progettoEseOds.priority,
-								progettoEseOds.tagAlm, progettoEseOds.tsTagAlm)
-						.values(progetto.getCdProgettoEse(),
-								progetto.getDescrizioneProgettoEse(),
-								progetto.getDmalmProgettoEsePk(),
-								progetto.getDmalmProjectFk02(),
-								progetto.getDmalmStatoWorkitemFk03(),
-								progetto.getDmalmStrutturaOrgFk01(),
-								progetto.getDmalmTempoFk04(),
-								progetto.getDsAutoreProgettoEse(),
-								progetto.getDtCambioStatoProgettoEse(),
-								progetto.getDtCaricamentoProgettoEse(),
-								progetto.getDtCreazioneProgettoEse(),
-								progetto.getDtModificaProgettoEse(),
-								progetto.getDtRisoluzioneProgettoEse(),
-								progetto.getDtScadenzaProgettoEse(),
-								progetto.getDtModificaProgettoEse(),
-								progetto.getIdAutoreProgettoEse(),
-								progetto.getIdRepository(),
-								progetto.getMotivoRisoluzioneProgEse(),
-								new Double(1), progetto.getTitoloProgettoEse(),
-								progetto.getCfCodice(), progetto.getStgPk(),
-								progetto.getCfDtUltimaSottomissione(),
-								progetto.getDmalmUserFk06(), progetto.getUri(),
-								progetto.getSeverity(), progetto.getPriority(),
-								progetto.getTagAlm(), progetto.getTsTagAlm())
-						.execute();
-
+				if(listPk.contains(progetto.getDmalmProgettoEsePk()))
+					logger.info("Trovata DmalmProgettoEsePk DUPLICATA!!!"+progetto.getDmalmProgettoEsePk());
+				else{
+					listPk.add(progetto.getDmalmProgettoEsePk());
+					new SQLInsertClause(connection, dialect, progettoEseOds)
+							.columns(progettoEseOds.cdProgettoEse,
+									progettoEseOds.descrizioneProgettoEse,
+									progettoEseOds.dmalmProgettoEsePk,
+									progettoEseOds.dmalmProjectFk02,
+									progettoEseOds.dmalmStatoWorkitemFk03,
+									progettoEseOds.dmalmStrutturaOrgFk01,
+									progettoEseOds.dmalmTempoFk04,
+									progettoEseOds.dsAutoreProgettoEse,
+									progettoEseOds.dtCambioStatoProgettoEse,
+									progettoEseOds.dtCaricamentoProgettoEse,
+									progettoEseOds.dtCreazioneProgettoEse,
+									progettoEseOds.dtModificaProgettoEse,
+									progettoEseOds.dtRisoluzioneProgettoEse,
+									progettoEseOds.dtScadenzaProgettoEse,
+									progettoEseOds.dtStoricizzazione,
+									progettoEseOds.idAutoreProgettoEse,
+									progettoEseOds.idRepository,
+									progettoEseOds.motivoRisoluzioneProgEse,
+									progettoEseOds.rankStatoProgettoEse,
+									progettoEseOds.titoloProgettoEse,
+									progettoEseOds.cfCodice, progettoEseOds.stgPk,
+									progettoEseOds.cfDtUltimaSottomissione,
+									progettoEseOds.dmalmUserFk06,
+									progettoEseOds.uri,
+									progettoEseOds.severity, progettoEseOds.priority,
+									progettoEseOds.tagAlm, progettoEseOds.tsTagAlm)
+							.values(progetto.getCdProgettoEse(),
+									progetto.getDescrizioneProgettoEse(),
+									progetto.getDmalmProgettoEsePk(),
+									progetto.getDmalmProjectFk02(),
+									progetto.getDmalmStatoWorkitemFk03(),
+									progetto.getDmalmStrutturaOrgFk01(),
+									progetto.getDmalmTempoFk04(),
+									progetto.getDsAutoreProgettoEse(),
+									progetto.getDtCambioStatoProgettoEse(),
+									progetto.getDtCaricamentoProgettoEse(),
+									progetto.getDtCreazioneProgettoEse(),
+									progetto.getDtModificaProgettoEse(),
+									progetto.getDtRisoluzioneProgettoEse(),
+									progetto.getDtScadenzaProgettoEse(),
+									progetto.getDtModificaProgettoEse(),
+									progetto.getIdAutoreProgettoEse(),
+									progetto.getIdRepository(),
+									progetto.getMotivoRisoluzioneProgEse(),
+									new Double(1), progetto.getTitoloProgettoEse(),
+									progetto.getCfCodice(), progetto.getStgPk(),
+									progetto.getCfDtUltimaSottomissione(),
+									progetto.getDmalmUserFk06(), progetto.getUri(),
+									progetto.getSeverity(), progetto.getPriority(),
+									progetto.getTagAlm(), progetto.getTsTagAlm())
+							.execute();
+				}
 				connection.commit();
 
 			}
