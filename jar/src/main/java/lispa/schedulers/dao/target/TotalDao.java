@@ -105,7 +105,7 @@ public class TotalDao {
 		List<Tuple> cwihistory = null;
 		
 		try {
-			logger.info("START getHistorySingleChangedWI");
+			logger.info("START getHistorySingleChangedWI - codice: "+changedwi+" repository: "+idRepository);
 			
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -119,7 +119,7 @@ public class TotalDao {
 					.where(qTotal.idRepository.eq(idRepository))
 					.list(qTotal.all());
 
-			logger.info("STOP getHistorySingleChangedWI");
+			logger.info("STOP getHistorySingleChangedWI - codice: "+changedwi+" repository: "+idRepository);
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
