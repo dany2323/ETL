@@ -105,6 +105,8 @@ public class TotalDao {
 		List<Tuple> cwihistory = null;
 		
 		try {
+			logger.info("START getHistorySingleChangedWI");
+			
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
@@ -117,6 +119,7 @@ public class TotalDao {
 					.where(qTotal.idRepository.eq(idRepository))
 					.list(qTotal.all());
 
+			logger.info("STOP getHistorySingleChangedWI");
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
@@ -132,6 +135,8 @@ public class TotalDao {
 		boolean changed = false;
 		List<Tuple> filteredcwi = new ArrayList<Tuple>();
 		
+		logger.info("START filterChangedWiHisory");
+		
 		String c_type = cwiHistory.get(0).get(qTotal.type);
 		for (Tuple t : cwiHistory) {
 			if (!c_type.equals(t.get(qTotal.type)))
@@ -140,6 +145,8 @@ public class TotalDao {
 				filteredcwi.add(t);
 		}
 
+		logger.info("STOP filterChangedWiHisory");
+		
 		return filteredcwi;
 	}
 	
