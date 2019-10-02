@@ -179,6 +179,7 @@ public class DmAlmConfigReaderProperties
 	public static final String SIRE_SVN_STATOWORKITEM_CLASSIFICATORE_FILE = "sire.svn.stato_workitem_classificatore";
 	public static final String SIRE_SVN_STATOWORKITEM_CLASSIFICATORE_GENERICO_FILE = "sire.svn.stato_workitem_classificatore_generico";
 	public static final String SIRE_SVN_STATOWORKITEM_SUP = "sire.svn.stato_workitem_sup";
+	public static final String SIRE_SVN_STATOWORKITEM_RFC = "sire.svn.stato_workitem_rfc";
 	
 	public static final String SIRE_SVN_PROJECTROLES_FILE_SVILUPPO = "sire.svn.project_roles.sviluppo";
 	public static final String SIRE_SVN_PROJECTROLES_FILE_DEMAND = "sire.svn.project_roles.demand";

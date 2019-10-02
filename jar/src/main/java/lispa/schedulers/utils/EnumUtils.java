@@ -19,6 +19,7 @@ import lispa.schedulers.utils.enums.CF_programma;
 import lispa.schedulers.utils.enums.CF_release;
 import lispa.schedulers.utils.enums.CF_release_it;
 import lispa.schedulers.utils.enums.CF_release_ser;
+import lispa.schedulers.utils.enums.CF_rfc;
 import lispa.schedulers.utils.enums.CF_richiesta_gestione;
 import lispa.schedulers.utils.enums.CF_rqd;
 import lispa.schedulers.utils.enums.CF_sman;
@@ -130,7 +131,9 @@ public class EnumUtils {
 		case "classificatore":	
 			CF_enum = CF_classificatore.values();
 			break;
-			
+		case "rfc":	
+			CF_enum = CF_rfc.values();
+			break;	
 		default:
 			CF_enum = null;
 		}
@@ -223,7 +226,9 @@ public class EnumUtils {
 		case "sup":	
 			template=Template_Type.SVILUPPO.toString();
 			break;
-		
+		case "rfc":	
+			template = Template_Type.DEMAND2016.toString();
+			break;
 
 		default:
 			template= null;

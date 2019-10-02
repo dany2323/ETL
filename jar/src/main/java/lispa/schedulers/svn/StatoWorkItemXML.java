@@ -332,6 +332,9 @@ public class StatoWorkItemXML {
 		case "sup":
 			path=DmAlmConfigReaderProperties.SIRE_SVN_STATOWORKITEM_SUP;
 			break;
+		case "rfc":
+			path=DmAlmConfigReaderProperties.SIRE_SVN_STATOWORKITEM_RFC;
+			break;
 		default:
 			path = "";
 			break;

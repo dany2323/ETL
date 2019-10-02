@@ -70,9 +70,111 @@ public class ProjectSgrCmFacade {
 				} else {
 
 					for (Tuple row : targetProjects) {
+						boolean modificato = false;
 						if (row != null) {
-							righeModificate++;
-							
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.dmalmStrutturaOrgFk02),
+										project.getDmalmStrutturaOrgFk02())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.dmalmUnitaOrganizzativaFk),
+										project.getDmalmUnitaOrganizzativaFk())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.dmalmUnitaOrganizzativaFlatFk),
+										project.getDmalmUnitaOrganizzativaFlatFk())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.annullato),
+										project.getAnnullato())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.nomeCompletoProject),
+										project.getNomeCompletoProject())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.serviceManagers),
+										project.getServiceManagers())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.siglaProject),
+										project.getSiglaProject())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cTemplate),
+										project.getcTemplate())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cTrackerprefix),
+										project.getcTrackerprefix())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cIsLocal),
+										project.getcIsLocal())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cPk),
+										project.getcPk())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cDeleted),
+										project.getcDeleted())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cFinish),
+										project.getcFinish())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cUri),
+										project.getcUri())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cStart),
+										project.getcStart())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cActive),
+										project.getcActive())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cLockworkrecordsdate),
+										project.getcLockworkrecordsdate())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cRev),
+										project.getcRev())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.cDescription),
+										project.getcDescription())) {
+								modificato = true;
+							}
+							if (!modificato	&& BeanUtils.areDifferent(
+									row.get(proj.dtAnnullamento),
+										project.getDtAnnullamento())) {
+								modificato = true;
+							}
+							if(modificato) {
+								righeModificate++;
+								
 								// STORICIZZO
 								// aggiorno la data di fine validita sul record
 								// corrente
@@ -81,6 +183,9 @@ public class ProjectSgrCmFacade {
 								// inserisco un nuovo record
 								ProjectSgrCmDAO.insertProjectUpdate(
 										dataEsecuzione, project, true);
+							} else {
+								ProjectSgrCmDAO.updateDmalmProject(project);
+							}
 						}
 					}
 				}
