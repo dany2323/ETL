@@ -476,50 +476,50 @@ public class MisuraUtils {
 		return asm;
 	}
 	
-	/* metodo che restituisce la chiave primaria della tabella target 
-	 * collegata alla tabella di staging della Misura 
-	 */ 
-	 
-	public static Integer getPkTarget(String nomeCampoPk, String tabellaTarget, String idTabellaAsm, Integer idProgettoStgMisura) throws DAOException, SQLException { 
-		 
-		Connection conn = null; 
-		PreparedStatement ps = null; 
-		ResultSet rs = null; 
-		Integer pkValue = 0; 
-		String querySql = "SELECT MAX("+nomeCampoPk+") FROM "+tabellaTarget+" WHERE "+idTabellaAsm+" = ? "; 
-		if(tabellaTarget.equals(DmAlmConstants.TARGET_MISURA)) { 
-			querySql += "AND RANK_STATO_MISURA = ?"; 
-		} else { 
-			querySql += "AND DT_FINE_VALIDITA = ?"; 
+	/* metodo che restituisce la chiave primaria della tabella target
+	 * collegata alla tabella di staging della Misura
+	 */
+	
+	public static Integer getPkTarget(String nomeCampoPk, String tabellaTarget, String idTabellaAsm, Integer idProgettoStgMisura) throws DAOException, SQLException {
+		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Integer pkValue = 0;
+		String querySql = "SELECT MAX("+nomeCampoPk+") FROM "+tabellaTarget+" WHERE "+idTabellaAsm+" = ? ";
+		if(tabellaTarget.equals(DmAlmConstants.TARGET_MISURA)) {
+			querySql += "AND RANK_STATO_MISURA = ?";
+		} else {
+			querySql += "AND DT_FINE_VALIDITA = ?";
 		}
-		 
-		try { 
-			conn = cm.getConnectionOracle(); 
-			ps = conn.prepareStatement(querySql); 
-			ps.setInt(1, idProgettoStgMisura); 
-			if(tabellaTarget.equals(DmAlmConstants.TARGET_MISURA)) { 
-				ps.setInt(2, 1); 
-			} else { 
-				ps.setTimestamp(2, DateUtils.setDtFineValidita9999()); 
+		
+		try {
+			conn = cm.getConnectionOracle();
+			ps = conn.prepareStatement(querySql);
+			ps.setInt(1, idProgettoStgMisura);
+			if(tabellaTarget.equals(DmAlmConstants.TARGET_MISURA)) {
+				ps.setInt(2, 1);
+			} else {
+				ps.setTimestamp(2, DateUtils.setDtFineValidita9999());
 			}
-			rs = ps.executeQuery(); 
-			if(rs.next()) 
-				pkValue = rs.getInt(1); 
-		} catch (Exception e) { 
-			logger.error(e.getMessage()); 
-		} finally { 
-			if (rs != null) { 
-				rs.close(); 
-			} 
-			if (ps != null) { 
-				ps.close(); 
-			} 
-			if (cm != null) { 
-				cm.closeConnection(conn); 
-			} 
-		} 
-		 
-			 
-		return pkValue; 
+			rs = ps.executeQuery();
+			if(rs.next())
+				pkValue = rs.getInt(1);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+			if (cm != null) {
+				cm.closeConnection(conn);
+			}
+		}
+		
+			
+		return pkValue;
 	}
 }

@@ -3,6 +3,7 @@ package lispa.schedulers.manager;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
+import lispa.schedulers.dao.calipso.StgCalipsoSchedaServizioDAO;
 import lispa.schedulers.dao.edma.PersonaleDAO;
 import lispa.schedulers.dao.edma.UnitaOrganizzativaDAO;
 import lispa.schedulers.dao.elettra.StgElAmbienteTecnologicoClassificatoriDAO;
@@ -148,56 +149,6 @@ public class RecoverManager {
 
 	}
 	
-
-	/**
-	 * Per quanto riguarda le tabelle target, non si può applicare lo stesso
-	 * ragionamento dell’area di staging. La procedura di ripristino quindi
-	 * avviene tramite delle tabelle di backup (riconoscibili dal prefisso ‘T_’)
-	 * Si procede come segue: - prima di iniziare con l’elaborazione del target,
-	 * si copia tutto il contenuto delle stesse in delle tabelle di backup - si
-	 * procede con l’elaborazione del target e, a seconda del suo esito, si
-	 * possono verificare due situazioni: a. esito OK: l’elaborazione avviene
-	 * senza errori ed il contenuto delle tabelle di backup può essere
-	 * cancellato b. esito KO: si verifica un errore durante l’elaborazione per
-	 * cui è necessario interrompere la stessa. Si provvede a copiare il
-	 * contenuto delle tabelle di backup nelle tabelle di target per riportare
-	 * lo stesso ad una situazione consistente (ovvero la situazione
-	 * dell’esecuzione precedente).
-	 */
-
-	public synchronized void startRecoverTarget() {
-
-		logger.info("START RECOVER TARGET");
-
-		QueryManager qm = null;
-
-		try {
-
-			qm = QueryManager.getInstance();
-
-			String separator = ";";
-
-			// cancella tutto il contenuto delle tabelle target
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.DELETE_TARGET_TABLES, separator); //TODO 
-
-			// inserisce il contenuto delle tabelle di backup nelle tabelle
-			// target
-			// ovvero riporta il target allo stato precedente all'inizio
-			// dell'esecuzione dell'ETL
-			qm.executeMultipleStatementsFromFile(DmAlmConstants.RECOVER_TARGET,
-					separator);
-
-			setRecovered(true);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		logger.info("STOP RECOVER TARGET");
-
-	}
-
 	public synchronized boolean prepareTargetForRecover(Timestamp dataEsecuzione) {
 
 		logger.info("START PREPARE TARGET FOR RECOVER");
@@ -349,7 +300,11 @@ public class RecoverManager {
 			// SFERA
 			logger.debug("START recover Sfera");
 			StgMisuraDAO.recoverStgMisura();
-
+			
+			// CALIPSO
+			logger.debug("START recover Calipso");
+			StgCalipsoSchedaServizioDAO.recoverStgCalipsoSchedaServizio();
+			
 			// SIRE CURRENT
 			logger.debug("START recover SIRE Current");
 			SireCurrentProjectDAO.recoverSireCurrentProject();
@@ -423,7 +378,7 @@ public class RecoverManager {
 			StgElFunzionalitaDAO.recoverElFunzionalita();
 			StgElAmbienteTecnologicoDAO.recoverElAmbienteTec();
 			StgElAmbienteTecnologicoClassificatoriDAO.recoverElAmbienteClass();
-
+			
 			// UTIL
 			logger.debug("START recover Util");
 			ErroriCaricamentoDAO.recoverErroriCaricamento();

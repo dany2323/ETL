@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmDocumento;
@@ -59,6 +60,7 @@ public class DocumentoOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
+		List <Integer> listPk= new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -67,10 +69,14 @@ public class DocumentoOdsDAO {
 			connection.setAutoCommit(false);
 
 			for (DmalmDocumento documento : staging_documenti) {
-
+				if(listPk.contains(documento.getDmalmDocumentoPk()))
+					logger.info("Trovata DmalmDocumentoPk DUPLICATA!!!"+documento.getDmalmDocumentoPk());
+				else{
+					listPk.add(documento.getDmalmDocumentoPk());
 				SQLInsertClause insert = new SQLInsertClause(connection,
 						dialect, documentoODS);
 				insert.populate(documento).execute();
+				}
 
 			}
 

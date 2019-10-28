@@ -58,7 +58,7 @@ public class QDmalmStgMisura extends com.mysema.query.sql.RelationalPathBase<Dma
     public final StringPath b4Num = createString("B_4_NUM");
 
     public final StringPath b4Ufp = createString("B_4_UFP");
-    
+
     public final StringPath b5Num = createString("B_5_NUM");
 
     public final StringPath b5Ufp = createString("B_5_UFP");

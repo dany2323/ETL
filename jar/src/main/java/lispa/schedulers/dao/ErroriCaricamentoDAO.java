@@ -64,7 +64,7 @@ public class ErroriCaricamentoDAO {
 				cm.closeConnection(connection);
 		}
 	}
-
+	
 	/*
 	 * metodo utilizzato per inserire la chiave primaria delle tabelle ASM
 	 * legate all'ID_PROGETTO della della DMALM_STG_MISURA
@@ -113,7 +113,7 @@ public class ErroriCaricamentoDAO {
 				cm.closeConnection(connection);
 		}
 	}
-	
+
 	public static void delete(Timestamp dataCaricamento) throws DAOException,
 			SQLException {
 

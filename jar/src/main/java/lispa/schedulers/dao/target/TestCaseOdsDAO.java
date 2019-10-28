@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmTestcase;
@@ -22,7 +23,7 @@ import com.mysema.query.types.Projections;
 
 public class TestCaseOdsDAO {
 
-	private static Logger logger = Logger.getLogger(DocumentoOdsDAO.class);
+	private static Logger logger = Logger.getLogger(TestCaseOdsDAO.class);
 
 	private static QDmalmTestcaseOds testCaseODS = QDmalmTestcaseOds.dmalmTestcaseOds;
 
@@ -59,7 +60,8 @@ public class TestCaseOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -68,63 +70,68 @@ public class TestCaseOdsDAO {
 
 			for (DmalmTestcase testcase : staging_testcases) {
 
-				new SQLInsertClause(connection, dialect, testCaseODS)
-						.columns(testCaseODS.cdTestcase, testCaseODS.codice,
-								testCaseODS.dataEsecuzioneTestcase,
-								testCaseODS.descrizioneTestcase,
-								testCaseODS.dmalmAreaTematicaFk05,
-								testCaseODS.dmalmProjectFk02,
-								testCaseODS.dmalmStatoWorkitemFk03,
-								testCaseODS.dmalmStrutturaOrgFk01,
-								testCaseODS.dmalmTempoFk04,
-								testCaseODS.dmalmTestcasePk,
-								testCaseODS.dsAutoreTestcase,
-								testCaseODS.dtCambioStatoTestcase,
-								testCaseODS.dtCaricamentoTestcase,
-								testCaseODS.dtCreazioneTestcase,
-								testCaseODS.dtModificaTestcase,
-								testCaseODS.dtRisoluzioneTestcase,
-								testCaseODS.dtScadenzaTestcase,
-								testCaseODS.dtStoricizzazione,
-								testCaseODS.idAutoreTestcase,
-								testCaseODS.idRepository,
-								testCaseODS.motivoRisoluzioneTestcase,
-								testCaseODS.numeroLinea,
-								testCaseODS.numeroTestata,
-								testCaseODS.rankStatoTestcase,
-								testCaseODS.titoloTestcase, testCaseODS.stgPk,
-								testCaseODS.dmalmUserFk06, testCaseODS.uri,
-								testCaseODS.severity, testCaseODS.priority,
-								testCaseODS.tagAlm, testCaseODS.tsTagAlm)
-						.values(testcase.getCdTestcase(), testcase.getCodice(),
-								testcase.getDataEsecuzioneTestcase(),
-								testcase.getDescrizioneTestcase(),
-								testcase.getDmalmAreaTematicaFk05(),
-								testcase.getDmalmProjectFk02(),
-								testcase.getDmalmStatoWorkitemFk03(),
-								testcase.getDmalmStrutturaOrgFk01(),
-								testcase.getDmalmTempoFk04(),
-								testcase.getDmalmTestcasePk(),
-								testcase.getDsAutoreTestcase(),
-								testcase.getDtCambioStatoTestcase(),
-								testcase.getDtCaricamentoTestcase(),
-								testcase.getDtCreazioneTestcase(),
-								testcase.getDtModificaTestcase(),
-								testcase.getDtRisoluzioneTestcase(),
-								testcase.getDtScadenzaTestcase(),
-								testcase.getDtModificaTestcase(),
-								testcase.getIdAutoreTestcase(),
-								testcase.getIdRepository(),
-								testcase.getMotivoRisoluzioneTestcase(),
-								testcase.getNumeroLinea(),
-								testcase.getNumeroTestata(), new Double(1),
-								testcase.getTitoloTestcase(),
-								testcase.getStgPk(),
-								testcase.getDmalmUserFk06(), testcase.getUri(),
-								testcase.getSeverity(), testcase.getPriority(),
-								testcase.getTagAlm(), testcase.getTsTagAlm())
-						.execute();
-
+				if(listPk.contains(testcase.getDmalmTestcasePk()))
+					logger.info("Trovata DmalmTestcasePk DUPLICATA!!!"+testcase.getDmalmTestcasePk());
+				else{
+					listPk.add(testcase.getDmalmTestcasePk());
+					new SQLInsertClause(connection, dialect, testCaseODS)
+							.columns(testCaseODS.cdTestcase, testCaseODS.codice,
+									testCaseODS.dataEsecuzioneTestcase,
+									testCaseODS.descrizioneTestcase,
+									testCaseODS.dmalmAreaTematicaFk05,
+									testCaseODS.dmalmProjectFk02,
+									testCaseODS.dmalmStatoWorkitemFk03,
+									testCaseODS.dmalmStrutturaOrgFk01,
+									testCaseODS.dmalmTempoFk04,
+									testCaseODS.dmalmTestcasePk,
+									testCaseODS.dsAutoreTestcase,
+									testCaseODS.dtCambioStatoTestcase,
+									testCaseODS.dtCaricamentoTestcase,
+									testCaseODS.dtCreazioneTestcase,
+									testCaseODS.dtModificaTestcase,
+									testCaseODS.dtRisoluzioneTestcase,
+									testCaseODS.dtScadenzaTestcase,
+									testCaseODS.dtStoricizzazione,
+									testCaseODS.idAutoreTestcase,
+									testCaseODS.idRepository,
+									testCaseODS.motivoRisoluzioneTestcase,
+									testCaseODS.numeroLinea,
+									testCaseODS.numeroTestata,
+									testCaseODS.rankStatoTestcase,
+									testCaseODS.titoloTestcase, testCaseODS.stgPk,
+									testCaseODS.dmalmUserFk06, testCaseODS.uri,
+									testCaseODS.severity, testCaseODS.priority,
+									testCaseODS.tagAlm, testCaseODS.tsTagAlm)
+							.values(testcase.getCdTestcase(), testcase.getCodice(),
+									testcase.getDataEsecuzioneTestcase(),
+									testcase.getDescrizioneTestcase(),
+									testcase.getDmalmAreaTematicaFk05(),
+									testcase.getDmalmProjectFk02(),
+									testcase.getDmalmStatoWorkitemFk03(),
+									testcase.getDmalmStrutturaOrgFk01(),
+									testcase.getDmalmTempoFk04(),
+									testcase.getDmalmTestcasePk(),
+									testcase.getDsAutoreTestcase(),
+									testcase.getDtCambioStatoTestcase(),
+									testcase.getDtCaricamentoTestcase(),
+									testcase.getDtCreazioneTestcase(),
+									testcase.getDtModificaTestcase(),
+									testcase.getDtRisoluzioneTestcase(),
+									testcase.getDtScadenzaTestcase(),
+									testcase.getDtModificaTestcase(),
+									testcase.getIdAutoreTestcase(),
+									testcase.getIdRepository(),
+									testcase.getMotivoRisoluzioneTestcase(),
+									testcase.getNumeroLinea(),
+									testcase.getNumeroTestata(), new Double(1),
+									testcase.getTitoloTestcase(),
+									testcase.getStgPk(),
+									testcase.getDmalmUserFk06(), testcase.getUri(),
+									testcase.getSeverity(), testcase.getPriority(),
+									testcase.getTagAlm(), testcase.getTsTagAlm())
+							.execute();
+	
+				}
 			}
 
 			connection.commit();

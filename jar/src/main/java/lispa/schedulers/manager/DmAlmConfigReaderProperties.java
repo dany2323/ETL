@@ -11,9 +11,7 @@ public class DmAlmConfigReaderProperties
 	//QUERY FATTI
 	public static final String SQL_ANOMALIA					    = "anomalia.sql";
 	public static final String SQL_ANOMALIA_PRODOTTO_DUMMY	    = "anomaliaprodottodummy.sql";
-	public static final String TEST_SQL_ANOMALIA_PRODOTTO_DUMMY	    = "selectanomaliaprodottodummy.sql";
 	public static final String SQL_DIFETTO_PRODOTTO_DUMMY	    = "difettoprodottodummy.sql";
-	public static final String TEST_SQL_DIFETTO_PRODOTTO_DUMMY	    = "selectdifettoprodottodummy.sql";
 	public static final String SQL_DEFECT 						= "defect.sql";
 	public static final String SQL_PROGRAMMA					= "programma.sql";
 	public static final String SQL_PROGETTO_DEMAND				= "rqd.sql";
@@ -110,6 +108,7 @@ public class DmAlmConfigReaderProperties
 	public static final String DM_ALM_ESECUZIONE_EDMA = "dmalm.esecuzione.edma";
 	public static final String DM_ALM_ESECUZIONE_SFERA = "dmalm.esecuzione.sfera";
 	public static final String DM_ALM_ESECUZIONE_MPS = "dmalm.esecuzione.mps";
+	public static final String DM_ALM_ESECUZIONE_CALIPSO = "dmalm.esecuzione.calipso";
 
 	// DATABASE DM_ALM ORACLE
 	public static final String DM_ALM_DRIVER_CLASS_NAME = "dmalm.driver_class_name";
@@ -178,6 +177,9 @@ public class DmAlmConfigReaderProperties
 	public static final String SIRE_SVN_STATOWORKITEM_RICHIESTAGESTIONE_FILE = "sire.svn.stato_workitem_richiestagestione";
 	public static final String SIRE_SVN_STATOWORKITEM_RELEASESERVIZI_FILE = "sire.svn.stato_workitem_releaseservizi";
 	public static final String SIRE_SVN_STATOWORKITEM_CLASSIFICATORE_FILE = "sire.svn.stato_workitem_classificatore";
+	public static final String SIRE_SVN_STATOWORKITEM_CLASSIFICATORE_GENERICO_FILE = "sire.svn.stato_workitem_classificatore_generico";
+	public static final String SIRE_SVN_STATOWORKITEM_SUP = "sire.svn.stato_workitem_sup";
+	public static final String SIRE_SVN_STATOWORKITEM_RFC = "sire.svn.stato_workitem_rfc";
 	
 	public static final String SIRE_SVN_PROJECTROLES_FILE_SVILUPPO = "sire.svn.project_roles.sviluppo";
 	public static final String SIRE_SVN_PROJECTROLES_FILE_DEMAND = "sire.svn.project_roles.demand";
@@ -226,6 +228,8 @@ public class DmAlmConfigReaderProperties
 	public static final String SISS_SVN_STATOWORKITEM_RICHIESTAGESTIONE_FILE = "siss.svn.stato_workitem_richiestagestione";
 	public static final String SISS_SVN_STATOWORKITEM_RELEASESERVIZI_FILE = "siss.svn.stato_workitem_releaseservizi";
 	public static final String SISS_SVN_STATOWORKITEM_CLASSIFICATORE_FILE = "siss.svn.stato_workitem_classificatore";
+	public static final String SISS_SVN_STATOWORKITEM_CLASSIFICATORE_GENERICO_FILE = "siss.svn.stato_workitem_classificatore_generico";
+	public static final String SISS_SVN_STATOWORKITEM_SUP = "siss.svn.stato_workitem_sup";
 	
 	public static final String SISS_SVN_PROJECTROLES_FILE_SVILUPPO = "siss.svn.project_roles.sviluppo";
 	public static final String SISS_SVN_PROJECTROLES_FILE_DEMAND = "siss.svn.project_roles.demand";
@@ -304,6 +308,10 @@ public class DmAlmConfigReaderProperties
 
 	public static final String SQL_ELETTRAFUNZIONALITA_BY_MODULO_PK = "funzionalita_by_modulo_pk.sql";
 	
+	//CALIPSO
+	public static final String DMALM_CALIPSO_SOURCE_PATH_FILE = "dmalm.calipso.source.path";
+	public static final String DMALM_CALIPSO_PATH = "dmalm.calipso.path";
+	public static final String DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL = "dmalm.calipso.scheda.servizio.excel";
 	
 	public static void setFileProperties(String fileProperties) {
 		PROPERTIES_READER_FILE_NAME = fileProperties;

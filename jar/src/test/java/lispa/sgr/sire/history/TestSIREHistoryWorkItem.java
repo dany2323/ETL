@@ -5,6 +5,7 @@ import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.utils.enums.Workitem_Type;
 
+@SuppressWarnings("unused")
 public class TestSIREHistoryWorkItem extends TestCase {
 
 	public void testEnumerationFillWorkitem() throws Exception {

@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmPei;
@@ -59,7 +60,8 @@ public class PeiOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -67,8 +69,11 @@ public class PeiOdsDAO {
 			connection.setAutoCommit(false);
 
 			for (DmalmPei pei : staging_peis) {
-
-				new SQLInsertClause(connection, dialect, peiODS)
+				if(listPk.contains(pei.getDmalmPeiPk()))
+					logger.info("Trovata DmalmPeiPk DUPLICATA!!!"+pei.getDmalmPeiPk());
+				else{
+					listPk.add(pei.getDmalmPeiPk());
+					new SQLInsertClause(connection, dialect, peiODS)
 
 						.columns(peiODS.cdPei, peiODS.codice,
 								peiODS.descrizionePei, peiODS.dmalmPeiPk,
@@ -110,6 +115,7 @@ public class PeiOdsDAO {
 								pei.getSeverity(), pei.getPriority(),
 								pei.getTagAlm(), pei.getTsTagAlm()).execute();
 
+				}
 			}
 
 			connection.commit();

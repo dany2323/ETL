@@ -14,12 +14,11 @@ import org.apache.log4j.Logger;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
-
-import lispa.schedulers.bean.target.Total;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.target.TotalDao;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.calipso.target.CalipsoSchedaServizioFacade;
 import lispa.schedulers.facade.cleaning.CheckProjectStorFacade;
 import lispa.schedulers.facade.elettra.target.ElettraAmbienteTecnologicoClassificatoriFacade;
 import lispa.schedulers.facade.elettra.target.ElettraAmbienteTecnologicoFacade;
@@ -67,6 +66,7 @@ import lispa.schedulers.facade.target.fatti.ProgrammaFacade;
 import lispa.schedulers.facade.target.fatti.ReleaseDiProgettoFacade;
 import lispa.schedulers.facade.target.fatti.ReleaseItFacade;
 import lispa.schedulers.facade.target.fatti.ReleaseServiziFacade;
+import lispa.schedulers.facade.target.fatti.RfcFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaGestioneFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaManutenzioneFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaSupportoFacade;
@@ -121,7 +121,8 @@ public class DmAlmFillTarget {
 			
 			boolean flag = false;
 			if (ExecutionManager.getInstance().isExecutionSfera()
-					|| ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
+					|| ExecutionManager.getInstance().isExecutionElettraSgrcm()
+					|| ExecutionManager.getInstance().isExecutionCalipso()) {
 				// preparo il target al Recover in caso di errori bloccanti:
 				// svuoto le tabelle di backup, effettuo il backup del target
 				// allo stato corrente (ultimo stato consistente)
@@ -132,64 +133,64 @@ public class DmAlmFillTarget {
 				// ELETTRA/SGRCM
 				if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
 					// -- Elettra inizio ------------------------------------------
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE)) {
-//						ElettraUnitaOrganizzativeFacade.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione: "
-//								+ DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE);
-//					}
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PERSONALE)) {
-//						ElettraPersonaleFacade.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione: "
-//								+ DmAlmConstants.TARGET_ELETTRA_PERSONALE);
-//					}
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_CLASSIFICATORI)) {
-//						ElettraClassificatoriFacade.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione: "
-//								+ DmAlmConstants.TARGET_ELETTRA_CLASSIFICATORI);
-//					}
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE)) {
-//						ElettraProdottiArchitettureFacade.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione: "
-//								+ DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE);
-//					}
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_MODULI)) {
-//						ElettraModuliFacade.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione: "
-//								+ DmAlmConstants.TARGET_ELETTRA_MODULI);
-//					}
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_FUNZIONALITA)) {
-//						ElettraFunzionalitaFacade.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione: "
-//								+ DmAlmConstants.TARGET_ELETTRA_FUNZIONALITA);
-//					}
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICO)) {
-//						ElettraAmbienteTecnologicoFacade.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione: "
-//								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICO);
-//					}
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI)) {
-//						ElettraAmbienteTecnologicoClassificatoriFacade
-//								.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione: "
-//								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI);
-//					}
-//					// -- Elettra Fine ------------------------------------------
-//	
-//					logger.info("START PersonaleEdmaFacade.execute " + new Date());
-//					if (!alreadyExecuted(DmAlmConstants.TARGET_EDMA_PERSONALE)) {
-//						PersonaleEdmaFacade.execute(dataEsecuzione);
-//					} else {
-//						logger.info("Entità già elaborata per la data di esecuzione ");
-//					}
-//	
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE)) {
+						ElettraUnitaOrganizzativeFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_ELETTRA_UNITAORGANIZZATIVE);
+					}
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PERSONALE) && !(ErrorManager.getInstance().hasError())) {
+						ElettraPersonaleFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_ELETTRA_PERSONALE);
+					}
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_CLASSIFICATORI)) {
+						ElettraClassificatoriFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_ELETTRA_CLASSIFICATORI);
+					}
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE)) {
+						ElettraProdottiArchitettureFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_ELETTRA_PRODOTTIARCHITETTURE);
+					}
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_MODULI)) {
+						ElettraModuliFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_ELETTRA_MODULI);
+					}
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_FUNZIONALITA)) {
+						ElettraFunzionalitaFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_ELETTRA_FUNZIONALITA);
+					}
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICO)) {
+						ElettraAmbienteTecnologicoFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICO);
+					}
+					if (!alreadyExecuted(DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI)) {
+						ElettraAmbienteTecnologicoClassificatoriFacade
+								.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_ELETTRA_AMBIENTETECNOLOGICOCLASSIFICATORI);
+					}
+					// -- Elettra Fine ------------------------------------------
+					
+					logger.info("START PersonaleEdmaFacade.execute " + new Date());
+					if (!alreadyExecuted(DmAlmConstants.TARGET_EDMA_PERSONALE)) {
+						PersonaleEdmaFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione ");
+					}
+	
 					logger.info("START UserSgrCmFacade.execute " + new Date());
 					if (!alreadyExecuted(DmAlmConstants.TARGET_USER)) {
 						UserSgrCmFacade.execute(dataEsecuzione);
@@ -462,6 +463,15 @@ public class DmAlmFillTarget {
 						logger.info("Entità già elaborata per la data di esecuzione ");
 					}
 					// FINE DM_ALM-350
+					
+//					// DM_ALM-504
+//					logger.info("START Rfc.execute " + new Date());
+//					if (!alreadyExecuted(DmAlmConstants.TARGET_RFC)) {
+//						RfcFacade.execute(dataEsecuzione);
+//					} else {
+//						logger.info("Entità già elaborata per la data di esecuzione ");
+//					}
+//					// FINE DM_ALM-504
 	
 					if (ErrorManager.getInstance().hasError()) {
 						RecoverManager.getInstance().startRecoverTargetByProcedure();
@@ -719,6 +729,27 @@ public class DmAlmFillTarget {
 					}
 				}
 				
+				// CALIPSO
+				if (ExecutionManager.getInstance().isExecutionCalipso()) {
+					if (!alreadyExecuted(DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO)) {
+						CalipsoSchedaServizioFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione: "
+								+ DmAlmConstants.TARGET_CALIPSO_SCHEDA_SERVIZIO);
+					}
+					
+					if (ErrorManager.getInstance().hasError()) {
+						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverStaging();
+	
+						// MPS
+						if (ExecutionManager.getInstance().isExecutionMps())
+							RecoverManager.getInstance().startRecoverStgMps();
+	
+						return;
+					}
+				}
+				
 				// MPS
 				if (ExecutionManager.getInstance().isExecutionMps()) {
 					// eseguo il target solo se non è stato fatto il recover dello
@@ -738,7 +769,7 @@ public class DmAlmFillTarget {
 						}
 					}
 				}
-	
+				
 				// INSERISCO IL RECORD SENTINELLA SOLO SE ESPRESSAMENTE RICHIESTO DA
 				// FILE DI PROPERTIES
 				if (enableRecordSentinella) {

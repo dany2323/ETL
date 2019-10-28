@@ -85,8 +85,9 @@ public class DmalmAsm {
     private String annullato;
 
     private Integer strutturaOrganizzativaFk;
-    
+
     private Integer unitaOrganizzativaFk;
+    private Integer unitaOrganizzativaFlatFk;
     
     private java.sql.Timestamp dtPrevistaProssimaMpp;
     
@@ -516,6 +517,14 @@ public class DmalmAsm {
 
 	public void setFip15LivelloCura(String fip15LivelloCura) {
 		this.fip15LivelloCura = fip15LivelloCura;
+	}
+
+	public Integer getUnitaOrganizzativaFlatFk() {
+		return unitaOrganizzativaFlatFk;
+	}
+
+	public void setUnitaOrganizzativaFlatFk(Integer unitaOrganizzativaFlatFk) {
+		this.unitaOrganizzativaFlatFk = unitaOrganizzativaFlatFk;
 	}
 
 }

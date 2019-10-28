@@ -1,13 +1,10 @@
 package lispa.schedulers.facade.sfera.target;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
-
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
@@ -15,31 +12,25 @@ import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
-import lispa.schedulers.queryimplementation.target.sfera.QDmalmProgettoSfera;
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.LogUtils;
 import lispa.schedulers.utils.MisuraUtils;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
 
 public class AsmFacade {
 	private static Logger logger = Logger.getLogger(AsmFacade.class);
-	private static QDmalmProgettoSfera prog = QDmalmProgettoSfera.dmalmProgettoSfera;
-	private static SQLTemplates dialect = new HSQLDBTemplates();
 
-	public static void execute(Timestamp dataEsecuzione) throws Exception,
-			DAOException {
+	private static QDmalmElUnitaOrganizzativeFlat flat= QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
+
+	private AsmFacade(){}
+	public static void execute(Timestamp dataEsecuzione) throws
+			DAOException, PropertiesReaderException {
 
 		// Se errore precedente non eseguo nulla
 		if (ErrorManager.getInstance().hasError())
@@ -47,8 +38,8 @@ public class AsmFacade {
 
 		logger.info("START AsmFacade.execute");
 
-		List<DmalmAsm> asmStg = new ArrayList<DmalmAsm>();
-		List<Tuple> target = new ArrayList<Tuple>();
+		List<DmalmAsm> asmStg = new ArrayList<>();
+		List<Tuple> target = new ArrayList<>();
 		QDmalmAsm asm = QDmalmAsm.dmalmAsm;
 
 		int righeNuove = 0;
@@ -83,7 +74,7 @@ public class AsmFacade {
 							.setAnnullato(DmAlmConstants.SFERA_ANNULLATO_LOGICAMENTE);
 
 					if (applicazioni.getpAppDataFineValiditaAsm() == null) {
-						try {
+						
 							String strData = applicazioni.getApplicazione()
 									.substring(24, 32);
 							Timestamp dataFineValiditaAsm = DateUtils
@@ -91,14 +82,12 @@ public class AsmFacade {
 											"yyyyMMdd 00:00:00");
 							applicazioni
 									.setpAppDataFineValiditaAsm(dataFineValiditaAsm);
-						} catch (Exception e) {
-						}
 					}
 				}
 				
 				// se non trovo almento un record, inserisco la nuova struttura
 				// organizzativa nel target
-				if (target.size() == 0) {
+				if (target.isEmpty()) {
 					righeNuove++;
 					// per l'annullamento non toccare nulla ha tutti i dati a
 					// posto
@@ -238,20 +227,33 @@ public class AsmFacade {
 			//ricarica il valore della Fk ad ogni esecuzione
 			
 			recalculateUoFkFlat();
+			//Storicizza la ASM se cambiata gerarchia UO DM_ALM-447
+
+			List<Tuple> activeAsm = DmAlmAsmDAO.gettAllAsmTargetActive();
+			for(Tuple row:activeAsm){
+				if (row.get(asm.unitaOrganizzativaFlatFk) != null) {
+					Tuple flatAsm= DmAlmAsmDAO.getUOFlatById(row.get(asm.unitaOrganizzativaFlatFk));
+					DmalmAsm applicazioni = DmAlmAsmDAO.getBeanFromTuple(row);
+					if(flatAsm.get(flat.dataFineValidita).before(row.get(asm.dataFineValidita))){
+						// corrente
+						DmAlmAsmDAO.updateDataFineValidita(DateUtils.addSecondsToTimestamp(flatAsm.get(flat.dataFineValidita),1), applicazioni);
+						// inserisco un nuovo record
+
+						DmAlmAsmDAO.insertAsmUpdate(DateUtils.addSecondsToTimestamp(flatAsm.get(flat.dataFineValidita),1),
+								applicazioni);
+					}
+				}
+			}
+			
 			checkIfAsmContainsBlank(dataEsecuzione);
 
-		} catch (DAOException e) {
+		} catch (SQLException| NumberFormatException | DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			logger.error(LogUtils.objectToString(asmTmp));
 			logger.error(e.getMessage(), e);
 
 			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(LogUtils.objectToString(asmTmp));
-			logger.error(e.getMessage(), e);
-
-			stato = DmAlmConstants.CARICAMENTO_TERMINATO_CON_ERRORE;
+		
 		} finally {
 			dtFineCaricamento = new Date();
 
@@ -272,17 +274,17 @@ public class AsmFacade {
 		}
 	}
 
-	private static void checkIfAsmContainsBlank(Timestamp dataEsecuzione) throws Exception {
+	private static void checkIfAsmContainsBlank(Timestamp dataEsecuzione) throws DAOException, SQLException {
 		List<DmalmAsm> asmList = DmAlmAsmDAO.getAllAsm(dataEsecuzione);
 		for(DmalmAsm asm:asmList){
 			if(asm.getApplicazione().contains("#"))
-				asm.setApplicazione(asm.getApplicazione().substring(0,asm.getApplicazione().indexOf("#")));
+				asm.setApplicazione(asm.getApplicazione().substring(0,asm.getApplicazione().indexOf('#')));
 			if(asm.getApplicazione().endsWith(" ")){
 							ErroriCaricamentoDAO.insert(DmAlmConstants.FONTE_MISURA,
 						 DmAlmConstants.TARGET_PROGETTO_SFERA,
 						 "Possibile presenza spazi in ASM PK:"+ asm.getDmalmAsmPk()+" ASM NAME: "+asm.getApplicazione(),
 						 DmAlmConstants.ERRORE_SPAZI_NOME_ASM,
-						 DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, 
+						 DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
 						 MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, Integer.parseInt(String.valueOf(asm.getIdAsm()))), dataEsecuzione);
 				
 			}
@@ -290,15 +292,17 @@ public class AsmFacade {
 		
 	}
 
-	public static void recalculateUoFkFlat() throws PropertiesReaderException, DAOException, Exception {
+	public static void recalculateUoFkFlat() throws PropertiesReaderException, DAOException {
 		QueryManager qm = QueryManager.getInstance();
 
 		logger.info("INIZIO Update ASM UnitaOrganizzativaFlatFk");
-		
+		try {
 		qm.executeMultipleStatementsFromFile(
 				DmAlmConstants.M_UPDATE_ASM_UOFLATFK,
 				DmAlmConstants.M_SEPARATOR);
-		
+		} catch (Exception e) {
+			throw new DAOException("Errore nell'eseguire la query "+DmAlmConstants.M_UPDATE_ASM_UOFLATFK);
+		}
 		logger.info("FINE Update ASM UnitaOrganizzativaFlatFk");
 	}
 
@@ -309,7 +313,7 @@ public class AsmFacade {
 
 			List<Tuple> target = DmAlmAsmDAO.getAsmByApplicazione(applicazioni);
 
-			if (target.size() > 0) {
+			if (!target.isEmpty()) {
 				for (Tuple row : target) {
 					if (row != null) {
 

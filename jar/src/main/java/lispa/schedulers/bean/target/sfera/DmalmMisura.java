@@ -38,9 +38,9 @@ public class DmalmMisura {
 
     private Double b3Ufp;
     
-    private Double b4Num;
-
     private Double b4Ufp;
+    
+    private Double b4Num;
 
     private Double b5Num;
 
@@ -819,23 +819,7 @@ public class DmalmMisura {
         this.b3Ufp = b3Ufp;
     }
 
-    public Double getB4Num() {
-		return b4Num;
-	}
-
-	public void setB4Num(Double b4Num) {
-		this.b4Num = b4Num;
-	}
-
-	public Double getB4Ufp() {
-		return b4Ufp;
-	}
-
-	public void setB4Ufp(Double b4Ufp) {
-		this.b4Ufp = b4Ufp;
-	}
-
-	public void setB5Num(Double b5Num) {
+    public void setB5Num(Double b5Num) {
         this.b5Num = b5Num;
     }
 
@@ -1270,6 +1254,22 @@ public class DmalmMisura {
 
 	public void setAnnullato(String annullato) {
 		this.annullato = annullato;
+	}
+
+	public Double getB4Ufp() {
+		return b4Ufp;
+	}
+
+	public void setB4Ufp(Double b4Ufp) {
+		this.b4Ufp = b4Ufp;
+	}
+
+	public Double getB4Num() {
+		return b4Num;
+	}
+
+	public void setB4Num(Double b4Num) {
+		this.b4Num = b4Num;
 	}
 
 }

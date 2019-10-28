@@ -6,6 +6,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING
 import java.sql.Timestamp;
 
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.calipso.staging.StagingCalipsoFacade;
 import lispa.schedulers.facade.elettra.StagingElettraFacade;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
@@ -14,8 +15,6 @@ import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.RecoverManager;
-import lispa.schedulers.runnable.staging.EdmaRunnable;
-import lispa.schedulers.runnable.staging.OresteRunnable;
 import lispa.schedulers.runnable.staging.SGRCMSireRunnable;
 import lispa.schedulers.runnable.staging.SGRCMSissRunnable;
 import lispa.schedulers.utils.DateUtils;
@@ -155,7 +154,7 @@ public class DmAlmFillStaging {
 					RecoverManager.getInstance().startRecoverStaging();
 					return;
 				}
-
+				
 				// SGR_CM parte dolo dopo il completamento di EDMA e ORESTE
 				siss.start();
 				siss.join();
@@ -199,7 +198,7 @@ public class DmAlmFillStaging {
 			// SFERA
 			if (ExecutionManager.getInstance().isExecutionSfera()) {
 				StgMisuraFacade.deleteStgMisura(logger, dataEsecuzioneDeleted);
-				StgMisuraFacade.FillStgMisura();
+				StgMisuraFacade.fillStgMisura();
 			}
 			
 			// Aggiunto checkpoint di recovery in data 19/04/17
@@ -210,6 +209,17 @@ public class DmAlmFillStaging {
 				return;
 			}
 
+			//CALIPSO
+			if (ExecutionManager.getInstance().isExecutionCalipso()) {
+				StagingCalipsoFacade.executeStaging(dataEsecuzioneDeleted);
+				if (lispa.schedulers.manager.ErrorManager.getInstance()
+						.hasError()) {
+					logger.fatal("ERRORE: Inizio procedura di ripristino");
+					RecoverManager.getInstance().startRecoverStaging();
+					return;
+				}
+			}
+			
 			// MPS
 			if (ExecutionManager.getInstance().isExecutionMps()) {
 
@@ -235,6 +245,7 @@ public class DmAlmFillStaging {
 					logger.info("STOP: FillStaging MPS");
 				}
 			}
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 

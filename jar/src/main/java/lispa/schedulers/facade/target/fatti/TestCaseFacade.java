@@ -126,6 +126,7 @@ private static Logger logger = Logger.getLogger(TestCaseFacade.class);
 							}
 							if(!modificato && BeanUtils.areDifferent(row.get(tstcs.annullato), testcase.getAnnullato()))
 							{
+								logger.debug("_______________________________________________----_________________________________________");
 								modificato = true;
 							}
 

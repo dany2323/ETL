@@ -238,6 +238,5 @@ select
    and type = 'classificatore_demand'
    minus
    select distinct CODICE , ID_REPOSITORY, TYPE from DMALM_STG_CURRENT_WORKITEMS
- 
  ORDER BY 2, 3, 1    
   

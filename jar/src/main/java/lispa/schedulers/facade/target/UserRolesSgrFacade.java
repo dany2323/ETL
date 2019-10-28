@@ -134,7 +134,7 @@ public class UserRolesSgrFacade {
 							project.cCreated,project.idRepository);
 			
 			for (Tuple prj : dmalmProjects) {
-				logger.info("fillCurrentUserRoles - Inizio gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
+//				logger.info("fillCurrentUserRoles - Inizio gestione progetto "+prj.get(project.idProject)+" - "+prj.get(project.idRepository));
 				String projectSVNPath = SIREUserRolesXML.getProjectSVNPath(prj.get(project.pathProject));
 
 				if (projectSVNPath != null) {

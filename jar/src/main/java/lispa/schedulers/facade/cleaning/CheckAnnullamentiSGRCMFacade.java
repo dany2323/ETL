@@ -26,6 +26,7 @@ import lispa.schedulers.bean.target.fatti.DmalmProgramma;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
 import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
+import lispa.schedulers.bean.target.fatti.DmalmRfc;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
@@ -53,6 +54,7 @@ import lispa.schedulers.dao.target.fatti.ProgrammaDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseDiProgettoDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
 import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
+import lispa.schedulers.dao.target.fatti.RfcDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaManutenzioneDAO;
 import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
@@ -1282,6 +1284,29 @@ public class CheckAnnullamentiSGRCMFacade {
 											}
 										}
 										break;
+										
+								case "rfc":
+									List<DmalmRfc> rfcs = RfcDAO.getRfc(history.getDmalmProjectPk(), 0);
+									for (DmalmRfc rfc : rfcs) {
+										DmalmRfc r = RfcDAO.getRfc(rfc.getDmalmRfcPk());
+										if (r != null) {
+												if (r.getDataStoricizzazione().equals(dataEsecuzione)) {
+													// già storicizzato oggi
+													r.setAnnullato("");
+													r.setDataAnnullamento(null);
+													r.setDmalmProjectFk02(p.getDmalmProjectPk());
+													RfcDAO.updateRfc(r);
+												} else {
+													RfcDAO.updateRank(r, new Double(0));
+													r.setAnnullato("");
+													r.setDataStoricizzazione(dataEsecuzione);
+													r.setDataAnnullamento(null);
+													r.setDmalmProjectFk02(p.getDmalmProjectPk());
+													RfcDAO.insertRfcUpdate(dataEsecuzione, r, false);
+												}
+											}
+										}
+										break;
 								}
 
 							} catch (Exception e) {
@@ -2295,6 +2320,32 @@ public class CheckAnnullamentiSGRCMFacade {
 											}
 										}
 										break;
+										
+									case "rfc":
+										List<DmalmRfc> rfcs = RfcDAO.getRfc(history.getDmalmProjectPk(), 0);
+										for (DmalmRfc rfc : rfcs) {
+											DmalmRfc r = RfcDAO.getRfc(rfc.getDmalmRfcPk());
+											if (r != null) {
+												if (r.getDataStoricizzazione()
+														.equals(dataEsecuzione)) {
+													// già storicizzato oggi
+													r.setAnnullato(unmarked);
+													r.setDataAnnullamento(dataEsecuzione);
+													r.setDmalmProjectFk02(p
+															.getDmalmProjectPk());
+													RfcDAO.updateRfc(r);
+												} else {
+													RfcDAO.updateRank(r, new Double(0));
+													r.setAnnullato(unmarked);
+													r.setDataStoricizzazione(dataEsecuzione);
+													r.setDataAnnullamento(dataEsecuzione);
+													r.setDmalmProjectFk02(p
+															.getDmalmProjectPk());
+													RfcDAO.insertRfcUpdate(dataEsecuzione, r, false);
+												}
+											}
+										}
+										break;
 
 									}
 
@@ -2762,6 +2813,15 @@ public class CheckAnnullamentiSGRCMFacade {
 											.getDataEsecuzione());
 
 					targetTipologiaWi = DmAlmConstants.TARGET_RICHIESTA_SUPPORTO;
+					break;
+				case "rfc":
+					DmalmRfc rfc = new DmalmRfc();
+					rfc.setCdRfc(rs.getString("CODICE"));
+					rfc.setIdRepository(rs.getString("ID_REPOSITORY"));
+					RfcDAO.updateWIRfcDeleted(rfc, DataEsecuzione.getInstance()
+											.getDataEsecuzione());
+
+					targetTipologiaWi = DmAlmConstants.TARGET_RFC;
 					break;
 				default:
 					logger.info("Tipologia Workitem non gestita - "

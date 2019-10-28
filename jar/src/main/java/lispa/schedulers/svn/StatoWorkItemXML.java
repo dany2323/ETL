@@ -139,7 +139,7 @@ public class StatoWorkItemXML {
 					}
 
 					for (String stato : stati) {
-						if (stati.size() != 0) {
+						if (!stati.isEmpty()) {
 
 							new SQLInsertClause(connection, dialect,
 									qDmAlmStatoWorkitem)
@@ -326,6 +326,15 @@ public class StatoWorkItemXML {
 			path = DmAlmConfigReaderProperties.SIRE_SVN_STATOWORKITEM_CLASSIFICATORE_FILE;
 			break;
 
+		case "classificatore":
+			path= DmAlmConfigReaderProperties.SIRE_SVN_STATOWORKITEM_CLASSIFICATORE_GENERICO_FILE;
+			break;
+		case "sup":
+			path=DmAlmConfigReaderProperties.SIRE_SVN_STATOWORKITEM_SUP;
+			break;
+		case "rfc":
+			path=DmAlmConfigReaderProperties.SIRE_SVN_STATOWORKITEM_RFC;
+			break;
 		default:
 			path = "";
 			break;

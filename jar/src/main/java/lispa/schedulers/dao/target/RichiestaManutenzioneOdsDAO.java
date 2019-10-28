@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
@@ -60,7 +61,8 @@ public class RichiestaManutenzioneOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -68,74 +70,78 @@ public class RichiestaManutenzioneOdsDAO {
 			connection.setAutoCommit(false);
 
 			for (DmalmRichiestaManutenzione richiesta : staging_richieste) {
-
-				new SQLInsertClause(connection, dialect, richiestaODS)
-						.columns(richiestaODS.cdRichiestaManutenzione,
-								richiestaODS.classeDiFornitura,
-								richiestaODS.codice,
-								richiestaODS.dataChiusuraRichManut,
-								richiestaODS.dataDispEffettiva,
-								richiestaODS.dataDispPianificata,
-								richiestaODS.dataInizioEffettivo,
-								richiestaODS.dataInizioPianificato,
-								richiestaODS.descrizioneRichManutenzione,
-								richiestaODS.dmalmProjectFk02,
-								richiestaODS.dmalmRichManutenzionePk,
-								richiestaODS.dmalmStatoWorkitemFk03,
-								richiestaODS.dmalmStrutturaOrgFk01,
-								richiestaODS.dmalmTempoFk04,
-								richiestaODS.dsAutoreRichManutenzione,
-								richiestaODS.dtCambioStatoRichManut,
-								richiestaODS.dtCaricamentoRichManut,
-								richiestaODS.dtCreazioneRichManutenzione,
-								richiestaODS.dtModificaRichManutenzione,
-								richiestaODS.dtRisoluzioneRichManut,
-								richiestaODS.dtScadenzaRichManutenzione,
-								richiestaODS.dtStoricizzazione,
-								richiestaODS.durataEffettivaRichMan,
-								richiestaODS.idAutoreRichManutenzione,
-								richiestaODS.idRepository,
-								richiestaODS.motivoRisoluzioneRichManut,
-								richiestaODS.rankStatoRichManutenzione,
-								richiestaODS.titoloRichiestaManutenzione,
-								richiestaODS.stgPk, richiestaODS.dmalmUserFk06,
-								richiestaODS.uri,
-								richiestaODS.severity, richiestaODS.priority,
-								richiestaODS.tagAlm, richiestaODS.tsTagAlm)
-						.values(richiesta.getCdRichiestaManutenzione(),
-								richiesta.getClasseDiFornitura(),
-								richiesta.getCodice(),
-								richiesta.getDataChiusuraRichManut(),
-								richiesta.getDataDispEffettiva(),
-								richiesta.getDataDispPianificata(),
-								richiesta.getDataInizioEffettivo(),
-								richiesta.getDataInizioPianificato(),
-								richiesta.getDescrizioneRichManutenzione(),
-								richiesta.getDmalmProjectFk02(),
-								richiesta.getDmalmRichManutenzionePk(),
-								richiesta.getDmalmStatoWorkitemFk03(),
-								richiesta.getDmalmStrutturaOrgFk01(),
-								richiesta.getDmalmTempoFk04(),
-								richiesta.getDsAutoreRichManutenzione(),
-								richiesta.getDtCambioStatoRichManut(),
-								richiesta.getDtCaricamentoRichManut(),
-								richiesta.getDtCreazioneRichManutenzione(),
-								richiesta.getDtModificaRichManutenzione(),
-								richiesta.getDtRisoluzioneRichManut(),
-								richiesta.getDtScadenzaRichManutenzione(),
-								richiesta.getDtModificaRichManutenzione(),
-								richiesta.getDurataEffettivaRichMan(),
-								richiesta.getIdAutoreRichManutenzione(),
-								richiesta.getIdRepository(),
-								richiesta.getMotivoRisoluzioneRichManut(),
-								new Double(1),
-								richiesta.getTitoloRichiestaManutenzione(),
-								richiesta.getStgPk(),
-								richiesta.getDmalmUserFk06(),
-								richiesta.getUri(),
-								richiesta.getSeverity(), richiesta.getPriority(),
-								richiesta.getTagAlm(), richiesta.getTsTagAlm()).execute();
-
+				if(listPk.contains(richiesta.getDmalmRichManutenzionePk()))
+					logger.info("Trovata DmalmRichManutenzionePk DUPLICATA!!!"+richiesta.getDmalmRichManutenzionePk());
+				else{
+					
+					listPk.add(richiesta.getDmalmRichManutenzionePk());
+					new SQLInsertClause(connection, dialect, richiestaODS)
+							.columns(richiestaODS.cdRichiestaManutenzione,
+									richiestaODS.classeDiFornitura,
+									richiestaODS.codice,
+									richiestaODS.dataChiusuraRichManut,
+									richiestaODS.dataDispEffettiva,
+									richiestaODS.dataDispPianificata,
+									richiestaODS.dataInizioEffettivo,
+									richiestaODS.dataInizioPianificato,
+									richiestaODS.descrizioneRichManutenzione,
+									richiestaODS.dmalmProjectFk02,
+									richiestaODS.dmalmRichManutenzionePk,
+									richiestaODS.dmalmStatoWorkitemFk03,
+									richiestaODS.dmalmStrutturaOrgFk01,
+									richiestaODS.dmalmTempoFk04,
+									richiestaODS.dsAutoreRichManutenzione,
+									richiestaODS.dtCambioStatoRichManut,
+									richiestaODS.dtCaricamentoRichManut,
+									richiestaODS.dtCreazioneRichManutenzione,
+									richiestaODS.dtModificaRichManutenzione,
+									richiestaODS.dtRisoluzioneRichManut,
+									richiestaODS.dtScadenzaRichManutenzione,
+									richiestaODS.dtStoricizzazione,
+									richiestaODS.durataEffettivaRichMan,
+									richiestaODS.idAutoreRichManutenzione,
+									richiestaODS.idRepository,
+									richiestaODS.motivoRisoluzioneRichManut,
+									richiestaODS.rankStatoRichManutenzione,
+									richiestaODS.titoloRichiestaManutenzione,
+									richiestaODS.stgPk, richiestaODS.dmalmUserFk06,
+									richiestaODS.uri,
+									richiestaODS.severity, richiestaODS.priority,
+									richiestaODS.tagAlm, richiestaODS.tsTagAlm)
+							.values(richiesta.getCdRichiestaManutenzione(),
+									richiesta.getClasseDiFornitura(),
+									richiesta.getCodice(),
+									richiesta.getDataChiusuraRichManut(),
+									richiesta.getDataDispEffettiva(),
+									richiesta.getDataDispPianificata(),
+									richiesta.getDataInizioEffettivo(),
+									richiesta.getDataInizioPianificato(),
+									richiesta.getDescrizioneRichManutenzione(),
+									richiesta.getDmalmProjectFk02(),
+									richiesta.getDmalmRichManutenzionePk(),
+									richiesta.getDmalmStatoWorkitemFk03(),
+									richiesta.getDmalmStrutturaOrgFk01(),
+									richiesta.getDmalmTempoFk04(),
+									richiesta.getDsAutoreRichManutenzione(),
+									richiesta.getDtCambioStatoRichManut(),
+									richiesta.getDtCaricamentoRichManut(),
+									richiesta.getDtCreazioneRichManutenzione(),
+									richiesta.getDtModificaRichManutenzione(),
+									richiesta.getDtRisoluzioneRichManut(),
+									richiesta.getDtScadenzaRichManutenzione(),
+									richiesta.getDtModificaRichManutenzione(),
+									richiesta.getDurataEffettivaRichMan(),
+									richiesta.getIdAutoreRichManutenzione(),
+									richiesta.getIdRepository(),
+									richiesta.getMotivoRisoluzioneRichManut(),
+									new Double(1),
+									richiesta.getTitoloRichiestaManutenzione(),
+									richiesta.getStgPk(),
+									richiesta.getDmalmUserFk06(),
+									richiesta.getUri(),
+									richiesta.getSeverity(), richiesta.getPriority(),
+									richiesta.getTagAlm(), richiesta.getTsTagAlm()).execute();
+				}
 			}
 
 			connection.commit();

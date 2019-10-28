@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmProgramma;
@@ -56,77 +57,83 @@ public class ProgrammaOdsDAO {
 			Timestamp dataEsecuzione) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
+		List <Integer> listPk= new ArrayList<>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
 			for (DmalmProgramma programma : staging_programma) {
-				new SQLInsertClause(connection, dialect, programmaODS)
-						.columns(programmaODS.assignee,
-								programmaODS.cdProgramma,
-								programmaODS.descrizioneProgramma,
-								programmaODS.dmalmProgrammaPk,
-								programmaODS.dmalmProjectFk02,
-								programmaODS.dmalmStatoWorkitemFk03,
-								programmaODS.dmalmStrutturaOrgFk01,
-								programmaODS.dmalmTempoFk04,
-								programmaODS.dsAutoreProgramma,
-								programmaODS.dtCambioStatoProgramma,
-								programmaODS.dtCaricamentoProgramma,
-								programmaODS.dtCreazioneProgramma,
-								programmaODS.dtModificaProgramma,
-								programmaODS.dtRisoluzioneProgramma,
-								programmaODS.dtScadenzaProgramma,
-								programmaODS.dtStoricizzazione,
-								programmaODS.idAutoreProgramma,
-								programmaODS.idRepository,
-								programmaODS.motivoRisoluzioneProgramma,
-								programmaODS.numeroLinea,
-								programmaODS.numeroTestata,
-								programmaODS.rankStatoProgramma,
-								programmaODS.titoloProgramma,
-								programmaODS.cfContratto,
-								programmaODS.cfReferenteRegionale,
-								programmaODS.cfServiceManager,
-								programmaODS.cfTipologia, programmaODS.stgPk,
-								programmaODS.dmalmUserFk06, programmaODS.uri,
-								programmaODS.codice,
-								programmaODS.severity, programmaODS.priority,
-								programmaODS.tagAlm, programmaODS.tsTagAlm)
-						.values(programma.getAssignee(),
-								programma.getCdProgramma(),
-								programma.getDescrizioneProgramma(),
-								programma.getDmalmProgrammaPk(),
-								programma.getDmalmProjectFk02(),
-								programma.getDmalmStatoWorkitemFk03(),
-								programma.getDmalmStrutturaOrgFk01(),
-								programma.getDmalmTempoFk04(),
-								programma.getDsAutoreProgramma(),
-								programma.getDtCambioStatoProgramma(),
-								programma.getDtCaricamentoProgramma(),
-								programma.getDtCreazioneProgramma(),
-								programma.getDtModificaProgramma(),
-								programma.getDtRisoluzioneProgramma(),
-								programma.getDtScadenzaProgramma(),
-								programma.getDtModificaProgramma(),
-								programma.getIdAutoreProgramma(),
-								programma.getIdRepository(),
-								programma.getMotivoRisoluzioneProgramma(),
-								programma.getNumeroLinea(),
-								programma.getNumeroTestata(), new Double(1),
-								programma.getTitoloProgramma(),
-								programma.getCfContratto(),
-								programma.getCfReferenteRegionale(),
-								programma.getCfServiceManager(),
-								programma.getCfTipologia(),
-								programma.getStgPk(),
-								programma.getDmalmUserFk06(),
-								programma.getUri(), programma.getCodice(),
-								programma.getSeverity(), programma.getPriority(),
-								programma.getTagAlm(), programma.getTsTagAlm())
-						.execute();
-
+				if(listPk.contains(programma.getDmalmProgrammaPk()))
+					logger.info("Trovata DmalmProgrammaPk DUPLICATA!!!"+programma.getDmalmProgrammaPk());
+				else{
+					listPk.add(programma.getDmalmProgrammaPk());
+					new SQLInsertClause(connection, dialect, programmaODS)
+							.columns(programmaODS.assignee,
+									programmaODS.cdProgramma,
+									programmaODS.descrizioneProgramma,
+									programmaODS.dmalmProgrammaPk,
+									programmaODS.dmalmProjectFk02,
+									programmaODS.dmalmStatoWorkitemFk03,
+									programmaODS.dmalmStrutturaOrgFk01,
+									programmaODS.dmalmTempoFk04,
+									programmaODS.dsAutoreProgramma,
+									programmaODS.dtCambioStatoProgramma,
+									programmaODS.dtCaricamentoProgramma,
+									programmaODS.dtCreazioneProgramma,
+									programmaODS.dtModificaProgramma,
+									programmaODS.dtRisoluzioneProgramma,
+									programmaODS.dtScadenzaProgramma,
+									programmaODS.dtStoricizzazione,
+									programmaODS.idAutoreProgramma,
+									programmaODS.idRepository,
+									programmaODS.motivoRisoluzioneProgramma,
+									programmaODS.numeroLinea,
+									programmaODS.numeroTestata,
+									programmaODS.rankStatoProgramma,
+									programmaODS.titoloProgramma,
+									programmaODS.cfContratto,
+									programmaODS.cfReferenteRegionale,
+									programmaODS.cfServiceManager,
+									programmaODS.cfTipologia, programmaODS.stgPk,
+									programmaODS.dmalmUserFk06, programmaODS.uri,
+									programmaODS.codice,
+									programmaODS.severity, programmaODS.priority,
+									programmaODS.tagAlm, programmaODS.tsTagAlm)
+							.values(programma.getAssignee(),
+									programma.getCdProgramma(),
+									programma.getDescrizioneProgramma(),
+									programma.getDmalmProgrammaPk(),
+									programma.getDmalmProjectFk02(),
+									programma.getDmalmStatoWorkitemFk03(),
+									programma.getDmalmStrutturaOrgFk01(),
+									programma.getDmalmTempoFk04(),
+									programma.getDsAutoreProgramma(),
+									programma.getDtCambioStatoProgramma(),
+									programma.getDtCaricamentoProgramma(),
+									programma.getDtCreazioneProgramma(),
+									programma.getDtModificaProgramma(),
+									programma.getDtRisoluzioneProgramma(),
+									programma.getDtScadenzaProgramma(),
+									programma.getDtModificaProgramma(),
+									programma.getIdAutoreProgramma(),
+									programma.getIdRepository(),
+									programma.getMotivoRisoluzioneProgramma(),
+									programma.getNumeroLinea(),
+									programma.getNumeroTestata(), new Double(1),
+									programma.getTitoloProgramma(),
+									programma.getCfContratto(),
+									programma.getCfReferenteRegionale(),
+									programma.getCfServiceManager(),
+									programma.getCfTipologia(),
+									programma.getStgPk(),
+									programma.getDmalmUserFk06(),
+									programma.getUri(), programma.getCodice(),
+									programma.getSeverity(), programma.getPriority(),
+									programma.getTagAlm(), programma.getTsTagAlm())
+							.execute();
+				}
 				connection.commit();
 			}
 		} catch (Exception e) {

@@ -134,6 +134,7 @@ public class LogUtils {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private static String exceptionAffectedObjectToString(Object object) {
 		if (object == null)
 			return EMPTY;

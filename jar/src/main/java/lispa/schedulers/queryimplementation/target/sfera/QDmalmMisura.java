@@ -50,11 +50,11 @@ public class QDmalmMisura extends com.mysema.query.sql.RelationalPathBase<DmalmM
     public final NumberPath<Double> b3Num = createNumber("B_3_NUM", Double.class);
 
     public final NumberPath<Double> b3Ufp = createNumber("B_3_UFP", Double.class);
-
-    public final NumberPath<Double> b4Num = createNumber("B_4_NUM", Double.class);
-
-    public final NumberPath<Double> b4Ufp = createNumber("B_4_UFP", Double.class);
     
+    public final NumberPath<Double> b4Num = createNumber("B_4_NUM", Double.class);
+    
+    public final NumberPath<Double> b4Ufp = createNumber("B_4_UFP", Double.class);
+
     public final NumberPath<Double> b5Num = createNumber("B_5_NUM", Double.class);
 
     public final NumberPath<Double> b5Ufp = createNumber("B_5_UFP", Double.class);

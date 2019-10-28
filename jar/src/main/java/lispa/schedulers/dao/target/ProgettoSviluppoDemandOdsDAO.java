@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoDem;
@@ -60,86 +61,92 @@ public class ProgettoSviluppoDemandOdsDAO {
 			Timestamp dataEsecuzione) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-
+		List <Integer> listPk= new ArrayList<>();
+		
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
 			for (DmalmProgettoSviluppoDem progettoSviluppo : staging_progettoSviluppoSvil) {
-				new SQLInsertClause(connection, dialect, progettoSvilDODS)
-						.columns(progettoSvilDODS.cdProgSvilD,
-								progettoSvilDODS.cfCodice,
-								progettoSvilDODS.cfDataDispEffettiva,
-								progettoSvilDODS.cfDataDispPianificata,
-								progettoSvilDODS.cfDataInizio,
-								progettoSvilDODS.cfDataInizioEff,
-								progettoSvilDODS.cfFornitura,
-								progettoSvilDODS.descrizioneProgSvilD,
-								progettoSvilDODS.dmalmProgSvilDPk,
-								progettoSvilDODS.dmalmProjectFk02,
-								progettoSvilDODS.dmalmStatoWorkitemFk03,
-								progettoSvilDODS.dmalmStrutturaOrgFk01,
-								progettoSvilDODS.dmalmTempoFk04,
-								progettoSvilDODS.dsAutoreProgSvilD,
-								progettoSvilDODS.dtCambioStatoProgSvilD,
-								progettoSvilDODS.dtCaricamentoProgSvilD,
-								progettoSvilDODS.dtCreazioneProgSvilD,
-								progettoSvilDODS.dtModificaProgSvilD,
-								progettoSvilDODS.dtPassaggioEsercizio,
-								progettoSvilDODS.dtRisoluzioneProgSvilD,
-								progettoSvilDODS.dtScadenzaProgSvilD,
-								progettoSvilDODS.dtStoricizzazione,
-								progettoSvilDODS.idAutoreProgSvilD,
-								progettoSvilDODS.idRepository,
-								progettoSvilDODS.motivoRisoluzioneProgSvilD,
-								progettoSvilDODS.priorityProgettoSvilDemand,
-								progettoSvilDODS.rankStatoProgSvilD,
-								progettoSvilDODS.severityProgettoSvilDemand,
-								progettoSvilDODS.tempoTotaleRisoluzione,
-								progettoSvilDODS.titoloProgSvilD,
-								progettoSvilDODS.stgPk,
-								progettoSvilDODS.dmalmUserFk06,
-								progettoSvilDODS.uri,
-								progettoSvilDODS.tagAlm, progettoSvilDODS.tsTagAlm)
-						.values(progettoSviluppo.getCdProgSvilD(),
-								progettoSviluppo.getCfCodice(),
-								progettoSviluppo.getCfDataDispEffettiva(),
-								progettoSviluppo.getCfDataDispPianificata(),
-								progettoSviluppo.getCfDataInizio(),
-								progettoSviluppo.getCfDataInizioEff(),
-								progettoSviluppo.getCfFornitura(),
-								progettoSviluppo.getDescrizioneProgSvilD(),
-								progettoSviluppo.getDmalmProgSvilDPk(),
-								progettoSviluppo.getDmalmProjectFk02(),
-								progettoSviluppo.getDmalmStatoWorkitemFk03(),
-								progettoSviluppo.getDmalmStrutturaOrgFk01(),
-								progettoSviluppo.getDmalmTempoFk04(),
-								progettoSviluppo.getDsAutoreProgSvilD(),
-								progettoSviluppo.getDtCambioStatoProgSvilD(),
-								progettoSviluppo.getDtCaricamentoProgSvilD(),
-								progettoSviluppo.getDtCreazioneProgSvilD(),
-								progettoSviluppo.getDtModificaProgSvilD(),
-								progettoSviluppo.getDtPassaggioEsercizio(),
-								progettoSviluppo.getDtRisoluzioneProgSvilD(),
-								progettoSviluppo.getDtScadenzaProgSvilD(),
-								progettoSviluppo.getDtModificaProgSvilD(),
-								progettoSviluppo.getIdAutoreProgSvilD(),
-								progettoSviluppo.getIdRepository(),
-								progettoSviluppo
-										.getMotivoRisoluzioneProgSvilD(),
-								progettoSviluppo
-										.getPriorityProgettoSvilDemand(),
-								new Double(1),
-								progettoSviluppo
-										.getSeverityProgettoSvilDemand(),
-								progettoSviluppo.getTempoTotaleRisoluzione(),
-								progettoSviluppo.getTitoloProgSvilD(),
-								progettoSviluppo.getStgPk(),
-								progettoSviluppo.getDmalmUserFk06(),
-								progettoSviluppo.getUri(),
-								progettoSviluppo.getTagAlm(), progettoSviluppo.getTsTagAlm()).execute();
-				connection.commit();
+				if(listPk.contains(progettoSviluppo.getDmalmProgSvilDPk()))
+					logger.info("Trovata DmalmProgSvilDPk DUPLICATA!!!"+progettoSviluppo.getDmalmProgSvilDPk());
+				else{
+					listPk.add(progettoSviluppo.getDmalmProgSvilDPk());
+					new SQLInsertClause(connection, dialect, progettoSvilDODS)
+							.columns(progettoSvilDODS.cdProgSvilD,
+									progettoSvilDODS.cfCodice,
+									progettoSvilDODS.cfDataDispEffettiva,
+									progettoSvilDODS.cfDataDispPianificata,
+									progettoSvilDODS.cfDataInizio,
+									progettoSvilDODS.cfDataInizioEff,
+									progettoSvilDODS.cfFornitura,
+									progettoSvilDODS.descrizioneProgSvilD,
+									progettoSvilDODS.dmalmProgSvilDPk,
+									progettoSvilDODS.dmalmProjectFk02,
+									progettoSvilDODS.dmalmStatoWorkitemFk03,
+									progettoSvilDODS.dmalmStrutturaOrgFk01,
+									progettoSvilDODS.dmalmTempoFk04,
+									progettoSvilDODS.dsAutoreProgSvilD,
+									progettoSvilDODS.dtCambioStatoProgSvilD,
+									progettoSvilDODS.dtCaricamentoProgSvilD,
+									progettoSvilDODS.dtCreazioneProgSvilD,
+									progettoSvilDODS.dtModificaProgSvilD,
+									progettoSvilDODS.dtPassaggioEsercizio,
+									progettoSvilDODS.dtRisoluzioneProgSvilD,
+									progettoSvilDODS.dtScadenzaProgSvilD,
+									progettoSvilDODS.dtStoricizzazione,
+									progettoSvilDODS.idAutoreProgSvilD,
+									progettoSvilDODS.idRepository,
+									progettoSvilDODS.motivoRisoluzioneProgSvilD,
+									progettoSvilDODS.priorityProgettoSvilDemand,
+									progettoSvilDODS.rankStatoProgSvilD,
+									progettoSvilDODS.severityProgettoSvilDemand,
+									progettoSvilDODS.tempoTotaleRisoluzione,
+									progettoSvilDODS.titoloProgSvilD,
+									progettoSvilDODS.stgPk,
+									progettoSvilDODS.dmalmUserFk06,
+									progettoSvilDODS.uri,
+									progettoSvilDODS.tagAlm, progettoSvilDODS.tsTagAlm)
+							.values(progettoSviluppo.getCdProgSvilD(),
+									progettoSviluppo.getCfCodice(),
+									progettoSviluppo.getCfDataDispEffettiva(),
+									progettoSviluppo.getCfDataDispPianificata(),
+									progettoSviluppo.getCfDataInizio(),
+									progettoSviluppo.getCfDataInizioEff(),
+									progettoSviluppo.getCfFornitura(),
+									progettoSviluppo.getDescrizioneProgSvilD(),
+									progettoSviluppo.getDmalmProgSvilDPk(),
+									progettoSviluppo.getDmalmProjectFk02(),
+									progettoSviluppo.getDmalmStatoWorkitemFk03(),
+									progettoSviluppo.getDmalmStrutturaOrgFk01(),
+									progettoSviluppo.getDmalmTempoFk04(),
+									progettoSviluppo.getDsAutoreProgSvilD(),
+									progettoSviluppo.getDtCambioStatoProgSvilD(),
+									progettoSviluppo.getDtCaricamentoProgSvilD(),
+									progettoSviluppo.getDtCreazioneProgSvilD(),
+									progettoSviluppo.getDtModificaProgSvilD(),
+									progettoSviluppo.getDtPassaggioEsercizio(),
+									progettoSviluppo.getDtRisoluzioneProgSvilD(),
+									progettoSviluppo.getDtScadenzaProgSvilD(),
+									progettoSviluppo.getDtModificaProgSvilD(),
+									progettoSviluppo.getIdAutoreProgSvilD(),
+									progettoSviluppo.getIdRepository(),
+									progettoSviluppo
+											.getMotivoRisoluzioneProgSvilD(),
+									progettoSviluppo
+											.getPriorityProgettoSvilDemand(),
+									new Double(1),
+									progettoSviluppo
+											.getSeverityProgettoSvilDemand(),
+									progettoSviluppo.getTempoTotaleRisoluzione(),
+									progettoSviluppo.getTitoloProgSvilD(),
+									progettoSviluppo.getStgPk(),
+									progettoSviluppo.getDmalmUserFk06(),
+									progettoSviluppo.getUri(),
+									progettoSviluppo.getTagAlm(), progettoSviluppo.getTsTagAlm()).execute();
+					connection.commit();
+				}	
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

@@ -103,9 +103,8 @@ public class TotalDao {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		List<Tuple> cwihistory = null;
-		
+
 		try {
-			logger.info("START getHistorySingleChangedWI - codice: "+changedwi+" repository: "+idRepository);
 			
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -119,14 +118,13 @@ public class TotalDao {
 					.where(qTotal.idRepository.eq(idRepository))
 					.list(qTotal.all());
 
-			logger.info("STOP getHistorySingleChangedWI - codice: "+changedwi+" repository: "+idRepository);
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
-		
+
 		return cwihistory;
 
 	}
@@ -135,8 +133,6 @@ public class TotalDao {
 		boolean changed = false;
 		List<Tuple> filteredcwi = new ArrayList<Tuple>();
 		
-		logger.info("START filterChangedWiHisory");
-		
 		String c_type = cwiHistory.get(0).get(qTotal.type);
 		for (Tuple t : cwiHistory) {
 			if (!c_type.equals(t.get(qTotal.type)))
@@ -144,8 +140,6 @@ public class TotalDao {
 			if (changed)
 				filteredcwi.add(t);
 		}
-
-		logger.info("STOP filterChangedWiHisory");
 		
 		return filteredcwi;
 	}

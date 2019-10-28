@@ -3,6 +3,7 @@ package lispa.schedulers.dao.target;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import lispa.schedulers.bean.target.fatti.DmalmFase;
@@ -59,6 +60,7 @@ public class FaseOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
+		List <Integer> listPk= new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -67,67 +69,71 @@ public class FaseOdsDAO {
 			connection.setAutoCommit(false);
 
 			for (DmalmFase fase : staging_fasi) {
-
-				new SQLInsertClause(connection, dialect, faseODS)
-						.columns(faseODS.applicabile, faseODS.cdFase,
-								faseODS.codice, faseODS.dataFineBaseline,
-								faseODS.dataFineEffettiva,
-								faseODS.dataFinePianificata,
-								faseODS.dataInizioBaseline,
-								faseODS.dataInizioEffettivo,
-								faseODS.dataInizioPianificato,
-								faseODS.dataPassaggioInEsecuzione,
-								faseODS.descrizioneFase, faseODS.dmalmFasePk,
-								faseODS.dmalmProjectFk02,
-								faseODS.dmalmStatoWorkitemFk03,
-								faseODS.dmalmStrutturaOrgFk01,
-								faseODS.dmalmTempoFk04, faseODS.dsAutoreFase,
-								faseODS.dtCambioStatoFase,
-								faseODS.dtCaricamentoFase,
-								faseODS.dtCreazioneFase,
-								faseODS.dtModificaFase,
-								faseODS.dtRisoluzioneFase,
-								faseODS.dtScadenzaFase,
-								faseODS.dtStoricizzazione,
-								faseODS.durataEffettivaFase,
-								faseODS.idAutoreFase, faseODS.idRepository,
-								faseODS.motivoRisoluzioneFase,
-								faseODS.rankStatoFase, faseODS.titoloFase,
-								faseODS.stgPk, faseODS.dmalmUserFk06,
-								faseODS.uri,
-								faseODS.severity, faseODS.priority,
-								faseODS.tagAlm, faseODS.tsTagAlm)
-						.values(fase.getApplicabile(), fase.getCdFase(),
-								fase.getCodice(), fase.getDataFineBaseline(),
-								fase.getDataFineEffettiva(),
-								fase.getDataFinePianificata(),
-								fase.getDataInizioBaseline(),
-								fase.getDataInizioEffettivo(),
-								fase.getDataInizioPianificato(),
-								fase.getDataPassaggioInEsecuzione(),
-								fase.getDescrizioneFase(),
-								fase.getDmalmFasePk(),
-								fase.getDmalmProjectFk02(),
-								fase.getDmalmStatoWorkitemFk03(),
-								fase.getDmalmStrutturaOrgFk01(),
-								fase.getDmalmTempoFk04(),
-								fase.getDsAutoreFase(),
-								fase.getDtCambioStatoFase(),
-								fase.getDtCaricamentoFase(),
-								fase.getDtCreazioneFase(),
-								fase.getDtModificaFase(),
-								fase.getDtRisoluzioneFase(),
-								fase.getDtScadenzaFase(),
-								fase.getDtModificaFase(),
-								fase.getDurataEffettivaFase(),
-								fase.getIdAutoreFase(), fase.getIdRepository(),
-								fase.getMotivoRisoluzioneFase(), new Double(1),
-								fase.getTitoloFase(), fase.getStgPk(),
-								fase.getDmalmUserFk06(), fase.getUri(),
-								fase.getSeverity(), fase.getPriority(),
-								fase.getTagAlm(), fase.getTsTagAlm()
-
-						).execute();
+				if(listPk.contains(fase.getDmalmFasePk()))
+					logger.info("Trovata DmalmFasePk DUPLICATA!!!"+fase.getDmalmFasePk());
+				else{
+					listPk.add(fase.getDmalmFasePk());
+					new SQLInsertClause(connection, dialect, faseODS)
+							.columns(faseODS.applicabile, faseODS.cdFase,
+									faseODS.codice, faseODS.dataFineBaseline,
+									faseODS.dataFineEffettiva,
+									faseODS.dataFinePianificata,
+									faseODS.dataInizioBaseline,
+									faseODS.dataInizioEffettivo,
+									faseODS.dataInizioPianificato,
+									faseODS.dataPassaggioInEsecuzione,
+									faseODS.descrizioneFase, faseODS.dmalmFasePk,
+									faseODS.dmalmProjectFk02,
+									faseODS.dmalmStatoWorkitemFk03,
+									faseODS.dmalmStrutturaOrgFk01,
+									faseODS.dmalmTempoFk04, faseODS.dsAutoreFase,
+									faseODS.dtCambioStatoFase,
+									faseODS.dtCaricamentoFase,
+									faseODS.dtCreazioneFase,
+									faseODS.dtModificaFase,
+									faseODS.dtRisoluzioneFase,
+									faseODS.dtScadenzaFase,
+									faseODS.dtStoricizzazione,
+									faseODS.durataEffettivaFase,
+									faseODS.idAutoreFase, faseODS.idRepository,
+									faseODS.motivoRisoluzioneFase,
+									faseODS.rankStatoFase, faseODS.titoloFase,
+									faseODS.stgPk, faseODS.dmalmUserFk06,
+									faseODS.uri,
+									faseODS.severity, faseODS.priority,
+									faseODS.tagAlm, faseODS.tsTagAlm)
+							.values(fase.getApplicabile(), fase.getCdFase(),
+									fase.getCodice(), fase.getDataFineBaseline(),
+									fase.getDataFineEffettiva(),
+									fase.getDataFinePianificata(),
+									fase.getDataInizioBaseline(),
+									fase.getDataInizioEffettivo(),
+									fase.getDataInizioPianificato(),
+									fase.getDataPassaggioInEsecuzione(),
+									fase.getDescrizioneFase(),
+									fase.getDmalmFasePk(),
+									fase.getDmalmProjectFk02(),
+									fase.getDmalmStatoWorkitemFk03(),
+									fase.getDmalmStrutturaOrgFk01(),
+									fase.getDmalmTempoFk04(),
+									fase.getDsAutoreFase(),
+									fase.getDtCambioStatoFase(),
+									fase.getDtCaricamentoFase(),
+									fase.getDtCreazioneFase(),
+									fase.getDtModificaFase(),
+									fase.getDtRisoluzioneFase(),
+									fase.getDtScadenzaFase(),
+									fase.getDtModificaFase(),
+									fase.getDurataEffettivaFase(),
+									fase.getIdAutoreFase(), fase.getIdRepository(),
+									fase.getMotivoRisoluzioneFase(), new Double(1),
+									fase.getTitoloFase(), fase.getStgPk(),
+									fase.getDmalmUserFk06(), fase.getUri(),
+									fase.getSeverity(), fase.getPriority(),
+									fase.getTagAlm(), fase.getTsTagAlm()
+	
+							).execute();
+				}
 			}
 
 			connection.commit();

@@ -102,6 +102,9 @@ public class QDmalmAsm extends com.mysema.query.sql.RelationalPathBase<DmalmAsm>
     
     public final NumberPath<Integer> unitaOrganizzativaFk = createNumber("DMALM_UNITAORGANIZZATIVA_FK_03", Integer.class);
     
+    public final NumberPath<Integer> unitaOrganizzativaFlatFk = createNumber("DMALM_UNITAORG_FLAT_FK_04", Integer.class);
+
+    
     public final DateTimePath<java.sql.Timestamp> dtPrevistaProssimaMpp = createDateTime("DT_PREVISTA_PROSSIMA_MPP_ASM", java.sql.Timestamp.class);
     
     public final DateTimePath<java.sql.Timestamp> fip01InizioEsercizio = createDateTime("FIP01_INIZIO_ESERCIZIO_ASM", java.sql.Timestamp.class);

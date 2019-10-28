@@ -186,7 +186,7 @@ public final class DmAlmConstants {
 	public static final String SQL_CLOSE_PROJECT_PRODOTTI_ARCHITETTURE = "closeprojectprodottiarchitetture.sql";
 	
 	//Query per procedura di ripristino: attenzione questi file contengono istruzioni sql multiple
-	public static final String BACKUP_TARGET = "backup_target.sql";
+//	public static final String BACKUP_TARGET = "backup_target.sql";
 	public static final String BACKUP_TARGET_WITH_PROCEDURE = "backup_target_with_procedure.sql";
 	public static final String BACKUP_MPS_TARGET = "backup_mps_target.sql";
 	public static final String TRUNCATE_BACKUP_TABLES = "truncate_backup_tables.sql";
@@ -299,6 +299,7 @@ public final class DmAlmConstants {
 	public static final String TARGET_PEI = "DMALM_PEI";
 	public static final String TARGET_CLASSIFICATORE = "DMALM_CLASSIFICATORE";
 	public static final String TARGET_RICHIESTA_SUPPORTO = "DMALM_RICHIESTA_SUPPORTO";
+	public static final String TARGET_RFC = "DMALM_RFC";
 
 	public static final String TARGET_AREATEMATICA = "DMALM_AREA_TEMATICA";
 	public static final String TARGET_STATOWORKITEM = "DMALM_STATO_WORKITEM";
@@ -674,6 +675,7 @@ public final class DmAlmConstants {
 	public static final String STORED_PROCEDURE_REL_IT = "STOR_RELEASE_IT_BY_PROJ";
 	public static final String STORED_PROCEDURE_PROG_SV_DEM = "STOR_PROG_SV_DEM_BY_PROJ";
 	public static final String STORED_PROCEDURE_CLASS = "STOR_CLASS_BY_PROJ";
+	public static final String STORED_PROCEDURE_RFC = "STOR_RFC_BY_PROJ";
 
 	public static final String STORED_PROCEDURE_KILL_BO_SESSIONS="KILL_BO_SESSIONS";
 	

@@ -193,7 +193,6 @@ public class CheckAnomaliaDifettoProdottoFacade {
 
 			while (Integer.parseInt(nextYearMonth) <= Integer
 					.parseInt(endYearMonth)) {
-				logger.info("dataEsecuzione: " +dataEsecuzione+ "- nextDate: "+nextDate+ "- startYearMonth: "+startYearMonth+" - nextYearMonth: "+nextYearMonth);
 				AnomaliaProdottoDummyDAO.insertDummyValue(
 						dataEsecuzione, nextDate, startYearMonth, nextYearMonth);
 

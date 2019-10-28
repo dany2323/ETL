@@ -4,11 +4,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
-import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.queryimplementation.staging.sfera.QDmalmStgMisura;
 import lispa.schedulers.utils.DateUtils;
@@ -143,7 +141,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										MisuraUtils.MisuraToString(row),
 										"PRJ-ATT:INDICATORE_ALM_PER_VALIDAZ_PROGETTO_ASM non e' valorizzato correttamente",
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),  
+										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 										dataEsecuzione);
 					}
 				}
@@ -791,7 +789,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						DmAlmConstants.PROGETTO_OBBLIGATORIO,
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -807,7 +805,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.AUDIT_MONITORE_NO_VAL_IN_BASELINE,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -823,7 +821,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.AUDIT_INDICE_VERIFICABILITA_NO_VAL_BASELINE,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -839,7 +837,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								DmAlmConstants.COD_RDI_NO_PATTERN,
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -856,7 +854,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.FORNITORE_MPP_NON_VALORIZZATO_SVILUPPO,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -879,7 +877,7 @@ public class CheckSferaMisureFacade implements Runnable {
 								MisuraUtils.MisuraToString(row),
 								"WARNING-Non possono esserci 2 Misure MPP di tipo diverso in uno stesso progetto PATR-",
 								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 								dataEsecuzione);
 			}
 
@@ -914,7 +912,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.FORNITORE_SVILUPPO_MEV_NON_VALORIZZABILE,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -950,7 +948,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.MP_PERCENT_CICLO_DI_VITA,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -982,7 +980,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											DmAlmConstants.MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO
 													+ row.get(stgMisura.pPrjMpPercentCicloDiVita),
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 											dataEsecuzione);
 						}
 					} catch (Exception e) {
@@ -994,7 +992,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										DmAlmConstants.MP_PERCENT_CICLO_DI_VITA_VAL_NON_PERMESSO
 												+ row.get(stgMisura.pPrjMpPercentCicloDiVita),
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 										dataEsecuzione);
 					}
 				}
@@ -1012,7 +1010,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_BASELINE,
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1040,7 +1038,7 @@ public class CheckSferaMisureFacade implements Runnable {
 											DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_VALIDO
 													+ row.get(stgMisura.pPrjFccFattCorrezTotal),
 											DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+											MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 											dataEsecuzione);
 						}
 					} catch (Exception e) {
@@ -1052,7 +1050,7 @@ public class CheckSferaMisureFacade implements Runnable {
 										DmAlmConstants.FCC_FATT_CORREZZ_COMPLESSIVO_NO_VALIDO
 												+ row.get(stgMisura.pPrjFccFattCorrezTotal),
 										DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+										MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 										dataEsecuzione);
 					}
 				}
@@ -1075,7 +1073,7 @@ public class CheckSferaMisureFacade implements Runnable {
 //						dataEsecuzione);
 //			}
 
-//			// pPrjFlApplicLgFpDwh
+			// pPrjFlApplicLgFpDwh
 //			if (row.get(stgMisura.pPrjFlApplicLgFpDwh) == null
 //					|| (!row.get(stgMisura.pPrjFlApplicLgFpDwh).equals("SI") && !row
 //							.get(stgMisura.pPrjFlApplicLgFpDwh).equals("NO"))) {
@@ -1086,11 +1084,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_DWH_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjFlApplicLgFpDwh),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
 
-//			// pPrjFlagApplLgFpGis
+			// pPrjFlagApplLgFpGis
 //			if (row.get(stgMisura.pPrjFlagApplLgFpGis) == null
 //					|| (!row.get(stgMisura.pPrjFlagApplLgFpGis).equals("SI") && !row
 //							.get(stgMisura.pPrjFlagApplLgFpGis).equals("NO"))) {
@@ -1101,11 +1099,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_GIS_NO_PERMESSO
 //								+ row.get(stgMisura.pPrjFlagApplLgFpGis),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlApplLgFpEdma
+
+			// pPrjFlApplLgFpEdma
 //			if (row.get(stgMisura.pPrjFlApplLgFpEdma) == null
 //					|| (!row.get(stgMisura.pPrjFlApplLgFpEdma).equals("SI") && !row
 //							.get(stgMisura.pPrjFlApplLgFpEdma).equals("NO"))) {
@@ -1116,11 +1114,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_APPLICATIBILITA_LG_FP_EDMA_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjFlApplLgFpEdma),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlagApplLgFpMware
+
+			// pPrjFlagApplLgFpMware
 //			if (row.get(stgMisura.pPrjFlagApplLgFpMware) == null
 //					|| (!row.get(stgMisura.pPrjFlagApplLgFpMware).equals("SI") && !row
 //							.get(stgMisura.pPrjFlagApplLgFpMware).equals("NO"))) {
@@ -1131,11 +1129,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_MWARE_NO_PERMESSO
 //								+ row.get(stgMisura.pPrjFlagApplLgFpMware),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlApplLgFpWeb
+
+			// pPrjFlApplLgFpWeb
 //			if (row.get(stgMisura.pPrjFlApplLgFpWeb) == null
 //					|| (!row.get(stgMisura.pPrjFlApplLgFpWeb).equals("SI") && !row
 //							.get(stgMisura.pPrjFlApplLgFpWeb).equals("NO"))) {
@@ -1146,11 +1144,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_SITIWEB
 //								+ row.get(stgMisura.pPrjFlApplLgFpWeb),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlApplicLgFpFuturo01
+
+			// pPrjFlApplicLgFpFuturo01
 //			if (row.get(stgMisura.pPrjFlApplicLgFpFuturo01) == null
 //					|| (!row.get(stgMisura.pPrjFlApplicLgFpFuturo01).equals(
 //							"SI") && !row.get(
@@ -1162,11 +1160,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo01),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlApplicLgFpFuturo02
+
+			// pPrjFlApplicLgFpFuturo02
 //			if (row.get(stgMisura.pPrjFlApplicLgFpFuturo02) == null
 //					|| (!row.get(stgMisura.pPrjFlApplicLgFpFuturo02).equals(
 //							"SI") && !row.get(
@@ -1178,11 +1176,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_APPLICABILITA_LG_FP_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjFlApplicLgFpFuturo02),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlAmbTecTransBatRep
+
+			// pPrjFlAmbTecTransBatRep
 //			if (row.get(stgMisura.pPrjFlAmbTecTransBatRep) == null
 //					|| (!row.get(stgMisura.pPrjFlAmbTecTransBatRep)
 //							.equals("SI") && !row.get(
@@ -1194,11 +1192,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjFlAmbTecTransBatRep),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlagAmbTecnGis
+
+			// pPrjFlagAmbTecnGis
 //			if (row.get(stgMisura.pPrjFlagAmbTecnGis) == null
 //					|| (!row.get(stgMisura.pPrjFlagAmbTecnGis).equals("SI") && !row
 //							.get(stgMisura.pPrjFlagAmbTecnGis).equals("NO"))) {
@@ -1209,11 +1207,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_GIS_VALORE_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjFlagAmbTecnGis),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjAmbTecnPortali
+
+			// pPrjAmbTecnPortali
 //			if (row.get(stgMisura.pPrjAmbTecnPortali) == null
 //					|| (!row.get(stgMisura.pPrjAmbTecnPortali).equals("SI") && !row
 //							.get(stgMisura.pPrjAmbTecnPortali).equals("NO"))) {
@@ -1224,11 +1222,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PORTALI_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjAmbTecnPortali),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlAmbTecnPiatEnterpr
+
+			// pPrjFlAmbTecnPiatEnterpr
 //			if (row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr) == null
 //					|| (!row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr).equals(
 //							"SI") && !row.get(
@@ -1241,11 +1239,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //								DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_PIAT_SPEC_ENT_NON_PERMESSO
 //										+ row.get(stgMisura.pPrjFlAmbTecnPiatEnterpr),
 //								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//								MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //								dataEsecuzione);
 //			}
-//
-//			// pPrjFlAmbitoTecnFuturo01
+
+			// pPrjFlAmbitoTecnFuturo01
 //			if (row.get(stgMisura.pPrjFlAmbitoTecnFuturo01) == null
 //					|| (!row.get(stgMisura.pPrjFlAmbitoTecnFuturo01).equals(
 //							"SI") && !row.get(
@@ -1257,11 +1255,11 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo01),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //			}
-//
-//			// pPrjFlAmbitoTecnFuturo02
+
+			// pPrjFlAmbitoTecnFuturo02
 //			if (row.get(stgMisura.pPrjFlAmbitoTecnFuturo02) == null
 //					|| (!row.get(stgMisura.pPrjFlAmbitoTecnFuturo02).equals(
 //							"SI") && !row.get(
@@ -1273,7 +1271,7 @@ public class CheckSferaMisureFacade implements Runnable {
 //						DmAlmConstants.FLAG_AMBITO_TECNOLOGICO_FUTURO2_NON_PERMESSO
 //								+ row.get(stgMisura.pPrjFlAmbitoTecnFuturo02),
 //						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+//						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 //						dataEsecuzione);
 //
 //			}
@@ -1289,7 +1287,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						"progetto PATR- sfera non di tipo ‘Baseline’ ",
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1305,7 +1303,7 @@ public class CheckSferaMisureFacade implements Runnable {
 						MisuraUtils.MisuraToString(row),
 						"progetto BAS - sfera non di tipo ‘Baseline’ ",
 						DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+						MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 						dataEsecuzione);
 			}
 
@@ -1327,7 +1325,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									DmAlmConstants.DATA_SFERA_FORMATO_NON_CORRETTO
 											+ row.get(stgMisura.nomeProgetto),
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 
@@ -1339,7 +1337,7 @@ public class CheckSferaMisureFacade implements Runnable {
 									MisuraUtils.MisuraToString(row),
 									"Progetto - la data del progetto sfera e' 20130524 ",
 									DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)), 
+									MisuraUtils.getPkTarget(DmAlmConstants.PK_TARGET_PROGETTO_SFERA, DmAlmConstants.TARGET_PROGETTO_SFERA, DmAlmConstants.ID_TARGET_PROGETTO_SFERA, row.get(stgMisura.idProgetto)),
 									dataEsecuzione);
 				}
 			}
@@ -1354,7 +1352,7 @@ public class CheckSferaMisureFacade implements Runnable {
 			Timestamp dataEsecuzione) {
 		int errore = 0;
 		try {
-
+			
 			if (row.get(stgMisura.idMsr) == null
 					|| row.get(stgMisura.idMsr).equals(new Integer(0))) {
 				errore++;

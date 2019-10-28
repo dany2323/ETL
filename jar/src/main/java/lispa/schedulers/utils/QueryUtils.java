@@ -7,6 +7,7 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 import org.apache.log4j.Logger;

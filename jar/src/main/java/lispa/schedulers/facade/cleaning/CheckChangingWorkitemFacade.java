@@ -438,8 +438,6 @@ public class CheckChangingWorkitemFacade {
 		List<Tuple> t = new ArrayList<Tuple>();
 
 		try {
-			logger.info("START findType - codice: "+codice);
-			
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
@@ -448,8 +446,6 @@ public class CheckChangingWorkitemFacade {
 			t = query.from(qTotal).where(qTotal.codice.eq(codice))
 					.orderBy(qTotal.dtStoricizzazione.desc())
 					.list(qTotal.all());
-
-			logger.info("STOP findType - codice: "+codice);
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage());

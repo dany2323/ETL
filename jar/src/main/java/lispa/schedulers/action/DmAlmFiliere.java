@@ -1,6 +1,7 @@
 package lispa.schedulers.action;
 
 import lispa.schedulers.facade.target.CostruzioneFilieraAnomalieFacade;
+import lispa.schedulers.facade.target.CostruzioneFilieraProduttivaAvanzataFacade;
 import lispa.schedulers.facade.target.CostruzioneFilieraProduttivaFacade;
 import lispa.schedulers.facade.target.CostruzioneFilieraTemplateAssFunzionaleFacade;
 import lispa.schedulers.facade.target.CostruzioneFilieraTemplateDemandFacade;
@@ -44,6 +45,9 @@ public class DmAlmFiliere {
 		// gestione esecuzione effettuata direttamente nel facade
 		CostruzioneFilieraTemplateAssFunzionaleFacade.execute();
 		
+		// gestione esecuzione effettuata direttamente nel facade
+		CostruzioneFilieraProduttivaAvanzataFacade.execute();
+				
 		logger.info("STOP DmAlmFiliere.doWork()");
 	}
 }

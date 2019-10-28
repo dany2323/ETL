@@ -151,6 +151,23 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 				idFiliera = gestisciLista(idFiliera, startWorkitemsList,
 						insertedWorkitemsList);
 			}
+			
+			
+			
+//			// INIZIO DM_ALM-352
+//			// aggiunta dei WI Build alla tabella DMALM_TEMPLATE_INT_TECNICA
+//			List<DmalmLinkedWorkitems> insertedWorkitemsListBuild = new LinkedList<DmalmLinkedWorkitems>();
+//			
+//			List<DmalmLinkedWorkitems> startWorkitemsListBuild = LinkedWorkitemsDAO
+//					.getStartWorkitemsAddBuildTemplate(dataInizioFiliera);
+//			logger.debug("CostruzioneFilieraTemplateSviluppoFacade - Aggiunta WI Build - lista.size: "
+//					+ startWorkitemsListBuild.size());
+//
+//			if (startWorkitemsListBuild.size() > 0) {
+//				idFiliera = gestisciListaAddWiBuild(idFiliera, startWorkitemsListBuild,
+//						insertedWorkitemsListBuild);
+//			}
+//			// FINE DM_ALM-352
 
 			//Gestisci i Work Item orfani
 			getWorkItemSviluppoFuoriFiliera(dataInizioFiliera);

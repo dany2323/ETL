@@ -17,6 +17,8 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
+import lispa.schedulers.svn.SIREUserRolesXML;
+import lispa.schedulers.svn.SISSUserRolesXML;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.StringUtils;
