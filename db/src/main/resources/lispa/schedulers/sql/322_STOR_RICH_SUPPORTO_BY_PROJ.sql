@@ -1,3 +1,5 @@
+SPOOL 322_STOR_RICH_SUPPORTO_BY_PROJ.sql
+
 create or replace PROCEDURE STOR_RICH_SUPPORTO_BY_PROJ AS 
 v_count NUMBER;
 v_id_richiesta_supporto VARCHAR2(500);
