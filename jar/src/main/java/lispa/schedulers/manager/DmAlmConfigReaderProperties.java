@@ -6,7 +6,7 @@ public class DmAlmConfigReaderProperties
 	public static String PROPERTIES_READER_FILE_NAME;
 	
 	//wi-191
-	public static final String VERSIONE_ETL = "4.9.00";
+	public static final String VERSIONE_ETL = "5.0.08";
 	
 	//QUERY FATTI
 	public static final String SQL_ANOMALIA					    = "anomalia.sql";
