@@ -118,17 +118,20 @@ public class StagingCalipsoFacade {
 	
 	private static void putExcelCalipso() throws IOException, PropertiesReaderException {
 		
-		File file = new File(DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_PATH));
+		File fileCalipsoPath = new File(DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_PATH));
 		String renameFile = "mv ";
 		String wgetFile = "wget ";
 		String chmod = "chmod 755 ";
-		String fileSourceCalipso = DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_SOURCE_PATH_FILE) + DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL);
+		String fileCalipsoSource = DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_SOURCE_PATH_FILE) + DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL);
 		String fileCalipso = DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_PATH) + DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL);
 		logger.debug("START StagingCalipsoFacade.putExcelCalipso");
 		
 		try {
-			Runtime.getRuntime().exec(renameFile + fileCalipso + " " + fileCalipso + "." + DateUtils.dateToString(DataEsecuzione.getInstance().getDataEsecuzione(), "yyyy-MM-dd").replace("-", "_")).waitFor();
-			Runtime.getRuntime().exec(wgetFile + fileSourceCalipso, null, file).waitFor();
+//			File fCalipso = new File(fileCalipso);
+//			if (fCalipso.exists()) {
+//				Runtime.getRuntime().exec(renameFile + fileCalipso + " " + fileCalipso + "." + DateUtils.dateToString(DataEsecuzione.getInstance().getDataEsecuzione(), "yyyy-MM-dd").replace("-", "_")).waitFor();
+//			}
+//			Runtime.getRuntime().exec(wgetFile + fileCalipsoSource, null, fileCalipsoPath).waitFor();
 			Runtime.getRuntime().exec(chmod + fileCalipso).waitFor();
 		} catch (InterruptedException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

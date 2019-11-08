@@ -205,6 +205,10 @@ public class DmAlmETL {
 					+ (ExecutionManager.getInstance().isExecutionMps()
 							? "Eseguito"
 							: "NON eseguito");
+			esitoBody += "\nCALIPSO: "
+					+ (ExecutionManager.getInstance().isExecutionCalipso()
+							? "Eseguito"
+							: "NON eseguito");
 			if (RecoverManager.getInstance().isRecoveredStagingMps())
 				esitoBody += DmAlmConstants.ETLMPSKO;
 		}
