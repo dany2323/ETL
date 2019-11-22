@@ -7,21 +7,22 @@ import com.mysema.query.types.PathMetadata;
 
 import javax.annotation.Generated;
 
-import lispa.schedulers.bean.staging.sgr.sire.history.SireHistoryAttachment;
 import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.Path;
 
 
 /**
- * QDmalmSireHistoryAttachment is a Querydsl query type for DmalmSireHistoryAttachment
+ * QAttachment is a Querydsl query type for Attachment
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
-public class QSireHistoryAttachment extends com.mysema.query.sql.RelationalPathBase<SireHistoryAttachment> {
+public class SireHistoryAttachment extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryAttachment> {
 
-    private static final long serialVersionUID = -699899518;
+    private static final long serialVersionUID = -1678920117;
 
-    public static final QSireHistoryAttachment dmalmSireHistoryAttachment = new QSireHistoryAttachment("DMALM_SIRE_HISTORY_ATTACHMENT");
+    public static final SireHistoryAttachment attachment = new SireHistoryAttachment("DM_ALM_H_SIRE_ATTACHMENT");
+
+    public final SimplePath<java.sql.Blob> cContent = createSimple("C_CONTENT", java.sql.Blob.class);
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 
@@ -45,8 +46,6 @@ public class QSireHistoryAttachment extends com.mysema.query.sql.RelationalPathB
 
     public final StringPath cUrl = createString("C_URL");
 
-    public final DateTimePath<java.sql.Timestamp> dataCaricamento = createDateTime("DATA_CARICAMENTO", java.sql.Timestamp.class);
-
     public final StringPath fkAuthor = createString("FK_AUTHOR");
 
     public final StringPath fkProject = createString("FK_PROJECT");
@@ -59,20 +58,18 @@ public class QSireHistoryAttachment extends com.mysema.query.sql.RelationalPathB
 
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
-    public final NumberPath<Long> sireHistoryAttachmentPk = createNumber("SIRE_HISTORY_ATTACHMENT_PK", Long.class);
+    public final com.mysema.query.sql.PrimaryKey<lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryAttachment> constraintA = createPrimaryKey(cPk);
 
-    public final com.mysema.query.sql.PrimaryKey<SireHistoryAttachment> sysC0021438 = createPrimaryKey(sireHistoryAttachmentPk);
-
-    public QSireHistoryAttachment(String variable) {
-        super(SireHistoryAttachment.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_HISTORY_ATTACHMENT");
+    public SireHistoryAttachment(String variable) {
+        super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryAttachment.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_ATTACHMENT");
     }
 
-    public QSireHistoryAttachment(Path<? extends SireHistoryAttachment> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_HISTORY_ATTACHMENT");
+    public SireHistoryAttachment(Path<? extends lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryAttachment> path) {
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_ATTACHMENT");
     }
 
-    public QSireHistoryAttachment(PathMetadata<?> metadata) {
-        super(SireHistoryAttachment.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_HISTORY_ATTACHMENT");
+    public SireHistoryAttachment(PathMetadata<?> metadata) {
+        super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryAttachment.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_ATTACHMENT");
     }
 
 }

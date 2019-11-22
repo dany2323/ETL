@@ -27,11 +27,9 @@ public class SGRCMSissRunnable implements Runnable {
 		logger.info("START FillStagingSgrCmSiss");
 		
 		// SISS CURRENT
-		FillSGRCMFacade.delete(REPOSITORY_SISS, SCHEMA_CURRENT, logger, dataEsecuzioneDeleted);
 		FillSGRCMFacade.execute(REPOSITORY_SISS, SCHEMA_CURRENT, logger);
 		
 		// SISS HISTORY
-		FillSGRCMFacade.delete(REPOSITORY_SISS, SCHEMA_HISTORY, logger, dataEsecuzioneDeleted);
 		FillSGRCMFacade.execute(REPOSITORY_SISS, SCHEMA_HISTORY, logger);
 		
 		logger.info("STOP FillStagingSgrCmSiss");

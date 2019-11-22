@@ -16,7 +16,11 @@ import com.mysema.query.types.Path;
  * QSireCurrentProject is a Querydsl query type for SireCurrentProject
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
+<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentProject.java
 public class QSireCurrentProject extends com.mysema.query.sql.RelationalPathBase<SireCurrentProject> {
+=======
+public class SireCurrentProject extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentProject> {
+>>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/SireCurrentProject.java
 
     private static final long serialVersionUID = 592557681;
     
@@ -60,6 +64,7 @@ public class QSireCurrentProject extends com.mysema.query.sql.RelationalPathBase
 
     public final StringPath fkUriProjectgroup = createString("FK_URI_PROJECTGROUP");
 
+<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentProject.java
     public QSireCurrentProject(String variable) {
         super(SireCurrentProject.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_CURRENT_PROJECT");
     }
@@ -70,6 +75,18 @@ public class QSireCurrentProject extends com.mysema.query.sql.RelationalPathBase
 
     public QSireCurrentProject(PathMetadata<?> metadata) {
         super(SireCurrentProject.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_CURRENT_PROJECT");
+=======
+    public SireCurrentProject(String variable) {
+        super(lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentProject.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_PROJECT");
+    }
+
+    public SireCurrentProject(Path<? extends lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentProject> path) {
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_PROJECT");
+    }
+
+    public SireCurrentProject(PathMetadata<?> metadata) {
+        super(lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentProject.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_PROJECT");
+>>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/SireCurrentProject.java
     }
 
 }

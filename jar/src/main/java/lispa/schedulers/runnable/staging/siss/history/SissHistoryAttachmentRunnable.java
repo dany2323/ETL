@@ -39,7 +39,5 @@ public class SissHistoryAttachmentRunnable implements Runnable {
 			logger.error(e.getMessage(), e);
 			
 		}
-
 	}
-
 }

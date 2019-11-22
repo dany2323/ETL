@@ -16,13 +16,21 @@ import com.mysema.query.types.Path;
  * QSireCurrentUser is a Querydsl query type for SireCurrentUser
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
+<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentUser.java
 public class QSireCurrentUser extends com.mysema.query.sql.RelationalPathBase<SireCurrentUser> {
+=======
+public class SireHistoryUser extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryUser> {
+>>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/history/SireHistoryUser.java
 
     private static final long serialVersionUID = 1420099443;
     
     public final DateTimePath<java.sql.Timestamp> dataCaricamento = createDateTime("DATA_CARICAMENTO", java.sql.Timestamp.class);
 
+<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentUser.java
     public static final QSireCurrentUser sireCurrentUser = new QSireCurrentUser("DMALM_SIRE_CURRENT_USER");
+=======
+    public static final SireHistoryUser user = new SireHistoryUser("DM_ALM_H_SIRE_USER");
+>>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/history/SireHistoryUser.java
 
     public final StringPath cAvatarfilename = createString("C_AVATARFILENAME");
 
@@ -48,6 +56,7 @@ public class QSireCurrentUser extends com.mysema.query.sql.RelationalPathBase<Si
 
     public final StringPath cUri = createString("C_URI");
 
+<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentUser.java
     public QSireCurrentUser(String variable) {
         super(SireCurrentUser.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_CURRENT_USER");
     }
@@ -58,6 +67,18 @@ public class QSireCurrentUser extends com.mysema.query.sql.RelationalPathBase<Si
 
     public QSireCurrentUser(PathMetadata<?> metadata) {
         super(SireCurrentUser.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_CURRENT_USER");
+=======
+    public SireHistoryUser(String variable) {
+        super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryUser.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_USER");
+    }
+
+    public SireHistoryUser(Path<? extends lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryUser> path) {
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_USER");
+    }
+
+    public SireHistoryUser(PathMetadata<?> metadata) {
+        super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryUser.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_USER");
+>>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/history/SireHistoryUser.java
     }
 
 }

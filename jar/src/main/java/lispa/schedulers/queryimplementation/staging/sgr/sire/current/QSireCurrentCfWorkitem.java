@@ -16,7 +16,11 @@ import com.mysema.query.types.Path;
  * QSireCurrentCfWorkitem is a Querydsl query type for SireCurrentCfWorkitem
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
+<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentCfWorkitem.java
 public class QSireCurrentCfWorkitem extends com.mysema.query.sql.RelationalPathBase<SireCurrentCfWorkitem> {
+=======
+public class SireHistoryCfWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryCfWorkitem> {
+>>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/history/SireHistoryCfWorkitem.java
 
     private static final long serialVersionUID = 688743631;
 
@@ -45,6 +49,7 @@ public class QSireCurrentCfWorkitem extends com.mysema.query.sql.RelationalPathB
     
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
+<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentCfWorkitem.java
     public final StringPath sireCurrentCfWorkItemPk = createString("SIRE_CURR_CF_WORKITEM_PK");
     
     public final DateTimePath<java.sql.Timestamp> dataCaricamento = createDateTime("DATA_CARICAMENTO", java.sql.Timestamp.class);
@@ -59,6 +64,18 @@ public class QSireCurrentCfWorkitem extends com.mysema.query.sql.RelationalPathB
 
     public QSireCurrentCfWorkitem(PathMetadata<?> metadata) {
         super(SireCurrentCfWorkitem.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_CURRENT_CF_WORKITEM");
+=======
+    public SireHistoryCfWorkitem(String variable) {
+        super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryCfWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_CF_WORKITEM");
+    }
+
+    public SireHistoryCfWorkitem(Path<? extends lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryCfWorkitem> path) {
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_CF_WORKITEM");
+    }
+
+    public SireHistoryCfWorkitem(PathMetadata<?> metadata) {
+        super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryCfWorkitem.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_CF_WORKITEM");
+>>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/history/SireHistoryCfWorkitem.java
     }
 
 }
