@@ -1,44 +1,31 @@
 package lispa.schedulers.dao.sgr.sire.current;
 
 import java.sql.Connection;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireCurrentProject;
-import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.QTuple;
 import com.mysema.query.types.template.StringTemplate;
 
-public class SireCurrentProjectDAO
-{
+public class SireCurrentProjectDAO {
 
-	private static Logger logger = Logger.getLogger(SireCurrentProjectDAO.class); 
-
-	public static long fillSireCurrentProject() throws Exception
-	{
+	public static long fillSireCurrentProject() throws Exception {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		Connection H2Connection = null;
 		long n_righe_inserite = 0;
 
-		try{
+		try {
 
 			cm = ConnectionManager.getInstance();
 			H2Connection = cm.getConnectionSIRECurrent();
@@ -46,7 +33,7 @@ public class SireCurrentProjectDAO
 
 			OracleConnection.setAutoCommit(false);
 
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
+			lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentProject   stgProject  = lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentProject.project;
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject.project;
 
 			SQLTemplates dialect = new HSQLDBTemplates()
@@ -105,9 +92,7 @@ public class SireCurrentProjectDAO
 						stgProject.fkLead,
 						stgProject.cLockworkrecordsdate,
 						stgProject.cName,
-						stgProject.cId,
-						stgProject.dataCaricamento,
-						stgProject.sireCurrentProjectPk
+						stgProject.cId
 						)
 						.values(
 								el[0] , 
@@ -125,9 +110,7 @@ public class SireCurrentProjectDAO
 								StringUtils.getMaskedValue((String)el[12]) ,
 								el[13] ,
 								el[14] ,
-								el[15] ,
-								DataEsecuzione.getInstance().getDataEsecuzione(),
-								StringTemplate.create("CURRENT_PROJECT_SEQ.nextval")
+								el[15]
 								)
 								.execute();
 
@@ -137,216 +120,16 @@ public class SireCurrentProjectDAO
 
 			OracleConnection.commit();
 
-		}
-		catch (Exception e)
-		{
-ErrorManager.getInstance().exceptionOccurred(true, e);
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 			
 			n_righe_inserite=0;
 			throw new DAOException(e);
-		}
-		finally
-		{
+		} finally {
 			if(cm != null) cm.closeConnection(OracleConnection);
 			if(cm != null) cm.closeConnection(H2Connection);
 		}
 
 		return n_righe_inserite;
 	}
-
-	public static List<Tuple> getC_NameNull(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-		List<Tuple> project 	= new ArrayList<Tuple>();
-
-		try
-		{
-			cm 			= ConnectionManager.getInstance();
-			connection 	= cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSireCurrentProject   stgProject 	 	= QSireCurrentProject.sireCurrentProject;
-
-			project = 
-					query.from(stgProject)
-					.where(stgProject.dataCaricamento.eq(dataEsecuzione))
-					.where(stgProject.cName.isNull()).list(stgProject.all()) ;
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-		return project;
-	}
-
-	public static List<Tuple> getAllProjectSW(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-		List<Tuple> project = new ArrayList<Tuple>();
-
-		try{
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
-
-			//	select  DMALM_SIRE_CURRENT_PROJECT.* from DMALM_SIRE_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
-
-			project = 
-
-					query.from(stgProject)
-					.where(stgProject.dataCaricamento.eq(dataEsecuzione))
-					.where(stgProject.cName.trim().like("SW-%")).list(stgProject.all()) ;
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-		return project;
-	}
-
-	public static List<Tuple> getAllProjectC_Name(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-		List<Tuple> project = new ArrayList<Tuple>();
-
-		try{
-			cm 			= ConnectionManager.getInstance();
-			connection 	= cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
-
-			project = 
-
-					query.from(stgProject)
-					.where(stgProject.dataCaricamento.eq(dataEsecuzione))
-					.where(stgProject.cName.trim().like("SW-%"))
-					.list(
-							stgProject.cName, // il campo C_NAME
-							StringTemplate.create("INSTR(C_NAME,'{')"), // la posizione del carattere  {
-							StringTemplate.create("INSTR(C_NAME,'}')"), // la posizione del carattere  }
-							StringTemplate.create("REPLACE(REPLACE(REGEXP_SUBSTR(C_NAME, '{[a-zA-Z0-9_.*!?-]+}'), '{',''),'}','') as name"), // il contenuto delle parentesi { }
-							StringTemplate.create("SUBSTR(C_NAME, INSTR(C_NAME,'}')+1, LENGTH(C_NAME)-INSTR(C_NAME,'}') )")); // la descrizione, quello che viene dopo  il caratter "}"
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-		return project;
-	}
-
-	public static void delete(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-
-
-		try{
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
-
-			new SQLDeleteClause(connection, dialect, stgProject)
-			.where(stgProject.dataCaricamento.lt(dataEsecuzione).or(stgProject.dataCaricamento
-					.gt(DateUtils.addDaysToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(),-1))))
-					.execute();
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-	}
-
-	public static void deleteInDate(Timestamp date) throws Exception {
-
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
-
-			new SQLDeleteClause(connection, dialect, stgProject)
-			.where(stgProject.dataCaricamento.eq(
-					date)).execute();
-
-		} catch (Exception e) 
-		{
-			
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-	}
-
-	public static void recoverSireCurrentProject() throws Exception {
-
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
-
-			new SQLDeleteClause(connection, dialect, stgProject)
-			.where(stgProject.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
-
-		} catch (Exception e) 
-		{
-			
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-	}
-
 }

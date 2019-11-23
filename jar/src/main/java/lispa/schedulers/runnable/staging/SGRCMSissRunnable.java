@@ -6,7 +6,7 @@ import static lispa.schedulers.constant.DmAlmConstants.SCHEMA_HISTORY;
 
 import java.sql.Timestamp;
 
-import lispa.schedulers.facade.target.FillSGRCMFacade;
+import lispa.schedulers.facade.sgr.staging.FillSGRCMFacade;
 
 import org.apache.log4j.Logger;
 

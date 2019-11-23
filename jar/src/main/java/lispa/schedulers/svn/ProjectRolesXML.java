@@ -3,19 +3,13 @@ package lispa.schedulers.svn;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmProjectRoles;
-
-import org.apache.log4j.Logger;
+import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmProjectRoles;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNProperty;
@@ -30,16 +24,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
 public class ProjectRolesXML {
 
-	private static Logger logger = Logger.getLogger(ProjectRolesXML.class);
+	private static DmAlmProjectRoles dmAlmProjectRoles = DmAlmProjectRoles.dmAlmProjectRoles;
 
 	public static void fillProjectRoles(String myrepository) throws Exception {
 
@@ -113,7 +104,6 @@ public class ProjectRolesXML {
 	public static void fillTemplatesProjectRoles(String myrepository,
 			String template) throws Exception {
 
-		QDmAlmProjectRoles qDmAlmProjectRoles = QDmAlmProjectRoles.dmAlmProjectRoles;
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
@@ -193,20 +183,15 @@ public class ProjectRolesXML {
 						Element eElement = (Element) nNode;
 
 						new SQLInsertClause(connection, dialect,
-								qDmAlmProjectRoles)
+								dmAlmProjectRoles)
 								.columns(
-										qDmAlmProjectRoles.dmAlmProjectRolesPk,
-										qDmAlmProjectRoles.ruolo,
-										qDmAlmProjectRoles.descrizione,
-										qDmAlmProjectRoles.repository,
-										qDmAlmProjectRoles.dataCaricamento)
-								.values(StringTemplate
-										.create("DM_ALM_PROJECT_ROLES_SEQ.nextval"),
-										eElement.getTextContent(),
+										dmAlmProjectRoles.ruolo,
+										dmAlmProjectRoles.descrizione,
+										dmAlmProjectRoles.repository)
+								.values(eElement.getTextContent(),
 										template,
-										myrepository,
-										DataEsecuzione.getInstance()
-												.getDataEsecuzione()).execute();
+										myrepository)
+								.execute();
 
 					}
 				}
@@ -226,7 +211,6 @@ public class ProjectRolesXML {
 	public static void fillGlobalProjectRoles(String myrepository)
 			throws Exception {
 
-		QDmAlmProjectRoles qDmAlmProjectRoles = QDmAlmProjectRoles.dmAlmProjectRoles;
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
@@ -305,20 +289,15 @@ public class ProjectRolesXML {
 						Element eElement = (Element) nNode;
 
 						new SQLInsertClause(connection, dialect,
-								qDmAlmProjectRoles)
+								dmAlmProjectRoles)
 								.columns(
-										qDmAlmProjectRoles.dmAlmProjectRolesPk,
-										qDmAlmProjectRoles.ruolo,
-										qDmAlmProjectRoles.descrizione,
-										qDmAlmProjectRoles.repository,
-										qDmAlmProjectRoles.dataCaricamento)
-								.values(StringTemplate
-										.create("DM_ALM_PROJECT_ROLES_SEQ.nextval"),
-										eElement.getTextContent(),
+										dmAlmProjectRoles.ruolo,
+										dmAlmProjectRoles.descrizione,
+										dmAlmProjectRoles.repository)
+								.values(eElement.getTextContent(),
 										DmAlmConstants.GLOBAL,
-										myrepository,
-										DataEsecuzione.getInstance()
-												.getDataEsecuzione()).execute();
+										myrepository)
+								.execute();
 					}
 				}
 
@@ -337,7 +316,6 @@ public class ProjectRolesXML {
 
 	public static void fillGlobalRoles(String myrepository) throws Exception {
 
-		QDmAlmProjectRoles qDmAlmProjectRoles = QDmAlmProjectRoles.dmAlmProjectRoles;
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
@@ -417,20 +395,16 @@ public class ProjectRolesXML {
 						Element eElement = (Element) nNode;
 
 						new SQLInsertClause(connection, dialect,
-								qDmAlmProjectRoles)
+								dmAlmProjectRoles)
 								.columns(
-										qDmAlmProjectRoles.dmAlmProjectRolesPk,
-										qDmAlmProjectRoles.ruolo,
-										qDmAlmProjectRoles.descrizione,
-										qDmAlmProjectRoles.repository,
-										qDmAlmProjectRoles.dataCaricamento)
-								.values(StringTemplate
-										.create("DM_ALM_PROJECT_ROLES_SEQ.nextval"),
+										dmAlmProjectRoles.ruolo,
+										dmAlmProjectRoles.descrizione,
+										dmAlmProjectRoles.repository)
+								.values(
 										eElement.getTextContent(),
 										DmAlmConstants.GLOBAL,
-										myrepository,
-										DataEsecuzione.getInstance()
-												.getDataEsecuzione()).execute();
+										myrepository
+								).execute();
 					}
 				}
 
@@ -446,31 +420,4 @@ public class ProjectRolesXML {
 			}
 		}
 	}
-
-	public static void recoverAllProjectRoles() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QDmAlmProjectRoles qDmAlmProjectRoles = QDmAlmProjectRoles.dmAlmProjectRoles;
-
-			new SQLDeleteClause(connection, dialect, qDmAlmProjectRoles).where(
-					qDmAlmProjectRoles.dataCaricamento.eq(DataEsecuzione
-							.getInstance().getDataEsecuzione())).execute();
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-	}
-
 }

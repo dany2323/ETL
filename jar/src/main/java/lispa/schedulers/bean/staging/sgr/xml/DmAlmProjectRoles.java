@@ -8,21 +8,11 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class DmAlmProjectRoles {
 
-    private java.sql.Timestamp dataCaricamento;
-
     private String descrizione;
 
-    private Double dmAlmProjectRolesPk;
+    private String repository;
 
     private String ruolo;
-
-    public java.sql.Timestamp getDataCaricamento() {
-        return dataCaricamento;
-    }
-
-    public void setDataCaricamento(java.sql.Timestamp dataCaricamento) {
-        this.dataCaricamento = dataCaricamento;
-    }
 
     public String getDescrizione() {
         return descrizione;
@@ -32,12 +22,12 @@ public class DmAlmProjectRoles {
         this.descrizione = descrizione;
     }
 
-    public Double getDmAlmProjectRolesPk() {
-        return dmAlmProjectRolesPk;
+    public String getRepository() {
+        return repository;
     }
 
-    public void setDmAlmProjectRolesPk(Double dmAlmProjectRolesPk) {
-        this.dmAlmProjectRolesPk = dmAlmProjectRolesPk;
+    public void setRepository(String repository) {
+        this.repository = repository;
     }
 
     public String getRuolo() {

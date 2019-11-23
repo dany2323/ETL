@@ -7,19 +7,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmStatoWorkitem;
+import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmStatoWorkitem;
 import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
-
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
@@ -34,22 +31,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.support.Expressions;
 import com.mysema.query.types.template.StringTemplate;
 
 public class StatoWorkItemXML {
 
-	private static Logger logger = Logger.getLogger(StatoWorkItemXML.class);
-
+	private static DmAlmStatoWorkitem dmAlmStatoWorkitem = DmAlmStatoWorkitem.dmAlmStatoWorkitem;
+	
 	public static void fillStatoWorkItem(String myrepository,
 			EnumWorkitemType workitemType) throws Exception {
 
-		QDmAlmStatoWorkitem qDmAlmStatoWorkitem = QDmAlmStatoWorkitem.dmAlmStatoWorkitem;
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
@@ -142,18 +136,16 @@ public class StatoWorkItemXML {
 						if (!stati.isEmpty()) {
 
 							new SQLInsertClause(connection, dialect,
-									qDmAlmStatoWorkitem)
+									dmAlmStatoWorkitem)
 									.columns(
-											qDmAlmStatoWorkitem.dmAlmStatoWorkitemPk,
-											qDmAlmStatoWorkitem.descrizione,
-											qDmAlmStatoWorkitem.iconUrl,
-											qDmAlmStatoWorkitem.id,
-											qDmAlmStatoWorkitem.name,
-											qDmAlmStatoWorkitem.sortOrder,
-											qDmAlmStatoWorkitem.repository,
-											qDmAlmStatoWorkitem.workitemType,
-											qDmAlmStatoWorkitem.dataCaricamento,
-											qDmAlmStatoWorkitem.template)
+											dmAlmStatoWorkitem.descrizione,
+											dmAlmStatoWorkitem.iconUrl,
+											dmAlmStatoWorkitem.id,
+											dmAlmStatoWorkitem.name,
+											dmAlmStatoWorkitem.sortOrder,
+											dmAlmStatoWorkitem.repository,
+											dmAlmStatoWorkitem.workitemType,
+											dmAlmStatoWorkitem.template)
 									.values(StringTemplate
 											.create("DM_ALM_STATO_WORKITEM_SEQ.nextval"),
 											null,
@@ -183,21 +175,17 @@ public class StatoWorkItemXML {
 							Element eElement = (Element) nNode;
 
 							new SQLInsertClause(connection, dialect,
-									qDmAlmStatoWorkitem)
+									dmAlmStatoWorkitem)
 									.columns(
-											qDmAlmStatoWorkitem.dmAlmStatoWorkitemPk,
-											qDmAlmStatoWorkitem.descrizione,
-											qDmAlmStatoWorkitem.iconUrl,
-											qDmAlmStatoWorkitem.id,
-											qDmAlmStatoWorkitem.name,
-											qDmAlmStatoWorkitem.sortOrder,
-											qDmAlmStatoWorkitem.repository,
-											qDmAlmStatoWorkitem.workitemType,
-											qDmAlmStatoWorkitem.dataCaricamento,
-											qDmAlmStatoWorkitem.template)
-									.values(StringTemplate
-											.create("DM_ALM_STATO_WORKITEM_SEQ.nextval"),
-											eElement.getAttribute("description"),
+											dmAlmStatoWorkitem.descrizione,
+											dmAlmStatoWorkitem.iconUrl,
+											dmAlmStatoWorkitem.id,
+											dmAlmStatoWorkitem.name,
+											dmAlmStatoWorkitem.sortOrder,
+											dmAlmStatoWorkitem.repository,
+											dmAlmStatoWorkitem.workitemType,
+											dmAlmStatoWorkitem.template)
+									.values(eElement.getAttribute("description"),
 											eElement.getAttribute("iconURL"),
 											eElement.getAttribute("id"),
 											eElement.getAttribute("name"),
@@ -205,8 +193,6 @@ public class StatoWorkItemXML {
 											Expressions.constant(repos),
 											Expressions.constant(workitemType
 													.toString()),
-											DataEsecuzione.getInstance()
-													.getDataEsecuzione(),
 											EnumUtils
 													.getTemplateByWorkItem(workitemType)
 
@@ -341,33 +327,5 @@ public class StatoWorkItemXML {
 		}
 
 		return path;
-	}
-
-	public static void recoverStatoWorkitem() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QDmAlmStatoWorkitem qDmAlmStatoWorkitem = QDmAlmStatoWorkitem.dmAlmStatoWorkitem;
-
-			new SQLDeleteClause(connection, dialect, qDmAlmStatoWorkitem)
-					.where(qDmAlmStatoWorkitem.dataCaricamento
-							.eq(DataEsecuzione.getInstance()
-									.getDataEsecuzione())).execute();
-
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
 	}
 }
