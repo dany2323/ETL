@@ -12,7 +12,7 @@ import com.mysema.query.types.Path;
 
 
 /**
- * QDmAlmStatoWorkitem is a Querydsl query type for DmAlmStatoWorkitem
+ * DmAlmStatoWorkitem is a Querydsl query type for DmAlmStatoWorkitem
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
 public class DmAlmStatoWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.xml.DmAlmStatoWorkitem> {

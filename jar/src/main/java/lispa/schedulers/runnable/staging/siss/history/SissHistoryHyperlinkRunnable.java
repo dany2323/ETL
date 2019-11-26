@@ -2,12 +2,9 @@ package lispa.schedulers.runnable.staging.siss.history;
 
 import java.sql.SQLException;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
-
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryHyperlinkDAO;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class SissHistoryHyperlinkRunnable implements Runnable {
@@ -34,15 +31,10 @@ public class SissHistoryHyperlinkRunnable implements Runnable {
 		}
 		catch (DAOException e) {
 			logger.error(e.getMessage(), e);
-			
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
-			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 		}
-		
 	}
-
 }

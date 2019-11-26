@@ -3,20 +3,15 @@ package lispa.schedulers.svn;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-import lispa.schedulers.queryimplementation.target.fatti.QDmalmSchedeServizio;
-
+import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmSchedeServizio;
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
@@ -32,53 +27,29 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
 public class SISSSchedeServizioXML {
 
-	private static Logger logger = Logger
-			.getLogger(SISSSchedeServizioXML.class);
-
+	private static Logger logger = Logger.getLogger(SISSSchedeServizioXML.class);
+	private static DmAlmSchedeServizio stg_SchedeServizio = DmAlmSchedeServizio.dmalmSchedeServizio;
 	static String url = "";
 	static String name = "";
 	static String psw = "";
-
-	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-			.getDataEsecuzione();
-
 	static SVNRepository repository;
 	static ISVNAuthenticationManager authManager;
-
-	public static String getProjectSVNPath(String clocation) {
-		if (clocation.startsWith("default:/")) {
-			int start = clocation.indexOf(":/") + 1;
-
-			int end = clocation.indexOf(".polarion") - 1;
-
-			return clocation.substring(start, end);
-
-		} else {
-			return null;
-		}
-
-	}
 
 	public static void fillSISSHistorySchedeServizio() throws DAOException {
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
-
 		String filePath = "";
-		QDmalmSchedeServizio ss = QDmalmSchedeServizio.dmalmSchedeServizio;
+		
 		try {
-
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			DAVRepositoryFactory.setup();
@@ -135,16 +106,13 @@ public class SISSSchedeServizioXML {
 								eElement.getAttribute("name"),
 								eElement.getAttribute("sortOrder"));
 						if (check.size() == 0) {
-							new SQLInsertClause(connection, dialect, ss)
-									.columns(ss.dmalm_schedeServizio_Pk, ss.id,
-											ss.name, ss.sorter,
-											ss.dtCaricamento, ss.repository)
-									.values(StringTemplate
-											.create("DM_ALM_STG_SCHEDE_SERVIZIO_SEQ.nextval"),
-											eElement.getAttribute("id"),
+							new SQLInsertClause(connection, dialect, stg_SchedeServizio)
+									.columns(stg_SchedeServizio.id,
+											stg_SchedeServizio.name, stg_SchedeServizio.sorter,
+											stg_SchedeServizio.repository)
+									.values(eElement.getAttribute("id"),
 											eElement.getAttribute("name"),
 											eElement.getAttribute("sortOrder"),
-											dataEsecuzione,
 											DmAlmConstants.REPOSITORY_SISS)
 									.execute();
 						}
@@ -168,13 +136,13 @@ public class SISSSchedeServizioXML {
 		SQLTemplates dialect = new HSQLDBTemplates();
 		ConnectionManager cm = null;
 		Connection connection = null;
-		QDmalmSchedeServizio ss = QDmalmSchedeServizio.dmalmSchedeServizio;
+
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			SQLQuery query = new SQLQuery(connection, dialect);
-			check = query.from(ss).where(ss.id.eq(id)).where(ss.name.eq(name))
-					.where(ss.sorter.eq(Integer.parseInt(sort))).list(ss.all());
+			check = query.from(stg_SchedeServizio).where(stg_SchedeServizio.id.eq(id)).where(stg_SchedeServizio.name.eq(name))
+					.where(stg_SchedeServizio.sorter.eq(Integer.parseInt(sort))).list(stg_SchedeServizio.all());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
@@ -183,32 +151,5 @@ public class SISSSchedeServizioXML {
 		}
 
 		return check;
-	}
-
-	public static void recoverSISSSchedeServizio() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QDmalmSchedeServizio qDmalmSchedeServizio = QDmalmSchedeServizio.dmalmSchedeServizio;
-
-			new SQLDeleteClause(connection, dialect, qDmalmSchedeServizio)
-					.where(qDmalmSchedeServizio.dtCaricamento.eq(DataEsecuzione
-							.getInstance().getDataEsecuzione())).execute();
-
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
 	}
 }

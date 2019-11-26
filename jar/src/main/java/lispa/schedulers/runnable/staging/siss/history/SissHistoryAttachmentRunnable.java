@@ -28,16 +28,12 @@ public class SissHistoryAttachmentRunnable implements Runnable {
 			logger.debug("START SissHistoryAttachment.fill()");
 			SissHistoryAttachmentDAO.fillSissHistoryAttachment(attachment_minRevision, attachment_maxRevision);
 			logger.debug("STOP SissHistoryAttachment.fill()");
-		}
-		catch (DAOException e) {
+		} catch (DAOException e) {
 			logger.error(e.getMessage(), e);
-			
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
-			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 		}
 	}
 }

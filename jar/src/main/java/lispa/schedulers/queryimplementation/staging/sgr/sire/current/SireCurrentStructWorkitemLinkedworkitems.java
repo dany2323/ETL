@@ -17,11 +17,11 @@ import com.mysema.query.types.Path;
  * SissCurrentStructWorkitemLinkedworkitems is a Querydsl query type for SissCurrentStructWorkitemLinkedworkitems
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
-public class SireCurrentStructWorkitemLinkedworkitems extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.siss.current.DmAlmSissCurrentStructWorkitemLinkedworkitems> {
+public class SireCurrentStructWorkitemLinkedworkitems extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentStructWorkitemLinkedworkitems> {
 
     private static final long serialVersionUID = -1544427472;
 
-    public static final SireCurrentStructWorkitemLinkedworkitems structWorkitemLinkedworkitems = new SireCurrentStructWorkitemLinkedworkitems("DM_ALM_C_SISS_STRUCT_WI_LINKWI");
+    public static final SireCurrentStructWorkitemLinkedworkitems structWorkitemLinkedworkitems = new SireCurrentStructWorkitemLinkedworkitems("DM_ALM_C_SIRE_STRUCT_WI_LINKWI");
 
     public final StringPath cRevision = createString("C_REVISION");
 
@@ -38,15 +38,15 @@ public class SireCurrentStructWorkitemLinkedworkitems extends com.mysema.query.s
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
     public SireCurrentStructWorkitemLinkedworkitems(String variable) {
-        super(lispa.schedulers.bean.staging.sgr.siss.current.DmAlmSissCurrentStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_STRUCT_WI_LINKWI");
+        super(lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_STRUCT_WI_LINKWI");
     }
 
-    public SireCurrentStructWorkitemLinkedworkitems(Path<? extends lispa.schedulers.bean.staging.sgr.siss.current.DmAlmSissCurrentStructWorkitemLinkedworkitems> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_STRUCT_WI_LINKWI");
+    public SireCurrentStructWorkitemLinkedworkitems(Path<? extends lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentStructWorkitemLinkedworkitems> path) {
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_STRUCT_WI_LINKWI");
     }
 
     public SireCurrentStructWorkitemLinkedworkitems(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.staging.sgr.siss.current.DmAlmSissCurrentStructWorkitemLinkedworkitems.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_STRUCT_WI_LINKWI");
+        super(lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentStructWorkitemLinkedworkitems.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_STRUCT_WI_LINKWI");
     }
 
 }

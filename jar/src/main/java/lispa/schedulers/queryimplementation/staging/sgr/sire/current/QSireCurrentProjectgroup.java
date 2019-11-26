@@ -16,11 +16,7 @@ import com.mysema.query.types.Path;
  * QSireCurrentProjectgroup is a Querydsl query type for SireCurrentProjectgroup
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
-<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentProjectgroup.java
 public class QSireCurrentProjectgroup extends com.mysema.query.sql.RelationalPathBase<SireCurrentProjectgroup> {
-=======
-public class SireHistoryProjectgroup extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryProjectgroup> {
->>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/history/SireHistoryProjectgroup.java
 
     private static final long serialVersionUID = -1610309970;
     
@@ -48,7 +44,6 @@ public class SireHistoryProjectgroup extends com.mysema.query.sql.RelationalPath
     
     public final StringPath sireCurrentProjgroupPk = createString("SIRE_CURRENT_PROJGROUP_PK");
 
-<<<<<<< Updated upstream:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/current/QSireCurrentProjectgroup.java
     public QSireCurrentProjectgroup(String variable) {
         super(SireCurrentProjectgroup.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_CURRENT_PROJGROUP");
     }
@@ -59,19 +54,7 @@ public class SireHistoryProjectgroup extends com.mysema.query.sql.RelationalPath
 
     public QSireCurrentProjectgroup(PathMetadata<?> metadata) {
         super(SireCurrentProjectgroup.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_SIRE_CURRENT_PROJGROUP");
-=======
-    public SireHistoryProjectgroup(String variable) {
-        super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryProjectgroup.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECTGROUP");
-    }
 
-    public SireHistoryProjectgroup(Path<? extends lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryProjectgroup> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECTGROUP");
     }
-
-    public SireHistoryProjectgroup(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryProjectgroup.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECTGROUP");
->>>>>>> Stashed changes:jar/src/main/java/lispa/schedulers/queryimplementation/staging/sgr/sire/history/SireHistoryProjectgroup.java
-    }
-
 }
 

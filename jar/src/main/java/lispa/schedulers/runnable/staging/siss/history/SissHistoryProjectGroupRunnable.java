@@ -18,11 +18,10 @@ public class SissHistoryProjectGroupRunnable implements Runnable {
 	@Override
 	public void run() {
 		try {	
-		logger.debug("START SissHistoryProjectGroup.fill()");
-		SissHistoryProjectGroupDAO.fillSissHistoryProjectGroup();
-		logger.debug("STOP SissHistoryProjectGroup.fill()");
-		}
-		catch (DAOException e) {
+			logger.debug("START SissHistoryProjectGroup.fill()");
+			SissHistoryProjectGroupDAO.fillSissHistoryProjectGroup();
+			logger.debug("STOP SissHistoryProjectGroup.fill()");
+		} catch (DAOException e) {
 			logger.error(e.getMessage(), e);
 			
 		} catch (SQLException e) {
@@ -30,9 +29,6 @@ public class SissHistoryProjectGroupRunnable implements Runnable {
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 		}
-		
 	}
-
 }

@@ -27,8 +27,7 @@ public class SissHistoryProjectRunnable implements Runnable {
 			logger.debug("START SissHistoryProject.fill()");
 			SissHistoryProjectDAO.fillSissHistoryProject(minRevisionProject, maxRevision);
 			logger.debug("STOP SissHistoryProject.fill()");
-		}
-		catch (DAOException e) {
+		} catch (DAOException e) {
 			logger.error(e.getMessage(), e);
 			
 		} catch (SQLException e) {
@@ -36,9 +35,6 @@ public class SissHistoryProjectRunnable implements Runnable {
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 		}
-		
 	}
-
 }

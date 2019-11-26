@@ -242,7 +242,6 @@ public class EnumUtils {
 	public static String getCustomFieldValue(EnumWorkitemType type,String customFieldId,String idValue) {
 		
 		Enum<?>[] CF_values = null;
-		List<String> custom_fields_values = new ArrayList<String>();
 		switch (type)
 		{
 			case defect:	//DM_ALM-289 Commento 4

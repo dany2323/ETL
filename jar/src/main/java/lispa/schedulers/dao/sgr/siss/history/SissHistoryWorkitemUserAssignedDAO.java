@@ -27,14 +27,9 @@ import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class SissHistoryWorkitemUserAssignedDAO {
 
-	private static Logger logger = Logger
-			.getLogger(SissHistoryWorkitemUserAssignedDAO.class);
-
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
-
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRelWorkitemUserAssignee fonteWorkitemAssignees = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRelWorkitemUserAssignee.relWorkitemUserAssignee;
-
-	private static QSissHistoryRelWorkUserAss stgWorkitemUserAssignees = QSissHistoryRelWorkUserAss.sissHistoryRelWorkUserAss;
+	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryRelWorkitemUserAssignee stg_WorkitemUserAssignees = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryRelWorkitemUserAssignee.relWorkitemUserAssignee;
 
 	public static void fillSissHistoryWorkitemUserAssigned(
 			Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision)
@@ -81,28 +76,22 @@ public class SissHistoryWorkitemUserAssignedDAO {
 						.list(fonteWorkitemAssignees.all());
 
 				SQLInsertClause insert = new SQLInsertClause(connOracle,
-						dialect, stgWorkitemUserAssignees);
+						dialect, stg_WorkitemUserAssignees);
 
 				int batchcounter = 0;
 
 				for (Tuple row : workItemUserAssignees) {
-					insert.columns(stgWorkitemUserAssignees.fkUser,
-							stgWorkitemUserAssignees.fkUriWorkitem,
-							stgWorkitemUserAssignees.fkWorkitem,
-							stgWorkitemUserAssignees.fkUriUser,
-							stgWorkitemUserAssignees.dataCaricamento,
-							stgWorkitemUserAssignees.dmalmWorkUserAssPk)
+					insert.columns(stg_WorkitemUserAssignees.fkUser,
+							stg_WorkitemUserAssignees.fkUriWorkitem,
+							stg_WorkitemUserAssignees.fkWorkitem,
+							stg_WorkitemUserAssignees.fkUriUser)
 							.values(StringUtils.getMaskedValue(
 									row.get(fonteWorkitemAssignees.fkUser)),
 									row.get(fonteWorkitemAssignees.fkUriWorkitem),
 									row.get(fonteWorkitemAssignees.fkWorkitem),
 									StringUtils.getMaskedValue(row.get(
-											fonteWorkitemAssignees.fkUriUser)),
-									DataEsecuzione.getInstance()
-											.getDataEsecuzione(),
-									StringTemplate.create(
-											"HISTORY_WORKUSERASS_SEQ.nextval"))
-							.addBatch();
+											fonteWorkitemAssignees.fkUriUser))
+							).addBatch();
 
 					batchcounter++;
 
@@ -110,9 +99,8 @@ public class SissHistoryWorkitemUserAssignedDAO {
 							&& !insert.isEmpty()) {
 						insert.execute();
 						insert = new SQLInsertClause(connOracle, dialect,
-								stgWorkitemUserAssignees);
+								stg_WorkitemUserAssignees);
 					}
-
 				}
 
 				if (!insert.isEmpty()) {
@@ -131,62 +119,5 @@ public class SissHistoryWorkitemUserAssignedDAO {
 			if (cm != null)
 				cm.closeConnection(connOracle);
 		}
-
 	}
-	public static void recoverSissHistoryWIUserAssigned() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QSissHistoryRelWorkUserAss stgWorkitemUserAssignees = QSissHistoryRelWorkUserAss.sissHistoryRelWorkUserAss;
-			// Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00",
-			// "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgWorkitemUserAssignees)
-					.where(stgWorkitemUserAssignees.dataCaricamento.eq(
-							DataEsecuzione.getInstance().getDataEsecuzione()))
-					.execute();
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null)
-				cm.closeConnection(connection);
-		}
-
-	}
-	public static void delete() {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-			new SQLDeleteClause(connection, dialect, stgWorkitemUserAssignees)
-					.execute();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-			if (cm != null) {
-				try {
-					cm.closeConnection(connection);
-				} catch (DAOException e) {
-					// TODO Auto-generated catch block
-					logger.error(e.getMessage());
-				}
-			}
-		}
-
-	}
-
 }

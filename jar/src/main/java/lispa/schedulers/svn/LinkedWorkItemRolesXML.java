@@ -4,17 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-import lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmWorkitemLinkRoles;
-
+import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmWorkitemLinkRoles;
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
@@ -29,17 +25,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
 public class LinkedWorkItemRolesXML {
 
-	private static final Logger logger = Logger
-			.getLogger(LinkedWorkItemRolesXML.class);
+	private static final Logger logger = Logger.getLogger(LinkedWorkItemRolesXML.class);
 
 	public LinkedWorkItemRolesXML() {
 
@@ -117,7 +109,7 @@ public class LinkedWorkItemRolesXML {
 	public static void fillTemplateLinkedWorkItemRoles(String myrepository,
 			String template) throws SQLException, DAOException {
 
-		QDmAlmWorkitemLinkRoles qDmAlmLinkRoles = QDmAlmWorkitemLinkRoles.dmAlmWorkitemLinkRoles;
+		DmAlmWorkitemLinkRoles dmAlmLinkRoles = DmAlmWorkitemLinkRoles.dmAlmWorkitemLinkRoles;
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
@@ -200,22 +192,15 @@ public class LinkedWorkItemRolesXML {
 							parent = false;
 						}
 
-						new SQLInsertClause(connection, dialect,
-								qDmAlmLinkRoles)
-								.columns(qDmAlmLinkRoles.workitemLinkRolesPk,
-										qDmAlmLinkRoles.datacaricamento,
-										qDmAlmLinkRoles.idRuolo,
-										qDmAlmLinkRoles.descrizione,
-										qDmAlmLinkRoles.repository,
-										qDmAlmLinkRoles.templates,
-										qDmAlmLinkRoles.nomeRuolo,
-										qDmAlmLinkRoles.nomeRuoloInverso,
-										qDmAlmLinkRoles.parent)
-								.values(StringTemplate
-										.create("DM_ALM_WORKITEM_LINK_ROLES_SEQ.nextval"),
-										DataEsecuzione.getInstance()
-												.getDataEsecuzione(),
-										eElement.getAttribute("id"),
+						new SQLInsertClause(connection, dialect, dmAlmLinkRoles)
+								.columns(dmAlmLinkRoles.idRuolo,
+										dmAlmLinkRoles.descrizione,
+										dmAlmLinkRoles.repository,
+										dmAlmLinkRoles.templates,
+										dmAlmLinkRoles.nomeRuolo,
+										dmAlmLinkRoles.nomeRuoloInverso,
+										dmAlmLinkRoles.parent)
+								.values(eElement.getAttribute("id"),
 										eElement.getAttribute("description"),
 										myrepository.toString(), template,
 										eElement.getAttribute("name"),
@@ -228,35 +213,6 @@ public class LinkedWorkItemRolesXML {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-	}
-
-	public static void recoverLinkedWorkItemRoles() throws Exception {
-
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-			QDmAlmWorkitemLinkRoles qDmAlmWorkitemLinkRoles = QDmAlmWorkitemLinkRoles.dmAlmWorkitemLinkRoles;
-			new SQLDeleteClause(connection, dialect, qDmAlmWorkitemLinkRoles)
-					.where(qDmAlmWorkitemLinkRoles.datacaricamento
-							.eq(DataEsecuzione.getInstance()
-									.getDataEsecuzione())).execute();
-			connection.commit();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
 		} finally {
 			if (cm != null) {
 				cm.closeConnection(connection);

@@ -28,22 +28,15 @@ public class SissHistoryWorkitemUserAssignedRunnable implements Runnable {
 	public void run() {
 		
 		try {
-			
 			logger.debug("START SissHistoryWorkitemUserAss.fill()");
 			SissHistoryWorkitemUserAssignedDAO.fillSissHistoryWorkitemUserAssigned(minRevisionByType, polarion_maxRevision);
 			logger.debug("STOP SissHistoryWorkitemUserAss.fill()");
-		
 		} catch (DAOException e) {
 			logger.error(e.getMessage(), e);
-			
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
-			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 		}
-
 	}
-
 }

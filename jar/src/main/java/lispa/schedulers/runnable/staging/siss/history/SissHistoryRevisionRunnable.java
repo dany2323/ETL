@@ -26,11 +26,9 @@ public class SissHistoryRevisionRunnable implements Runnable {
 	public void run() {
 		
 		try {
-			
 			logger.debug("START SissHistoryRevision.fill()");
 			SissHistoryRevisionDAO.fillSissHistoryRevision(minDate, maxRevision);
 			logger.debug("STOP SissHistoryRevision.fill()");
-			
 		}
 		catch (DAOException e) {
 			logger.error(e.getMessage(), e);

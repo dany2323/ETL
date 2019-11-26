@@ -2,42 +2,27 @@ package lispa.schedulers.dao.sgr.sire.history;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryCfWorkitem;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRelWorkUserAss;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
-
-import org.apache.log4j.Logger;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
-public class SireHistoryWorkitemUserAssignedDAO
-{
+public class SireHistoryWorkitemUserAssignedDAO {
 
-	private static Logger logger = Logger.getLogger(SireHistoryWorkitemUserAssignedDAO.class);
-	
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
-
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee fonteWorkitemAssignees = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.relWorkitemUserAssignee;
-	
-	private static QSireHistoryRelWorkUserAss stgWorkitemUserAssignees = QSireHistoryRelWorkUserAss.sireHistoryRelWorkUserAss;
+	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRelWorkitemUserAssignee stg_WorkitemUserAssignees = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.relWorkitemUserAssignee;
 
 	public static void fillSireHistoryWorkitemUserAssigned(Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws DAOException, SQLException {
 		
@@ -77,38 +62,30 @@ public class SireHistoryWorkitemUserAssignedDAO
 							fonteWorkitemAssignees.all()
 							);
 			
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgWorkitemUserAssignees);
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stg_WorkitemUserAssignees);
 			
 			int batchcounter = 0;
 			
 			for(Tuple row : workItemUserAssignees) {
 				insert
 				.columns(
-						stgWorkitemUserAssignees.fkUser,
-						stgWorkitemUserAssignees.fkUriWorkitem,
-						stgWorkitemUserAssignees.fkWorkitem,
-						stgWorkitemUserAssignees.fkUriUser,
-						stgWorkitemUserAssignees.dataCaricamento,
-						stgWorkitemUserAssignees.workitemUserAssignedPK
-						)
-						.values(								
-								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUser)),
-								row.get(fonteWorkitemAssignees.fkUriWorkitem),
-								row.get(fonteWorkitemAssignees.fkWorkitem),
-								StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUriUser)),
-								DataEsecuzione.getInstance().getDataEsecuzione(),
-								StringTemplate.create("HISTORY_WORKUSERASS_SEQ.nextval")
-								)
-								.addBatch();
+						stg_WorkitemUserAssignees.fkUser,
+						stg_WorkitemUserAssignees.fkUriWorkitem,
+						stg_WorkitemUserAssignees.fkWorkitem,
+						stg_WorkitemUserAssignees.fkUriUser
+				).values(								
+						StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUser)),
+						row.get(fonteWorkitemAssignees.fkUriWorkitem),
+						row.get(fonteWorkitemAssignees.fkWorkitem),
+						StringUtils.getMaskedValue(row.get(fonteWorkitemAssignees.fkUriUser))
+				).addBatch();
 				
 				batchcounter++;
 				
 				if(batchcounter % DmAlmConstants.BATCH_SIZE == 0 && !insert.isEmpty()) {
 					insert.execute();
-					insert = new SQLInsertClause(connOracle, dialect, stgWorkitemUserAssignees);
+					insert = new SQLInsertClause(connOracle, dialect, stg_WorkitemUserAssignees);
 				}
-
-				
 			}
 			
 			if(!insert.isEmpty()) {
@@ -117,66 +94,13 @@ public class SireHistoryWorkitemUserAssignedDAO
 			
 			connOracle.commit();
 			}
-		}
-		catch(Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
+		} catch(Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 			
 			throw new DAOException(e);
-		}
-		finally {
+		} finally {
 			if(cm != null) cm.closeConnection(connH2);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
-		
 	} 
-	
-	public static void delete() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-			new SQLDeleteClause(connection, dialect, stgWorkitemUserAssignees).execute();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-	}
-	public static void recoverSireHistoryWIUserAssigned() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-	
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QSireHistoryRelWorkUserAss stgWorkitemUserAssignees = QSireHistoryRelWorkUserAss.sireHistoryRelWorkUserAss;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgWorkitemUserAssignees).where(stgWorkitemUserAssignees.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
-			connection.commit();
-		}
-		catch(Exception e){
-			logger.error(e.getMessage(), e);
-			
-			
-			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-	}
-	
-	
 }

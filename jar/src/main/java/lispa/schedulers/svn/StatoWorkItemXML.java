@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.manager.ConnectionManager;
@@ -17,7 +16,6 @@ import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmStatoWorkitem;
 import lispa.schedulers.utils.EnumUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
-import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNProperty;

@@ -5,10 +5,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
@@ -16,29 +14,20 @@ import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRe
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
-
 
 public class SissHistoryRevisionDAO {
 
 	private static Logger logger = Logger.getLogger(SissHistoryRevisionDAO.class);
-
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision.revision;
+	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryRevision stg_Revisions = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryRevision.revision;
 
-	private static QSissHistoryRevision stgRevisions = QSissHistoryRevision.sissHistoryRevision;
-
-
-	public static long getMaxRevision() throws Exception
-	{
+	public static long getMaxRevision() throws Exception {
 
 		ConnectionManager cm = null;
 		Connection connH2 = null;
@@ -61,20 +50,15 @@ public class SissHistoryRevisionDAO {
 
 			max = query.from(fonteRevisions).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.castToNum(Long.class).max());
 
-			if(max == null || max.size() == 0 || max.get(0) == null)
-			{
+			if(max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;
 			}
 
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			
 			throw new DAOException(e);
-		}
-		finally
-		{
+		} finally {
 			if(cm != null) cm.closeConnection(connH2);
 		}
 
@@ -97,20 +81,15 @@ public class SissHistoryRevisionDAO {
 
 			max = query.from(stgRevision).list(stgRevision.cCreated.max());
 
-			if(max == null || max.size() == 0 || max.get(0) == null)
-			{
+			if(max == null || max.size() == 0 || max.get(0) == null) {
 				return DateUtils.stringToTimestamp("1900-01-01 00:00:00", "yyyy-MM-dd 00:00:00");
 			}
 
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			
 			throw new DAOException(e);
-		}
-		finally
-		{
+		} finally {
 			if(cm != null) cm.closeConnection(oracle);
 		}
 
@@ -145,24 +124,22 @@ public class SissHistoryRevisionDAO {
 					.list(
 							fonteRevisions.all()
 							);
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stg_Revisions);
 			
 			int size_counter = 0;
 				for(Tuple row : revisions) {
 					size_counter++;
-					insert.columns(stgRevisions.cPk,
-							stgRevisions.cAuthor,
-							stgRevisions.cCreated,
-							stgRevisions.cDeleted,
-							stgRevisions.cInternalcommit,
-							stgRevisions.cIsLocal,
-							stgRevisions.cMessage,
-							stgRevisions.cName,
-							stgRevisions.cRepositoryname,
-							stgRevisions.cRev,
-							stgRevisions.cUri,
-							stgRevisions.sissHistoryRevisionPk,
-							stgRevisions.dataCaricamento
+					insert.columns(stg_Revisions.cPk,
+							stg_Revisions.cAuthor,
+							stg_Revisions.cCreated,
+							stg_Revisions.cDeleted,
+							stg_Revisions.cInternalcommit,
+							stg_Revisions.cIsLocal,
+							stg_Revisions.cMessage,
+							stg_Revisions.cName,
+							stg_Revisions.cRepositoryname,
+							stg_Revisions.cRev,
+							stg_Revisions.cUri
 							).values(								
 							row.get(fonteRevisions.cPk),
 							StringUtils.getMaskedValue(row.get(fonteRevisions.cAuthor)),
@@ -174,63 +151,29 @@ public class SissHistoryRevisionDAO {
 									row.get(fonteRevisions.cName),
 									row.get(fonteRevisions.cRepositoryname),
 									row.get(fonteRevisions.cRev),
-									row.get(fonteRevisions.cUri),
-									StringTemplate.create("HISTORY_REVISION_SEQ.nextval"),
-									DataEsecuzione.getInstance().getDataEsecuzione()
+									row.get(fonteRevisions.cUri)
 							)
 							.addBatch();
 					if(!revisions.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
 						insert.execute();
-						insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+						insert = new SQLInsertClause(connOracle, dialect, stg_Revisions);
 						size_counter = 0;
 						
 					}
-
 				}
-				if(!revisions.isEmpty())
-				{
+				if(!revisions.isEmpty()) {
 					insert.execute();
 				}
 		
 				connOracle.commit();
-		}
-		catch(Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
+		} catch(Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 			
 			throw new DAOException(e);
-		}
-		finally {
+		} finally {
 			if(cm != null) cm.closeConnection(connH2);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 
 	}
-	
-	public static void recoverSissHistoryRevision() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-	
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QSissHistoryRevision stgRevisions = QSissHistoryRevision.sissHistoryRevision;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgRevisions).where(stgRevisions.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
-			connection.commit();
-		}
-		catch(Exception e){
-			logger.error(e.getMessage(), e);
-			
-			
-			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-	}
-
 }

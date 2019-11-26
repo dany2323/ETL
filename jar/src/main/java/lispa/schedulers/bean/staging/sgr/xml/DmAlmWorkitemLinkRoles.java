@@ -8,8 +8,6 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class DmAlmWorkitemLinkRoles {
 
-    private java.sql.Timestamp datacaricamento;
-
     private String descrizione;
 
     private String idRuolo;
@@ -23,16 +21,6 @@ public class DmAlmWorkitemLinkRoles {
     private String repository;
 
     private String templates;
-
-    private Long workitemLinkRolesPk;
-
-    public java.sql.Timestamp getDatacaricamento() {
-        return datacaricamento;
-    }
-
-    public void setDatacaricamento(java.sql.Timestamp datacaricamento) {
-        this.datacaricamento = datacaricamento;
-    }
 
     public String getDescrizione() {
         return descrizione;
@@ -89,14 +77,4 @@ public class DmAlmWorkitemLinkRoles {
     public void setTemplates(String templates) {
         this.templates = templates;
     }
-
-    public Long getWorkitemLinkRolesPk() {
-        return workitemLinkRolesPk;
-    }
-
-    public void setWorkitemLinkRolesPk(Long workitemLinkRolesPk) {
-        this.workitemLinkRolesPk = workitemLinkRolesPk;
-    }
-
 }
-
