@@ -127,11 +127,11 @@ public class StagingCalipsoFacade {
 		logger.debug("START StagingCalipsoFacade.putExcelCalipso");
 		
 		try {
-//			File fCalipso = new File(fileCalipso);
-//			if (fCalipso.exists()) {
-//				Runtime.getRuntime().exec(renameFile + fileCalipso + " " + fileCalipso + "." + DateUtils.dateToString(DataEsecuzione.getInstance().getDataEsecuzione(), "yyyy-MM-dd").replace("-", "_")).waitFor();
-//			}
-//			Runtime.getRuntime().exec(wgetFile + fileCalipsoSource, null, fileCalipsoPath).waitFor();
+			File fCalipso = new File(fileCalipso);
+			if (fCalipso.exists()) {
+				Runtime.getRuntime().exec(renameFile + fileCalipso + " " + fileCalipso + "." + DateUtils.dateToString(DataEsecuzione.getInstance().getDataEsecuzione(), "yyyy-MM-dd").replace("-", "_")).waitFor();
+			}
+			Runtime.getRuntime().exec(wgetFile + fileCalipsoSource, null, fileCalipsoPath).waitFor();
 			Runtime.getRuntime().exec(chmod + fileCalipso).waitFor();
 		} catch (InterruptedException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
