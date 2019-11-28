@@ -46,6 +46,18 @@ public final class DmAlmConstants {
 	public static final String CARICAMENTO_TERMINATO_CORRETTAMENTE = "Caricamento terminato correttamente";
 	public static final String CARICAMENTO_TERMINATO_CON_ERRORE = "Caricamento terminato con errore";
 
+	// FONTE
+	public static final String FONTE_SGR = "SGR";
+	public static final String FONTE_SFERA = "SFERA";
+	public static final String FONTE_MPS = "MPS";
+	public static final String FONTE_CALIPSO = "CALIPSO";
+		
+	// STATI CARICAMENTO FONTE
+	public static final String CARICAMENTO_FONTE_INIT = "INIT";
+	public static final String CARICAMENTO_FONTE_OK = "OK";
+	public static final String CARICAMENTO_FONTE_PENDING = "PENDING";
+	public static final String CARICAMENTO_FONTE_KO = "KO";
+	
 	public static final String DATE_FORMAT_EDMA_UO = "dd/MM/yyyy";
 	public static final String DATE_FORMAT_DB = "yyyy-MM-dd HH:mm:ss";
 	public static final String DATE_SFERA_FILENAME = "yyyy_MM_dd";

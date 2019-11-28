@@ -12,7 +12,7 @@ import com.mysema.query.types.Path;
  * SissHistoryCfWorkitem is a Querydsl query type for SissHistoryCfWorkitem
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
-public class SissHistoryCfWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.siss.history.SissHistoryCfWorkitem> {
+public class SissHistoryCfWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.siss.history.DmAlmSissHistoryCfWorkitem> {
 
     private static final long serialVersionUID = -917026934;
 
@@ -35,21 +35,23 @@ public class SissHistoryCfWorkitem extends com.mysema.query.sql.RelationalPathBa
     public final StringPath cName = createString("C_NAME");
 
     public final StringPath cStringValue = createString("C_STRING_VALUE");
+    
+    public final StringPath cTextValue = createString("C_TEXT_VALUE");
 
     public final StringPath fkUriWorkitem = createString("FK_URI_WORKITEM");
 
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
     public SissHistoryCfWorkitem(String variable) {
-        super(lispa.schedulers.bean.staging.sgr.siss.history.SissHistoryCfWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_CF_WORKITEM");
+        super(lispa.schedulers.bean.staging.sgr.siss.history.DmAlmSissHistoryCfWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_CF_WORKITEM");
     }
 
-    public SissHistoryCfWorkitem(Path<? extends lispa.schedulers.bean.staging.sgr.siss.history.SissHistoryCfWorkitem> path) {
+    public SissHistoryCfWorkitem(Path<? extends lispa.schedulers.bean.staging.sgr.siss.history.DmAlmSissHistoryCfWorkitem> path) {
         super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_CF_WORKITEM");
     }
 
     public SissHistoryCfWorkitem(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.staging.sgr.siss.history.SissHistoryCfWorkitem.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_CF_WORKITEM");
+        super(lispa.schedulers.bean.staging.sgr.siss.history.DmAlmSissHistoryCfWorkitem.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_CF_WORKITEM");
     }
 
 }

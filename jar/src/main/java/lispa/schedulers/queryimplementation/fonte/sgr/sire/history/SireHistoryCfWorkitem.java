@@ -39,6 +39,8 @@ public class SireHistoryCfWorkitem extends com.mysema.query.sql.RelationalPathBa
     public final StringPath cName = createString("C_NAME");
 
     public final StringPath cStringValue = createString("C_STRING_VALUE");
+    
+    public final StringPath cTextValue = createString("C_TEXT_VALUE");
 
     public final StringPath fkUriWorkitem = createString("FK_URI_WORKITEM");
 

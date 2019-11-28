@@ -1,53 +1,33 @@
 package lispa.schedulers.dao.sfera;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import lispa.schedulers.bean.target.sfera.DmalmMisura;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.manager.QueryManager;
-import lispa.schedulers.queryimplementation.staging.sfera.QDmalmStgMisura;
+import lispa.schedulers.queryimplementation.staging.sfera.DmAlmMisura;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MisuraUtils;
 import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
-
 import au.com.bytecode.opencsv.CSVReader;
-
 import com.google.common.collect.Lists;
-import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
 public class StgMisuraDAO {
 
 	private static Logger logger = Logger.getLogger(StgMisuraDAO.class);
-	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-			.getDataEsecuzione();
-	private static QDmalmStgMisura stgMisura = QDmalmStgMisura.dmalmStgMisura;
+	private static DmAlmMisura stg_Misura = DmAlmMisura.dmalmStgMisura;
 	private static final String pathCSV = MisuraUtils.currentSferaFile();
 	private static ConnectionManager cm = ConnectionManager.getInstance();
 	private static Connection connection;
-	private static SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 
 	public static HashMap<String, Integer> mappaColonne()
 			throws PropertiesReaderException {
@@ -118,154 +98,152 @@ public class StgMisuraDAO {
 					if (projK.equals(""))
 						row.set(mapping.get("IdPrj"), "0");
 
-					new SQLInsertClause(connection, dialect, stgMisura)
-							.columns(stgMisura.a1Num, stgMisura.a1Ufp,
-									stgMisura.a2Num, stgMisura.a2Ufp,
-									stgMisura.adjmax, stgMisura.adjmin,
-									stgMisura.adjufp, stgMisura.ambito,
-									stgMisura.noteAsm,
-									stgMisura.pAppAccAuthLastUpdate,
-									stgMisura.pAppCdAltreAsmCommonServ,
-									stgMisura.pAppCodAsmConfinanti,
-									stgMisura.pAppCodDirezioneDemand,
-									stgMisura.pAppCodFlussiIoAsm,
-									stgMisura.pAppCdAmbitoManAttuale,
-									stgMisura.pAppCodAmbitoManFuturo,
-									stgMisura.pAppDataFineValiditaAsm,
-									stgMisura.pAppDataInizioValiditaAsm,
-									stgMisura.pAppDataUltimoAggiorn,
-									stgMisura.pAppDenomSistTerziConfin,
-									stgMisura.pAppDenomUtentiFinaliAsm,
-									stgMisura.pAppDenominazioneAsm,
-									stgMisura.pAppFlagDamisurarePatrFp,
-									stgMisura.pAppFlagMisurareSvimevFp,
-									stgMisura.pAppFlagInManutenzione,
-									stgMisura.pAppFlagServizioComune,
-									stgMisura.pAppIndicValidazioneAsm,
-									stgMisura.pAppNomeAuthLastUpdate,
-									stgMisura.appCls, stgMisura.applicazione,
-									stgMisura.approccio, stgMisura.b1Num,
-									stgMisura.b1Ufp, stgMisura.b2Num,
-									stgMisura.b2Ufp, stgMisura.b3Num,
-									stgMisura.b3Ufp, stgMisura.b4Num,
-									stgMisura.b4Ufp, stgMisura.b5Num,
-									stgMisura.b5Ufp, stgMisura.bfpNum,
-									stgMisura.bfpUfp, stgMisura.c1Num,
-									stgMisura.c1Ufp, stgMisura.c2Num,
-									stgMisura.c2Ufp, stgMisura.cicloDiVita,
-									stgMisura.confine, stgMisura.costo,
-									stgMisura.crudNum, stgMisura.crudUfp,
-									stgMisura.d1Num, stgMisura.d1Ufp,
-									stgMisura.d2Num, stgMisura.d2Ufp,
-									stgMisura.dataAvvio,
-									stgMisura.dataConsolidamento,
-									stgMisura.dataCreazione,
-									stgMisura.dataDismissione,
-									stgMisura.dataRiferimento,
-									stgMisura.dataFineEffettiva,
-									stgMisura.dataInizioEsercizio,
-									stgMisura.durataEffettiva, stgMisura.eiNum,
-									stgMisura.eiUfp, stgMisura.eifNum,
-									stgMisura.eifUfp, stgMisura.eoNum,
-									stgMisura.eoUfp, stgMisura.eqNum,
-									stgMisura.eqUfp, stgMisura.esperienza,
-									stgMisura.faseCicloDiVita, stgMisura.fonti,
-									stgMisura.fpNonPesatiMax,
-									stgMisura.fpNonPesatiMin,
-									stgMisura.fpNonPesatiUfp,
-									stgMisura.fpPesatiMax,
-									stgMisura.fpPesatiMin,
-									stgMisura.fpPesatiUfp,
-									stgMisura.frequenzaUtilizzo,
-									stgMisura.fuNum, stgMisura.fuUfp,
-									stgMisura.gdgNum, stgMisura.gdgUfp,
-									stgMisura.geiNum, stgMisura.geiUfp,
-									stgMisura.geifNum, stgMisura.geifUfp,
-									stgMisura.geoNum, stgMisura.geoUfp,
-									stgMisura.geqNum, stgMisura.geqUfp,
-									stgMisura.gilfNum, stgMisura.gilfUfp,
-									stgMisura.gpNum, stgMisura.gpUfp,
-									stgMisura.idAsm, stgMisura.idMsr,
-									stgMisura.idProgetto, stgMisura.ifpNum,
-									stgMisura.ifpUfp, stgMisura.ilfNum,
-									stgMisura.ilfUfp,
-									stgMisura.impegnoEffettivo,
-									stgMisura.includeInBenchmarkingDb,
-									stgMisura.includiInDbPatrimonio,
-									stgMisura.ldgNum, stgMisura.ldgUfp,
-									stgMisura.linkDocumentale,
-									stgMisura.noteMsr, stgMisura.metodo,
-									stgMisura.mfNum, stgMisura.mfUfp,
-									stgMisura.nomeMisura, stgMisura.mldgNum,
-									stgMisura.mldgUfp, stgMisura.modello,
-									stgMisura.mpNum, stgMisura.mpUfp,
-									stgMisura.numeroUtenti,
-									stgMisura.permissions, stgMisura.pfNum,
-									stgMisura.pfUfp, stgMisura.postVerAddCfp,
-									stgMisura.postVerChg, stgMisura.postVerDel,
-									stgMisura.postVerFp,
-									stgMisura.preVerAddCfp,
-									stgMisura.preVerChg, stgMisura.preVerDel,
-									stgMisura.preVerFp, stgMisura.notePrj,
-									stgMisura.pPrjADisposizione01,
-									stgMisura.pPrjADisposizione02,
-									stgMisura.pPrjAuditIndexVerify,
-									stgMisura.pPrjAuditMonitore,
-									stgMisura.pPrjCodRdi,
-									stgMisura.pPrjFccFattCorrezTotal,
-									stgMisura.pPrjFlAmbTecnPiatEnterpr,
-									stgMisura.pPrjFlAmbitoTecnFuturo01,
-									stgMisura.pPrjFlAmbitoTecnFuturo02,
-									stgMisura.pPrjFlagAmbTecnGis,
-									stgMisura.pPrjAmbTecnPortali,
-									stgMisura.pPrjFlAmbTecTransBatRep,
-									stgMisura.pPrjFlApplicLgFpDwh,
-									stgMisura.pPrjFlApplicLgFpFuturo01,
-									stgMisura.pPrjFlApplicLgFpFuturo02,
-									stgMisura.pPrjFlApplLgFpWeb,
-									stgMisura.pPrjFlApplLgFpEdma,
-									stgMisura.pPrjFlagApplLgFpGis,
-									stgMisura.pPrjFlagApplLgFpMware,
-									stgMisura.pPrjFornitoreMpp,
-									stgMisura.pPrjFornitoreSviluppoMev,
-									stgMisura.pPrjImportoAConsuntivo,
-									stgMisura.pPrjImportoRdiAPreventivo,
-									stgMisura.pPrjIndexAlmValidProgAsm,
-									stgMisura.pPrjMfcAConsuntivo,
-									stgMisura.pPrjMfcAPreventivo,
-									stgMisura.pPrjMpPercentCicloDiVita,
-									stgMisura.pPrjPunPrezzoUnitNominal,
-									stgMisura.prjCls, stgMisura.nomeProgetto,
-									stgMisura.proprietaLegale,
-									stgMisura.responsabile, stgMisura.scopo,
-									stgMisura.staffMedio,
-									stgMisura.statoMisura,
-									stgMisura.tipoProgetto, stgMisura.tpNum,
-									stgMisura.tpUfp, stgMisura.ugdgNum,
-									stgMisura.ugdgUfp, stgMisura.ugepNum,
-									stgMisura.ugepUfp, stgMisura.ugoNum,
-									stgMisura.ugoUfp, stgMisura.ugpNum,
-									stgMisura.ugpUfp,
-									stgMisura.utenteMisuratore,
-									stgMisura.utilizzata,
-									stgMisura.vafPredefinito,
-									stgMisura.verDelta,
-									stgMisura.verDeltaPercent,
-									stgMisura.verEnd, stgMisura.versioneMsr,
-									stgMisura.versionePrj, stgMisura.verStart,
-									stgMisura.dataCaricamento,
-									stgMisura.dmalmStgMisuraPk,
-									stgMisura.dtPrevistaProssimaMpp,
-									stgMisura.fip01InizioEsercizio,
-									stgMisura.fip02IndiceQualita,
-									stgMisura.fip03ComplessEserc,
-									stgMisura.fip04NrPiattaforma,
-									stgMisura.fip07LingProgPrincipale,
-									stgMisura.fip10GradoAccessibilita,
-									stgMisura.fip11GradoQualitaCod,
-									stgMisura.fip12UtilizzoFramework,
-									stgMisura.fip13ComplessitaAlg,
-									stgMisura.fip15LivelloCura)
+					new SQLInsertClause(connection, dialect, stg_Misura)
+					.columns(stg_Misura.a1Num, stg_Misura.a1Ufp,
+							stg_Misura.a2Num, stg_Misura.a2Ufp,
+							stg_Misura.adjmax, stg_Misura.adjmin,
+							stg_Misura.adjufp, stg_Misura.ambito,
+							stg_Misura.noteAsm,
+							stg_Misura.pAppAccAuthLastUpdate,
+							stg_Misura.pAppCdAltreAsmCommonServ,
+							stg_Misura.pAppCodAsmConfinanti,
+							stg_Misura.pAppCodDirezioneDemand,
+							stg_Misura.pAppCodFlussiIoAsm,
+							stg_Misura.pAppCdAmbitoManAttuale,
+							stg_Misura.pAppCodAmbitoManFuturo,
+							stg_Misura.pAppDataFineValiditaAsm,
+							stg_Misura.pAppDataInizioValiditaAsm,
+							stg_Misura.pAppDataUltimoAggiorn,
+							stg_Misura.pAppDenomSistTerziConfin,
+							stg_Misura.pAppDenomUtentiFinaliAsm,
+							stg_Misura.pAppDenominazioneAsm,
+							stg_Misura.pAppFlagDamisurarePatrFp,
+							stg_Misura.pAppFlagMisurareSvimevFp,
+							stg_Misura.pAppFlagInManutenzione,
+							stg_Misura.pAppFlagServizioComune,
+							stg_Misura.pAppIndicValidazioneAsm,
+							stg_Misura.pAppNomeAuthLastUpdate,
+							stg_Misura.appCls, stg_Misura.applicazione,
+							stg_Misura.approccio, stg_Misura.b1Num,
+							stg_Misura.b1Ufp, stg_Misura.b2Num,
+							stg_Misura.b2Ufp, stg_Misura.b3Num,
+							stg_Misura.b3Ufp, stg_Misura.b4Num,
+							stg_Misura.b4Ufp, stg_Misura.b5Num,
+							stg_Misura.b5Ufp, stg_Misura.bfpNum,
+							stg_Misura.bfpUfp, stg_Misura.c1Num,
+							stg_Misura.c1Ufp, stg_Misura.c2Num,
+							stg_Misura.c2Ufp, stg_Misura.cicloDiVita,
+							stg_Misura.confine, stg_Misura.costo,
+							stg_Misura.crudNum, stg_Misura.crudUfp,
+							stg_Misura.d1Num, stg_Misura.d1Ufp,
+							stg_Misura.d2Num, stg_Misura.d2Ufp,
+							stg_Misura.dataAvvio,
+							stg_Misura.dataConsolidamento,
+							stg_Misura.dataCreazione,
+							stg_Misura.dataDismissione,
+							stg_Misura.dataRiferimento,
+							stg_Misura.dataFineEffettiva,
+							stg_Misura.dataInizioEsercizio,
+							stg_Misura.durataEffettiva, stg_Misura.eiNum,
+							stg_Misura.eiUfp, stg_Misura.eifNum,
+							stg_Misura.eifUfp, stg_Misura.eoNum,
+							stg_Misura.eoUfp, stg_Misura.eqNum,
+							stg_Misura.eqUfp, stg_Misura.esperienza,
+							stg_Misura.faseCicloDiVita, stg_Misura.fonti,
+							stg_Misura.fpNonPesatiMax,
+							stg_Misura.fpNonPesatiMin,
+							stg_Misura.fpNonPesatiUfp,
+							stg_Misura.fpPesatiMax,
+							stg_Misura.fpPesatiMin,
+							stg_Misura.fpPesatiUfp,
+							stg_Misura.frequenzaUtilizzo,
+							stg_Misura.fuNum, stg_Misura.fuUfp,
+							stg_Misura.gdgNum, stg_Misura.gdgUfp,
+							stg_Misura.geiNum, stg_Misura.geiUfp,
+							stg_Misura.geifNum, stg_Misura.geifUfp,
+							stg_Misura.geoNum, stg_Misura.geoUfp,
+							stg_Misura.geqNum, stg_Misura.geqUfp,
+							stg_Misura.gilfNum, stg_Misura.gilfUfp,
+							stg_Misura.gpNum, stg_Misura.gpUfp,
+							stg_Misura.idAsm, stg_Misura.idMsr,
+							stg_Misura.idProgetto, stg_Misura.ifpNum,
+							stg_Misura.ifpUfp, stg_Misura.ilfNum,
+							stg_Misura.ilfUfp,
+							stg_Misura.impegnoEffettivo,
+							stg_Misura.includeInBenchmarkingDb,
+							stg_Misura.includiInDbPatrimonio,
+							stg_Misura.ldgNum, stg_Misura.ldgUfp,
+							stg_Misura.linkDocumentale,
+							stg_Misura.noteMsr, stg_Misura.metodo,
+							stg_Misura.mfNum, stg_Misura.mfUfp,
+							stg_Misura.nomeMisura, stg_Misura.mldgNum,
+							stg_Misura.mldgUfp, stg_Misura.modello,
+							stg_Misura.mpNum, stg_Misura.mpUfp,
+							stg_Misura.numeroUtenti,
+							stg_Misura.permissions, stg_Misura.pfNum,
+							stg_Misura.pfUfp, stg_Misura.postVerAddCfp,
+							stg_Misura.postVerChg, stg_Misura.postVerDel,
+							stg_Misura.postVerFp,
+							stg_Misura.preVerAddCfp,
+							stg_Misura.preVerChg, stg_Misura.preVerDel,
+							stg_Misura.preVerFp, stg_Misura.notePrj,
+							stg_Misura.pPrjADisposizione01,
+							stg_Misura.pPrjADisposizione02,
+							stg_Misura.pPrjAuditIndexVerify,
+							stg_Misura.pPrjAuditMonitore,
+							stg_Misura.pPrjCodRdi,
+							stg_Misura.pPrjFccFattCorrezTotal,
+							stg_Misura.pPrjFlAmbTecnPiatEnterpr,
+							stg_Misura.pPrjFlAmbitoTecnFuturo01,
+							stg_Misura.pPrjFlAmbitoTecnFuturo02,
+							stg_Misura.pPrjFlagAmbTecnGis,
+							stg_Misura.pPrjAmbTecnPortali,
+							stg_Misura.pPrjFlAmbTecTransBatRep,
+							stg_Misura.pPrjFlApplicLgFpDwh,
+							stg_Misura.pPrjFlApplicLgFpFuturo01,
+							stg_Misura.pPrjFlApplicLgFpFuturo02,
+							stg_Misura.pPrjFlApplLgFpWeb,
+							stg_Misura.pPrjFlApplLgFpEdma,
+							stg_Misura.pPrjFlagApplLgFpGis,
+							stg_Misura.pPrjFlagApplLgFpMware,
+							stg_Misura.pPrjFornitoreMpp,
+							stg_Misura.pPrjFornitoreSviluppoMev,
+							stg_Misura.pPrjImportoAConsuntivo,
+							stg_Misura.pPrjImportoRdiAPreventivo,
+							stg_Misura.pPrjIndexAlmValidProgAsm,
+							stg_Misura.pPrjMfcAConsuntivo,
+							stg_Misura.pPrjMfcAPreventivo,
+							stg_Misura.pPrjMpPercentCicloDiVita,
+							stg_Misura.pPrjPunPrezzoUnitNominal,
+							stg_Misura.prjCls, stg_Misura.nomeProgetto,
+							stg_Misura.proprietaLegale,
+							stg_Misura.responsabile, stg_Misura.scopo,
+							stg_Misura.staffMedio,
+							stg_Misura.statoMisura,
+							stg_Misura.tipoProgetto, stg_Misura.tpNum,
+							stg_Misura.tpUfp, stg_Misura.ugdgNum,
+							stg_Misura.ugdgUfp, stg_Misura.ugepNum,
+							stg_Misura.ugepUfp, stg_Misura.ugoNum,
+							stg_Misura.ugoUfp, stg_Misura.ugpNum,
+							stg_Misura.ugpUfp,
+							stg_Misura.utenteMisuratore,
+							stg_Misura.utilizzata,
+							stg_Misura.vafPredefinito,
+							stg_Misura.verDelta,
+							stg_Misura.verDeltaPercent,
+							stg_Misura.verEnd, stg_Misura.versioneMsr,
+							stg_Misura.versionePrj, stg_Misura.verStart,
+							stg_Misura.dtPrevistaProssimaMpp,
+							stg_Misura.fip01InizioEsercizio,
+							stg_Misura.fip02IndiceQualita,
+							stg_Misura.fip03ComplessEserc,
+							stg_Misura.fip04NrPiattaforma,
+							stg_Misura.fip07LingProgPrincipale,
+							stg_Misura.fip10GradoAccessibilita,
+							stg_Misura.fip11GradoQualitaCod,
+							stg_Misura.fip12UtilizzoFramework,
+							stg_Misura.fip13ComplessitaAlg,
+							stg_Misura.fip15LivelloCura)
 							.values(row.get(mapping.get("A.1_NUM")),
 									row.get(mapping.get("A.1_UFP")),
 									row.get(mapping.get("A.2_NUM")),
@@ -507,9 +485,6 @@ public class StgMisuraDAO {
 									row.get(mapping.get("VersioneMea")),
 									row.get(mapping.get("VersionePrj")),
 									row.get(mapping.get("VER-Start")),
-									dataEsecuzione,
-									StringTemplate
-											.create("DM_ALM_STG_MISURA_SEQ.nextval"),
 									(StringUtils.hasText(row.get(mapping
 											.get("APP-ATT:DATA_PREVISTA_CONSEGNA_PROSSIMA_MPP_ASM"))) ? DateUtils.stringToTimestamp(row.get(mapping
 											.get("APP-ATT:DATA_PREVISTA_CONSEGNA_PROSSIMA_MPP_ASM")),"dd/MM/yyyy")
@@ -559,610 +534,5 @@ public class StgMisuraDAO {
 				}
 			}
 		}
-	}
-
-	public static void delete(Timestamp dataEsecuzioneDelete)
-			throws DAOException {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-			QDmalmStgMisura qstgmisura = QDmalmStgMisura.dmalmStgMisura;
-
-			new SQLDeleteClause(connection, dialect, qstgmisura).where(
-					qstgmisura.dataCaricamento.lt(dataEsecuzioneDelete).or(
-							qstgmisura.dataCaricamento.gt(DateUtils
-									.addDaysToTimestamp(DataEsecuzione
-											.getInstance().getDataEsecuzione(),
-											-1)))).execute();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-	}
-
-	public static void recoverStgMisura() throws DAOException {
-
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QDmalmStgMisura stgmisura = QDmalmStgMisura.dmalmStgMisura;
-			new SQLDeleteClause(connection, dialect, stgmisura).where(
-					stgmisura.dataCaricamento.eq(DataEsecuzione.getInstance()
-							.getDataEsecuzione())).execute();
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-	}
-
-	/**
-	 * Estrae la lista degli ASM eliminati fisicamente dal sorgente: ASM
-	 * presenti alla data dell'esecuzione precedente, ma non più presenti alla
-	 * data di esecuzione attuale
-	 * 
-	 * @return List<String>
-	 * @throws IOException
-	 * @throws DAOException
-	 */
-
-	public static List<DmalmMisura> getRemoveFromFile(String type,
-			Timestamp dataEsecuzione) throws DAOException {
-		ConnectionManager cm = null;
-		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		List<DmalmMisura> removeList = new ArrayList<DmalmMisura>();
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			String sql = getQueryRemoveFromFile(type);
-
-			ps = connection.prepareStatement(sql);
-
-			ps.setTimestamp(1, dataEsecuzione);
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				DmalmMisura bean = new DmalmMisura();
-
-				bean.setIdAsm(rs.getShort("ID_ASM"));
-
-				if (type.equalsIgnoreCase("PRJ")) {
-					bean.setIdProgetto(rs.getShort("ID_PROGETTO"));
-				} else if (type.equalsIgnoreCase("MIS")) {
-					bean.setIdProgetto(rs.getShort("ID_PROGETTO"));
-					bean.setIdMsr(rs.getInt("ID_MSR"));
-					bean.setDmalmMisuraPk(rs.getInt("MISURA_PK"));
-				}
-
-				removeList.add(bean);
-			}
-
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
-		} catch (DAOException e) {
-			logger.error(e.getMessage(), e);
-
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return removeList;
-	}
-
-	private static String getQueryRemoveFromFile(String type)
-			throws PropertiesReaderException, Exception {
-		String sql = null;
-
-		if (type.equalsIgnoreCase("ASM")) {
-			sql = QueryManager.getInstance().getQuery(
-					DmAlmConfigReaderProperties.SQL_ASM_ELIMINATE);
-		} else if (type.equalsIgnoreCase("PRJ")) {
-			sql = QueryManager.getInstance().getQuery(
-					DmAlmConfigReaderProperties.SQL_PROGETTI_ELIMINATI);
-		} else if (type.equalsIgnoreCase("MIS")) {
-			sql = QueryManager.getInstance().getQuery(
-					DmAlmConfigReaderProperties.SQL_MISURE_ELIMINATE);
-		}
-
-		return sql;
-	}
-
-	public static List<Tuple> getControlloDatiSfera(Timestamp dataEsecuzione)
-			throws DAOException {
-		List<Tuple> stgMisuraDati = new ArrayList<Tuple>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			stgMisuraDati = query.from(stgMisura)
-					.where(stgMisura.dataCaricamento.eq(dataEsecuzione))
-					.orderBy(stgMisura.idAsm.asc(), stgMisura.idProgetto.asc())
-					.list(stgMisura.all());
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return stgMisuraDati;
-	}
-
-	public static List<Tuple> checkPat002(Logger logger, Tuple row,
-			Timestamp dataEsecuzione) throws DAOException {
-
-		List<Tuple> misurePat002 = new ArrayList<Tuple>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			misurePat002 = query
-					.from(stgMisura)
-					.where(stgMisura.idAsm.eq(row.get(stgMisura.idAsm)))
-					.where(stgMisura.idProgetto.eq(row
-							.get(stgMisura.idProgetto)))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.nomeMisura.startsWith("PAT-002-"))
-					.list(stgMisura.nomeMisura, stgMisura.statoMisura);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return misurePat002;
-	}
-
-	public static List<Tuple> checkMisurePatr(Logger logger, Tuple row,
-			Timestamp dataEsecuzione) throws DAOException {
-
-		List<Tuple> misurePatr = new ArrayList<Tuple>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			misurePatr = query
-					.from(stgMisura)
-					.where(stgMisura.idAsm.eq(row.get(stgMisura.idAsm)))
-					.where(stgMisura.idProgetto.eq(row
-							.get(stgMisura.idProgetto)))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.nomeMisura.substring(0, 4).eq("PAT-"))
-					.where(stgMisura.nomeMisura.substring(4, 7).between("001",
-							"999"))
-					.where(stgMisura.nomeMisura.substring(7, 8).eq("-"))
-					.where(stgMisura.nomeMisura.substring(8, 9).in("C", "B"))
-					.list(stgMisura.nomeMisura, stgMisura.nomeProgetto);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return misurePatr;
-	}
-
-	public static List<String> checkCountMisurePatr(Logger logger, Tuple row,
-			Timestamp dataEsecuzione) throws DAOException {
-
-		List<String> misurePatr = new ArrayList<String>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			misurePatr = query
-					.from(stgMisura)
-					.where(stgMisura.idAsm.eq(row.get(stgMisura.idAsm)))
-					.where(stgMisura.idProgetto.eq(row
-							.get(stgMisura.idProgetto)))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.nomeMisura.substring(0, 4).eq("PAT-"))
-					.where(stgMisura.nomeMisura.substring(4, 7).between("001",
-							"999"))
-					.where(stgMisura.nomeMisura.substring(7, 8).eq("-"))
-					.where(stgMisura.nomeMisura.substring(8, 9).in("C", "B"))
-					.groupBy(stgMisura.nomeMisura.substring(0, 7))
-					.having(stgMisura.nomeMisura.substring(0, 7).count().gt(1))
-					.list(stgMisura.nomeMisura.substring(0, 7));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return misurePatr;
-	}
-
-	public static Boolean checkBucoNumerazMisurePatr(Logger logger, Tuple row,
-			Timestamp dataEsecuzione) throws DAOException {
-
-		boolean bucoNumerazione = true;
-
-		List<Tuple> maxPatr = new ArrayList<Tuple>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			String resMaxPatr = null;
-
-			maxPatr = query
-					.from(stgMisura)
-					.where(stgMisura.idAsm.eq(row.get(stgMisura.idAsm)))
-					.where(stgMisura.idProgetto.eq(row
-							.get(stgMisura.idProgetto)))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.nomeMisura.substring(0, 4).eq("PAT-"))
-					.where(stgMisura.nomeMisura.substring(4, 7).between("001",
-							"999"))
-					.where(stgMisura.nomeMisura.substring(7, 8).eq("-"))
-					.where(stgMisura.nomeMisura.substring(8, 9).in("C", "B"))
-					.orderBy(stgMisura.nomeMisura.substring(4, 7).desc())
-					.list(stgMisura.nomeMisura, stgMisura.statoMisura);
-
-			if (maxPatr.size() > 0) {
-				resMaxPatr = maxPatr.get(0).get(stgMisura.nomeMisura)
-						.substring(4, 7);
-
-				if (Integer.parseInt(resMaxPatr) != maxPatr.size()) {
-					bucoNumerazione = false;
-				}
-			}
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return bucoNumerazione;
-	}
-
-	public static List<String> checkCountMisurePatrBas(Logger logger,
-			Tuple row, Timestamp dataEsecuzione) throws DAOException {
-
-		List<String> misurePatr = new ArrayList<String>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			misurePatr = query
-					.from(stgMisura)
-					.where(stgMisura.idAsm.eq(row.get(stgMisura.idAsm)))
-					.where(stgMisura.idProgetto.eq(row
-							.get(stgMisura.idProgetto)))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.nomeMisura.substring(0, 4).eq("BAS-"))
-					.where(stgMisura.nomeMisura.substring(4, 7).between("001",
-							"999"))
-					.groupBy(stgMisura.nomeMisura.substring(0, 7))
-					.having(stgMisura.nomeMisura.substring(0, 7).count().gt(1))
-					.list(stgMisura.nomeMisura.substring(0, 7));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-		return misurePatr;
-	}
-
-	public static Boolean checkBucoNumerazMisurePatrBas(Logger logger,
-			Tuple row, Timestamp dataEsecuzione) throws DAOException {
-
-		boolean bucoNumerazione = true;
-
-		List<Tuple> maxPatr = new ArrayList<Tuple>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			String resMaxPatr = null;
-
-			maxPatr = query
-					.from(stgMisura)
-					.where(stgMisura.idAsm.eq(row.get(stgMisura.idAsm)))
-					.where(stgMisura.idProgetto.eq(row
-							.get(stgMisura.idProgetto)))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.nomeMisura.substring(0, 4).eq("BAS-"))
-					.where(stgMisura.nomeMisura.substring(4, 7).between("001",
-							"999"))
-					.orderBy(stgMisura.nomeMisura.substring(4, 7).desc())
-					.list(stgMisura.nomeMisura, stgMisura.statoMisura);
-
-			if (maxPatr.size() > 0) {
-				resMaxPatr = maxPatr.get(0).get(stgMisura.nomeMisura)
-						.substring(4, 7);
-				if (Integer.parseInt(resMaxPatr) != maxPatr.size()) {
-					bucoNumerazione = false;
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return bucoNumerazione;
-	}
-
-	public static List<String> checkCountMisureSt(Logger logger, Tuple row,
-			Timestamp dataEsecuzione) throws DAOException {
-
-		List<String> misureSt = new ArrayList<String>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			misureSt = query
-					.from(stgMisura)
-					.where(stgMisura.idAsm.eq(row.get(stgMisura.idAsm)))
-					.where(stgMisura.idProgetto.eq(row
-							.get(stgMisura.idProgetto)))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.nomeMisura.substring(0, 2).eq("ST"))
-					.where(stgMisura.nomeMisura.substring(2, 3).between("1",
-							"3"))
-					.where(stgMisura.nomeMisura.substring(3, 4).eq("-"))
-					.where(stgMisura.nomeMisura.substring(4, 7).between("001",
-							"999"))
-					.groupBy(stgMisura.nomeMisura.substring(0, 7))
-					.having(stgMisura.nomeMisura.substring(0, 7).count().gt(1))
-					.list(stgMisura.nomeMisura.substring(0, 7));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return misureSt;
-	}
-
-	public static List<Tuple> checkBucoNumerazMisureSt(Logger logger,
-			Tuple row, Timestamp dataEsecuzione) throws DAOException {
-
-		List<Tuple> misureSt = new ArrayList<Tuple>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			misureSt = query
-					.from(stgMisura)
-					.where(stgMisura.idAsm.eq(row.get(stgMisura.idAsm)))
-					.where(stgMisura.idProgetto.eq(row
-							.get(stgMisura.idProgetto)))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.nomeMisura.substring(0, 2).eq("ST"))
-					.where(stgMisura.nomeMisura.substring(2, 3).between("1",
-							"3"))
-					.where(stgMisura.nomeMisura.substring(3, 4).eq("-"))
-					.where(stgMisura.nomeMisura.substring(4, 7).between("001",
-							"999"))
-					.groupBy(stgMisura.nomeMisura.substring(0, 7))
-					.having(stgMisura.nomeMisura.substring(0, 7).count().gt(1))
-					.list(stgMisura.nomeMisura.substring(0, 7),
-							stgMisura.nomeMisura.substring(0, 7).count());
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return misureSt;
-	}
-
-	public static Boolean checkAsmValida(Logger logger, Tuple row,
-			Timestamp dataEsecuzione, String asm) throws DAOException {
-
-		boolean asmValida = false;
-		String appCodAsm = null;
-		List<String> asmRes = new ArrayList<String>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			asmRes = query
-					.from(stgMisura)
-					.distinct()
-					.where(stgMisura.applicazione.startsWith(asm))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.list(stgMisura.applicazione);
-
-			for (String ar : asmRes) {
-				appCodAsm = ar.trim();
-
-				if (appCodAsm.contains("#")) {
-					appCodAsm = appCodAsm.substring(0,
-							appCodAsm.indexOf("#") - 1);
-				}
-
-				if (asm.equals(appCodAsm)) {
-					asmValida = true;
-					break;
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return asmValida;
-	}
-
-	public static Boolean checkAltreAsmValida(Logger logger, Tuple row,
-			Timestamp dataEsecuzione, String asm) throws DAOException {
-
-		boolean asmValida = false;
-		String appCodAsm = null;
-		List<String> asmRes = new ArrayList<String>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			asmRes = query
-					.from(stgMisura)
-					.where(stgMisura.applicazione.startsWith(asm))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.where(stgMisura.pAppFlagServizioComune.eq("SI"))
-					.list(stgMisura.applicazione);
-
-			for (String a : asmRes) {
-				appCodAsm = a.trim();
-
-				if (appCodAsm.contains("#")) {
-					appCodAsm = appCodAsm.substring(0,
-							appCodAsm.indexOf("#") - 1);
-				}
-
-				if (asm.equals(appCodAsm)) {
-					asmValida = true;
-					break;
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return asmValida;
-	}
-
-	public static Boolean checkDenomValida(Logger logger, Tuple row,
-			Timestamp dataEsecuzione, String asm) throws DAOException {
-
-		boolean denomValida = true;
-
-		List<String> asmRes = new ArrayList<String>();
-
-		try {
-			connection = cm.getConnectionOracle();
-
-			// SQL-dialect
-			SQLQuery query = new SQLQuery(connection, dialect);
-
-			asmRes = query
-					.from(stgMisura)
-					.where(stgMisura.applicazione.eq(asm))
-					.where(stgMisura.dataCaricamento.eq(row
-							.get(stgMisura.dataCaricamento)))
-					.list(stgMisura.applicazione);
-
-			if (asmRes.size() == 0) {
-				denomValida = false;
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-
-		return denomValida;
 	}
 }

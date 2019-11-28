@@ -230,4 +230,38 @@ public class QueryUtils {
 		}
 		return "{call "+ procedure +"(" + parameters.substring(0, parameters.length()-1) + ")}";
 	}
+	
+	public static void setCaricamentoFonte(String fonte, String statoCaricamento) {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement psFonte = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql_fonte = "UPDATE DMALM_CARICAMENTO_FONTE SET STATO_FONTE = ? WHERE COD_FONTE = ?";
+			psFonte = connection.prepareStatement(sql_fonte);
+
+			psFonte.setString(1, statoCaricamento);
+			psFonte.setString(2, fonte);
+			
+			psFonte.executeUpdate();
+
+			if (psFonte != null) {
+				psFonte.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+
+		} finally {
+			try {
+				if (cm != null) {
+					cm.closeConnection(connection);
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		}
+	}
 }

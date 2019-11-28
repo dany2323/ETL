@@ -6,10 +6,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import lispa.schedulers.queryimplementation.staging.oreste.QStgAmbienteTecnologico;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.current.QSissCurrentProject;
-
 import com.mysema.query.Tuple;
 
 public class LogUtils {
@@ -27,53 +24,6 @@ public class LogUtils {
 		}
 
 		return string;
-	}
-
-	public static String ambienteTecnologicoOrestetoString(Tuple row) {
-
-		QStgAmbienteTecnologico ambiente = QStgAmbienteTecnologico.stgAmbienteTecnologico;
-
-		String record = "";
-
-		if (row != null) {
-
-			record += "[ AmbienteTecnologicoPK: "
-					+ row.get(ambiente.idAmbTecnologicoPk) + "§ ";
-
-			record += "Id: " + row.get(ambiente.idAmbienteTecnologico) + "§ ";
-
-			record += "IdEdma: " + row.get(ambiente.idEdma) + "§ ";
-
-			record += "IdEdmaPadre: " + row.get(ambiente.idEdmaPadre) + "§ ";
-
-			record += "Nome: " + row.get(ambiente.nomeAmbienteTecnologico)
-					+ "§ ";
-
-			record += "SiglaModulo: " + row.get(ambiente.siglaModulo) + "§ ";
-
-			record += "SiglaProdotto: " + row.get(ambiente.siglaProdotto)
-					+ "§ ";
-
-			record += "Clasf_ArchiRiferimento:"
-					+ row.get(ambiente.clasfArchiRiferimento) + "§ ";
-
-			record += "Clasf_Infrastrutture: "
-					+ row.get(ambiente.clasfInfrastrutture) + "§ ";
-
-			record += "Clasf_So: " + row.get(ambiente.clasfSo) + "§ ";
-
-			record += "Clasf_TipiLayer: " + row.get(ambiente.clasfTipiLayer)
-					+ "§ ";
-
-			record += "Descrizione: "
-					+ row.get(ambiente.descrAmbienteTecnologico) + "§ ";
-
-			record += "VersioneSO: " + row.get(ambiente.versioneSo) + " ]";
-
-		}
-
-		return record;
-
 	}
 
 	public static String projectSGRtoString(Tuple row) {

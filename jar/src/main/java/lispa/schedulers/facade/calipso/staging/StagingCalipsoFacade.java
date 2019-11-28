@@ -3,16 +3,13 @@ package lispa.schedulers.facade.calipso.staging;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_CALIPSO_SOURCE_PATH_FILE;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_CALIPSO_PATH;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import lispa.schedulers.bean.staging.calipso.DmalmStgCalipsoSchedaServizio;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.calipso.StgCalipsoSchedaServizioDAO;
@@ -22,7 +19,6 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.utils.DateUtils;
-
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.CellType;
@@ -35,7 +31,7 @@ public class StagingCalipsoFacade {
 
 	private static Logger logger = Logger.getLogger(StagingCalipsoFacade.class);
 	
-	public static void executeStaging(Timestamp dataEsecuzioneDelete) {
+	public static void executeStaging() {
 		try {
 			
 			if (ErrorManager.getInstance().hasError())
@@ -43,11 +39,7 @@ public class StagingCalipsoFacade {
 
 			logger.info("START StagingCalipsoFacade.executeStaging");
 
-			deleteDmAlmStagingFromExcel();
 			fillDmAlmStagingFromExcel();
-
-			deleteStaging(dataEsecuzioneDelete);
-			fillStaging();
 
 			logger.info("STOP StagingCalipsoFacade.executeStaging");
 			
@@ -57,20 +49,6 @@ public class StagingCalipsoFacade {
 		}
 	}
 
-	private static void deleteDmAlmStagingFromExcel() {
-
-		try {
-			logger.debug("START CALIPSO deleteDmAlmStagingFromExcel");
-			StgCalipsoSchedaServizioDAO.deleteDmAlmStagingFromExcel();
-			logger.debug("STOP CALIPSO deleteDmAlmStagingFromExcel");
-
-		} catch (DAOException | SQLException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		}
-
-	}
-	
 	private static void fillDmAlmStagingFromExcel() throws PropertiesReaderException {
 		try {
 			if (ErrorManager.getInstance().hasError())
@@ -88,34 +66,6 @@ public class StagingCalipsoFacade {
 		}
 	}
 	
-	private static void deleteStaging(Timestamp dataEsecuzioneDelete) {
-
-		try {
-			logger.debug("START CALIPSO deleteStaging");
-			StgCalipsoSchedaServizioDAO.deleteStaging(dataEsecuzioneDelete);
-			logger.debug("STOP CALIPSO deleteStaging");
-
-		} catch (DAOException | SQLException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		}
-	}
-	
-	private static void fillStaging() {
-		try {
-			if (ErrorManager.getInstance().hasError())
-				return;
-
-			logger.debug("START StagingCalipsoFacade.fillStaging");
-
-			StgCalipsoSchedaServizioDAO.fillStaging();
-			
-			logger.debug("STOP StagingCalipsoFacade.fillStaging");
-		} catch (DAOException | SQLException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-		}
-	}
-	
 	private static void putExcelCalipso() throws IOException, PropertiesReaderException {
 		
 		File fileCalipsoPath = new File(DmAlmConfigReader.getInstance().getProperty(DMALM_CALIPSO_PATH));
@@ -127,11 +77,11 @@ public class StagingCalipsoFacade {
 		logger.debug("START StagingCalipsoFacade.putExcelCalipso");
 		
 		try {
-//			File fCalipso = new File(fileCalipso);
-//			if (fCalipso.exists()) {
-//				Runtime.getRuntime().exec(renameFile + fileCalipso + " " + fileCalipso + "." + DateUtils.dateToString(DataEsecuzione.getInstance().getDataEsecuzione(), "yyyy-MM-dd").replace("-", "_")).waitFor();
-//			}
-//			Runtime.getRuntime().exec(wgetFile + fileCalipsoSource, null, fileCalipsoPath).waitFor();
+			File fCalipso = new File(fileCalipso);
+			if (fCalipso.exists()) {
+				Runtime.getRuntime().exec(renameFile + fileCalipso + " " + fileCalipso + "." + DateUtils.dateToString(DataEsecuzione.getInstance().getDataEsecuzione(), "yyyy-MM-dd").replace("-", "_")).waitFor();
+			}
+			Runtime.getRuntime().exec(wgetFile + fileCalipsoSource, null, fileCalipsoPath).waitFor();
 			Runtime.getRuntime().exec(chmod + fileCalipso).waitFor();
 		} catch (InterruptedException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

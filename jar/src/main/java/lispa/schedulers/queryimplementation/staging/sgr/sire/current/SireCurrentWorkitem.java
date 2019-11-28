@@ -13,11 +13,11 @@ import com.mysema.query.types.Path;
 
 
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
-public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.siss.current.DmAlmSissCurrentWorkitem> {
+public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentWorkitem> {
 
     private static final long serialVersionUID = -570343663;
 
-    public static final SireCurrentWorkitem workitem = new SireCurrentWorkitem("DM_ALM_C_SISS_WORKITEM");
+    public static final SireCurrentWorkitem workitem = new SireCurrentWorkitem("DM_ALM_C_SIRE_WORKITEM");
 
     public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
 
@@ -86,14 +86,14 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
     public final StringPath fkUriTimepoint = createString("FK_URI_TIMEPOINT");
 
     public SireCurrentWorkitem(String variable) {
-        super(lispa.schedulers.bean.staging.sgr.siss.current.DmAlmSissCurrentWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_WORKITEM");
+        super(lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_WORKITEM");
     }
 
-    public SireCurrentWorkitem(Path<? extends lispa.schedulers.bean.staging.sgr.siss.current.DmAlmSissCurrentWorkitem> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_WORKITEM");
+    public SireCurrentWorkitem(Path<? extends lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentWorkitem> path) {
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_WORKITEM");
     }
 
     public SireCurrentWorkitem(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.staging.sgr.siss.current.DmAlmSissCurrentWorkitem.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_WORKITEM");
+        super(lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentWorkitem.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_WORKITEM");
     }
 }

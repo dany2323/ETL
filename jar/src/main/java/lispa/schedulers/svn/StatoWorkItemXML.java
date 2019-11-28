@@ -86,7 +86,7 @@ public class StatoWorkItemXML {
 			SVNRepository repository = SVNRepositoryFactory.create(SVNURL
 					.parseURIEncoded(url));
 			ISVNAuthenticationManager authManager = SVNWCUtil
-					.createDefaultAuthenticationManager(name, psw);
+					.createDefaultAuthenticationManager(name, psw.toCharArray());
 			repository.setAuthenticationManager(authManager);
 
 			SVNNodeKind nodeKind = repository.checkPath(filePath, -1);

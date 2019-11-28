@@ -3,6 +3,7 @@ package lispa.schedulers.facade.sgr.staging;
 import java.util.Date;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentProjectDAO;
+import lispa.schedulers.dao.sgr.siss.current.SissCurrentWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentWorkitemLinkedDAO;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
@@ -25,6 +26,10 @@ public class FillSISSCurrentFacade {
 			SissCurrentProjectDAO.fillSissCurrentProject();
 			logger.debug("STOP  fillSissCurrentProject "+ new Date());
 
+			logger.debug("START fillSissCurrentWorkitem "+ new Date());
+			SissCurrentWorkitemDAO.fillSissCurrentWorkitems();
+			logger.debug("STOP  fillSissCurrentWorkitem "+ new Date());
+			
 			logger.debug("START  fillProjectRoles SISS "+ new Date());
 			ProjectRolesXML.fillProjectRoles(DmAlmConstants.REPOSITORY_SISS);
 			logger.debug("STOP  fillProjectRoles SISS "+ new Date());

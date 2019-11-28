@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>it.lispa.staff</groupId>
 		<artifactId>dm_alm</artifactId>
-		<version>5.0.08</version>
+		<version>1.0</version>
 	</parent>
 	
 	<artifactId>release</artifactId>
@@ -26,7 +26,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.lispa.staff</groupId> 
-			<artifactId>etl</artifactId>
+			<artifactId>fonte</artifactId>
 			<version>${project.parent.version}</version>
 			<type>jar</type>
 		</dependency>

@@ -22,6 +22,8 @@ public class DmAlmSireHistoryCfWorkitem {
     private String cName;
 
     private String cStringValue;
+    
+    private String cTextValue;
 
     private String fkUriWorkitem;
 
@@ -99,7 +101,15 @@ public class DmAlmSireHistoryCfWorkitem {
         this.cStringValue = cStringValue;
     }
 
-    public String getFkUriWorkitem() {
+    public String getcTextValue() {
+		return cTextValue;
+	}
+
+	public void setcTextValue(String cTextValue) {
+		this.cTextValue = cTextValue;
+	}
+
+	public String getFkUriWorkitem() {
         return fkUriWorkitem;
     }
 
