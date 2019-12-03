@@ -27,12 +27,15 @@ select
  from DMALM_SIRE_HISTORY_PROJECT p 
  where p.DATA_CARICAMENTO = ?  
   and p.c_id is not null 
-  and p.c_created < (SELECT MIN (DT_INIZIO_VALIDITA) 
+  and (p.c_created < (SELECT MIN (DT_INIZIO_VALIDITA) 
                  FROM DMALM_PROJECT proj 
                  WHERE proj.id_repository='SIRE' 
-                 AND proj.id_project=p.c_id) 
+                 AND proj.id_project=p.c_id) OR p.c_id NOT in 
+                 (SELECT DISTINCT ID_PROJECT 
+                 FROM DMALM_PROJECT proj 
+                 WHERE proj.id_repository='SIRE')) 
  UNION  ALL  
- select
+ select 
 	p.DATA_CARICAMENTO as DT_CARICAMENTO,
 	p.SISS_HISTORY_PROJECT_PK as DMALM_PROJECT_PK,
 	p.C_ID as ID_PROJECT,
@@ -59,10 +62,14 @@ select
 	p.C_LOCKWORKRECORDSDATE, 
 	p.C_DESCRIPTION 
  from DMALM_SISS_HISTORY_PROJECT p 
- where p.DATA_CARICAMENTO = ?  
+ where p.DATA_CARICAMENTO = ? 
  and p.c_id is not null 
- and p.c_created < (SELECT MIN (DT_INIZIO_VALIDITA) 
+ and (p.c_created < (SELECT MIN (DT_INIZIO_VALIDITA) 
                  FROM DMALM_PROJECT proj 
                  WHERE proj.id_repository='SISS' 
                  AND proj.id_project=p.c_id) 
- order by ID_PROJECT, N_REVISION DESC
+      OR p.c_id NOT in 
+                 (SELECT DISTINCT ID_PROJECT 
+                 FROM DMALM_PROJECT proj 
+                 WHERE proj.id_repository='SISS')) 
+ order by ID_PROJECT, N_REVISION DESC 

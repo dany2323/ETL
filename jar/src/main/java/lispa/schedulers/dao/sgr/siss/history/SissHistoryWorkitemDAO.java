@@ -744,9 +744,10 @@ public class SissHistoryWorkitemDAO {
 						.from(total)
 						.where(total.projectFk.eq(0))
 						.where(total.idRepository.eq(DmAlmConstants.REPOSITORY_SISS))
-//						.where(total.stgPk.notIn(new SQLSubQuery()
-//								.from(stgWorkItems)
-//								.list(stgWorkItems.cPk)))
+						.where(total.stgPk.notIn(new SQLSubQuery()
+								.from(stgWorkItems)
+								.list(stgWorkItems.cPk)))
+						.where(total.type.like("classificatore%").or(total.type.eq("sup")))
 						.list(total.codice);
 
 

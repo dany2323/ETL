@@ -137,7 +137,7 @@ public class ReleaseDiProgettoFacade {
 								modificato=true;
 							}
 							
-							if(modificato && row.get(rel.dmalmProjectFk02)!=0)
+							if(modificato && row.get(rel.dmalmProjectFk02)!=0 )
 							{
 								righeModificate++;
 								// STORICIZZO

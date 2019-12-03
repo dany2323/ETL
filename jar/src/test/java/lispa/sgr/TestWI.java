@@ -34,6 +34,7 @@ import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
@@ -123,30 +124,33 @@ public class TestWI extends TestCase {
 			Log4JConfiguration.inizialize();
 			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2000-01-01 00:00:00","yyyy-MM-dd HH:mm:00"));
 			Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
-			
+//			
 //			SissHistoryProjectDAO.fillSissHistoryProjectPkNotExist();
 //			SireHistoryProjectDAO.fillSireHistoryProjectPkNotExist();
 			
 //			SireHistoryWorkitemDAO.fillSireHistoryWorkitemWithNoProjectFk();
 //			SissHistoryWorkitemDAO.fillSissHistoryWorkitemWithNoProjectFk();
-//			
+//			SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemTypeWithNoProject();
+//			SissHistoryCfWorkitemDAO.fillSissHistoryCfWorkitemByWorkitemTypeWithNoProject();
+
 //			List <DmalmProject >stagingProjects = ProjectSgrCmDAO.getAllProjectMinData(DataEsecuzione.getInstance().getDataEsecuzione());
 //
-//			for (DmalmProject project : stagingProjects) {
+//			for (DmalmProject project : stagingProjects) { 
 //				List<Timestamp> row = new SQLQuery(connection,dialect)
 //						.from(proj)
 //						.where(proj.idProject.eq(project.getIdProject()))
 //						.where(proj.idRepository.eq(project.getIdRepository()))
+//						.where(proj.cPk.gt(project.getcPk()))
 //						.list(proj.dtInizioValidita.min());
-//				if(!row.isEmpty()) {
+//				if(row.get(0)!=null) {					
+//					
 //					ProjectSgrCmDAO.insertProjectWithDtFineValidita(DateUtils.addSecondsToTimestamp(row.get(0),-1), project);
-//
 //				}
 //				else {
-//					logger.info("Il progetto "+project.getIdProject()+" lo carico dopo");
+//					ProjectSgrCmDAO.insertProject(project);
 //				}
 //			}
-			
+//			
 
 //			logger.info("START PeiFacade.execute " + new Date());
 //			PeiFacade.execute(dataEsecuzione);
@@ -154,7 +158,7 @@ public class TestWI extends TestCase {
 //			logger.info("START BuildFacade.execute " + new Date());
 //			BuildFacade.execute(dataEsecuzione);
 //
-//			logger.info("START ProgettoESEFacade.execute " + new Date());
+//			logger.info("START ProgettoESEFacade.execute "+ new Date());
 //			ProgettoEseFacade.execute(dataEsecuzione);
 //
 //			logger.info("START TestCaseFacade.execute " + new Date());
@@ -169,7 +173,7 @@ public class TestWI extends TestCase {
 //			logger.info("START ProgrammaFacade.execute " + new Date());
 //			ProgrammaFacade.execute(dataEsecuzione);
 //
-//			logger.info("START ProgettoSviluppoDemandFacade.execute "
+// 			logger.info("START ProgettoSviluppoDemandFacade.execute "
 //					+ new Date());
 //			ProgettoSviluppoDemandFacade.execute(dataEsecuzione);
 //
@@ -193,20 +197,21 @@ public class TestWI extends TestCase {
 //					+ new Date());
 //			RichiestaGestioneFacade.execute(dataEsecuzione);
 //
-			logger.info("START Progetto_Svil_Svil_Facade.execute "
-					+ new Date());
-			ProgettoSviluppoSviluppoFacade.execute(dataEsecuzione);
-//
+
+//			logger.info("START Progetto_Svil_Svil_Facade.execute " FATTO
+//					+ new Date());
+//			ProgettoSviluppoSviluppoFacade.execute(dataEsecuzione);
+
 //			logger.info("START AnomaliaAssistenzaFacade.execute "
 //					+ new Date());
 //			AnomaliaAssistenzaFacade.execute(dataEsecuzione);
 //
 //			logger.info("START AnomaliaFacade.execute " + new Date());
 //			AnomaliaProdottoFacade.execute(dataEsecuzione);
-//
+
 //			logger.info("START TaskFacade.execute " + new Date());
 //			TaskFacade.execute(dataEsecuzione);
-//
+////
 //			logger.info("START ReleaseITFacade.execute " + new Date());
 //			ReleaseItFacade.execute(dataEsecuzione);
 //
@@ -219,16 +224,30 @@ public class TestWI extends TestCase {
 //			logger.info("START DocumentoFacade.execute " + new Date());
 //			DocumentoFacade.execute(dataEsecuzione);
 //
-			logger.info("START ReleaseDiProgettoFacade.execute "
-					+ new Date());
-			ReleaseDiProgettoFacade.execute(dataEsecuzione);
+//			logger.info("START ReleaseDiProgettoFacade.execute "
+//					+ new Date());
+//			ReleaseDiProgettoFacade.execute(dataEsecuzione);
 //			
-//			// DM_ALM-350
+			// DM_ALM-350
 //			logger.info("START RichiestaSupporto.execute "
 //					+ new Date());
 //			RichiestaSupportoFacade.execute(dataEsecuzione);
 //			
+			QueryManager qm = QueryManager.getInstance();
 			
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_RANK_FATTI,
+					DmAlmConstants.M_SEPARATOR);
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_TEMPO_FATTI,
+					DmAlmConstants.M_SEPARATOR);
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_AT_FATTI,
+					DmAlmConstants.M_SEPARATOR);
+			qm.executeMultipleStatementsFromFile(
+					DmAlmConstants.M_UPDATE_UO_FATTI,
+					DmAlmConstants.M_SEPARATOR);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -20,7 +20,7 @@ public class QTotal extends com.mysema.query.sql.RelationalPathBase<Total> {
 
     private static final long serialVersionUID = -1415566251;
 
-    public static final QTotal total = new QTotal("TOTAL");
+    public static final QTotal total = new QTotal("TOTAL2");
 
     public final StringPath codice = createString("CODICE");
 
@@ -36,15 +36,15 @@ public class QTotal extends com.mysema.query.sql.RelationalPathBase<Total> {
 
     public final NumberPath<Integer> projectFk = createNumber("PROJECT_FK", Integer.class);
     public QTotal(String variable) {
-        super(Total.class, forVariable(variable), "DMALM", "TOTAL");
+        super(Total.class, forVariable(variable), "DMALM", "TOTAL2");
     }
 
     public QTotal(Path<? extends Total> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "TOTAL");
+        super(path.getType(), path.getMetadata(), "DMALM", "TOTAL2");
     }
 
     public QTotal(PathMetadata<?> metadata) {
-        super(Total.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "TOTAL");
+        super(Total.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "TOTAL2");
     }
 
 }

@@ -189,6 +189,7 @@ public class FillSIREHistoryFacade {
 			projectGroup = new Thread(new SireHistoryProjectGroupRunnable(
 					logger));
 
+			
 			project.start();
 			project.join();
 

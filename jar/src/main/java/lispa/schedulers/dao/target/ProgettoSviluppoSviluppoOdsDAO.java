@@ -8,6 +8,7 @@ import java.util.List;
 import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoSvil;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.target.QDmalmProgettoSviluppoSOds;
 
@@ -124,7 +125,7 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 								progetto.getDmalmTempoFk04(),
 								progetto.getDsAutoreProgSvilS(),
 								progetto.getDtCambioStatoProgSvilS(),
-								progetto.getDtCaricamentoProgSvilS(),
+								DataEsecuzione.getInstance().getDataEsecuzione(),
 								progetto.getDtCreazioneProgSvilS(),
 								progetto.getDtModificaProgSvilS(),
 								progetto.getDtRisoluzioneProgSvilS(),

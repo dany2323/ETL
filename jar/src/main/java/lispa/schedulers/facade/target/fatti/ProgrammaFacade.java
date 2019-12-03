@@ -125,24 +125,9 @@ public class ProgrammaFacade {
 								modificato = true;
 							}
 							
-							if(modificato && row.get(prog.dmalmProjectFk02)!=0)
-							{
-								righeModificate++;
-								// STORICIZZO
-								// aggiorno la data di fine validita sul record corrente
-								ProgrammaDAO.updateRank(programma, new Double(0));
-
-								// inserisco un nuovo record
-								ProgrammaDAO.insertProgrammaUpdate(dataEsecuzione, programma, true);	
+							ProgrammaDAO.updateProgramma(programma);
 								
-								
-							}
-							else
-							{
-    							 // Aggiorno lo stesso
-								ProgrammaDAO.updateProgramma(programma);
-								
-							}
+							
 						}
 					}
 				}

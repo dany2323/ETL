@@ -152,7 +152,7 @@ public class ProgrammaDAO {
 							.getCdProgramma()))
 					.where(prog.idRepository.equalsIgnoreCase(programma
 							.getIdRepository()))
-					.where(prog.rankStatoProgramma.eq(new Double(1)))
+					.where(prog.stgPk.eq(programma.getStgPk()))
 					.list(prog.all());
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
