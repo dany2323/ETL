@@ -19,11 +19,11 @@
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
                 <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> 
                 <proj_id_sgr-cm>DM_ALM</proj_id_sgr-cm> 
-                <id_release_polarion>DM_ALM-53</id_release_polarion> 
+                <id_release_polarion>DM_ALM-509</id_release_polarion> 
         </properties> 
 
         <modules> 
-                <module>properties</module> 
+                <!-- <module>properties</module> --> 
                 <module>jar</module> 
                 <module>db</module> 
                 <module>external-resources</module>

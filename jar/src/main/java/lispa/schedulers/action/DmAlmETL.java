@@ -5,11 +5,13 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.QueryUtils;
 
 public class DmAlmETL {
@@ -19,7 +21,8 @@ public class DmAlmETL {
 	public static void main(String[] args) throws PropertiesReaderException {
 		DmAlmConfigReaderProperties.setFileProperties(args[1]);
 		Log4JConfiguration.inizialize();
-
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp(args[2], "yyyy-MM-dd HH:mm:00"));
+		
 		String ambiente = DmAlmConfigReader.getInstance().getProperty(
 				DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 
@@ -48,13 +51,24 @@ public class DmAlmETL {
 		}
 		logger.info("STOP KILL_BO_SESSIONS PROCEDURE");
 
-		QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_SGR, DmAlmConstants.CARICAMENTO_FONTE_INIT);
-		QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_SFERA, DmAlmConstants.CARICAMENTO_FONTE_INIT);
-		QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_MPS, DmAlmConstants.CARICAMENTO_FONTE_INIT);
-		QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_CALIPSO, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+		if (ExecutionManager.getInstance().isExecutionSfera()) {
+			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_SFERA, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+		}
+		if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
+			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_SGR, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+		}
+		if (ExecutionManager.getInstance().isExecutionMps()) {
+			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_MPS, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+		}
+		if (ExecutionManager.getInstance().isExecutionCalipso()) {
+			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_CALIPSO, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+		}
+		logger.info("START DELETE_DATI_FONTE_TABELLE");
+		QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
+		logger.info("STOP DELETE_DATI_FONTE_TABELLE");
 		
 		logger.info("START DmAlmFillStaging.doWork()");
-		DmAlmFillStaging.doWork();
+		DmAlmFillFonte.doWork();
 		logger.info("STOP DmAlmFillStaging.doWork()");
 
 		if (!ErrorManager.getInstance().hasError()) {

@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilderFactory;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
@@ -33,7 +32,6 @@ import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.support.Expressions;
-import com.mysema.query.types.template.StringTemplate;
 
 public class StatoWorkItemXML {
 
@@ -144,21 +142,14 @@ public class StatoWorkItemXML {
 											dmAlmStatoWorkitem.repository,
 											dmAlmStatoWorkitem.workitemType,
 											dmAlmStatoWorkitem.template)
-									.values(StringTemplate
-											.create("DM_ALM_STATO_WORKITEM_SEQ.nextval"),
-											null,
+									.values(null,
 											null,
 											stato,
 											stato,
 											null,
 											Expressions.constant(repos),
-											Expressions.constant(workitemType
-													.toString()),
-											DataEsecuzione.getInstance()
-													.getDataEsecuzione(),
-											EnumUtils
-													.getTemplateByWorkItem(workitemType)
-
+											Expressions.constant(workitemType.toString()),
+											EnumUtils.getTemplateByWorkItem(workitemType)
 									).execute();
 						}
 					}
@@ -189,11 +180,8 @@ public class StatoWorkItemXML {
 											eElement.getAttribute("name"),
 											eElement.getAttribute("sortOrder"),
 											Expressions.constant(repos),
-											Expressions.constant(workitemType
-													.toString()),
-											EnumUtils
-													.getTemplateByWorkItem(workitemType)
-
+											Expressions.constant(workitemType.toString()),
+											EnumUtils.getTemplateByWorkItem(workitemType)
 									).execute();
 						}
 					}

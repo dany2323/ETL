@@ -5,7 +5,6 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_CALIPSO
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_CALIPSO_SCHEDA_SERVIZIO_EXCEL;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;

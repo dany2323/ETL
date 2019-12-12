@@ -19,7 +19,7 @@ public class QDmalmStgMpsRilasci extends
 	private static final long serialVersionUID = 4677677993050674893L;
 
 	public static final QDmalmStgMpsRilasci dmalmStgMpsRilasci = new QDmalmStgMpsRilasci(
-			"DMALM_STG_MPS_RILASCI");
+			"DM_ALM_MPS_RILASCI");
 
 	public final NumberPath<Integer> idRilascio = createNumber("IDRILASCIO",
 			Integer.class);
@@ -57,17 +57,17 @@ public class QDmalmStgMpsRilasci extends
 
 	public QDmalmStgMpsRilasci(String variable) {
 		super(DmalmStgMpsRilasci.class, forVariable(variable),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_RILASCI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_RILASCI");
 	}
 
 	public QDmalmStgMpsRilasci(Path<? extends DmalmStgMpsRilasci> path) {
 		super(path.getType(), path.getMetadata(),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_RILASCI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_RILASCI");
 	}
 
 	public QDmalmStgMpsRilasci(PathMetadata<?> metadata) {
 		super(DmalmStgMpsRilasci.class, metadata,
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_RILASCI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_RILASCI");
 	}
 
 }

@@ -1,29 +1,16 @@
 package lispa.schedulers.utils;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
-
-import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.queryimplementation.staging.QDmalmEsitiCaricamenti;
-
 import org.apache.log4j.Logger;
-
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
 
 public class DateUtils {
 
-	private static SQLTemplates dialect = new HSQLDBTemplates();
 	private static Logger logger = Logger.getLogger(DateUtils.class);
 
 	public static boolean checkDataAnnullamentoFormat(String annullamento,
@@ -373,38 +360,6 @@ public class DateUtils {
 		Timestamp dataFineValidita = new Timestamp(today_dt.getTime());
 
 		return dataFineValidita;
-	}
-
-	/**
-	 * @author schiarav
-	 * @param now
-	 *            The anchor date by mean of is calculated the minor latest
-	 *            DATA_CARICAMENTO compared to now
-	 * @return the minor latest DATA_CARICAMENTO compared to now
-	 */
-	public static Timestamp getDtPrecedente(Timestamp now) {
-		QDmalmEsitiCaricamenti esiti = QDmalmEsitiCaricamenti.dmalmEsitiCaricamenti;
-		ConnectionManager cm = null;
-		Connection connection = null;
-		List<Timestamp> annullati = new ArrayList<Timestamp>();
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLQuery query = new SQLQuery(connection, dialect);
-			annullati = query.from(esiti).where(esiti.dataCaricamento.lt(now))
-					.where(esiti.entitaTarget.eq(DmAlmConstants.TARGET_ALL))
-					.where(esiti.statoEsecuzione.eq(DmAlmConstants.CARICAMENTO_TERMINATO_CORRETTAMENTE))
-					.list(esiti.dataCaricamento.max());
-
-		} catch (Exception e) {
-
-		}
-		if (annullati != null && annullati.size() > 0)
-			return annullati.get(0);
-		return DateUtils.stringToTimestamp("1900-01-01 00:00:00",
-				"yyyy-MM-dd HH:mm:00");
-
 	}
 
 }

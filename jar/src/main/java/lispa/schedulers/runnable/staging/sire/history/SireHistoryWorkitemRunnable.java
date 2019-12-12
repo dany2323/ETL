@@ -1,11 +1,8 @@
 package lispa.schedulers.runnable.staging.sire.history;
 
 import java.util.Map;
-
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
-import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
-
 import org.apache.log4j.Logger;
 
 public class SireHistoryWorkitemRunnable implements Runnable {

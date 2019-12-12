@@ -22,7 +22,7 @@ public class QDmalmStgMpsAttivita extends com.mysema.query.sql.RelationalPathBas
 
 	private static final long serialVersionUID = -1069909602455054261L;
 
-	public static final QDmalmStgMpsAttivita dmalmStgMpsAttivita = new QDmalmStgMpsAttivita("DMALM_STG_MPS_ATTIVITA");
+	public static final QDmalmStgMpsAttivita dmalmStgMpsAttivita = new QDmalmStgMpsAttivita("DM_ALM_MPS_ATTIVITA");
 
     public final NumberPath<Integer> idAttivitaPadre = createNumber("IDATTIVITAPADRE", Integer.class);
     
@@ -59,14 +59,14 @@ public class QDmalmStgMpsAttivita extends com.mysema.query.sql.RelationalPathBas
     public final StringPath recordStatus = createString("RECORDSTATUS");
 
     public QDmalmStgMpsAttivita(String variable) {
-        super(DmalmStgMpsAttivita.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_ATTIVITA");
+        super(DmalmStgMpsAttivita.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_ATTIVITA");
     }
 
     public QDmalmStgMpsAttivita(Path<? extends DmalmStgMpsAttivita> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_ATTIVITA");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_ATTIVITA");
     }
 
     public QDmalmStgMpsAttivita(PathMetadata<?> metadata) {
-        super(DmalmStgMpsAttivita.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_ATTIVITA");
+        super(DmalmStgMpsAttivita.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_ATTIVITA");
     }	
 }

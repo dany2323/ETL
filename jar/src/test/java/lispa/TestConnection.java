@@ -1,7 +1,5 @@
 package lispa;
 
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DM_ALM_PSW;
-
 import java.sql.Connection;
 
 import it.lispa.jotm.datasource.crypt.EncryptionHelper;

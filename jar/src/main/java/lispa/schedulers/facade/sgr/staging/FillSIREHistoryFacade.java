@@ -1,6 +1,5 @@
 package lispa.schedulers.facade.sgr.staging;
 
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_RETRY;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -35,7 +34,6 @@ import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 public class FillSIREHistoryFacade {
 
 	static SireHistoryWorkitem fonteWorkItems = SireHistoryWorkitem.workitem;
-	private static int retry;
 	private static int wait;
 
 	public static void execute(Logger logger) {
@@ -107,101 +105,54 @@ public class FillSIREHistoryFacade {
 			schede_servizio.start();
 			schede_servizio.join();
 
-			retry = Integer.parseInt(DmAlmConfigReader.getInstance()
-					.getProperty(DMALM_DEADLOCK_RETRY));
 			wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			
 			logger.debug("START SireHistoryWorkitem - numero wi: "
 					+ Workitem_Type.EnumWorkitemType.values().length);
-			
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				logger.debug("START TYPE: SIRE " + type.toString());
-				int tentativi = 0;
+				int tentativi_wi_deadlock = 0;
+				int tentativi_cf_deadlock = 0;
 				ErrorManager.getInstance().resetDeadlock();
 				ErrorManager.getInstance().resetCFDeadlock();
-				boolean inDeadLock = false;
+				boolean inDeadlock = false;
 				boolean cfDeadlock = false;
 
-				tentativi++;
-				logger.debug("Tentativo " + tentativi);
-				SireHistoryWorkitemDAO.fillSireHistoryWorkitem(
-						minRevisionsByType, Long.MAX_VALUE, type);
-
-				inDeadLock = ErrorManager.getInstance().hasDeadLock();
-				if (!inDeadLock) {
-					List<String> customFields = EnumUtils
-							.getCFEnumerationByType(type);
-					SireHistoryCfWorkitemDAO
-							.fillSireHistoryCfWorkitemByWorkitemType(
-									minRevisionsByType.get(type),
-									Long.MAX_VALUE, type, customFields);
-					cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
+				tentativi_wi_deadlock++;
+				logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
+				SireHistoryWorkitemDAO.fillSireHistoryWorkitem(minRevisionsByType, Long.MAX_VALUE, type);
+				inDeadlock = ErrorManager.getInstance().hasDeadLock();
+				while(inDeadlock) {
+					logger.debug("inDeadlock, aspetto 3 minuti");
+					TimeUnit.MINUTES.sleep(wait);
+					logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
+					ErrorManager.getInstance().resetDeadlock();
+					SireHistoryWorkitemDAO.delete(type);
+					SireHistoryWorkitemDAO.fillSireHistoryWorkitem(minRevisionsByType, Long.MAX_VALUE, type);
+					inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				}
+				logger.debug("Fine tentativo " + tentativi_wi_deadlock + " - WI deadlock "	+ inDeadlock);
 				
-				logger.debug("Fine tentativo " + tentativi + " - WI deadlock "
-						+ inDeadLock + " - CF deadlock " + cfDeadlock);
-				
-				if (inDeadLock || cfDeadlock) {
-					while (inDeadLock || cfDeadlock) {
-
-						tentativi++;
-
-						if (tentativi > retry) {
-							logger.debug("Raggiunto limite tentativi: "
-									+ tentativi);
-							Exception e = new Exception("Deadlock detected");
-							ErrorManager.getInstance().exceptionOccurred(true,
-									e);
-							return;
-						}
-
-						logger.debug("Errore, aspetto 3 minuti");
-						logger.debug("Tentativo " + tentativi);
+				tentativi_cf_deadlock++;
+				logger.debug("Tentativo CF " + tentativi_cf_deadlock);
+				List<String> customFields = EnumUtils.getCFEnumerationByType(type);
+				for (String customField : customFields) {
+					SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemType(
+							minRevisionsByType.get(type), Long.MAX_VALUE, type, customField);
+					cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
+					while(cfDeadlock) {
+						logger.debug("cfDeadLock, aspetto 3 minuti");
 						TimeUnit.MINUTES.sleep(wait);
-						
-						if (inDeadLock) {
-							SireHistoryWorkitemDAO.fillSireHistoryWorkitem(
-									minRevisionsByType, Long.MAX_VALUE, type);
-							inDeadLock = ErrorManager.getInstance()
-									.hasDeadLock();
-							if (!inDeadLock) {
-								logger.debug("Non in deadlock -> provo i CF");
-								List<String> customFields = EnumUtils
-										.getCFEnumerationByType(type);
-								
-								SireHistoryCfWorkitemDAO
-										.fillSireHistoryCfWorkitemByWorkitemType(
-												minRevisionsByType.get(type),
-												Long.MAX_VALUE, type,
-												customFields);
-								cfDeadlock = ErrorManager.getInstance()
-										.hascfDeadLock();
-								logger.debug("I CF sono in deadlock "
-										+ cfDeadlock);
-							}
-						} else {
-							if (cfDeadlock) {
-								logger.debug("Scarico soltanto i CF");
-								
-								List<String> customFields = EnumUtils
-										.getCFEnumerationByType(type);
-								
-								SireHistoryCfWorkitemDAO
-										.fillSireHistoryCfWorkitemByWorkitemType(
-												minRevisionsByType.get(type),
-												Long.MAX_VALUE, type,
-												customFields);
-								
-								cfDeadlock = ErrorManager.getInstance()
-										.hascfDeadLock();
-								
-								logger.debug("I CF sono in deadlock "
-										+ cfDeadlock);
-							}
-						}
+						logger.debug("Tentativo CF " + tentativi_cf_deadlock);
+						ErrorManager.getInstance().resetCFDeadlock();
+						customFields = EnumUtils.getCFEnumerationByType(type);
+						SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemType(
+								minRevisionsByType.get(type), Long.MAX_VALUE, type, customField);
+						cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
 					}
 				}
+				logger.debug("Fine tentativo " + tentativi_cf_deadlock + " - CF deadlock "	+ cfDeadlock);
 			}
 
 			ConnectionManager.getInstance().dismiss();

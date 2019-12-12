@@ -19,7 +19,7 @@ public class QDmalmStgMpsRespOfferta extends
 	private static final long serialVersionUID = -4895584109351088017L;
 
 	public static final QDmalmStgMpsRespOfferta dmalmStgMpsRespOfferta = new QDmalmStgMpsRespOfferta(
-			"DMALM_STG_MPS_RESPON_OFFERTA");
+			"DM_ALM_MPS_RESPON_OFFERTA");
 
 	public final NumberPath<Integer> idContratto = createNumber("IDCONTRATTO",
 			Integer.class);
@@ -63,19 +63,19 @@ public class QDmalmStgMpsRespOfferta extends
 	public QDmalmStgMpsRespOfferta(String variable) {
 		super(DmalmStgMpsRespOfferta.class, forVariable(variable),
 				DmAlmConstants.DMALM_STAGING_SCHEMA,
-				"DMALM_STG_MPS_RESPON_OFFERTA");
+				"DM_ALM_MPS_RESPON_OFFERTA");
 	}
 
 	public QDmalmStgMpsRespOfferta(Path<? extends DmalmStgMpsRespOfferta> path) {
 		super(path.getType(), path.getMetadata(),
 				DmAlmConstants.DMALM_STAGING_SCHEMA,
-				"DMALM_STG_MPS_RESPON_OFFERTA");
+				"DM_ALM_MPS_RESPON_OFFERTA");
 	}
 
 	public QDmalmStgMpsRespOfferta(PathMetadata<?> metadata) {
 		super(DmalmStgMpsRespOfferta.class, metadata,
 				DmAlmConstants.DMALM_STAGING_SCHEMA,
-				"DMALM_STG_MPS_RESPON_OFFERTA");
+				"DM_ALM_MPS_RESPON_OFFERTA");
 	}
 
 }

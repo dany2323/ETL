@@ -2,12 +2,9 @@ package lispa.schedulers.runnable.staging.siss.history;
 
 import java.sql.SQLException;
 import java.util.Map;
-
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
-
 import org.apache.log4j.Logger;
 
 public class SissHistoryWorkitemUserAssignedRunnable implements Runnable {

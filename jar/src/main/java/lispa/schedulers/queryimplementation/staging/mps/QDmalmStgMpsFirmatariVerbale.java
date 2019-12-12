@@ -18,7 +18,7 @@ public class QDmalmStgMpsFirmatariVerbale extends com.mysema.query.sql.Relationa
 	private static final long serialVersionUID = 3688686623065154815L;
 
 	public static final QDmalmStgMpsFirmatariVerbale dmalmStgMpsFirmatariVerbale = new QDmalmStgMpsFirmatariVerbale(
-			"DMALM_STG_MPS_FIRMAT_VERBALE");
+			"DM_ALM_MPS_FIRMAT_VERBALE");
 
 	public final NumberPath<Integer> idVerbaleValidazione = createNumber("IDVERBALEVALIDAZIONE",
 			Integer.class);
@@ -45,17 +45,17 @@ public class QDmalmStgMpsFirmatariVerbale extends com.mysema.query.sql.Relationa
 	
 	public QDmalmStgMpsFirmatariVerbale(String variable) {
 		super(DmalmStgMpsFirmatariVerbale.class, forVariable(variable),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_FIRMAT_VERBALE");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_FIRMAT_VERBALE");
 	}
 
 	public QDmalmStgMpsFirmatariVerbale(Path<? extends DmalmStgMpsFirmatariVerbale> path) {
 		super(path.getType(), path.getMetadata(),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_FIRMAT_VERBALE");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_FIRMAT_VERBALE");
 	}
 
 	public QDmalmStgMpsFirmatariVerbale(PathMetadata<?> metadata) {
 		super(DmalmStgMpsFirmatariVerbale.class, metadata,
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_FIRMAT_VERBALE");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_FIRMAT_VERBALE");
 	}
 
 }

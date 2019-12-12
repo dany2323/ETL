@@ -24,9 +24,9 @@ public class SireHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
 
     public final StringPath cAvatarfilename = createString("C_AVATARFILENAME");
 
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final NumberPath<Integer> cDeleted = createNumber("C_DELETED", Integer.class);
 
-    public final BooleanPath cDisablednotifications = createBoolean("C_DISABLEDNOTIFICATIONS");
+    public final NumberPath<Integer> cDisablednotifications = createNumber("C_DISABLEDNOTIFICATIONS", Integer.class);
 
     public final StringPath cEmail = createString("C_EMAIL");
 
@@ -34,7 +34,7 @@ public class SireHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
 
     public final StringPath cInitials = createString("C_INITIALS");
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final NumberPath<Integer> cIsLocal = createNumber("C_IS_LOCAL", Integer.class);
 
     public final StringPath cName = createString("C_NAME");
 

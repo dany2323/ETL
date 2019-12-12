@@ -19,7 +19,7 @@ public class QDmalmStgMpsContratti extends
 	private static final long serialVersionUID = -8993510531251733162L;
 
 	public static final QDmalmStgMpsContratti dmalmStgMpsContratti = new QDmalmStgMpsContratti(
-			"DMALM_STG_MPS_CONTRATTI");
+			"DM_ALM_MPS_CONTRATTI");
 
 	public final NumberPath<Integer> idContratto = createNumber("IDCONTRATTO",
 			Integer.class);
@@ -119,16 +119,16 @@ public class QDmalmStgMpsContratti extends
 
 	public QDmalmStgMpsContratti(String variable) {
 		super(DmalmStgMpsContratti.class, forVariable(variable),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_CONTRATTI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_CONTRATTI");
 	}
 
 	public QDmalmStgMpsContratti(Path<? extends DmalmStgMpsContratti> path) {
 		super(path.getType(), path.getMetadata(),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_CONTRATTI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_CONTRATTI");
 	}
 
 	public QDmalmStgMpsContratti(PathMetadata<?> metadata) {
 		super(DmalmStgMpsContratti.class, metadata,
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_CONTRATTI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_CONTRATTI");
 	}
 }

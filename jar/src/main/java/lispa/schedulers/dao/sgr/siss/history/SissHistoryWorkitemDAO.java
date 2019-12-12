@@ -19,12 +19,12 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class SissHistoryWorkitemDAO {
 
 	private static Logger logger = Logger.getLogger(SissHistoryWorkitemDAO.class);
-	private static QSissHistoryWorkitem stgWorkItems = QSissHistoryWorkitem.sissHistoryWorkitem;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryWorkitem stg_WorkItems = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryWorkitem.workitem;
 	
@@ -37,6 +37,7 @@ public class SissHistoryWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
+		QSissHistoryWorkitem stgWorkItems = QSissHistoryWorkitem.sissHistoryWorkitem;
 
 		try {
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
@@ -120,7 +121,7 @@ public class SissHistoryWorkitemDAO {
 					+ historyworkitems.size());
 
 			SQLInsertClause insert = new SQLInsertClause(OracleConnection,
-					dialect, stgWorkItems);
+					dialect, stg_WorkItems);
 
 			int batch_size_counter = 0;
 
@@ -212,6 +213,26 @@ public class SissHistoryWorkitemDAO {
 				cm.closeConnection(SissHistoryConnection);
 			}
 		}
+	}
+	
+	public static void delete(EnumWorkitemType type) throws Exception {
+		ConnectionManager cm = null;
+		Connection OracleConnection = null;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		try {
+			cm = ConnectionManager.getInstance();
+			OracleConnection = cm.getConnectionOracle();
+			new SQLDeleteClause(OracleConnection, dialect, stg_WorkItems)
+				.where(stg_WorkItems.cType.eq(type.toString()))
+				.execute();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(OracleConnection);
+			}
+		}
 	}
 }

@@ -22,11 +22,11 @@ public class SireHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public static final SireHistoryWorkitem workitem = new SireHistoryWorkitem("DM_ALM_H_SIRE_WORKITEM");
 
-    public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
+    public final NumberPath<Integer> cAutosuspect = createNumber("C_AUTOSUSPECT", Integer.class);
 
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final NumberPath<Integer> cDeleted = createNumber("C_DELETED", Integer.class);
 
     public final DatePath<java.sql.Date> cDuedate = createDate("C_DUEDATE", java.sql.Date.class);
 
@@ -34,7 +34,7 @@ public class SireHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final NumberPath<Float> cInitialestimate = createNumber("C_INITIALESTIMATE", Float.class);
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final NumberPath<Integer> cIsLocal = createNumber("C_IS_LOCAL", Integer.class);
 
     public final StringPath cLocation = createString("C_LOCATION");
 

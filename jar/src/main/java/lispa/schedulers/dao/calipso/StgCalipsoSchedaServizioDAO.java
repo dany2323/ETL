@@ -11,7 +11,6 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.QueryUtils;
 import oracle.jdbc.OracleCallableStatement;
 

@@ -18,7 +18,7 @@ public class QDmalmStgMpsRilasciVerbali extends
 	private static final long serialVersionUID = -119518718094412479L;
 
 	public static final QDmalmStgMpsRilasciVerbali dmalmStgMpsRilasciVerbali = new QDmalmStgMpsRilasciVerbali(
-			"DMALM_STG_MPS_RILASCI_VERBALI");
+			"DM_ALM_MPS_RILASCI_VERBALI");
 
 	public final StringPath codVerbale = createString("CODVERBALE");
 
@@ -34,20 +34,20 @@ public class QDmalmStgMpsRilasciVerbali extends
 	public QDmalmStgMpsRilasciVerbali(String variable) {
 		super(DmalmStgMpsRilasciVerbali.class, forVariable(variable),
 				DmAlmConstants.DMALM_STAGING_SCHEMA,
-				"DMALM_STG_MPS_RILASCI_VERBALI");
+				"DM_ALM_MPS_RILASCI_VERBALI");
 	}
 
 	public QDmalmStgMpsRilasciVerbali(
 			Path<? extends DmalmStgMpsRilasciVerbali> path) {
 		super(path.getType(), path.getMetadata(),
 				DmAlmConstants.DMALM_STAGING_SCHEMA,
-				"DMALM_STG_MPS_RILASCI_VERBALI");
+				"DM_ALM_MPS_RILASCI_VERBALI");
 	}
 
 	public QDmalmStgMpsRilasciVerbali(PathMetadata<?> metadata) {
 		super(DmalmStgMpsRilasciVerbali.class, metadata,
 				DmAlmConstants.DMALM_STAGING_SCHEMA,
-				"DMALM_STG_MPS_RILASCI_VERBALI");
+				"DM_ALM_MPS_RILASCI_VERBALI");
 	}
 
 }

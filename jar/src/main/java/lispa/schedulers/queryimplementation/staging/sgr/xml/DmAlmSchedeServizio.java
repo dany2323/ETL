@@ -27,15 +27,15 @@ public class DmAlmSchedeServizio extends com.mysema.query.sql.RelationalPathBase
 	public final StringPath repository = createString("REPOSITORY");
 	
 	public DmAlmSchedeServizio(String variable) {
-		super(lispa.schedulers.bean.staging.sgr.xml.DmAlmSchedeServizio.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_SCHEDE_SERVIZIO");
+		super(lispa.schedulers.bean.staging.sgr.xml.DmAlmSchedeServizio.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_SCHEDE_SERVIZIO");
 	}
 
 	public DmAlmSchedeServizio(Path<? extends lispa.schedulers.bean.staging.sgr.xml.DmAlmSchedeServizio> path) {
-		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_SCHEDE_SERVIZIO");
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_SCHEDE_SERVIZIO");
 	}
 	
 	public DmAlmSchedeServizio(PathMetadata<?> metadata) {
-		super(lispa.schedulers.bean.staging.sgr.xml.DmAlmSchedeServizio.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_SCHEDE_SERVIZIO");
+		super(lispa.schedulers.bean.staging.sgr.xml.DmAlmSchedeServizio.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_SCHEDE_SERVIZIO");
 	}
 
 }

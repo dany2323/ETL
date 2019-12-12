@@ -20,7 +20,7 @@ public class QDmalmStgMpsVerbali extends
 	private static final long serialVersionUID = 60974724922678381L;
 
 	public static final QDmalmStgMpsVerbali dmalmStgMpsVerbali = new QDmalmStgMpsVerbali(
-			"DMALM_STG_MPS_VERBALI");
+			"DM_ALM_MPS_VERBALI");
 
 	public final StringPath codVerbale = createString("CODVERBALE");
 	public final DateTimePath<java.sql.Timestamp> dataVerbale = createDateTime(
@@ -42,17 +42,17 @@ public class QDmalmStgMpsVerbali extends
 
 	public QDmalmStgMpsVerbali(String variable) {
 		super(DmalmStgMpsVerbali.class, forVariable(variable),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_VERBALI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_VERBALI");
 	}
 
 	public QDmalmStgMpsVerbali(Path<? extends DmalmStgMpsVerbali> path) {
 		super(path.getType(), path.getMetadata(),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_VERBALI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_VERBALI");
 	}
 
 	public QDmalmStgMpsVerbali(PathMetadata<?> metadata) {
 		super(DmalmStgMpsVerbali.class, metadata,
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_VERBALI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_VERBALI");
 	}
 
 }

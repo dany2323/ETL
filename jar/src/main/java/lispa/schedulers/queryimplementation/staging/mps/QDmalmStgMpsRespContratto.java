@@ -18,7 +18,7 @@ public class QDmalmStgMpsRespContratto extends com.mysema.query.sql.RelationalPa
 	private static final long serialVersionUID = 2925542199019784652L;
 
 	public static final QDmalmStgMpsRespContratto dmalmStgMpsRespContratto = new QDmalmStgMpsRespContratto(
-			"DMALM_STG_MPS_RESPON_CONTRATTO");
+			"DM_ALM_MPS_RESPON_CONTRATTO");
 
 	public final NumberPath<Integer> idContratto = createNumber("IDCONTRATTO",
 			Integer.class);
@@ -47,17 +47,17 @@ public class QDmalmStgMpsRespContratto extends com.mysema.query.sql.RelationalPa
 	
 	public QDmalmStgMpsRespContratto(String variable) {
 		super(DmalmStgMpsRespContratto.class, forVariable(variable),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_RESPON_CONTRATTO");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_RESPON_CONTRATTO");
 	}
 
 	public QDmalmStgMpsRespContratto(Path<? extends DmalmStgMpsRespContratto> path) {
 		super(path.getType(), path.getMetadata(),
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_RESPON_CONTRATTO");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_RESPON_CONTRATTO");
 	}
 
 	public QDmalmStgMpsRespContratto(PathMetadata<?> metadata) {
 		super(DmalmStgMpsRespContratto.class, metadata,
-				DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MPS_RESPON_CONTRATTO");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_MPS_RESPON_CONTRATTO");
 	}
 
 }

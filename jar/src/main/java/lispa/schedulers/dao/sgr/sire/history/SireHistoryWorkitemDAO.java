@@ -19,12 +19,12 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class SireHistoryWorkitemDAO {
 
 	private static Logger logger = Logger.getLogger(SireHistoryWorkitemDAO.class);
-	private static QSireHistoryWorkitem stgWorkItems = QSireHistoryWorkitem.sireHistoryWorkitem;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem stg_HistoryWorkItems = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem.workitem;
 
@@ -37,7 +37,8 @@ public class SireHistoryWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
-
+		QSireHistoryWorkitem stgWorkItems = QSireHistoryWorkitem.sireHistoryWorkitem;
+		
 		try {
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 
@@ -211,6 +212,27 @@ public class SireHistoryWorkitemDAO {
 			}
 			if (cm != null) {
 				cm.closeConnection(SireHistoryConnection);
+			}
+		}
+	}
+	
+	public static void delete(EnumWorkitemType type) throws Exception {
+		ConnectionManager cm = null;
+		Connection OracleConnection = null;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		try {
+			cm = ConnectionManager.getInstance();
+			OracleConnection = cm.getConnectionOracle();
+			new SQLDeleteClause(OracleConnection, dialect, stg_HistoryWorkItems)
+				.where(stg_HistoryWorkItems.cType.eq(type.toString()))
+				.execute();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(OracleConnection);
 			}
 		}
 	}
