@@ -108,7 +108,7 @@ public class SISSSchedeServizioXML {
 						if (check.size() == 0) {
 							new SQLInsertClause(connection, dialect, stg_SchedeServizio)
 									.columns(stg_SchedeServizio.id,
-											stg_SchedeServizio.name, stg_SchedeServizio.sorter,
+											stg_SchedeServizio.name, stg_SchedeServizio.sort_order,
 											stg_SchedeServizio.repository)
 									.values(eElement.getAttribute("id"),
 											eElement.getAttribute("name"),
@@ -142,7 +142,7 @@ public class SISSSchedeServizioXML {
 			connection = cm.getConnectionOracle();
 			SQLQuery query = new SQLQuery(connection, dialect);
 			check = query.from(stg_SchedeServizio).where(stg_SchedeServizio.id.eq(id)).where(stg_SchedeServizio.name.eq(name))
-					.where(stg_SchedeServizio.sorter.eq(Integer.parseInt(sort))).list(stg_SchedeServizio.all());
+					.where(stg_SchedeServizio.sort_order.eq(Integer.parseInt(sort))).list(stg_SchedeServizio.all());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {

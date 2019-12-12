@@ -120,6 +120,7 @@ public class FillSISSHistoryFacade {
 				SissHistoryWorkitemDAO.fillSissHistoryWorkitem(minRevisionsByType, Long.MAX_VALUE, type);
 				inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				while(inDeadlock) {
+					tentativi_wi_deadlock++;
 					logger.debug("inDeadlock, aspetto 3 minuti");
 					TimeUnit.MINUTES.sleep(wait);
 					logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
@@ -138,6 +139,7 @@ public class FillSISSHistoryFacade {
 							minRevisionsByType.get(type), Long.MAX_VALUE, type, customField);
 					cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
 					while(cfDeadlock) {
+						tentativi_cf_deadlock++;
 						logger.debug("cfDeadLock, aspetto 3 minuti");
 						TimeUnit.MINUTES.sleep(wait);
 						logger.debug("Tentativo CF " + tentativi_cf_deadlock);

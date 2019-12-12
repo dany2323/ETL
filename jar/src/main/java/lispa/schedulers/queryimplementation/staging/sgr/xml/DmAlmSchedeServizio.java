@@ -22,7 +22,7 @@ public class DmAlmSchedeServizio extends com.mysema.query.sql.RelationalPathBase
 
 	public final StringPath name = createString("NAME");
 	
-	public final NumberPath<Integer> sorter = createNumber("SORTER", Integer.class);
+	public final NumberPath<Integer> sort_order = createNumber("SORT_ORDER", Integer.class);
 	
 	public final StringPath repository = createString("REPOSITORY");
 	
