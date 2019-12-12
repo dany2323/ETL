@@ -128,7 +128,7 @@ public class SissHistoryCfWorkitemDAO {
 			while (cause.getCause() != null)
 				cause = cause.getCause();
 			String message = cause.getMessage();
-			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK)) {
+			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK) || StringUtils.findRegex(message, DmalmRegex.REGEXLOCKTABLE)) {
 				ErrorManager.getInstance().exceptionCFDeadlock(false, e, CFName);
 			} else {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
