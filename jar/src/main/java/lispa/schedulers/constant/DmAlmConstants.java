@@ -215,8 +215,8 @@ public final class DmAlmConstants {
 	public static final String ANNULLATO_LOGICAMENTE = "#ANNULLATO LOGICAMENTE##";
 	public static final String ANNULLATO_FISICAMENTE = "#ANNULLATO FISICAMENTE##";
 	public static final String UO_NON_TROVATA = "Non trovata";
-	public static final String UO_SUFFIX = "LI";
-	public static final String UO_IT = "LIA362";
+	public static final String UO_SUFFIX = "SRM";
+	public static final String UO_IT = "SRMA362";
 	
 	//LINK ASM-PRODOTTO E ASM-PRODOTTI_ARCH
 	
