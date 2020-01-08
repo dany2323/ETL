@@ -45,7 +45,7 @@ public class QueryUtils {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			String sql_fonte = "UPDATE "+DmAlmConstants.DMALM_FONTE_CARICAMENTO+" SET STATO_CARICAMENTO = ? WHERE COD_FONTE = ?";
+			String sql_fonte = "UPDATE "+DmAlmConstants.DMALM_CARICAMENTO_FONTE+" SET STATO_CARICAMENTO = ? WHERE COD_FONTE = ?";
 			psFonte = connection.prepareStatement(sql_fonte);
 
 			psFonte.setString(1, statoCaricamento);

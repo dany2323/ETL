@@ -52,7 +52,7 @@ public final class DmAlmConstants {
 	public static final String CARICAMENTO_FONTE_KO = "KO";
 	
 	// TABELLE FONTE
-	public static final String DMALM_FONTE_CARICAMENTO = "DMALM_FONTE_CARICAMENTO";
+	public static final String DMALM_CARICAMENTO_FONTE = "DMALM_CARICAMENTO_FONTE";
 	
 	public static final String DATE_FORMAT_EDMA_UO = "dd/MM/yyyy";
 	public static final String DATE_FORMAT_DB = "yyyy-MM-dd HH:mm:ss";
