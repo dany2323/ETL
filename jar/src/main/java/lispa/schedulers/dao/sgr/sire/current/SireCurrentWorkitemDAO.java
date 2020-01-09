@@ -7,7 +7,9 @@ import java.util.List;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.exception.DAOException; 
-import lispa.schedulers.manager.ConnectionManager; 
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.ErrorManager;
+
 import org.apache.log4j.Logger; 
 import com.mysema.query.Tuple; 
 import com.mysema.query.sql.HSQLDBTemplates; 
@@ -156,11 +158,15 @@ public class SireCurrentWorkitemDAO {
 			 
 			connection.commit(); 
 		} catch (DAOException e) { 
-			logger.error(e.getMessage()); 
-			e.printStackTrace(); 
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			
+			n_righe_inserite=0;
+			throw new DAOException(e); 
 		} catch(Exception e1) { 
-			logger.error(e1.getMessage()); 
-			e1.printStackTrace(); 
+			ErrorManager.getInstance().exceptionOccurred(true, e1);
+			
+			n_righe_inserite=0;
+			throw new DAOException(e1);
 		} finally { 
 		 
 			if(H2connSire!= null) cm.closeConnection(H2connSire); 

@@ -7,8 +7,8 @@ import java.util.List;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.exception.DAOException; 
-import lispa.schedulers.manager.ConnectionManager; 
-import org.apache.log4j.Logger; 
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.ErrorManager;
 import com.mysema.query.Tuple; 
 import com.mysema.query.sql.HSQLDBTemplates; 
 import com.mysema.query.sql.SQLQuery; 
@@ -19,7 +19,6 @@ import com.mysema.query.types.template.StringTemplate;
 
 public class SissCurrentWorkitemDAO {
 
-	private static Logger logger = Logger.getLogger(SissCurrentWorkitemDAO.class); 
 	private static SissCurrentWorkitem sissCurrentWorkitem = SissCurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem stg_CurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem.workitem; 
  
@@ -156,11 +155,15 @@ public class SissCurrentWorkitemDAO {
 			 
 			connection.commit(); 
 		} catch (DAOException e) { 
-			logger.error(e.getMessage()); 
-			e.printStackTrace(); 
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			
+			n_righe_inserite=0;
+			throw new DAOException(e); 
 		} catch(Exception e1) { 
-			logger.error(e1.getMessage()); 
-			e1.printStackTrace(); 
+			ErrorManager.getInstance().exceptionOccurred(true, e1);
+			
+			n_righe_inserite=0;
+			throw new DAOException(e1);
 		} finally { 
 		 
 			if(H2connSiss!= null) cm.closeConnection(H2connSiss); 
