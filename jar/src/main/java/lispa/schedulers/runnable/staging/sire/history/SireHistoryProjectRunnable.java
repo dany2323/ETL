@@ -1,8 +1,14 @@
 package lispa.schedulers.runnable.staging.sire.history;
 
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
+
+import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.Logger;
 
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
+import lispa.schedulers.manager.DmAlmConfigReader;
+import lispa.schedulers.manager.ErrorManager;
 
 public class SireHistoryProjectRunnable implements Runnable {
 	private long project_minRevision;
@@ -19,7 +25,29 @@ public class SireHistoryProjectRunnable implements Runnable {
 	public void run() {
 		try {
 			logger.debug("START SireHistoryProject.fill()");
+			int wait = Integer.parseInt(DmAlmConfigReader.getInstance()
+					.getProperty(DMALM_DEADLOCK_WAIT));
+			
+			int tentativi_deadlock = 0;
+			ErrorManager.getInstance().resetDeadlock();
+			boolean inDeadlock = false;
+
+			tentativi_deadlock++;
+			logger.debug("Tentativo " + tentativi_deadlock);
 			SireHistoryProjectDAO.fillSireHistoryProject(project_minRevision, polarion_maxRevision);
+			inDeadlock = ErrorManager.getInstance().hasDeadLock();
+			while(inDeadlock) {
+				tentativi_deadlock++;
+				logger.debug("inDeadlock, aspetto 3 minuti");
+				TimeUnit.MINUTES.sleep(wait);
+				logger.debug("Tentativo " + tentativi_deadlock);
+				ErrorManager.getInstance().resetDeadlock();
+				SireHistoryProjectDAO.delete();
+				SireHistoryProjectDAO.fillSireHistoryProject(project_minRevision, polarion_maxRevision);
+				inDeadlock = ErrorManager.getInstance().hasDeadLock();
+			}
+			logger.debug("Fine tentativo " + tentativi_deadlock);
+			
 			logger.debug("STOP SireHistoryProject.fill()");
 		}
 		catch(Exception e) {

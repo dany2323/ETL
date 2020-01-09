@@ -3,14 +3,14 @@ package lispa.schedulers.dao.sgr.siss.history;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitemLinked;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
+import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -29,7 +29,7 @@ public class SissHistoryWorkitemLinkedDAO
 		
 	private static QSissHistoryWorkitemLinked stgLinkedWorkitems = QSissHistoryWorkitemLinked.sissHistoryWorkitemLinked;
 
-	public static void fillSissHistoryWorkitemLinked(Map<EnumWorkitemType, Long> minRevisionsByType, long maxRevision) throws Exception {
+	public static void fillSissHistoryWorkitemLinked() throws Exception {
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
@@ -109,9 +109,15 @@ public class SissHistoryWorkitemLinkedDAO
 			
 		}
 		catch(Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
-			
-			throw new DAOException(e);
+			Throwable cause = e;
+			while (cause.getCause() != null)
+				cause = cause.getCause();
+			String message = cause.getMessage();
+			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK) || StringUtils.findRegex(message, DmalmRegex.REGEXLOCKTABLE)) {
+				ErrorManager.getInstance().exceptionDeadlock(false, e);
+			} else {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+			}
 		}
 		finally {
 			if(cm != null) cm.closeConnection(connH2);
@@ -119,32 +125,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 		
 	} 
-	public static void recoverSissHistoryWorkItemLinked() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-	
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QSissHistoryWorkitemLinked stgLinkedWorkitems = QSissHistoryWorkitemLinked.sissHistoryWorkitemLinked;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgLinkedWorkitems).where(stgLinkedWorkitems.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
-			connection.commit();
-		}
-		catch(Exception e){
-			logger.error(e.getMessage(), e);
-			
-			
-			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-	}
 	
 	public static void delete() throws Exception {
 		ConnectionManager cm = null;
@@ -154,9 +134,8 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 	
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+			SQLTemplates dialect = new HSQLDBTemplates();
 			QSissHistoryWorkitemLinked stgLinkedWorkitems = QSissHistoryWorkitemLinked.sissHistoryWorkitemLinked;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
 			new SQLDeleteClause(connection, dialect, stgLinkedWorkitems).execute();
 			connection.commit();
 		}

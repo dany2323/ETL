@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
@@ -15,6 +17,7 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class SissHistoryAttachmentDAO {
@@ -95,9 +98,15 @@ public class SissHistoryAttachmentDAO {
 			connOracle.commit();
 			
 		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			
-			throw new DAOException(e);
+			Throwable cause = e;
+			while (cause.getCause() != null)
+				cause = cause.getCause();
+			String message = cause.getMessage();
+			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK) || StringUtils.findRegex(message, DmalmRegex.REGEXLOCKTABLE)) {
+				ErrorManager.getInstance().exceptionDeadlock(false, e);
+			} else {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+			}
 		} finally {
 			if(cm != null) cm.closeConnection(connH2);
 			if(cm != null) cm.closeConnection(connOracle);
@@ -133,5 +142,24 @@ public class SissHistoryAttachmentDAO {
 		}
 
 		return max.get(0).longValue();
+	}
+	
+	public static void delete() throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+	
+			SQLTemplates dialect = new HSQLDBTemplates();
+			new SQLDeleteClause(connection, dialect, stg_Attachment).execute();
+			connection.commit();
+		} catch(Exception e) {
+			throw new DAOException(e);
+		} finally {
+			if(cm != null) cm.closeConnection(connection);
+		}
+
 	}
 }

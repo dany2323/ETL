@@ -25,19 +25,19 @@ public class DmAlmFillFonte {
 			// ELETTRA/SGRCM
 			if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
 				QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_SGR, DmAlmConstants.CARICAMENTO_FONTE_PENDING);
-				logger.info("START FillStagingSgrCmSire");
+				logger.info("START FillFonteSgrCmSire");
 				// SIRE CURRENT
 				FillSGRCMFacade.execute(REPOSITORY_SIRE, SCHEMA_CURRENT, logger);
 				// SIRE HISTORY
 				FillSGRCMFacade.execute(REPOSITORY_SIRE, SCHEMA_HISTORY, logger);
-				logger.info("STOP FillStagingSgrCmSire");
+				logger.info("STOP FillFonteSgrCmSire");
 
-				logger.info("START FillStagingSgrCmSiss");
+				logger.info("START FillFonteSgrCmSiss");
 				// SISS CURRENT
 				FillSGRCMFacade.execute(REPOSITORY_SISS, SCHEMA_CURRENT, logger);
 				// SISS HISTORY
 				FillSGRCMFacade.execute(REPOSITORY_SISS, SCHEMA_HISTORY, logger);
-				logger.info("STOP FillStagingSgrCmSiss");
+				logger.info("STOP FillFonteSgrCmSiss");
 
 				// Gestione Elettra
 //				StagingElettraFacade.executeStaging();
@@ -64,9 +64,9 @@ public class DmAlmFillFonte {
 			ErrorManager.getInstance().resetError();
 			if (ExecutionManager.getInstance().isExecutionMps()) {
 				QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_MPS, DmAlmConstants.CARICAMENTO_FONTE_PENDING);
-				logger.info("START: FillStaging MPS");
+				logger.info("START: FillFonte MPS");
 				StgMpsFacade.fillStgMps();
-				logger.info("STOP: FillStaging MPS");
+				logger.info("STOP: FillFonte MPS");
 			}
 			if (!ErrorManager.getInstance().hasError()) {
 				QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_MPS, DmAlmConstants.CARICAMENTO_FONTE_OK);

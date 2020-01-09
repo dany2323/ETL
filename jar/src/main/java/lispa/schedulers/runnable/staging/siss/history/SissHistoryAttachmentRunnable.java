@@ -1,39 +1,59 @@
 package lispa.schedulers.runnable.staging.siss.history;
 
-import java.sql.SQLException;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryAttachmentDAO;
+import lispa.schedulers.manager.DmAlmConfigReader;
+import lispa.schedulers.manager.ErrorManager;
+
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
+
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import lispa.schedulers.dao.sgr.siss.history.SissHistoryAttachmentDAO;
-import lispa.schedulers.exception.DAOException;
-
 public class SissHistoryAttachmentRunnable implements Runnable {
-	
-	private long attachment_minRevision, attachment_maxRevision;
-	private Logger logger;
-	
-	public SissHistoryAttachmentRunnable(long attachment_minRevision,
-			long attachment_maxRevision, Logger logger) {
-		
+	private long attachment_minRevision;
+	private long polarion_maxRevision;
+	public Logger logger; 
+
+	public SissHistoryAttachmentRunnable(long attachment_minRevision,long polarion_maxRevision, Logger logger) {
 		this.attachment_minRevision = attachment_minRevision;
-		this.attachment_maxRevision = attachment_maxRevision;
+		this.polarion_maxRevision = polarion_maxRevision;
 		this.logger = logger;
 	}
-
-	
 
 	@Override
 	public void run() {
 		try {
-			logger.debug("START SissHistoryAttachment.fill()");
-			SissHistoryAttachmentDAO.fillSissHistoryAttachment(attachment_minRevision, attachment_maxRevision);
-			logger.debug("STOP SissHistoryAttachment.fill()");
-		} catch (DAOException e) {
-			logger.error(e.getMessage(), e);
-		} catch (SQLException e) {
-			logger.error(e.getMessage(), e);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+		logger.debug("START SissHistoryAttachment.fill()");
+		int wait = Integer.parseInt(DmAlmConfigReader.getInstance()
+				.getProperty(DMALM_DEADLOCK_WAIT));
+		
+		int tentativi_deadlock = 0;
+		ErrorManager.getInstance().resetDeadlock();
+		boolean inDeadlock = false;
+
+		tentativi_deadlock++;
+		logger.debug("Tentativo " + tentativi_deadlock);
+		SissHistoryAttachmentDAO.fillSissHistoryAttachment(attachment_minRevision, polarion_maxRevision);
+		inDeadlock = ErrorManager.getInstance().hasDeadLock();
+		while(inDeadlock) {
+			tentativi_deadlock++;
+			logger.debug("inDeadlock, aspetto 3 minuti");
+			TimeUnit.MINUTES.sleep(wait);
+			logger.debug("Tentativo " + tentativi_deadlock);
+			ErrorManager.getInstance().resetDeadlock();
+			SissHistoryAttachmentDAO.delete();
+			SissHistoryAttachmentDAO.fillSissHistoryAttachment(attachment_minRevision, polarion_maxRevision);
+			inDeadlock = ErrorManager.getInstance().hasDeadLock();
+		}
+		logger.debug("Fine tentativo " + tentativi_deadlock);
+		
+		logger.debug("STOP SissHistoryAttachment.fill()");
+		}
+		catch(Exception e) {
+			logger.error(e.getMessage(),e);
+			
 		}
 	}
+
 }

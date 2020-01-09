@@ -201,7 +201,7 @@ public class SireHistoryWorkitemDAO {
 			while (cause.getCause() != null)
 				cause = cause.getCause();
 			String message = cause.getMessage();
-			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK)) {
+			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK) || StringUtils.findRegex(message, DmalmRegex.REGEXLOCKTABLE)) {
 				ErrorManager.getInstance().exceptionDeadlock(false, e);
 			} else {
 				ErrorManager.getInstance().exceptionOccurred(true, e);

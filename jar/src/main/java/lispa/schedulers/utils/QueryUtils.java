@@ -31,8 +31,6 @@ public class QueryUtils {
 			numberInParameters--;
 		}
 		
-		logger.info("{call "+ procedure +"(" + parameters.substring(0, parameters.length()-1) + ")}");
-		
 		return "{call "+ procedure +"(" + parameters.substring(0, parameters.length()-1) + ")}";
 	}
 	

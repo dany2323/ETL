@@ -178,7 +178,7 @@ public class DmAlmConfigReaderProperties
 	public static final String MAIL_TO = "mail.to";
 	public static final String MAIL_FROM = "mail.from";
 	public static final String MAIL_SERVER = "mail.server";
-	public static final String MAIL_LOG_PATH="mail.log.path";
+	public static final String MAIL_LOG_PATH="mail.log.path.fonte";
 
 	//SFERA
 	public static final String DMALM_SFERA_PATH="dmalm.sfera.path";
