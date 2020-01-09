@@ -67,9 +67,9 @@ public class DmAlmETL {
 		QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
 		logger.info("STOP DELETE_DATI_FONTE_TABELLE");
 		
-		logger.info("START DmAlmFillStaging.doWork()");
+		logger.info("START DmAlmFillFonte.doWork()");
 		DmAlmFillFonte.doWork();
-		logger.info("STOP DmAlmFillStaging.doWork()");
+		logger.info("STOP DmAlmFillFonte.doWork()");
 
 		if (!ErrorManager.getInstance().hasError()) {
 			logger.info("*** Fine Esecuzione DmAlmEtl FONTE v."
