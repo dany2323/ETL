@@ -424,8 +424,8 @@ public final class DmAlmConstants {
 	public static final String AMBIENTETECNOLOGICO_NOME_DUPLICATO = "Nome Ambiente Tecnologico duplicato";
 	public static final String AMBIENTETECNOLOGICO_NOME_NULL = "Nome Ambiente Tecnologico is null";
 
-	public static final String ROOT_UO = "LISPA";
-	public static final String ROOT_UO_DESC = "LOMBARDIA INFORMATICA S.p.A.";
+	public static final String ROOT_UO = "ARIA S.P.A.";
+	public static final String ROOT_UO_DESC = "Azienda Regionale per l'Innovazione e gli Acquisti";
 	public static final String ROOT_UO_CD_ENTE = "LI";
 	public static final String LOGICAMENTE = "UNMARKED";
 	public static final String FISICAMENTE = "ANNULLATO FISICAMENTE";
