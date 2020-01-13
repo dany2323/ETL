@@ -47,11 +47,9 @@ public class MisuraFacade {
 
 		try {
 			misureStg = DmAlmMisuraDAO.getAllMisure(dataEsecuzione);
-			logger.info("misureStg.size() :"+ misureStg.size());
 			for (DmalmMisura misure : misureStg) {
 				misuraTmp = misure;
 				target = DmAlmMisuraDAO.getMisura(misure);
-				logger.info(misure.getIdMsr() + " - "+ misure.getIdProgetto() + " - " + misure.getIdAsm());
 				// Uso il campo Annullato in quanto i campo applicazione non
 				// esiste
 				String parApplicazione = misure.getAnnullato();
@@ -147,7 +145,6 @@ public class MisuraFacade {
 
 							if (modificato) {
 								righeModificate++;
-								logger.info("righe modificate!");
 								// STORICIZZO
 								// aggiorno la data di fine validita sul record
 								// corrente
@@ -159,7 +156,6 @@ public class MisuraFacade {
 								DmAlmMisuraDAO.insertMisure(misure);
 							} else {
 								// Aggiorno lo stesso
-								logger.info("righe non modificate!");
 								DmAlmMisuraDAO.updateMisura(misure);
 							}
 						}
@@ -183,7 +179,6 @@ public class MisuraFacade {
 			dtFineCaricamento = new Date();
 
 			try {
-				logger.info("esito ok!");
 				EsitiCaricamentoDAO.insert(dataEsecuzione,
 						DmAlmConstants.TARGET_MISURA, stato, new Timestamp(
 								dtInizioCaricamento.getTime()), new Timestamp(
