@@ -2,9 +2,7 @@ package lispa.schedulers.action;
 
 import java.sql.Timestamp;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.exception.DAOException;

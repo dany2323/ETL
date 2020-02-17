@@ -4,13 +4,9 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-
 import lispa.schedulers.bean.target.Total;
-import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
@@ -18,10 +14,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QTotal;
 import lispa.schedulers.utils.QueryUtils;
-import oracle.jdbc.OracleTypes;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -153,10 +146,11 @@ public class TotalDao {
 			connection = cm.getConnectionOracle();
 
 			logger.info("Inizio Refresh TOTAL");
-			String sql = QueryUtils.getCallProcedure("dbms_mview.refresh", 2);
+			String sql = QueryUtils.getCallProcedure("DBMS_REFRESH_VIEW", 2);
 			cs = connection.prepareCall(sql);
 			cs.setString(1, "TOTAL");
 			cs.setString(2, "C");
+			
 			cs.execute();        
 			logger.info("Fine Refresh TOTAL");
 
@@ -171,10 +165,5 @@ public class TotalDao {
 			if (cm != null)
 				cm.closeConnection(connection);
 		}
-
-
 	}
-
-		
-	
 }
