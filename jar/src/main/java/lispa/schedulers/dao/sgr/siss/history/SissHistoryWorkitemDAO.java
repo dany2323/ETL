@@ -742,19 +742,18 @@ public class SissHistoryWorkitemDAO {
 
 				List<String> cId = new SQLQuery(connOracle,dialect2).distinct()
 						.from(total)
-						.where(total.projectFk.eq(0))
+//						.where(total.projectFk.eq(0))
 						.where(total.idRepository.eq(DmAlmConstants.REPOSITORY_SISS))
-						.where(total.stgPk.notIn(new SQLSubQuery()
-								.from(stgWorkItems)
-								.list(stgWorkItems.cPk)))
-						.where(total.type.like("classificatore%").or(total.type.eq("sup")))
+//						.where(total.stgPk.notIn(new SQLSubQuery()
+//								.from(stgWorkItems)
+//								.list(stgWorkItems.cId)))
 						.list(total.codice);
 
 
 				queryHistory = new SQLQuery(SissHistoryConnection, dialect);
 				historyworkitems = queryHistory
 						.from(fonteHistoryWorkItems)
-						.where(fonteHistoryWorkItems.cId.in(cId))
+						.where(fonteHistoryWorkItems.cId.notIn(cId))
 						.list(fonteHistoryWorkItems.all());
 
 				

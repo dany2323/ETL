@@ -45,6 +45,7 @@ import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.cleaning.CheckProjectStorFacade;
 import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
 import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
 import lispa.schedulers.facade.sfera.target.MisuraFacade;
@@ -123,16 +124,30 @@ public class TestWI extends TestCase {
 			QSireHistoryWorkitem sirehistoryworkitem=QSireHistoryWorkitem.sireHistoryWorkitem;
 			Log4JConfiguration.inizialize();
 			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2000-01-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+			
+			
 			Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
-//			
+			
+			RecoverManager.getInstance().startRecoverTargetByProcedure();
+ 			RecoverManager.getInstance().startRecoverStaging();
+			
 //			SissHistoryProjectDAO.fillSissHistoryProjectPkNotExist();
 //			SireHistoryProjectDAO.fillSireHistoryProjectPkNotExist();
 			
+//			logger.info("START fillSireHistoryWorkitemWithNoProjectFk" + new Date());
 //			SireHistoryWorkitemDAO.fillSireHistoryWorkitemWithNoProjectFk();
+//			logger.info("Stop fillSireHistoryWorkitemWithNoProjectFk" + new Date());
+//			logger.info("START fillSissHistoryWorkitemWithNoProjectFk" + new Date());
 //			SissHistoryWorkitemDAO.fillSissHistoryWorkitemWithNoProjectFk();
+//			logger.info("Stop fillSissHistoryWorkitemWithNoProjectFk" + new Date());
+//			logger.info("Start fillSireHistoryCfWorkitemByWorkitemTypeWithNoProject" + new Date());
 //			SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemTypeWithNoProject();
+//			logger.info("Stop fillSireHistoryCfWorkitemByWorkitemTypeWithNoProject" + new Date());
+//			logger.info("Start fillSissHistoryCfWorkitemByWorkitemTypeWithNoProject" + new Date());
 //			SissHistoryCfWorkitemDAO.fillSissHistoryCfWorkitemByWorkitemTypeWithNoProject();
-
+//			logger.info("Stop fillSissHistoryCfWorkitemByWorkitemTypeWithNoProject" + new Date());
+//
+//
 //			List <DmalmProject >stagingProjects = ProjectSgrCmDAO.getAllProjectMinData(DataEsecuzione.getInstance().getDataEsecuzione());
 //
 //			for (DmalmProject project : stagingProjects) { 
@@ -151,102 +166,103 @@ public class TestWI extends TestCase {
 //				}
 //			}
 //			
-
-//			logger.info("START PeiFacade.execute " + new Date());
+//
+//			logger.info("START PeiFacade.execute " + new Date()); 
 //			PeiFacade.execute(dataEsecuzione);
 //
-//			logger.info("START BuildFacade.execute " + new Date());
+//			logger.info("START BuildFacade.execute " + new Date());  
 //			BuildFacade.execute(dataEsecuzione);
 //
-//			logger.info("START ProgettoESEFacade.execute "+ new Date());
+//			logger.info("START ProgettoESEFacade.execute "+ new Date()); 
 //			ProgettoEseFacade.execute(dataEsecuzione);
 //
-//			logger.info("START TestCaseFacade.execute " + new Date());
+//			logger.info("START TestCaseFacade.execute " + new Date());  
 //			TestCaseFacade.execute(dataEsecuzione);
 //
-//			logger.info("START FaseFacade.execute " + new Date());
+//			logger.info("START FaseFacade.execute " + new Date()); 
 //			FaseFacade.execute(dataEsecuzione);
 //
-//			logger.info("START SottoprogrammaFacade.execute " + new Date());
+//			logger.info("START SottoprogrammaFacade.execute " + new Date()); 
 //			SottoprogrammaFacade.execute(dataEsecuzione);
 //
-//			logger.info("START ProgrammaFacade.execute " + new Date());
+//			logger.info("START ProgrammaFacade.execute " + new Date()); 
 //			ProgrammaFacade.execute(dataEsecuzione);
 //
-// 			logger.info("START ProgettoSviluppoDemandFacade.execute "
+// 			logger.info("START ProgettoSviluppoDemandFacade.execute " 
 //					+ new Date());
 //			ProgettoSviluppoDemandFacade.execute(dataEsecuzione);
 //
-//			logger.info("START TaskItFacade.execute " + new Date());
+//			logger.info("START TaskItFacade.execute " + new Date());  
 //			TaskItFacade.execute(dataEsecuzione);
 //
-//			logger.info("START ReleaseServiziFacade.execute " + new Date());
+//			logger.info("START ReleaseServiziFacade.execute " + new Date()); 
 //			ReleaseServiziFacade.execute(dataEsecuzione);
 //
-//			logger.info("START ProgettoDemandFacade.execute " + new Date());
+//			logger.info("START ProgettoDemandFacade.execute " + new Date()); 
 //			ProgettoDemandFacade.execute(dataEsecuzione);
 //
-//			logger.info("START RichiestaManutenzioneFacade.execute "
+//			logger.info("START RichiestaManutenzioneFacade.execute " 
 //					+ new Date());
 //			RichiestaManutenzioneFacade.execute(dataEsecuzione);
 //			
-//			logger.info("START ClassificatoreFacade.execute ");
+//			logger.info("START ClassificatoreFacade.execute "); 
 //			ClassificatoreFacade.execute(dataEsecuzione);
 //
-//			logger.info("START RichiestaGestioneFacade.execute "
+//			logger.info("START RichiestaGestioneFacade.execute " 
 //					+ new Date());
 //			RichiestaGestioneFacade.execute(dataEsecuzione);
 //
-
-//			logger.info("START Progetto_Svil_Svil_Facade.execute " FATTO
+//
+//			logger.info("START Progetto_Svil_Svil_Facade.execute " 
 //					+ new Date());
 //			ProgettoSviluppoSviluppoFacade.execute(dataEsecuzione);
-
-//			logger.info("START AnomaliaAssistenzaFacade.execute "
+//
+//			logger.info("START AnomaliaAssistenzaFacade.execute " 
 //					+ new Date());
 //			AnomaliaAssistenzaFacade.execute(dataEsecuzione);
 //
-//			logger.info("START AnomaliaFacade.execute " + new Date());
+//			logger.info("START AnomaliaFacade.execute " + new Date()); 
 //			AnomaliaProdottoFacade.execute(dataEsecuzione);
-
-//			logger.info("START TaskFacade.execute " + new Date());
+//
+//			logger.info("START TaskFacade.execute " + new Date()); 
 //			TaskFacade.execute(dataEsecuzione);
-////
-//			logger.info("START ReleaseITFacade.execute " + new Date());
+//
+//			logger.info("START ReleaseITFacade.execute " + new Date()); 
 //			ReleaseItFacade.execute(dataEsecuzione);
 //
-//			logger.info("START DifettoFacade.execute " + new Date());
+//			logger.info("START DifettoFacade.execute " + new Date()); 
 //			DifettoProdottoFacade.execute(dataEsecuzione);
-////
-//			logger.info("START ManutenzioneFacade.execute " + new Date());
+//
+//			logger.info("START ManutenzioneFacade.execute " + new Date()); 
 //			ManutenzioneFacade.execute(dataEsecuzione);
 //
-//			logger.info("START DocumentoFacade.execute " + new Date());
+//			logger.info("START DocumentoFacade.execute " + new Date()); 
 //			DocumentoFacade.execute(dataEsecuzione);
 //
-//			logger.info("START ReleaseDiProgettoFacade.execute "
+//			logger.info("START ReleaseDiProgettoFacade.execute " 
 //					+ new Date());
 //			ReleaseDiProgettoFacade.execute(dataEsecuzione);
 //			
-			// DM_ALM-350
-//			logger.info("START RichiestaSupporto.execute "
+//			// DM_ALM-350
+//			logger.info("START RichiestaSupporto.execute " 
 //					+ new Date());
 //			RichiestaSupportoFacade.execute(dataEsecuzione);
 //			
-			QueryManager qm = QueryManager.getInstance();
-			
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.M_UPDATE_RANK_FATTI,
-					DmAlmConstants.M_SEPARATOR);
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.M_UPDATE_TEMPO_FATTI,
-					DmAlmConstants.M_SEPARATOR);
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.M_UPDATE_AT_FATTI,
-					DmAlmConstants.M_SEPARATOR);
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.M_UPDATE_UO_FATTI,
-					DmAlmConstants.M_SEPARATOR);
+//			CheckProjectStorFacade.execute(); 
+//			QueryManager qm = QueryManager.getInstance();
+//			
+//			qm.executeMultipleStatementsFromFile(
+//					DmAlmConstants.M_UPDATE_RANK_FATTI,
+//					DmAlmConstants.M_SEPARATOR);
+//			qm.executeMultipleStatementsFromFile(
+//					DmAlmConstants.M_UPDATE_TEMPO_FATTI,
+//					DmAlmConstants.M_SEPARATOR);
+//			qm.executeMultipleStatementsFromFile(
+//					DmAlmConstants.M_UPDATE_AT_FATTI,
+//					DmAlmConstants.M_SEPARATOR);
+//			qm.executeMultipleStatementsFromFile(
+//					DmAlmConstants.M_UPDATE_UO_FATTI,
+//					DmAlmConstants.M_SEPARATOR);
 
 		} catch (Exception e) {
 			e.printStackTrace();

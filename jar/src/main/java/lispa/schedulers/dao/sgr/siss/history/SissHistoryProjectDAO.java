@@ -180,13 +180,12 @@ public class SissHistoryProjectDAO {
 					.from(fonteProjects, fonteRevisions)
 					.where(fonteRevisions.cName.castToNum(Long.class).eq(
 							fonteProjects.cRev))
-					.where(fonteProjects.cId.eq("GCUESTE"))
-//					.where(fonteProjects.cPk.notIn(cPk))
-//					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
-//					.where(fonteProjects.cId.notIn(new SQLSubQuery()
-//							.from(fonteProjects2)
-//							.where(fonteProjects2.cName.like("%{READONLY}%"))
-//							.list(fonteProjects2.cId)))
+					.where(fonteProjects.cPk.notIn(cPk))
+					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
+					.where(fonteProjects.cId.notIn(new SQLSubQuery()
+							.from(fonteProjects2)
+							.where(fonteProjects2.cName.like("%{READONLY}%"))
+							.list(fonteProjects2.cId)))
 					.list(fonteProjects.cTrackerprefix, fonteProjects.cIsLocal,
 							fonteProjects.cPk, fonteProjects.fkUriLead,
 							fonteProjects.cDeleted, fonteProjects.cFinish,
