@@ -73,33 +73,8 @@ public class ProjectSgrCmFacade {
 						boolean modificato = false;
 						if (row != null) {
 							if (!modificato	&& BeanUtils.areDifferent(
-									row.get(proj.dmalmStrutturaOrgFk02),
-										project.getDmalmStrutturaOrgFk02())) {
-								modificato = true;
-							}
-							if (!modificato	&& BeanUtils.areDifferent(
-									row.get(proj.dmalmUnitaOrganizzativaFk),
-										project.getDmalmUnitaOrganizzativaFk())) {
-								modificato = true;
-							}
-							if (!modificato	&& BeanUtils.areDifferent(
-									row.get(proj.dmalmUnitaOrganizzativaFlatFk),
-										project.getDmalmUnitaOrganizzativaFlatFk())) {
-								modificato = true;
-							}
-							if (!modificato	&& BeanUtils.areDifferent(
-									row.get(proj.annullato),
-										project.getAnnullato())) {
-								modificato = true;
-							}
-							if (!modificato	&& BeanUtils.areDifferent(
 									row.get(proj.nomeCompletoProject),
 										project.getNomeCompletoProject())) {
-								modificato = true;
-							}
-							if (!modificato	&& BeanUtils.areDifferent(
-									row.get(proj.serviceManagers),
-										project.getServiceManagers())) {
 								modificato = true;
 							}
 							if (!modificato	&& BeanUtils.areDifferent(
@@ -158,18 +133,8 @@ public class ProjectSgrCmFacade {
 								modificato = true;
 							}
 							if (!modificato	&& BeanUtils.areDifferent(
-									row.get(proj.cRev),
-										project.getcRev())) {
-								modificato = true;
-							}
-							if (!modificato	&& BeanUtils.areDifferent(
 									row.get(proj.cDescription),
 										project.getcDescription())) {
-								modificato = true;
-							}
-							if (!modificato	&& BeanUtils.areDifferent(
-									row.get(proj.dtAnnullamento),
-										project.getDtAnnullamento())) {
 								modificato = true;
 							}
 							if(modificato) {
@@ -183,8 +148,6 @@ public class ProjectSgrCmFacade {
 								// inserisco un nuovo record
 								ProjectSgrCmDAO.insertProjectUpdate(
 										dataEsecuzione, project, true);
-							} else {
-								ProjectSgrCmDAO.updateDmalmProject(project);
 							}
 						}
 					}
