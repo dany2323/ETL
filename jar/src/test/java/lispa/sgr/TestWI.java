@@ -114,26 +114,32 @@ public class TestWI extends TestCase {
 	public void testProvenienzaDifetto(){
 		try {
 			DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm.properties");
-			QDmalmElUnitaOrganizzativeFlat flat= QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
-			SQLTemplates dialect = new HSQLDBTemplates();
-			Connection connection = ConnectionManager.getInstance().getConnectionOracle();
-
-			QDmalmProject proj = QDmalmProject.dmalmProject;
-			QTotal total=QTotal.total;
-			QSissHistoryWorkitem sisshistoryworkitem=QSissHistoryWorkitem.sissHistoryWorkitem;
-			QSireHistoryWorkitem sirehistoryworkitem=QSireHistoryWorkitem.sireHistoryWorkitem;
-			Log4JConfiguration.inizialize();
-			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2000-01-01 00:00:00","yyyy-MM-dd HH:mm:00"));
-			
-			
-			Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
-			
-			RecoverManager.getInstance().startRecoverTargetByProcedure();
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-02-27 22:00:00","yyyy-MM-dd HH:mm:00"));
+//			RecoverManager.getInstance().startRecoverTargetByProcedure();
  			RecoverManager.getInstance().startRecoverStaging();
+ 			//TotalDao.refreshTable();
+// 			RecoverManager.getInstance().prepareTargetForRecover(dataEsecuzione)
 			
+//			QDmalmElUnitaOrganizzativeFlat flat= QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
+//			SQLTemplates dialect = new HSQLDBTemplates();
+//			Connection connection = ConnectionManager.getInstance().getConnectionOracle();
+//
+//			QDmalmProject proj = QDmalmProject.dmalmProject;
+//			QTotal total=QTotal.total;
+//			QSissHistoryWorkitem sisshistoryworkitem=QSissHistoryWorkitem.sissHistoryWorkitem;
+//			QSireHistoryWorkitem sirehistoryworkitem=QSireHistoryWorkitem.sireHistoryWorkitem;
+//			Log4JConfiguration.inizialize();
+//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2000-01-01 00:00:00","yyyy-MM-dd HH:mm:00"));
+//			
+//			
+//			Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
+//			
+//			RecoverManager.getInstance().startRecoverTargetByProcedure();
+// 			RecoverManager.getInstance().startRecoverStaging();
+//			
 //			SissHistoryProjectDAO.fillSissHistoryProjectPkNotExist();
 //			SireHistoryProjectDAO.fillSireHistoryProjectPkNotExist();
-			
+//			
 //			logger.info("START fillSireHistoryWorkitemWithNoProjectFk" + new Date());
 //			SireHistoryWorkitemDAO.fillSireHistoryWorkitemWithNoProjectFk();
 //			logger.info("Stop fillSireHistoryWorkitemWithNoProjectFk" + new Date());

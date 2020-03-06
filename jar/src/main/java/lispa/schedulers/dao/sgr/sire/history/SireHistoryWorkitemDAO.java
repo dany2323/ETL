@@ -494,6 +494,7 @@ public class SireHistoryWorkitemDAO {
 			historyworkitems = queryHistory
 					.from(fonteHistoryWorkItems)
 					.where(fonteHistoryWorkItems.cId.notIn((cId)))
+					.where(fonteHistoryWorkItems.cType.in("anomalia","documento","testcase","pei","build","progettoese","fase","defect","release","sottoprogramma","programma","taskit","anomalia_assistenza","release_it","sman","release_ser","drqs","dman","rqd","richiesta_gestione","srqs","task","classificatore_demand", "classificatore","sup"))
 					.list(fonteHistoryWorkItems.all());
 
 			

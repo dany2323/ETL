@@ -21,6 +21,7 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.target.ProjectSgrCmDAO;
+import lispa.schedulers.dao.target.TotalDao;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.cleaning.CheckAnomaliaDifettoProdottoFacade;
@@ -59,9 +60,14 @@ import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.manager.RecoverManager;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitem;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
 import lispa.schedulers.queryimplementation.target.QDmalmProject;
+import lispa.schedulers.queryimplementation.target.QTotal;
+import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzativeFlat;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MailUtil;
+import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.StringUtils;
 
 public class DmAlmETL {
@@ -81,15 +87,18 @@ public class DmAlmETL {
 	public static void main(String[] args) throws Exception {
 		DmAlmConfigReaderProperties.setFileProperties(args[1]);
 		Log4JConfiguration.inizialize();
-		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2000-01-01 00:00:00","yyyy-MM-dd HH:mm:00"));
-		
+
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = ConnectionManager.getInstance().getConnectionOracle();
-		Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
+
 		QDmalmProject proj = QDmalmProject.dmalmProject;
-//		RecoverManager.getInstance().startRecoverTargetByProcedure();
-//			RecoverManager.getInstance().startRecoverStaging();
-//		
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-06 00:00:00","yyyy-MM-dd HH:mm:00"));
+		
+		QueryUtils.getCallProcedure("BONIFICA_499",0);
+		TotalDao.refreshTable();
+		
+		Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();
+		
 		SissHistoryProjectDAO.fillSissHistoryProjectPkNotExist();
 		SireHistoryProjectDAO.fillSireHistoryProjectPkNotExist();
 		
@@ -222,6 +231,7 @@ public class DmAlmETL {
 		qm.executeMultipleStatementsFromFile(
 				DmAlmConstants.M_UPDATE_UO_FATTI,
 				DmAlmConstants.M_SEPARATOR);
+		TotalDao.refreshTable();
 //		String ambiente = DmAlmConfigReader.getInstance()
 //				.getProperty(DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 //
