@@ -555,7 +555,6 @@ public class SissHistoryCfWorkitemDAO {
 					SQLQuery query = new SQLQuery(connH2, dialect);
 					List <String> fkWorkitem= new SQLQuery(connOracle,dialect)
 							.from(stgWorkItems)
-							.where(stgWorkItems.cType.like("classificatore%").or(stgWorkItems.cType.eq("sup")))
 							.where(stgWorkItems.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione()))
 							.list(stgWorkItems.cPk);
 					cfWorkitem = query

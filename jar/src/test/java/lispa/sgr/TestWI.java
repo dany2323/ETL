@@ -114,8 +114,9 @@ public class TestWI extends TestCase {
 	public void testProvenienzaDifetto(){
 		try {
 			DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm.properties");
-			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-02-27 22:00:00","yyyy-MM-dd HH:mm:00"));
-//			RecoverManager.getInstance().startRecoverTargetByProcedure();
+//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-02-27 22:00:00","yyyy-MM-dd HH:mm:00"));
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-05 00:00:00","yyyy-MM-dd HH:mm:00"));
+			RecoverManager.getInstance().startRecoverTargetByProcedure();
  			RecoverManager.getInstance().startRecoverStaging();
  			//TotalDao.refreshTable();
 // 			RecoverManager.getInstance().prepareTargetForRecover(dataEsecuzione)
