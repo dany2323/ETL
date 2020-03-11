@@ -32,7 +32,7 @@ public class TestElettra extends TestCase{
 	
 	
 	public static void testElettraUnitaOrganizzativeFlat() {
-		DmAlmConfigReaderProperties.setFileProperties("/Users/lucaporro/LISPA/DataMart/props/dm_alm.properties");
+		DmAlmConfigReaderProperties.setFileProperties("/home/dmalm/etl_sviluppo/props/dm_alm.properties");
 		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-01-23 21:00:00.0", "yyyy-MM-dd HH:mm:00"));
 		Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 		
