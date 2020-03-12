@@ -1,5 +1,6 @@
 package lispa.schedulers.action;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -92,9 +93,34 @@ public class DmAlmETL {
 		Connection connection = ConnectionManager.getInstance().getConnectionOracle();
 
 		QDmalmProject proj = QDmalmProject.dmalmProject;
-		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-06 00:00:00","yyyy-MM-dd HH:mm:00"));
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-11 00:00:00","yyyy-MM-dd HH:mm:00"));
 		
-		QueryUtils.getCallProcedure("BONIFICA_499",0);
+		
+		ConnectionManager cm = null;
+		connection = null;
+		CallableStatement cs = null;
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			logger.info("Inizio Bonifica 499");
+			String sql = QueryUtils.getCallProcedure("BONIFICA_499",0);
+			cs = connection.prepareCall(sql);	
+			cs.execute();        
+			logger.info("Fine Bonifica 499");
+
+			
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+			throw new DAOException(e);
+		} finally {
+			if(cs!=null)
+				cs.close();
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+		
 		TotalDao.refreshTable();
 		
 		Timestamp dataEsecuzione=DataEsecuzione.getInstance().getDataEsecuzione();

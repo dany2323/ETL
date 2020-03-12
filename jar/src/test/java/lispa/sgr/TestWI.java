@@ -5,6 +5,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOC
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING_DAY_DELETE;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -44,6 +45,7 @@ import lispa.schedulers.dao.target.TotalDao;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
+import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.cleaning.CheckProjectStorFacade;
 import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
@@ -96,6 +98,7 @@ import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchit
 import lispa.schedulers.utils.BeanUtils;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.EnumUtils;
+import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
@@ -115,9 +118,35 @@ public class TestWI extends TestCase {
 		try {
 			DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm.properties");
 //			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-02-27 22:00:00","yyyy-MM-dd HH:mm:00"));
-			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-05 00:00:00","yyyy-MM-dd HH:mm:00"));
-			RecoverManager.getInstance().startRecoverTargetByProcedure();
- 			RecoverManager.getInstance().startRecoverStaging();
+//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-05 00:00:00","yyyy-MM-dd HH:mm:00"));
+//			RecoverManager.getInstance().startRecoverTargetByProcedure();
+// 			RecoverManager.getInstance().startRecoverStaging();
+			
+			ConnectionManager cm = null;
+			Connection connection = null;
+			CallableStatement cs = null;
+			try {
+				cm = ConnectionManager.getInstance();
+				connection = cm.getConnectionOracle();
+
+				logger.info("Inizio Bonifica 499");
+				String sql = QueryUtils.getCallProcedure("BONIFICA_499",0);
+				cs = connection.prepareCall(sql);	
+				cs.execute();        
+				logger.info("Fine Bonifica 499");
+
+				
+			} catch (Exception e) {
+				ErrorManager.getInstance().exceptionOccurred(true, e);
+
+				throw new DAOException(e);
+			} finally {
+				if(cs!=null)
+					cs.close();
+				if (cm != null)
+					cm.closeConnection(connection);
+			}
+			
  			//TotalDao.refreshTable();
 // 			RecoverManager.getInstance().prepareTargetForRecover(dataEsecuzione)
 			

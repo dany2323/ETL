@@ -581,7 +581,7 @@ public class ProjectSgrCmDAO {
 							}
 						} else if (nomeProject.contains("RichiesteSupporto")) {
 							try {
-								codiceAreaUO = "LI"
+								codiceAreaUO = "SRM"
 										+ nomeProject.substring(nomeProject.indexOf(".")+1,
 												nomeProject.length());
 							} catch (Exception e) {
@@ -596,7 +596,7 @@ public class ProjectSgrCmDAO {
 					case DmAlmConstants.DEMAND:
 						// Template DEMAND e DEMAND2016
 						if (nomeProject.indexOf(".", 1) != -1) {
-							codiceAreaUO = "LI"
+							codiceAreaUO = "SRM"
 									+ nomeProject.substring(0,
 											nomeProject.indexOf(".", 1));
 						} else {
@@ -607,13 +607,13 @@ public class ProjectSgrCmDAO {
 					case DmAlmConstants.DEMAND2016:
 						if(isElettra)
 						{							
-							codiceAreaUO = "LIF800";
+							codiceAreaUO = "SRMF800";
 						}
 						else
 						{
 							// Template DEMAND e DEMAND2016
 							if (nomeProject.indexOf(".", 1) != -1) {
-								codiceAreaUO = "LI"
+								codiceAreaUO = "SRM"
 										+ nomeProject.substring(0,
 												nomeProject.indexOf(".", 1));
 							} else {
@@ -625,7 +625,7 @@ public class ProjectSgrCmDAO {
 					case DmAlmConstants.ASSISTENZA:
 						// Template ASSISTENZA
 						if (nomeProject.startsWith("Assistenza.")) {
-							codiceAreaUO = "LI"
+							codiceAreaUO = "SRM"
 									+ nomeProject.substring("Assistenza.".length(),
 											nomeProject.length());
 						} else {
@@ -636,11 +636,11 @@ public class ProjectSgrCmDAO {
 					case DmAlmConstants.IT:
 						if(isElettra)
 						{
-							codiceAreaUO = "LIW8B6";
+							codiceAreaUO = "SRMW8B6";
 						}
 						else
 						{
-							codiceAreaUO = "LIA352";
+							codiceAreaUO = "SRMA352";
 						}
 						
 						
@@ -649,7 +649,7 @@ public class ProjectSgrCmDAO {
 					case DmAlmConstants.SERDEP:
 						// Template SERDEP
 						if (nomeProject.indexOf(".", 1) != -1) {
-							codiceAreaUO = "LI"
+							codiceAreaUO = "SRM"
 									+ nomeProject.substring(0,
 											nomeProject.indexOf(".", 1));
 						} else {
