@@ -493,7 +493,7 @@ public class SireHistoryWorkitemDAO {
 					// .where(total.projectFk.eq(0))
 					.where(total.idRepository
 							.eq(DmAlmConstants.REPOSITORY_SIRE))
-					.where(total.annullato.isNull())
+//					.where(total.annullato.isNull())
 					// .where(total.stgPk.notIn(new SQLSubQuery()
 					// .from(stgWorkItems)
 					// .list(stgWorkItems.cId)))

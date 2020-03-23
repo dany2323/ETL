@@ -7,7 +7,11 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_STAGING
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +23,7 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLUpdateClause;
 
 import junit.framework.TestCase;
 import lispa.schedulers.action.DmAlmETL;
@@ -28,8 +33,33 @@ import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.bean.target.elettra.DmalmElPersonale;
 import lispa.schedulers.bean.target.elettra.DmalmElProdottiArchitetture;
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
+import lispa.schedulers.bean.target.fatti.DmalmAnomaliaAssistenza;
+import lispa.schedulers.bean.target.fatti.DmalmAnomaliaProdotto;
+import lispa.schedulers.bean.target.fatti.DmalmBuild;
+import lispa.schedulers.bean.target.fatti.DmalmClassificatore;
+import lispa.schedulers.bean.target.fatti.DmalmDifettoProdotto;
+import lispa.schedulers.bean.target.fatti.DmalmDocumento;
+import lispa.schedulers.bean.target.fatti.DmalmFase;
+import lispa.schedulers.bean.target.fatti.DmalmManutenzione;
+import lispa.schedulers.bean.target.fatti.DmalmPei;
+import lispa.schedulers.bean.target.fatti.DmalmProgettoDemand;
+import lispa.schedulers.bean.target.fatti.DmalmProgettoEse;
+import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoDem;
+import lispa.schedulers.bean.target.fatti.DmalmProgettoSviluppoSvil;
+import lispa.schedulers.bean.target.fatti.DmalmProgramma;
+import lispa.schedulers.bean.target.fatti.DmalmReleaseDiProgetto;
+import lispa.schedulers.bean.target.fatti.DmalmReleaseIt;
+import lispa.schedulers.bean.target.fatti.DmalmReleaseServizi;
+import lispa.schedulers.bean.target.fatti.DmalmRichiestaGestione;
+import lispa.schedulers.bean.target.fatti.DmalmRichiestaManutenzione;
+import lispa.schedulers.bean.target.fatti.DmalmRichiestaSupporto;
+import lispa.schedulers.bean.target.fatti.DmalmSottoprogramma;
+import lispa.schedulers.bean.target.fatti.DmalmTask;
+import lispa.schedulers.bean.target.fatti.DmalmTaskIt;
+import lispa.schedulers.bean.target.fatti.DmalmTestcase;
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.sfera.DmAlmAsmDAO;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
@@ -45,8 +75,33 @@ import lispa.schedulers.dao.target.TotalDao;
 import lispa.schedulers.dao.target.elettra.ElettraPersonaleDAO;
 import lispa.schedulers.dao.target.elettra.ElettraProdottiArchitettureDAO;
 import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
+import lispa.schedulers.dao.target.fatti.AnomaliaAssistenzaDAO;
+import lispa.schedulers.dao.target.fatti.AnomaliaProdottoDAO;
+import lispa.schedulers.dao.target.fatti.BuildDAO;
+import lispa.schedulers.dao.target.fatti.ClassificatoreDAO;
+import lispa.schedulers.dao.target.fatti.DifettoDAO;
+import lispa.schedulers.dao.target.fatti.DocumentoDAO;
+import lispa.schedulers.dao.target.fatti.FaseDAO;
+import lispa.schedulers.dao.target.fatti.ManutenzioneDAO;
+import lispa.schedulers.dao.target.fatti.PeiDAO;
+import lispa.schedulers.dao.target.fatti.ProgettoDemandDAO;
+import lispa.schedulers.dao.target.fatti.ProgettoEseDAO;
+import lispa.schedulers.dao.target.fatti.ProgettoSviluppoDemandDAO;
+import lispa.schedulers.dao.target.fatti.ProgettoSviluppoSviluppoDAO;
+import lispa.schedulers.dao.target.fatti.ProgrammaDAO;
+import lispa.schedulers.dao.target.fatti.ReleaseDiProgettoDAO;
+import lispa.schedulers.dao.target.fatti.ReleaseItDAO;
+import lispa.schedulers.dao.target.fatti.ReleaseServiziDAO;
+import lispa.schedulers.dao.target.fatti.RichiestaGestioneDAO;
+import lispa.schedulers.dao.target.fatti.RichiestaManutenzioneDAO;
+import lispa.schedulers.dao.target.fatti.RichiestaSupportoDAO;
+import lispa.schedulers.dao.target.fatti.SottoprogrammaDAO;
+import lispa.schedulers.dao.target.fatti.TaskDAO;
+import lispa.schedulers.dao.target.fatti.TaskItDAO;
+import lispa.schedulers.dao.target.fatti.TestCaseDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.facade.cleaning.CheckAnnullamentiSGRCMFacade;
 import lispa.schedulers.facade.cleaning.CheckProjectStorFacade;
 import lispa.schedulers.facade.elettra.target.ElettraUnitaOrganizzativeFacade;
 import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
@@ -93,6 +148,29 @@ import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEcc
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElPersonale;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElUnitaOrganizzativeFlat;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaAssistenza;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmAnomaliaProdotto;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmBuild;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmClassificatore;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmDocumento;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmFase;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmManutenzione;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmPei;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoDemand;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoEse;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoSviluppoDem;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgettoSviluppoSvil;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmProgramma;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseDiProgetto;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseIt;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmReleaseServizi;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmRichiestaGestione;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmRichiestaManutenzione;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmSottoprogramma;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmTask;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmTaskIt;
+import lispa.schedulers.queryimplementation.target.fatti.QDmalmTestcase;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.utils.BeanUtils;
@@ -104,7 +182,7 @@ import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class TestWI extends TestCase {
 
-	private static Logger logger = Logger.getLogger(DmAlmETL.class);
+	private static Logger logger=Logger.getLogger(DmAlmETL.class);
 	private int retry;
 	private int wait;
 	
@@ -113,41 +191,48 @@ public class TestWI extends TestCase {
 	private int righeModificate;
 	private boolean modificato;
 	private DmalmProject projectTmp;
+	
 
 	public void testProvenienzaDifetto(){
 		try {
 			DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm.properties");
-//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-02-27 22:00:00","yyyy-MM-dd HH:mm:00"));
-//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-05 00:00:00","yyyy-MM-dd HH:mm:00"));
+
+			Log4JConfiguration.inizialize();
+			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-11 00:00:00","yyyy-MM-dd HH:mm:00"));
 //			RecoverManager.getInstance().startRecoverTargetByProcedure();
 // 			RecoverManager.getInstance().startRecoverStaging();
-			
-			ConnectionManager cm = null;
-			Connection connection = null;
-			CallableStatement cs = null;
-			try {
-				cm = ConnectionManager.getInstance();
-				connection = cm.getConnectionOracle();
 
-				logger.info("Inizio Bonifica 499");
-				String sql = QueryUtils.getCallProcedure("BONIFICA_499",0);
-				cs = connection.prepareCall(sql);	
-				cs.execute();        
-				logger.info("Fine Bonifica 499");
-
-				
-			} catch (Exception e) {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-
-				throw new DAOException(e);
-			} finally {
-				if(cs!=null)
-					cs.close();
-				if (cm != null)
-					cm.closeConnection(connection);
-			}
-			
- 			//TotalDao.refreshTable();
+//			CheckAnnullamentiSGRCMFacade.execute();
+//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-02-27 22:00:00","yyyy-MM-dd HH:mm:00"));
+//			DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-03-11 00:00:00","yyyy-MM-dd HH:mm:00"));
+//			RecoverManager.getInstance().startRecoverTargetByProcedure();
+// 			RecoverManager.getInstance().startRecoverStaging();
+			TotalDao.refreshTable();
+//			ConnectionManager cm = null;
+//			Connection connection = null;
+//			CallableStatement cs = null;
+//			try {
+//				cm = ConnectionManager.getInstance();
+//				connection = cm.getConnectionOracle();
+//
+//				logger.info("Inizio Bonifica 499");
+//				String sql = QueryUtils.getCallProcedure("BONIFICA_499",0);
+//				cs = connection.prepareCall(sql);	
+//				cs.execute();        
+//				logger.info("Fine Bonifica 499");
+//
+//			} catch (Exception e) {
+//				ErrorManager.getInstance().exceptionOccurred(true, e);
+//
+//				throw new DAOException(e);
+//			} finally {
+//				if(cs!=null)
+//					cs.close();
+//				if (cm != null)
+//					cm.closeConnection(connection);
+//			}
+//			
+// 			TotalDao.refreshTable();
 // 			RecoverManager.getInstance().prepareTargetForRecover(dataEsecuzione)
 			
 //			QDmalmElUnitaOrganizzativeFlat flat= QDmalmElUnitaOrganizzativeFlat.qDmalmElUnitaOrganizzativeFlat;
@@ -453,5 +538,7 @@ public class TestWI extends TestCase {
 
 		ConnectionManager.getInstance().dismiss();
 	}
+	
+
 
 }
