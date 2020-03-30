@@ -356,12 +356,11 @@ public class ElettraUnitaOrganizzativeDAO {
 		}
 	}
 
-	public static Map<Timestamp, Integer> getUnitaOrganizzativaByCodiceArea(String codiceArea,
-			Timestamp dataUltimaModifica) throws DAOException {
+	public static Map<Timestamp, Integer> getUnitaOrganizzativaByCodiceArea(String codiceArea) throws DAOException {
 		HashMap <Timestamp,Integer> result=new HashMap<>();
 //		result.put(dataUltimaModifica,0);
 
-		if (codiceArea == null || dataUltimaModifica == null) {
+		if (codiceArea == null) {
 			return result;
 		}
 		ConnectionManager cm = null;
@@ -378,10 +377,10 @@ public class ElettraUnitaOrganizzativeDAO {
 					.from(qDmalmElUnitaOrganizzative)
 					.where(qDmalmElUnitaOrganizzative.codiceArea.eq(codiceArea
 							.trim()))
-					.where(qDmalmElUnitaOrganizzative.dataInizioValidita
-							.loe(dataUltimaModifica))
 					.where(qDmalmElUnitaOrganizzative.dataFineValidita
-							.goe(dataUltimaModifica))
+							.eq(DateUtils.setDtFineValidita9999()))
+					.where(qDmalmElUnitaOrganizzative.dataAnnullamento.isNull())
+					.where(qDmalmElUnitaOrganizzative.annullato.ne("SI"))
 					.list(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk,qDmalmElUnitaOrganizzative.dataInizioValidita);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

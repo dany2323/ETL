@@ -591,9 +591,7 @@ public class DmalmStagingTest extends TestCase {
 					} else {
 						Map<Timestamp, Integer> map = ElettraUnitaOrganizzativeDAO
 								.getUnitaOrganizzativaByCodiceArea(
-										codiceAreaUOElettra, DataEsecuzione
-										.getInstance()
-										.getDataEsecuzione());
+										codiceAreaUOElettra);
 						unitaOrganizzativaFk=0;
 						for(Timestamp t:map.keySet()) {
 							unitaOrganizzativaFk = map.get(t);

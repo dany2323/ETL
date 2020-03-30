@@ -121,7 +121,7 @@ public class TestWI extends TestCase {
 						
 						map = ElettraUnitaOrganizzativeDAO
 								.getUnitaOrganizzativaByCodiceArea(
-										codiceAreaUOElettra, dataEsecuzione);
+										codiceAreaUOElettra);
 						unitaOrganizzativaFk=0;
 						for(Timestamp t:map.keySet()) {
 							unitaOrganizzativaFk = map.get(t);

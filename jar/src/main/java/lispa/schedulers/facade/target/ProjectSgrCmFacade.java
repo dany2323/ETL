@@ -213,8 +213,7 @@ public class ProjectSgrCmFacade {
 
 							map = ElettraUnitaOrganizzativeDAO
 									.getUnitaOrganizzativaByCodiceArea(
-											codiceAreaUOElettra,
-											dataEsecuzione);
+											codiceAreaUOElettra);
 							unitaOrganizzativaFk = 0;
 							if (!map.isEmpty()) {
 								for (Map.Entry<Timestamp, Integer> entry : map.entrySet()) {

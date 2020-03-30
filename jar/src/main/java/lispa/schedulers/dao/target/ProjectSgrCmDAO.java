@@ -166,8 +166,7 @@ public class ProjectSgrCmDAO {
 				} else {
 					// UO Elettra
 					Map<Timestamp, Integer> map = ElettraUnitaOrganizzativeDAO
-					.getUnitaOrganizzativaByCodiceArea(codiceAreaUOElettra,
-							rs.getTimestamp("C_CREATED"));
+					.getUnitaOrganizzativaByCodiceArea(codiceAreaUOElettra);
 					for(Timestamp i: map.keySet())
 					{
 						bean.setDmalmUnitaOrganizzativaFk(map.get(i));
