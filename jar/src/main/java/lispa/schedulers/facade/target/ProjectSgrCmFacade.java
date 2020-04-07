@@ -168,12 +168,13 @@ public class ProjectSgrCmFacade {
 			Integer strutturaOrgFk02;
 			Integer unitaOrganizzativaFk;
 			Timestamp dataFineValidita = null;
-
+			String codiceAreaUOEdma = "";
+			String codiceAreaUOElettra = "";
 			for (Tuple row : listaProgettiNonMovimentati) {
 				if (row != null) {
 					// Edma
 					// FK Struttura Organizzativa
-					String codiceAreaUOEdma = ProjectSgrCmDAO
+					Map<String, Timestamp> mapUOedma = ProjectSgrCmDAO
 							.gestioneCodiceAreaUO(eccezioniProjectUO,
 									row.get(proj.idProject),
 									row.get(proj.idRepository),
@@ -181,7 +182,10 @@ public class ProjectSgrCmFacade {
 									row.get(proj.cTemplate),
 									row.get(proj.fkProjectgroup),
 									dataEsecuzione, false);
-
+					
+					for (Map.Entry<String, Timestamp> entry : mapUOedma.entrySet()) {
+						codiceAreaUOEdma = entry.getKey();
+					}
 					if (codiceAreaUOEdma.equals(DmAlmConstants.NON_PRESENTE)) {
 						strutturaOrgFk02 = 0;
 					} else {
@@ -193,7 +197,7 @@ public class ProjectSgrCmFacade {
 
 					// Elettra
 					// FK Unità Organizzativa
-					String codiceAreaUOElettra = ProjectSgrCmDAO
+					Map<String, Timestamp> mapUO = ProjectSgrCmDAO
 							.gestioneCodiceAreaUO(eccezioniProjectUO,
 									row.get(proj.idProject),
 									row.get(proj.idRepository),
@@ -202,6 +206,10 @@ public class ProjectSgrCmFacade {
 									row.get(proj.fkProjectgroup),
 									dataEsecuzione, true);
 
+					for (Map.Entry<String, Timestamp> entry : mapUO.entrySet()) {
+						codiceAreaUOElettra = entry.getKey();
+						dataFineValidita = entry.getValue();
+					}
 					if (codiceAreaUOElettra
 							.equals(DmAlmConstants.NON_PRESENTE)) {
 						unitaOrganizzativaFk = 0;
@@ -218,10 +226,8 @@ public class ProjectSgrCmFacade {
 							if (!map.isEmpty()) {
 								for (Map.Entry<Timestamp, Integer> entry : map.entrySet()) {
 									unitaOrganizzativaFk = entry.getValue();
-									dataFineValidita = entry.getKey();
 								}
 							}
-
 						}
 					}
 

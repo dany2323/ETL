@@ -87,15 +87,19 @@ public class TestWI extends TestCase {
 //
 			for (Tuple row : listaProgettiNonMovimentati) {
 				if (row != null) {
+					String codiceAreaUOEdma = "";
 					//Edma
 					// FK Struttura Organizzativa
-					String codiceAreaUOEdma = ProjectSgrCmDAO.gestioneCodiceAreaUO(
+					Map<String, Timestamp> mapUOedma = ProjectSgrCmDAO.gestioneCodiceAreaUO(
 							eccezioniProjectUO, row.get(proj.idProject),
 							row.get(proj.idRepository),
 							row.get(proj.nomeCompletoProject),
 							row.get(proj.cTemplate),
 							row.get(proj.fkProjectgroup), dataEsecuzione, false);
 
+					for(Map.Entry<String, Timestamp> t : mapUOedma.entrySet()) {
+						codiceAreaUOEdma = t.getKey();
+					}
 					if (codiceAreaUOEdma.equals(DmAlmConstants.NON_PRESENTE)) {
 						strutturaOrgFk02 = 0;
 					} else {
@@ -105,21 +109,24 @@ public class TestWI extends TestCase {
 										codiceAreaUOEdma, dataEsecuzione);
 					}
 
+					String codiceAreaUOElettra = "";
 					//Elettra
 					// FK Unità Organizzativa
-					String codiceAreaUOElettra = ProjectSgrCmDAO.gestioneCodiceAreaUO(
+					Map<String, Timestamp> mapUO = ProjectSgrCmDAO.gestioneCodiceAreaUO(
 							eccezioniProjectUO, row.get(proj.idProject),
 							row.get(proj.idRepository),
 							row.get(proj.nomeCompletoProject),
 							row.get(proj.cTemplate),
 							row.get(proj.fkProjectgroup), dataEsecuzione, true);
-					Map<Timestamp, Integer> map;
+					for(Map.Entry<String, Timestamp> t : mapUO.entrySet()) {
+						codiceAreaUOElettra = t.getKey();
+					}
 					Timestamp dataFineValidita=null;
 					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
 						unitaOrganizzativaFk = 0;
 					} else {
 						
-						map = ElettraUnitaOrganizzativeDAO
+						Map<Timestamp, Integer> map = ElettraUnitaOrganizzativeDAO
 								.getUnitaOrganizzativaByCodiceArea(
 										codiceAreaUOElettra);
 						unitaOrganizzativaFk=0;

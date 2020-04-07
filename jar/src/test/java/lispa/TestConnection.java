@@ -18,7 +18,7 @@ public class TestConnection extends TestCase {
 		Connection conn = null;
 		
 		try  {
-			String pass_dm_alm = encryptionHelper.decrypt("7MiAQ4dH23xmc6cxwrOejg==");
+			String pass_dm_alm = encryptionHelper.decrypt("8AF9A9520D0E313A3F3DE89708BDD1F6DA8985A580A38F7411F3747B3F4D");
 			String pass_dm_alm_preprod = encryptionHelper.decrypt("IOe3LleqpwAkIk3UwBbSZQ==");
 			String enc_pass_dm_alm_preprod = encryptionHelper.encrypt("dm_alm_pre_1706");
 			

@@ -575,9 +575,10 @@ public class DmalmStagingTest extends TestCase {
 
 			for (Tuple row : listaProgettiNonMovimentati) {
 				if (row != null) {
+					String codiceAreaUOElettra = "";
 					// Elettra
 					// FK Unità Organizzativa
-					String codiceAreaUOElettra = ProjectSgrCmDAO
+					Map<String, Timestamp> mapUO = ProjectSgrCmDAO
 							.gestioneCodiceAreaUO(eccezioniProjectUO, row
 									.get(proj.idProject), row
 									.get(proj.idRepository), row
@@ -586,6 +587,9 @@ public class DmalmStagingTest extends TestCase {
 									.get(proj.fkProjectgroup), DataEsecuzione
 									.getInstance().getDataEsecuzione(), true);
 
+					for(Map.Entry<String, Timestamp> t : mapUO.entrySet()) {
+						codiceAreaUOElettra = t.getKey();
+					}
 					if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
 						unitaOrganizzativaFk = 0;
 					} else {
