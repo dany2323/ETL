@@ -22,8 +22,6 @@ public class SireHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public static final SireHistoryWorkitem workitem = new SireHistoryWorkitem("WORKITEM");
 
-    public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
-
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");

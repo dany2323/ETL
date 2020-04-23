@@ -40,7 +40,7 @@ public class SissCurrentWorkitemDAO {
 					.from(sissCurrentWorkitem) 
 					.where(sissCurrentWorkitem.cId.isNotNull())
 					.list(new QTuple(
-							StringTemplate.create("CASEWHEN ("+sissCurrentWorkitem.cAutosuspect+"= 'true', 1,0 )") ,
+							StringTemplate.create("0") ,
 							StringTemplate.create("FORMATDATETIME("+sissCurrentWorkitem.cCreated+", {ts 'yyyy-MM-dd 00:00:00'})"),
 							StringTemplate.create("CASEWHEN ("+sissCurrentWorkitem.cDeleted+"= 'true', 1,0 )") ,
 							StringTemplate.create("FORMATDATETIME("+sissCurrentWorkitem.cDuedate+", {ts 'yyyy-MM-dd 00:00:00'})"),

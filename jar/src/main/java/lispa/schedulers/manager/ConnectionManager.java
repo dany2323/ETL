@@ -2,13 +2,13 @@ package lispa.schedulers.manager;
 
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DM_ALM_DB_URL;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DM_ALM_DRIVER_CLASS_NAME;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DM_ALM_USER;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DM_ALM_PSW;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DM_ALM_USER;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_DB_URL;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_DRIVER_CLASS_NAME;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_USER;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_PSW;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.H2_DRIVER_CLASS_NAME;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_USER;
+import static lispa.schedulers.manager.DmAlmConfigReaderProperties.PG_DRIVER_CLASS_NAME;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.PROPERTIES_READER_FILE_NAME;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_PSW;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_URL;
@@ -29,13 +29,15 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.exception.PropertiesReaderException;
-
 import org.apache.log4j.Logger;
 
 import it.lispa.jotm.datasource.crypt.EncryptionHelper;
 import it.lispa.jotm.datasource.crypt.support.BaseEncryptionHelper;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.exception.PropertiesReaderException;
+
+//import it.lispa.jotm.datasource.crypt.EncryptionHelper;
+//import it.lispa.jotm.datasource.crypt.support.BaseEncryptionHelper;
 
 /**
  * Visto che l’applicazione ha necessità di gestire la concorrenzialità
@@ -164,7 +166,7 @@ public class ConnectionManager{
 
 				Class.forName(propertiesReader
 						.getProperty(DM_ALM_DRIVER_CLASS_NAME));
-
+				
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(DM_ALM_DB_URL),
 						propertiesReader.getProperty(DM_ALM_USER),
@@ -250,10 +252,10 @@ public class ConnectionManager{
 					return getConnectionSIRECurrent();
 				}
 			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE CURRENT ***");
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE PG SIRE CURRENT ***");
 				
 				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
+						.getProperty(PG_DRIVER_CLASS_NAME));
 
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SIRE_CURRENT_URL),
@@ -293,10 +295,10 @@ public class ConnectionManager{
 					return getConnectionSIREHistory();
 				}
 			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE HISTORY ***");
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE PG SIRE HISTORY ***");
 				
 				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
+						.getProperty(PG_DRIVER_CLASS_NAME));
 
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SIRE_HISTORY_URL),
@@ -336,10 +338,10 @@ public class ConnectionManager{
 					return getConnectionSISSCurrent();
 				}
 			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SISS CURRENT ***");
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE PG SISS CURRENT ***");
 				
 				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
+						.getProperty(PG_DRIVER_CLASS_NAME));
 
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SISS_CURRENT_URL),
@@ -379,10 +381,10 @@ public class ConnectionManager{
 					return getConnectionSISSHistory();
 				}
 			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SISS HISTORY ***");
+				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE PG SISS HISTORY ***");
 				
 				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
+						.getProperty(PG_DRIVER_CLASS_NAME));
 
 				c = DriverManager.getConnection(
 						propertiesReader.getProperty(SISS_HISTORY_URL),
@@ -433,18 +435,18 @@ public class ConnectionManager{
 				// Elimino tutto cio' che nell'URL della connessione viene dopo
 				// il carattere ';'
 				else if (URL.equals(propertiesReader.getProperty(
-						SIRE_CURRENT_URL).split(";")[0])) {
-					connectionSireCurrentPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
-						SIRE_HISTORY_URL).split(";")[0])) {
-					connectionSireHistoryPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
 						SISS_CURRENT_URL).split(";")[0])) {
 					connectionSissCurrentPool.add(conn);
 				} else if (URL.equals(propertiesReader.getProperty(
 						SISS_HISTORY_URL).split(";")[0])) {
 					connectionSissHistoryPool.add(conn);
-				}
+				} else if (URL.equals(propertiesReader.getProperty(
+						SIRE_CURRENT_URL).split(";")[0])) {
+					connectionSireCurrentPool.add(conn);
+				} else if (URL.equals(propertiesReader.getProperty(
+						SIRE_HISTORY_URL).split(";")[0])) {
+					connectionSireHistoryPool.add(conn);
+				} 
 			} else {
 
 			}
@@ -542,5 +544,8 @@ public class ConnectionManager{
 
 	}
 
+	public static PropertiesReader GetPropertiesReader() {
+		return propertiesReader;
+	}
 
 }

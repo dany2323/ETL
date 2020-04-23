@@ -4,176 +4,177 @@ import javax.annotation.Generated;
 
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class SireCurrentProject {
+	
+	private Long cPk;
+	
+	private Long cUri;
+	
+	private Long cRev;
+	
+	private Boolean cDeleted;
 
     private Boolean cActive;
 
-    private Boolean cDeleted;
+    private String cDescription;
 
     private java.sql.Date cFinish;
 
     private String cId;
-
-    private Boolean cIsLocal;
-
+    
+    private Long fkLead;
+    
+    private Long fkUriLead;
+    
     private String cLocation;
 
     private java.sql.Date cLockworkrecordsdate;
 
     private String cName;
 
-    private String cPk;
+    private Long fkProjectgroup;
 
-    private Long cRev;
+    private Long fkUriProjectgroup;
 
     private java.sql.Date cStart;
 
     private String cTrackerprefix;
 
-    private String cUri;
+    
+	public Long getcPk() {
+		return cPk;
+	}
 
-    private String fkLead;
+	public void setcPk(Long cPk) {
+		this.cPk = cPk;
+	}
 
-    private String fkProjectgroup;
+	public Long getcUri() {
+		return cUri;
+	}
 
-    private String fkUriLead;
+	public void setcUri(Long cUri) {
+		this.cUri = cUri;
+	}
 
-    private String fkUriProjectgroup;
+	public Long getcRev() {
+		return cRev;
+	}
 
-    public Boolean getcActive() {
-        return cActive;
-    }
+	public void setcRev(Long cRev) {
+		this.cRev = cRev;
+	}
 
-    public void setcActive(Boolean cActive) {
-        this.cActive = cActive;
-    }
+	public Boolean getcDeleted() {
+		return cDeleted;
+	}
 
-    public Boolean getcDeleted() {
-        return cDeleted;
-    }
+	public void setcDeleted(Boolean cDeleted) {
+		this.cDeleted = cDeleted;
+	}
 
-    public void setcDeleted(Boolean cDeleted) {
-        this.cDeleted = cDeleted;
-    }
+	public Boolean getcActive() {
+		return cActive;
+	}
 
-    public java.sql.Date getcFinish() {
-        return cFinish;
-    }
+	public void setcActive(Boolean cActive) {
+		this.cActive = cActive;
+	}
 
-    public void setcFinish(java.sql.Date cFinish) {
-        this.cFinish = cFinish;
-    }
+	public String getcDescription() {
+		return cDescription;
+	}
 
-    public String getcId() {
-        return cId;
-    }
+	public void setcDescription(String cDescription) {
+		this.cDescription = cDescription;
+	}
 
-    public void setcId(String cId) {
-        this.cId = cId;
-    }
+	public java.sql.Date getcFinish() {
+		return cFinish;
+	}
 
-    public Boolean getcIsLocal() {
-        return cIsLocal;
-    }
+	public void setcFinish(java.sql.Date cFinish) {
+		this.cFinish = cFinish;
+	}
 
-    public void setcIsLocal(Boolean cIsLocal) {
-        this.cIsLocal = cIsLocal;
-    }
+	public String getcId() {
+		return cId;
+	}
 
-    public String getcLocation() {
-        return cLocation;
-    }
+	public void setcId(String cId) {
+		this.cId = cId;
+	}
 
-    public void setcLocation(String cLocation) {
-        this.cLocation = cLocation;
-    }
+	public Long getFkLead() {
+		return fkLead;
+	}
 
-    public java.sql.Date getcLockworkrecordsdate() {
-        return cLockworkrecordsdate;
-    }
+	public void setFkLead(Long fkLead) {
+		this.fkLead = fkLead;
+	}
 
-    public void setcLockworkrecordsdate(java.sql.Date cLockworkrecordsdate) {
-        this.cLockworkrecordsdate = cLockworkrecordsdate;
-    }
+	public Long getFkUriLead() {
+		return fkUriLead;
+	}
 
-    public String getcName() {
-        return cName;
-    }
+	public void setFkUriLead(Long fkUriLead) {
+		this.fkUriLead = fkUriLead;
+	}
 
-    public void setcName(String cName) {
-        this.cName = cName;
-    }
+	public String getcLocation() {
+		return cLocation;
+	}
 
-    public String getcPk() {
-        return cPk;
-    }
+	public void setcLocation(String cLocation) {
+		this.cLocation = cLocation;
+	}
 
-    public void setcPk(String cPk) {
-        this.cPk = cPk;
-    }
+	public java.sql.Date getcLockworkrecordsdate() {
+		return cLockworkrecordsdate;
+	}
 
-    public Long getcRev() {
-        return cRev;
-    }
+	public void setcLockworkrecordsdate(java.sql.Date cLockworkrecordsdate) {
+		this.cLockworkrecordsdate = cLockworkrecordsdate;
+	}
 
-    public void setcRev(Long cRev) {
-        this.cRev = cRev;
-    }
+	public String getcName() {
+		return cName;
+	}
 
-    public java.sql.Date getcStart() {
-        return cStart;
-    }
+	public void setcName(String cName) {
+		this.cName = cName;
+	}
 
-    public void setcStart(java.sql.Date cStart) {
-        this.cStart = cStart;
-    }
+	public Long getFkProjectgroup() {
+		return fkProjectgroup;
+	}
 
-    public String getcTrackerprefix() {
-        return cTrackerprefix;
-    }
+	public void setFkProjectgroup(Long fkProjectgroup) {
+		this.fkProjectgroup = fkProjectgroup;
+	}
 
-    public void setcTrackerprefix(String cTrackerprefix) {
-        this.cTrackerprefix = cTrackerprefix;
-    }
+	public Long getFkUriProjectgroup() {
+		return fkUriProjectgroup;
+	}
 
-    public String getcUri() {
-        return cUri;
-    }
+	public void setFkUriProjectgroup(Long fkUriProjectgroup) {
+		this.fkUriProjectgroup = fkUriProjectgroup;
+	}
 
-    public void setcUri(String cUri) {
-        this.cUri = cUri;
-    }
+	public java.sql.Date getcStart() {
+		return cStart;
+	}
 
-    public String getFkLead() {
-        return fkLead;
-    }
+	public void setcStart(java.sql.Date cStart) {
+		this.cStart = cStart;
+	}
 
-    public void setFkLead(String fkLead) {
-        this.fkLead = fkLead;
-    }
+	public String getcTrackerprefix() {
+		return cTrackerprefix;
+	}
 
-    public String getFkProjectgroup() {
-        return fkProjectgroup;
-    }
-
-    public void setFkProjectgroup(String fkProjectgroup) {
-        this.fkProjectgroup = fkProjectgroup;
-    }
-
-    public String getFkUriLead() {
-        return fkUriLead;
-    }
-
-    public void setFkUriLead(String fkUriLead) {
-        this.fkUriLead = fkUriLead;
-    }
-
-    public String getFkUriProjectgroup() {
-        return fkUriProjectgroup;
-    }
-
-    public void setFkUriProjectgroup(String fkUriProjectgroup) {
-        this.fkUriProjectgroup = fkUriProjectgroup;
-    }
+	public void setcTrackerprefix(String cTrackerprefix) {
+		this.cTrackerprefix = cTrackerprefix;
+	}
 
 }
 

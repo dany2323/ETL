@@ -20,7 +20,7 @@ public class SissHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
 
     private static final long serialVersionUID = -1076062280;
 
-    public static final SissHistoryUser user = new SissHistoryUser("USER");
+    public static final SissHistoryUser user = new SissHistoryUser("T_USER");
 
     public final StringPath cAvatarfilename = createString("C_AVATARFILENAME");
 
@@ -45,15 +45,15 @@ public class SissHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
     public final StringPath cUri = createString("C_URI");
 
     public SissHistoryUser(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "T_USER");
     }
 
     public SissHistoryUser(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "T_USER");
     }
 
     public SissHistoryUser(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser.class, metadata, DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser.class, metadata, DmAlmConstants.POLARION_SCHEMA, "T_USER");
     }
 
 }

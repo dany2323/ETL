@@ -22,8 +22,6 @@ public class SissCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public static final SissCurrentWorkitem workitem = new SissCurrentWorkitem("WORKITEM");
 
-    public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
-
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");

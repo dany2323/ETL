@@ -28,6 +28,8 @@ public class SissHistoryProject extends com.mysema.query.sql.RelationalPathBase<
 
     public final DatePath<java.sql.Date> cFinish = createDate("C_FINISH", java.sql.Date.class);
 
+    public final DatePath<java.sql.Date> cCreated = createDate("C_CREATED", java.sql.Date.class);
+
     public final StringPath cId = createString("C_ID");
 
     public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");

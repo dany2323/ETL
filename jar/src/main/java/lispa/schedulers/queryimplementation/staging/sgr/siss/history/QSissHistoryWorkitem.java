@@ -25,8 +25,6 @@ public class QSissHistoryWorkitem extends com.mysema.query.sql.RelationalPathBas
     private static final long serialVersionUID = -502668318;
 
     public static final QSissHistoryWorkitem sissHistoryWorkitem = new QSissHistoryWorkitem("DMALM_SISS_HISTORY_WORKITEM");
-
-    public final NumberPath<Integer> cAutosuspect = createNumber("C_AUTOSUSPECT", Integer.class);
     
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 

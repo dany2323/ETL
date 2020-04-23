@@ -33,7 +33,7 @@ public class SissCurrentWorkitemLinkedDAO {
 			oracleConnection = cm.getConnectionOracle();
 			oracleConnection.setAutoCommit(false);
 
-			lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems stg_WorkItemLinked = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
+			lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems stgWorkItemLinked = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems fonteWorkitemLinked = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 
 			SQLTemplates dialect = new HSQLDBTemplates() {
@@ -77,13 +77,13 @@ public class SissCurrentWorkitemLinkedDAO {
 
 				el = ((Tuple) i.next()).toArray();
 
-				new SQLInsertClause(oracleConnection, dialect, stg_WorkItemLinked)
-						.columns(stg_WorkItemLinked.cSuspect, stg_WorkItemLinked.cRole,
-								stg_WorkItemLinked.fkPWorkitem,
-								stg_WorkItemLinked.cRevision,
-								stg_WorkItemLinked.fkUriPWorkitem,
-								stg_WorkItemLinked.fkUriWorkitem,
-								stg_WorkItemLinked.fkWorkitem)
+				new SQLInsertClause(oracleConnection, dialect, stgWorkItemLinked)
+						.columns(stgWorkItemLinked.cSuspect, stgWorkItemLinked.cRole,
+								stgWorkItemLinked.fkPWorkitem,
+								stgWorkItemLinked.cRevision,
+								stgWorkItemLinked.fkUriPWorkitem,
+								stgWorkItemLinked.fkUriWorkitem,
+								stgWorkItemLinked.fkWorkitem)
 						.values(el[0],
 								el[1],
 								el[2],

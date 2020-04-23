@@ -22,9 +22,6 @@ public class QSissCurrentWorkitem extends com.mysema.query.sql.RelationalPathBas
 
     public static final QSissCurrentWorkitem sissCurrentWorkitem = new QSissCurrentWorkitem("DMALM_SISS_CURRENT_WORKITEM");
 
-    //public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
-    public final NumberPath<Integer> cAutosuspect = createNumber("C_AUTOSUSPECT", Integer.class);
-
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 
     //public final BooleanPath cDeleted = createBoolean("C_DELETED");

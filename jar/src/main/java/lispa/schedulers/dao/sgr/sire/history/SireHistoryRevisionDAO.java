@@ -5,62 +5,80 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
+
 import org.apache.log4j.Logger;
+
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.expr.StringExpression;
+import com.mysema.query.types.template.StringTemplate;
+
 
 public class SireHistoryRevisionDAO {
 
 	private static Logger logger = Logger.getLogger(SireHistoryRevisionDAO.class);
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
-	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision stg_Revisions = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision.revision;
 
-	public static long getMaxRevision() throws Exception {
+//	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
+//	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
+	
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
+	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision stgRevisions = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision.revision;
+
+	private static QDmalmCurrentSubterraUriMap fonteSubterraUriMap = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+
+	public static long getMaxRevision() throws Exception
+	{
 
 		ConnectionManager cm = null;
-		Connection connH2 = null;
+		Connection oracle = null;
 
 
 		List<Long> max = new ArrayList<Long>();
 		try{
 
 			cm 	   = ConnectionManager.getInstance();
-			connH2 = cm.getConnectionSIREHistory();
+			oracle = cm.getConnectionOracle();
 
 			Timestamp lastValid = DateUtils.addSecondsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -3600);
 
-			SireHistoryRevision  fonteRevisions  = SireHistoryRevision.revision;
-
-			SQLTemplates dialect 				 = new HSQLDBTemplates(){ {
-				setPrintSchema(true);
-			}};
-			SQLQuery query 						 = new SQLQuery(connH2, dialect); 
+			SQLTemplates dialect 				 = new HSQLDBTemplates();
+			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
 			max = query.from(fonteRevisions).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.castToNum(Long.class).max());
 
-			if(max == null || max.size() == 0 || max.get(0) == null) {
+			if(max == null || max.size() == 0 || max.get(0) == null)
+			{
 				return 0;
 			}
-		} catch (Exception e)	{
+
+		}
+		
+		catch (Exception e)
+		{
 			logger.error(e.getMessage(), e);
 			
 			throw new DAOException(e);
-		} finally {
-			if(cm != null) cm.closeConnection(connH2);
+		}
+		finally
+		{
+			if(cm != null) cm.closeConnection(oracle);
 		}
 		return max.get(0).longValue();
 	}
@@ -81,14 +99,20 @@ public class SireHistoryRevisionDAO {
 
 			max = query.from(stgRevision).list(stgRevision.cCreated.max());
 
-			if(max == null || max.size() == 0 || max.get(0) == null) {
+			if(max == null || max.size() == 0 || max.get(0) == null)
+			{
 				return DateUtils.stringToTimestamp("1900-01-01 00:00:00", "yyyy-MM-dd 00:00:00");
 			}
-		} catch (Exception e) {
+
+		}
+		catch (Exception e)
+		{
 			logger.error(e.getMessage(), e);
 			
 			throw new DAOException(e);
-		} finally {
+		}
+		finally
+		{
 			if(cm != null) cm.closeConnection(oracle);
 		}
 
@@ -99,105 +123,104 @@ public class SireHistoryRevisionDAO {
 
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
 		List<Tuple>       revisions = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSIREHistory();
 			revisions = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates()
-			{ {
-				setPrintSchema(true);
-			}};
+			PostgresTemplates dialect = new PostgresTemplates()
+			{
+				{
+					setPrintSchema(true);
+				}
+			};
 
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+			SQLQuery query 		 = new SQLQuery(connOracle, dialect); 
 
 			revisions = query.from(fonteRevisions)
 					.where(fonteRevisions.cCreated.gt(minRevision))
 					.where(fonteRevisions.cName.castToNum(Long.class).loe(maxRevision))
-					.list(fonteRevisions.all());
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stg_Revisions);
-
-			int batch_size_counter = 0;
+					.list(
+							fonteSubterraUriMap.cPk,
+							fonteRevisions.cAuthor,
+							fonteRevisions.cCreated,
+							fonteRevisions.cDeleted,
+							fonteRevisions.cInternalcommit,
+							StringTemplate.create("0 as c_is_local"),
+							fonteRevisions.cMessage,
+							fonteRevisions.cName,
+							fonteRevisions.cRepositoryname,
+							fonteRevisions.cRev,
+							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
+							);
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
+			int batch_size_counter=0;
 			for(Tuple row : revisions) {
-				batch_size_counter++;
+				
+				Object[] vals = row.toArray();
+				
+				//Applico il cast a timespent solo se esistono dei valori data 
+				StringExpression dateValue = null;
+				if(vals[2] != null) {
+					dateValue = StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
+				}
 
-				insert
-				.columns(stg_Revisions.cPk,
-						stg_Revisions.cAuthor,
-						stg_Revisions.cCreated,
-						stg_Revisions.cDeleted,
-						stg_Revisions.cInternalcommit,
-						stg_Revisions.cIsLocal,
-						stg_Revisions.cMessage,
-						stg_Revisions.cName,
-						stg_Revisions.cRepositoryname,
-						stg_Revisions.cRev,
-						stg_Revisions.cUri
-				).values(								
-						row.get(fonteRevisions.cPk),
-						StringUtils.getMaskedValue(row.get(fonteRevisions.cAuthor)),
-						row.get(fonteRevisions.cCreated),
-						row.get(fonteRevisions.cDeleted),
-						row.get(fonteRevisions.cInternalcommit),
-						row.get(fonteRevisions.cIsLocal),
-						row.get(fonteRevisions.cMessage) != null && row.get(fonteRevisions.cMessage).length() > 4000 ? row.get(fonteRevisions.cMessage).substring(0, 4000) : row.get(fonteRevisions.cMessage),
-								row.get(fonteRevisions.cName),
-								row.get(fonteRevisions.cRepositoryname),
-								row.get(fonteRevisions.cRev),
-								row.get(fonteRevisions.cUri)
-						);
-				insert.addBatch();
+				insert.columns(
+						stgRevisions.cPk,
+						stgRevisions.cAuthor,
+						stgRevisions.cCreated,
+						stgRevisions.cDeleted,
+						stgRevisions.cInternalcommit,
+						stgRevisions.cIsLocal,
+						stgRevisions.cMessage,
+						stgRevisions.cName,
+						stgRevisions.cRepositoryname,
+						stgRevisions.cRev,
+						stgRevisions.cUri
+						)
+						.values(								
+								vals[0],
+								StringUtils.getMaskedValue((String)vals[1]),
+								dateValue,
+								vals[3],
+								vals[4],
+								vals[5],
+								vals[6] != null && vals[6].toString().length() > 4000 ? vals[6].toString().substring(0, 4000) : vals[6],
+								vals[7],
+								vals[8],
+								vals[9],
+								vals[10]
+								).addBatch();
+				batch_size_counter++;
 				if(!revisions.isEmpty() && batch_size_counter == DmAlmConstants.BATCH_SIZE) {
 					insert.execute();
-					insert = new SQLInsertClause(connOracle, dialect, stg_Revisions);
+					insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
 					batch_size_counter = 0;
 					
 				}
 			}
 			if(!revisions.isEmpty()) {
 				insert.execute();
+				connOracle.commit();
 			}
-			connOracle.commit();
 
-		} catch(Exception e) {
-			Throwable cause = e;
-			while (cause.getCause() != null)
-				cause = cause.getCause();
-			String message = cause.getMessage();
-			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK) || StringUtils.findRegex(message, DmalmRegex.REGEXLOCKTABLE)) {
-				ErrorManager.getInstance().exceptionDeadlock(false, e);
-			} else {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-			}
-		} finally {
-			if(cm != null) cm.closeConnection(connOracle);
-			if(cm != null) cm.closeConnection(connH2);
+
+
 		}
+		catch(Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			
+			throw new DAOException(e);
+		}
+		finally {
+			if(cm != null) cm.closeConnection(connOracle);
+		}
+
 	}
 	
-	public static void delete() throws Exception {
-		ConnectionManager cm = null;
-		Connection OracleConnection = null;
-		SQLTemplates dialect = new HSQLDBTemplates();
-		try {
-			cm = ConnectionManager.getInstance();
-			OracleConnection = cm.getConnectionOracle();
-			new SQLDeleteClause(OracleConnection, dialect, stg_Revisions)
-				.execute();
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
-		}
-	}
 }

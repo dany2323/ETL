@@ -5,19 +5,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryUser;
 import lispa.schedulers.utils.StringUtils;
+
 import org.apache.log4j.Logger;
+
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.template.StringTemplate;
 
 public class SireHistoryUserDAO {
 
@@ -25,115 +30,146 @@ public class SireHistoryUserDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser  fonteUsers= 
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
-	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryUser stg_fonteUsers = 
+	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryUser stgUsers = 
 			lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryUser.user;
+	
+	public static void fillSireHistoryUser(long minRevision, long maxRevision)
+			throws SQLException, DAOException {
 
-	public static void fillSireHistoryUser(long minRevision, long maxRevision) throws SQLException, DAOException {
-
-		ConnectionManager cm   = null;
-		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
-		List<Tuple>       users = null;
+		ConnectionManager cm = null;
+		Connection connOracle = null;
+		Connection pgConnection = null;
+		List<Tuple> users = null;
+		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSIREHistory();
+			pgConnection = cm.getConnectionSIREHistory();
 			users = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates()
-			{ {
-				setPrintSchema(true);
-			}};
+			PostgresTemplates dialect = new PostgresTemplates() {
+				{
+					setPrintSchema(true);
+				}
+			};
 
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			users = query.from(fonteUsers)
 					.where(fonteUsers.cRev.gt(minRevision))
 					.where(fonteUsers.cRev.loe(maxRevision))
-					.list(
-							fonteUsers.all()
-							);
+					.list(fonteUsers.cAvatarfilename, fonteUsers.cDeleted,
+							fonteUsers.cDisablednotifications,
+							fonteUsers.cEmail, fonteUsers.cId,
+							fonteUsers.cInitials,
+							StringTemplate.create("0 as c_is_local"),
+							fonteUsers.cName, fonteUsers.cUri, fonteUsers.cRev);
 
-			for(Tuple row : users) {
-				new SQLInsertClause(connOracle, dialect, stg_fonteUsers)
-				.columns(
-						stg_fonteUsers.cAvatarfilename,
-						stg_fonteUsers.cDeleted,
-						stg_fonteUsers.cDisablednotifications,
-						stg_fonteUsers.cEmail,
-						stg_fonteUsers.cId,
-						stg_fonteUsers.cInitials,
-						stg_fonteUsers.cIsLocal,
-						stg_fonteUsers.cName,
-						stg_fonteUsers.cPk,
-						stg_fonteUsers.cRev,
-						stg_fonteUsers.cUri
-						)
-						.values(								
-								row.get(fonteUsers.cAvatarfilename),
-								row.get(fonteUsers.cDeleted),
-								row.get(fonteUsers.cDisablednotifications),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cEmail)),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cId)),
-								row.get(fonteUsers.cInitials),
-								row.get(fonteUsers.cIsLocal),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cName)),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cPk)),
-								row.get(fonteUsers.cRev),
-								StringUtils.getMaskedValue(row.get(fonteUsers.cUri))
-							).execute();
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
+					stgUsers);
+			int n_righe_inserite = 0;
+			for (Tuple row : users) {
+				Object[] vals = row.toArray();
+				String cUri = vals[8] != null
+						? (queryConnOracle(connOracle, dialect)
+								.from(stgSubterra)
+								.where(stgSubterra.cId
+										.eq(Long.valueOf(vals[8].toString())))
+								.where(stgSubterra.cRepo.eq(
+										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
+								.count() > 0
+										? queryConnOracle(connOracle, dialect)
+												.from(stgSubterra)
+												.where(stgSubterra.cId
+														.eq(Long.valueOf(vals[8]
+																.toString())))
+												.where(stgSubterra.cRepo.eq(
+														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
+												.list(stgSubterra.cPk).get(0)
+										: "")
+						: "";
+				String cPk = cUri + "%"
+						+ (vals[9] != null ? vals[9].toString() : "");
+
+				insert.columns(stgUsers.cAvatarfilename, stgUsers.cDeleted,
+						stgUsers.cDisablednotifications, stgUsers.cEmail,
+						stgUsers.cId, stgUsers.cInitials, stgUsers.cIsLocal,
+						stgUsers.cName, stgUsers.cPk, stgUsers.cRev,
+						stgUsers.cUri)
+						.values(vals[0], vals[1], vals[2],
+								StringUtils.getMaskedValue((String) vals[3]),
+								StringUtils.getMaskedValue((String) vals[4]),
+								vals[5], vals[6],
+								StringUtils.getMaskedValue((String) vals[7]),
+								StringUtils.getMaskedValue(cPk), vals[9],
+								StringUtils.getMaskedValue(cUri))
+						.addBatch();
+
+				n_righe_inserite++;
+
+				if (!insert.isEmpty()) {
+					if (n_righe_inserite
+							% lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						connOracle.commit();
+						insert = new SQLInsertClause(connOracle, dialect,
+								stgUsers);
+					}
+				}
+
 			}
-			connOracle.commit();
-		} catch(Exception e) {
-			Throwable cause = e;
-			while (cause.getCause() != null)
-				cause = cause.getCause();
-			String message = cause.getMessage();
-			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK) || StringUtils.findRegex(message, DmalmRegex.REGEXLOCKTABLE)) {
-				ErrorManager.getInstance().exceptionDeadlock(false, e);
-			} else {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
+			if (!insert.isEmpty()) {
+				insert.execute();
+				connOracle.commit();
 			}
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			if (cm != null)
+				cm.closeConnection(pgConnection);
+			if (cm != null)
+				cm.closeConnection(connOracle);
 		}
-	} 
+
+	}
 
 	public static long getMinRevision() throws Exception {
 		ConnectionManager cm = null;
 		Connection oracle = null;
 
 		List<Long> max = new ArrayList<Long>();
-		try{
+		try {
 
-			cm 	   = ConnectionManager.getInstance();
+			cm = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 
-			QSireHistoryUser   stgUsers  = QSireHistoryUser.sireHistoryUser;
-			SQLTemplates dialect 				 = new HSQLDBTemplates();
-			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
+			QSireHistoryUser stgUsers = QSireHistoryUser.sireHistoryUser;
+			SQLTemplates dialect = new HSQLDBTemplates();
+			SQLQuery query = new SQLQuery(oracle, dialect);
 
 			max = query.from(stgUsers).list(stgUsers.cRev.max());
 
-			if(max == null || max.size() == 0 || max.get(0) == null) {
+			if (max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;
 			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
+
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+			if (cm != null)
+				cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
 	}
-	
+
 	public static void delete() throws Exception {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
@@ -141,8 +177,7 @@ public class SireHistoryUserDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			OracleConnection = cm.getConnectionOracle();
-			new SQLDeleteClause(OracleConnection, dialect, stg_fonteUsers)
-				.execute();
+			new SQLDeleteClause(OracleConnection, dialect, stgUsers).execute();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
@@ -153,4 +188,10 @@ public class SireHistoryUserDAO {
 			}
 		}
 	}
+
+	private static SQLQuery queryConnOracle(Connection connOracle,
+			PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
+
 }
