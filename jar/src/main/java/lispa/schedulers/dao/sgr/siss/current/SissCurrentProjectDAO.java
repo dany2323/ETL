@@ -121,7 +121,6 @@ public class SissCurrentProjectDAO
 			
 
 			List<Tuple> projects = query.from(fonteProjects)
-//					.where(fonteProjects.cLocation.like("default:/Sviluppo/%"))
 					.where((fonteProjects.cLocation.length().subtract(fonteProjects.cLocation.toString().replaceAll("/", "").length())).goe(4))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
 					.list(new QTuple(
@@ -142,31 +141,10 @@ public class SissCurrentProjectDAO
 		                            StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
 		                            StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
 		                            )
-							
-							/*
-							new QTuple(
-							StringTemplate.create("SUBSTRING("+fonteProjects.cTrackerprefix+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cIsLocal+"= 'true', 1,0 )") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cPk+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkUriLead+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cDeleted+"= 'true', 1,0 )") ,
-							fonteProjects.cFinish,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cUri+",0,4000)") ,
-							fonteProjects.cStart,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkUriProjectgroup+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cActive+"= 'true', 1,0 )") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cLocation+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkProjectgroup+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkLead+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+fonteProjects.cLockworkrecordsdate+", {ts 'yyyy-MM-dd 00:00:00'})"),
-							StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
-							)*/
 							);
 
 			logger.debug("fillSissCurrentProject - projects.size: "+ projects.size());
 			
-			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			SQLInsertClause insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
 			Iterator<Tuple> i = projects.iterator();
 			Object[] el= null;
@@ -247,152 +225,5 @@ public class SissCurrentProjectDAO
 
 	}
 	
-	public static List<Tuple> getC_NameNull(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-		List<Tuple> project = new ArrayList<Tuple>();
-
-		try{
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSissCurrentProject   stgProject  = QSissCurrentProject.sissCurrentProject;
-			
-			project = 
-					
-					query.from(stgProject)
-					.where(stgProject.dataCaricamento.eq(dataEsecuzione))
-				    .where(stgProject.cName.isNull()).list(stgProject.all()) ;
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-		
-		return project;
-	}
 	
-	public static List<Tuple> getAllProjectSW(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-		List<Tuple> project = new ArrayList<Tuple>();
-
-		try{
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSissCurrentProject   stgProject  = QSissCurrentProject.sissCurrentProject;
-			
-			//select  DMALM_SIRE_CURRENT_PROJECT.* from DMALM_SIRE_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
-			
-			project = 
-					
-					query.from(stgProject)
-					.where(stgProject.dataCaricamento.eq(dataEsecuzione))
-				    .where(stgProject.cName.trim().like("SW-%")).list(stgProject.all()) ;
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-		
-		return project;
-	}
-	
-//	select  
-//	c_name, 
-//	INSTR(C_NAME,'{'), 
-//	INSTR(C_NAME,'}'), 
-//	REPLACE(REPLACE(REGEXP_SUBSTR(C_NAME, '{[a-zA-Z0-9_.*!?-]+}'), '{',''),'}','')   
-//	from DMALM_SIRE_CURRENT_PROJECT 
-//	where ltrim(c_name) like 'SW-%'
-	
-	public static List<Tuple> getAllProjectC_Name(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-		List<Tuple> project = new ArrayList<Tuple>();
-
-		try{
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSissCurrentProject   stgProject  = QSissCurrentProject.sissCurrentProject;
-			
-			//select  DMALM_SIRE_CURRENT_PROJECT.* from DMALM_SIRE_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
-			
-			project = 
-					
-					query.from(stgProject)
-
-				    .where(stgProject.cName.trim().like("SW-%"))
-				    .where(stgProject.dataCaricamento.eq(dataEsecuzione))
-			    	.list
-			    	 	(
-			    			stgProject.cName,
-			    			StringTemplate.create("INSTR(C_NAME,'{')"),
-			    			StringTemplate.create("INSTR(C_NAME,'}')"),
-			    			StringTemplate.create("REPLACE(REPLACE(REGEXP_SUBSTR(C_NAME, '{[a-zA-Z0-9_.*!?-]+}'), '{',''),'}','') as name"),
-							StringTemplate.create("SUBSTR(C_NAME, INSTR(C_NAME,'}')+1, LENGTH(C_NAME)-INSTR(C_NAME,'}') )")
-						);
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-		
-		return project;
-	}
-	public static void recoverSissCurrentProject() throws Exception {
-
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-			QSissCurrentProject   stgProject  = QSissCurrentProject.sissCurrentProject;
-
-			new SQLDeleteClause(connection, dialect, stgProject)
-			.where(stgProject.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
-
-		} catch (Exception e) 
-		{
-			
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-	}
 }

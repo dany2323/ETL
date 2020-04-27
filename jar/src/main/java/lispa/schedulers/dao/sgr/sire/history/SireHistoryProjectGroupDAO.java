@@ -134,6 +134,7 @@ public class SireHistoryProjectGroupDAO
 	public static long getMinRevision() throws Exception {
 		ConnectionManager cm = null;
 		Connection oracle = null;
+		QSireHistoryProjectgroup stgProjectGroups = QSireHistoryProjectgroup.sireHistoryProjectgroup;
 
 		List<Long> max = new ArrayList<Long>();
 		try{
@@ -190,32 +191,6 @@ public class SireHistoryProjectGroupDAO
 			if(cm != null) cm.closeConnection(connection);
 		}
 	}
-	public static void recoverSireHistoryProjectGroup() throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-	
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QSireHistoryProjectgroup stgProjectGroups = QSireHistoryProjectgroup.sireHistoryProjectgroup; 
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgProjectGroups).where(stgProjectGroups.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
-			connection.commit();
-		}
-		catch(Exception e){
-			logger.error(e.getMessage(), e);
-			
-			
-			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-	}	
 	
 	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
 		return new SQLQuery(connOracle, dialect);

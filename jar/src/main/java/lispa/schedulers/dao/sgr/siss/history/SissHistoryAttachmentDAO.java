@@ -183,6 +183,8 @@ public class SissHistoryAttachmentDAO {
 	public static long getMinRevision() throws Exception {
 		ConnectionManager cm = null;
 		Connection oracle = null;
+		lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryAttachment stgAttachment = QSissHistoryAttachment.dmalmSissHistoryAttachment;
+
 
 		List<Long> max = new ArrayList<Long>();
 		try {

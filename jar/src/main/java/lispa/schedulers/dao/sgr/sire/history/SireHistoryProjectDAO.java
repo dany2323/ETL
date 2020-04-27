@@ -40,7 +40,8 @@ public class SireHistoryProjectDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
-	private static QSireHistoryProject stgProjects = QSireHistoryProject.sireHistoryProject;
+	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryProject stgProjects = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryProject.project;
+
 
 	public static void fillSireHistoryProject(long minRevision,
 			long maxRevision) throws SQLException, DAOException {
@@ -97,8 +98,7 @@ public class SireHistoryProjectDAO {
 			logger.debug(
 					"SireHistoryProjectDAO.fillSireHistoryProject - projects.size: "
 							+ (projects == null ? "NULL" : projects.size()));
-			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-					.getDataEsecuzione();
+			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
 					stgProjects);
 			int nRigheInserite = 0;
@@ -186,12 +186,7 @@ public class SireHistoryProjectDAO {
 						: "";
 
 				// Applico il cast a timespent solo se esistono dei valori data
-				StringExpression dateValue = null;
-				if (cCreated != "") {
-					dateValue = StringTemplate.create("to_timestamp('"
-							+ cCreated + "', 'YYYY-MM-DD HH24:MI:SS.FF')");
-				}
-
+				
 				insert.columns(stgProjects.cTrackerprefix, stgProjects.cIsLocal,
 						stgProjects.cPk, stgProjects.fkUriLead,
 						stgProjects.cDeleted, stgProjects.cFinish,
@@ -199,19 +194,15 @@ public class SireHistoryProjectDAO {
 						stgProjects.fkUriProjectgroup, stgProjects.cActive,
 						stgProjects.cLocation, stgProjects.fkProjectgroup,
 						stgProjects.fkLead, stgProjects.cLockworkrecordsdate,
-						stgProjects.cName, stgProjects.cId,
-						stgProjects.dataCaricamento,
-						stgProjects.sireHistoryProjectPk, stgProjects.cRev,
-						stgProjects.cCreated, stgProjects.cDescription)
+						stgProjects.cName, stgProjects.cId,stgProjects.cRev,
+						stgProjects.cDescription)
 						.values(vals[0], vals[1], cPk,
 								StringUtils.getMaskedValue(fkUriLead), vals[4],
 								vals[5], cUri, vals[7], fkUriProjectgroup,
 								vals[9], vals[10], fkProjectgroup,
 								StringUtils.getMaskedValue(fkLead), vals[12],
-								vals[13], vals[14], dataEsecuzione,
-								StringTemplate
-										.create("HISTORY_PROJECT_SEQ.nextval"),
-								vals[15], dateValue, vals[16])
+								vals[13], vals[14],								
+								vals[15], vals[16])
 						.execute();
 				nRigheInserite++;
 				if (!insert.isEmpty()) {
@@ -231,7 +222,6 @@ public class SireHistoryProjectDAO {
 				connOracle.commit();
 			}
 			ConnectionManager.getInstance().dismiss();
-			updateProjectTemplate(minRevision, maxRevision);
 
 			logger.debug("fine projectdao.fill");
 		} catch (Exception e) {
@@ -281,198 +271,7 @@ public class SireHistoryProjectDAO {
 		return max.get(0).longValue();
 	}
 
-	public static void updateProjectTemplate(long minRevision,
-			long maxRevision) {
 
-		ConnectionManager cm = null;
-		Connection oracle = null;
-		List<Tuple> projects = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			oracle = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates();
-			SQLQuery query = new SQLQuery(oracle, dialect);
-
-			projects = new ArrayList<Tuple>();
-
-			projects = query.from(stgProjects).distinct()
-					.where(stgProjects.cRev.gt(minRevision)
-							.and(stgProjects.cRev.loe(maxRevision)))
-					.list(stgProjects.cUri, stgProjects.cLocation,
-							stgProjects.cRev);
-
-			for (Tuple location : projects) {
-
-				if (location != null
-						&& location.get(stgProjects.cLocation) != null
-						&& !location.get(stgProjects.cLocation).equals("")) {
-
-					String loc = location.get(stgProjects.cLocation);
-					long rev = location.get(stgProjects.cRev);
-
-					logger.debug("ciclo project " + loc);
-
-					setTemplate(loc, rev, DmAlmConstants.REPOSITORY_SIRE);
-
-				}
-			}
-			setAllSireTemplate();
-		} catch (Exception e) {
-
-			logger.error(e.getMessage());
-		} finally {
-			try {
-				if (cm != null)
-					cm.closeConnection(oracle);
-			} catch (DAOException e) {
-			}
-		}
-
-	}
-
-	private static void setTemplate(String location, long revision,
-			String repo) {
-
-		ConnectionManager cm = null;
-		Connection oracle = null;
-
-		try {
-
-			cm = ConnectionManager.getInstance();
-			oracle = cm.getConnectionOracle();
-			SQLTemplates dialect = new HSQLDBTemplates();
-			logger.debug("get file ini");
-			String template = ProjectTemplateINI.getTemplateIniFile(
-					ProjectTemplateINI.getProjectSVNPath(location), revision,
-					repo);
-
-			new SQLUpdateClause(oracle, dialect, stgProjects)
-					.set(stgProjects.cTemplate, template)
-					.where(stgProjects.cLocation.eq(location)).execute();
-
-			logger.debug("update eseguito");
-		} catch (Exception e) {
-			logger.error("IMPOSSIBILE SETTARE IL TEMPLATE");
-			logger.error(e.getMessage());
-		} finally {
-			try {
-				if (cm != null)
-					cm.closeConnection(oracle);
-			} catch (DAOException e) {
-				logger.error(e.getMessage());
-			}
-		}
-	}
-
-	public static void setAllSireTemplate() {
-		ConnectionManager cm = null;
-		Connection oracle = null;
-		List<Tuple> template = null;
-		List<Tuple> stillNullTemplate = null;
-		String tmplt;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			oracle = cm.getConnectionOracle();
-			SQLTemplates dialect = new HSQLDBTemplates();
-			SQLQuery query = new SQLQuery(oracle, dialect);
-			logger.debug("START: Query SIRE PROJECTs with Template NOT NULL");
-			template = query.from(stgProjects).distinct()
-					.where(stgProjects.cTemplate.isNotNull())
-					.list(stgProjects.cTemplate, stgProjects.cId);
-			logger.debug("START: SET SIRE PROJECTs with Template NULL");
-			for (Tuple tupla : template) {
-				new SQLUpdateClause(oracle, dialect, stgProjects)
-						.where(stgProjects.cId
-								.equalsIgnoreCase(tupla.get(stgProjects.cId)))
-						.set(stgProjects.cTemplate,
-								tupla.get(stgProjects.cTemplate))
-						.execute();
-			}
-
-			SQLQuery query_1 = new SQLQuery(oracle, dialect);
-			stillNullTemplate = query_1.from(stgProjects).distinct()
-					.where(stgProjects.cTemplate.isNull()).list(stgProjects.cId,
-							stgProjects.cRev, stgProjects.cLocation);
-
-			logger.debug("START SET SIRE PROJECTs WITH TEMPLATE STILL NULL ");
-
-			for (Tuple t : stillNullTemplate)
-				try {
-					tmplt = ProjectTemplateINI.getLastRevisionTemplateIniFile(
-							ProjectTemplateINI.getProjectSVNPath(
-									t.get(stgProjects.cLocation)),
-							DmAlmConstants.REPOSITORY_SIRE);
-					new SQLUpdateClause(oracle, dialect, stgProjects)
-							.where(stgProjects.cId
-									.equalsIgnoreCase(t.get(stgProjects.cId)))
-							.where(stgProjects.cTemplate.isNull())
-							.set(stgProjects.cTemplate, tmplt).execute();
-					logger.info("UPDATE DONE ON PROJECT_ID "
-							+ t.get(stgProjects.cId));
-				} catch (Exception e) {
-					logger.error(
-							"IMPOSSIBILE SETTARE IL TEMPLATE: PATH NON ESISTENTE");
-					logger.error(e.getMessage());
-				}
-			oracle.commit();
-			logger.debug("STOP: SET SIRE PROJECTs with Template NULL");
-
-		} catch (Exception e) {
-
-			logger.error(e.getMessage());
-		} finally {
-			try {
-				if (cm != null)
-					cm.closeConnection(oracle);
-			} catch (DAOException e) {
-
-			}
-		}
-
-	}
-
-	public static List<String> getProjectsC_Name(List<Tuple> projects)
-			throws Exception {
-		List<String> allc_name = new ArrayList<String>();
-		try {
-
-			String c_name = null;
-			for (Tuple project : projects) {
-				c_name = project.get(stgProjects.cName);
-				allc_name.add(c_name);
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-
-		}
-
-		return allc_name;
-	}
-
-	public static List<String> getProjectsC_Location(List<Tuple> projects) {
-		List<String> allc_location = new ArrayList<String>();
-		try {
-
-			String c_location = null;
-			for (Tuple project : projects) {
-				c_location = project.get(stgProjects.cLocation);
-				allc_location.add(c_location);
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-
-		}
-
-		return allc_location;
-
-	}
 	public static void delete() throws Exception {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;

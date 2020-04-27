@@ -41,6 +41,7 @@ public class SireHistoryRevisionDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision stgRevisions = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision.revision;
 
+
 	private static QDmalmCurrentSubterraUriMap fonteSubterraUriMap = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 	public static long getMaxRevision() throws Exception
@@ -48,7 +49,6 @@ public class SireHistoryRevisionDAO {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
-
 
 		List<Long> max = new ArrayList<Long>();
 		try{

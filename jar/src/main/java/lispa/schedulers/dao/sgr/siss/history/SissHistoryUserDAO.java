@@ -80,7 +80,7 @@ public class SissHistoryUserDAO
 			logger.debug("fillSissHistoryUser - users.size: "+ (users != null ? users.size() : 0));
 			
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
-//			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgUsers);
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgUsers);
 			int size_counter = 0;
 			
 			for(Tuple row : users) {
@@ -88,8 +88,7 @@ public class SissHistoryUserDAO
 				String cUri = vals[8] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[8].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") :"";
 				String cPk = cUri+"%"+(vals[9] != null ? vals[9].toString() : "");
 				
-				new SQLInsertClause(connOracle, dialect, stgUsers)
-					.columns(
+				insert.columns(
 						stgUsers.cAvatarfilename,
 						stgUsers.cDeleted,
 						stgUsers.cDisablednotifications,
@@ -136,19 +135,21 @@ public class SissHistoryUserDAO
 				
 				size_counter++;
 				
-//				if(!insert.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
-//					insert.execute();
-//					insert = new SQLInsertClause(connOracle, dialect, stgUsers);
-//					size_counter = 0;
-//				}
+				if(!insert.isEmpty() && size_counter == DmAlmConstants.BATCH_SIZE) {
+					insert.execute();
+					connOracle.commit();
+					insert = new SQLInsertClause(connOracle, dialect, stgUsers);
+					size_counter = 0;
+				}
 
 			}
-//			if(!insert.isEmpty())
-//			{
-//				insert.execute();
-//			}
+			if(!insert.isEmpty())
+			{
+				insert.execute();
+				connOracle.commit();
+
+			}
 	
-			connOracle.commit();
 		}
 		catch(Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

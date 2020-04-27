@@ -59,6 +59,7 @@ public class SireHistoryWorkitemDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem stgWorkItems = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem.workitem;
 
+
 	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance()
 			.getDataEsecuzione();
 
@@ -104,7 +105,7 @@ public class SireHistoryWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
-
+		QSireHistoryWorkitem stgWorkItems = QSireHistoryWorkitem.sireHistoryWorkitem;
 		try {
 			cm = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();

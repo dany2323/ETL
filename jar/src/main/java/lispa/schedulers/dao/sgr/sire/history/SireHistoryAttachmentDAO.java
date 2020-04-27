@@ -174,6 +174,8 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 	public static long getMinRevision() throws Exception {
 		ConnectionManager cm = null;
 		Connection oracle = null;
+		lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment stgAttachment = QSireHistoryAttachment.dmalmSireHistoryAttachment;
+
 
 		List<Long> max = new ArrayList<Long>();
 		try {

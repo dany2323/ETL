@@ -101,6 +101,8 @@ public class SissHistoryWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
+		QSissHistoryWorkitem stgWorkItems = QSissHistoryWorkitem.sissHistoryWorkitem;
+
 
 		try {
 				cm = ConnectionManager.getInstance();
