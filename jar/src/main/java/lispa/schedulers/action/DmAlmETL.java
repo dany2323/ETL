@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.PropertiesReaderException;
-import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
@@ -65,22 +64,7 @@ public class DmAlmETL {
 			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_CALIPSO, DmAlmConstants.CARICAMENTO_FONTE_INIT);
 		}
 		logger.info("START DELETE_DATI_FONTE_TABELLE");
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			String sql_fonte = 	QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
-
-			psFonte = connection.prepareStatement(sql_fonte);
-
-			psFonte.setString(1, statoCaricamento);
-			psFonte.setString(2, fonte);
-			
-			psFonte.executeUpdate();
-
-			if (psFonte != null) {
-				psFonte.close();
-			}
+		QueryUtils.deleteFonti();
 		logger.info("STOP DELETE_DATI_FONTE_TABELLE");
 		
 		logger.info("START DmAlmFillFonte.doWork()");
