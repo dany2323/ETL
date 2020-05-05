@@ -18,8 +18,6 @@ public class SissCurrentWorkitem {
 
     private Float cInitialestimate;
 
-    private Boolean cIsLocal;
-
     private String cLocation;
 
     private String cOutlinenumber;
@@ -118,14 +116,6 @@ public class SissCurrentWorkitem {
 
     public void setcInitialestimate(Float cInitialestimate) {
         this.cInitialestimate = cInitialestimate;
-    }
-
-    public Boolean getcIsLocal() {
-        return cIsLocal;
-    }
-
-    public void setcIsLocal(Boolean cIsLocal) {
-        this.cIsLocal = cIsLocal;
     }
 
     public String getcLocation() {

@@ -76,70 +76,17 @@ public class SissHistoryCfWorkitemDAO {
 					.where(fonteHistoryWorkItems.cType.eq(w_type.toString()))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevision))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-					.where(fonteCFWorkItems.cName.eq(CFName)).list(
-							// fonteCFWorkItems.all()
-
-							fonteCFWorkItems.cDateonlyValue,
-							fonteCFWorkItems.cFloatValue,
-							fonteCFWorkItems.cStringValue,
-							fonteCFWorkItems.cDateValue,
-							fonteCFWorkItems.cBooleanValue,
-							fonteCFWorkItems.cName,
-							fonteCFWorkItems.fkUriWorkitem,
-							StringTemplate.create("(select c_rev from "
-									+ lispa.schedulers.manager.DmAlmConstants
-											.GetPolarionSchemaSissHistory()
-									+ ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
-							fonteCFWorkItems.cLongValue,
-							fonteCFWorkItems.cDurationtimeValue,
-							fonteCFWorkItems.cCurrencyValue);
+					.where(fonteCFWorkItems.cName.eq(CFName))
+					.list(fonteCFWorkItems.all());
 
 			logger.debug("CF_NAME: " + w_type.toString() + " " + CFName
 					+ "  SIZE: " + cfWorkitem.size());
 
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
 					stgCFWorkItems);
-			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-					.getDataEsecuzione();
-			int count_batch = 0;
+			int countBatch = 0;
 
 			for (Tuple row : cfWorkitem) {
-
-				Object[] vals = row.toArray();
-				String fkUriWorkitem = vals[6] != null
-						? (queryConnOracle(connOracle, dialect)
-								.from(stgSubterra)
-								.where(stgSubterra.cId
-										.eq(Long.valueOf(vals[6].toString())))
-								.where(stgSubterra.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS))
-								.count() > 0
-										? queryConnOracle(connOracle, dialect)
-												.from(stgSubterra)
-												.where(stgSubterra.cId
-														.eq(Long.valueOf(vals[6]
-																.toString())))
-												.where(stgSubterra.cRepo.eq(
-														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS))
-												.list(stgSubterra.cPk).get(0)
-										: "")
-						: "";
-				String fkWorkitem = fkUriWorkitem + "%"
-						+ (vals[7] != null ? vals[7].toString() : "");
-
-				count_batch++;
-
-				// Applico il cast a timespent solo se esistono dei valori data
-				StringExpression dateOnlyValue = null;
-				if (vals[0] != null) {
-					dateOnlyValue = StringTemplate.create(
-							"to_timestamp('" + vals[0] + "', 'YYYY-MM-DD')");
-				}
-				StringExpression dateValue = null;
-				if (vals[3] != null) {
-					dateValue = StringTemplate.create("to_timestamp('" + vals[3]
-							+ "', 'YYYY-MM-DD HH24:MI:SS.FF')");
-				}
 
 				insert.columns(stgCFWorkItems.cDateonlyValue,
 						stgCFWorkItems.cFloatValue, stgCFWorkItems.cStringValue,
@@ -147,32 +94,33 @@ public class SissHistoryCfWorkitemDAO {
 						stgCFWorkItems.cName, stgCFWorkItems.fkUriWorkitem,
 						stgCFWorkItems.fkWorkitem, stgCFWorkItems.cLongValue,
 						stgCFWorkItems.cDurationtimeValue,
-						stgCFWorkItems.cCurrencyValue
-//						stgCFWorkItems.dataCaricamento,
-//						stgCFWorkItems.dmalmCfWorkitemPk
-						)
-						.values(dateOnlyValue, vals[1], vals[2], dateValue,
-								vals[4], vals[5], fkUriWorkitem, fkWorkitem,
-								vals[8], vals[9], vals[10]
-
-								
-//								dataEsecuzione,
-//								StringTemplate.create(
-//										"HISTORY_CF_WORKITEM_SEQ.nextval")
-								)
+						stgCFWorkItems.cCurrencyValue)
+						.values(row.get(fonteCFWorkItems.cDateonlyValue),
+								row.get(fonteCFWorkItems.cFloatValue),
+								row.get(fonteCFWorkItems.cStringValue),
+								row.get(fonteCFWorkItems.cDateValue),
+								row.get(fonteCFWorkItems.cBooleanValue),
+								row.get(fonteCFWorkItems.cName),
+								row.get(fonteCFWorkItems.fkUriWorkitem),
+								row.get(fonteCFWorkItems.fkWorkitem),
+								row.get(fonteCFWorkItems.cLongValue),
+								row.get(fonteCFWorkItems.cDurationtimeValue),
+								row.get(fonteCFWorkItems.cCurrencyValue))
 						.addBatch();
 
 				if (!insert.isEmpty()
-						&& count_batch % DmAlmConstants.BATCH_SIZE == 0) {
+						&& countBatch % DmAlmConstants.BATCH_SIZE == 0) {
 					insert.execute();
 					insert = new SQLInsertClause(connOracle, dialect,
 							stgCFWorkItems);
+					connOracle.commit();
 				}
 
 			}
 
 			if (!insert.isEmpty()) {
 				insert.execute();
+				connOracle.commit();
 			}
 
 			if (cm != null) {

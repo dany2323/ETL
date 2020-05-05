@@ -30,8 +30,6 @@ public class SireHistoryAttachment extends com.mysema.query.sql.RelationalPathBa
 
     public final StringPath cId = createString("C_ID");
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
-
     public final NumberPath<Long> cLength = createNumber("C_LENGTH", Long.class);
 
     public final StringPath cPk = createString("C_PK");

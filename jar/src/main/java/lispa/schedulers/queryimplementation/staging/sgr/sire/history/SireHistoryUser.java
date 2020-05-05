@@ -34,8 +34,6 @@ public class SireHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
 
     public final StringPath cInitials = createString("C_INITIALS");
 
-    public final NumberPath<Integer> cIsLocal = createNumber("C_IS_LOCAL", Integer.class);
-
     public final StringPath cName = createString("C_NAME");
 
     public final StringPath cPk = createString("C_PK");

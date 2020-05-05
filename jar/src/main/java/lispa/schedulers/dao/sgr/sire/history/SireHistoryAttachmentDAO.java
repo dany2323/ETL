@@ -62,52 +62,17 @@ public class SireHistoryAttachmentDAO {
 			attachments = query.from(fonteAttachment)
 					.where(fonteAttachment.cRev.gt(minRevision))
 					.where(fonteAttachment.cRev.loe(maxRevision))
-					.list(
-							fonteAttachment.cDeleted,
-							fonteAttachment.cFilename,
-							fonteAttachment.cId,
-							StringTemplate.create("0 as c_is_local"),
-							fonteAttachment.cLength,
-							fonteAttachment.cUri,
-							fonteAttachment.cRev,
-							fonteAttachment.cTitle,
-							fonteAttachment.cUpdated,
-							fonteAttachment.cUrl,
-							fonteAttachment.fkUriAuthor,
-							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".t_user where t_user.c_pk = fk_author) as fk_rev_author"),
-							fonteAttachment.fkUriProject,
-							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".project where project.c_pk = fk_project) as fk_rev_project"),
-							fonteAttachment.fkUriWorkitem,
-							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSireHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_rev_workitem")
-							);
+					.list(fonteAttachment.all());
 			
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
 			int batchCounter = 0;
 			
 			for (Tuple row : attachments) {
 
-				Object[] val = row.toArray();
-				
-				String cUri = val[5] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[5].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[5].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
-				String cPk = cUri+"%"+ (val[6] != null ? val[6].toString() : "");
-				String fkUriAuthor= val[10] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[10].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[10].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
-				String fkUriProject = val[12] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[12].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[12].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
-				String fkUriWorkitem = val[14] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[14].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(val[14].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE)).list(stgSubterra.cPk).get(0) : "") : "";
-				String fkAuthor = fkUriAuthor+"%"+(val[11] != null ? val[6].toString() : "");
-				String fkProject = fkUriProject+"%"+(val[13] != null ? val[6].toString() : "");
-				String fkWorkitem = fkUriWorkitem+"%"+(val[15] != null ? val[6].toString() : "");
-				
-				//Applico il cast a timespent solo se esistono dei valori data 
-				StringExpression dateValue = null;
-				if(val[8] != null) {
-					dateValue = StringTemplate.create("to_timestamp('"+val[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
-				}
-				
 				insert.columns(
 								stgAttachment.cDeleted,
 								stgAttachment.cFilename,
 								stgAttachment.cId,
-								stgAttachment.cIsLocal,
 								stgAttachment.cLength,
 								stgAttachment.cPk,
 								stgAttachment.cRev,
@@ -124,23 +89,22 @@ public class SireHistoryAttachmentDAO {
 						)
 								
 						.values(
-								val[0],
-								val[1],
-								val[2],
-								val[3],
-								val[4],
-								cPk,
-								val[6],
-								val[7],
-								dateValue,
-								cUri,
-								val[10],
-								StringUtils.getMaskedValue(fkAuthor),
-								fkProject,
-								StringUtils.getMaskedValue(fkUriAuthor),
-								fkUriProject,
-								fkUriWorkitem,
-								fkWorkitem										
+								row.get(fonteAttachment.cDeleted),
+								row.get(fonteAttachment.cFilename),
+								row.get(fonteAttachment.cId),
+								row.get(fonteAttachment.cLength),
+								row.get(fonteAttachment.cPk),
+								row.get(fonteAttachment.cRev),
+								row.get(fonteAttachment.cTitle),
+								row.get(fonteAttachment.cUpdated),
+								row.get(fonteAttachment.cUri),
+								row.get(fonteAttachment.cUrl),
+								row.get(fonteAttachment.fkAuthor),
+								row.get(fonteAttachment.fkProject),
+								row.get(fonteAttachment.fkUriAuthor),
+								row.get(fonteAttachment.fkUriProject),
+								row.get(fonteAttachment.fkUriWorkitem),
+								row.get(fonteAttachment.fkWorkitem)							
 						).addBatch();
 				
 						batchCounter++;

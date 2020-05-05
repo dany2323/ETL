@@ -1,8 +1,12 @@
 package lispa.schedulers.facade.sgr.staging;
 
 import java.util.Date;
+
+import org.apache.log4j.Logger;
+
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentProjectDAO;
+import lispa.schedulers.dao.sgr.siss.current.SissCurrentSubterraUriMapDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentWorkitemLinkedDAO;
 import lispa.schedulers.manager.ErrorManager;
@@ -11,13 +15,16 @@ import lispa.schedulers.svn.ProjectRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
-import org.apache.log4j.Logger;
 
 public class FillSISSCurrentFacade {
 
 	public static void execute(Logger logger) {
 		try {
 
+			logger.debug("START fillSissCurrentSubterraUriMap");
+			SissCurrentSubterraUriMapDAO.fillSissCurrentSubterraUriMap();
+			logger.debug("STOP fillSissCurrentSubterraUriMap");
+			
 			logger.debug("START fillSissCurrentWorkitemLinked");
 			SissCurrentWorkitemLinkedDAO.fillSissCurrentWorkitemLinked();
 			logger.debug("STOP fillSissCurrentWorkitemLinked");

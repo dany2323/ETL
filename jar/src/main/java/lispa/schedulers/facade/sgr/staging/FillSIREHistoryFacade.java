@@ -78,8 +78,8 @@ public class FillSIREHistoryFacade {
 					attachment_minRevision, polarion_maxRevision, logger));
 			hyperlink = new Thread(new SireHistoryHyperlinkRunnable(
 					minRevisionsByType, polarion_maxRevision, logger));
-			schede_servizio = new Thread(new SireSchedeServizioRunnable(
-					logger));
+//			schede_servizio = new Thread(new SireSchedeServizioRunnable(
+//					logger));
 
 			project.start();
 			project.join();
@@ -102,8 +102,8 @@ public class FillSIREHistoryFacade {
 			hyperlink.start();
 			hyperlink.join();
 
-			schede_servizio.start();
-			schede_servizio.join();
+//			schede_servizio.start();
+//			schede_servizio.join();
 
 			wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));

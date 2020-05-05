@@ -33,7 +33,39 @@ public class QueryUtils {
 		
 		return "{call "+ procedure +"(" + parameters.substring(0, parameters.length()-1) + ")}";
 	}
+	public static void deleteFonti() {
+
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement psFonte = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sqlFonte = 	QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
+			psFonte = connection.prepareStatement(sqlFonte);
+
+			
+			psFonte.execute();
+
+			if (psFonte != null) {
+				psFonte.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+
+		} finally {
+			try {
+				if (cm != null) {
+					cm.closeConnection(connection);
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		}
 	
+	}
 	public static void setCaricamentoFonte(String fonte, String statoCaricamento) {
 		ConnectionManager cm = null;
 		Connection connection = null;

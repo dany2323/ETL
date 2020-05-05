@@ -151,7 +151,6 @@ public class SireHistoryWorkitemDAO {
 		Connection pgConnection = null;
 
 		List<Tuple> historyworkitems = new ArrayList<Tuple>();
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 
@@ -182,50 +181,8 @@ public class SireHistoryWorkitemDAO {
 					.where(fonteHistoryWorkItems.cRev
 							.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision)).list(
-							// fonteHistoryWorkItems.all()
-							fonteHistoryWorkItems.fkUriModule,
-							StringTemplate.create("(select c_rev from "
-									+ lispa.schedulers.manager.DmAlmConstants
-											.GetPolarionSchemaSireHistory()
-									+ ".module where module.c_pk = fk_module) as fk_module"),
-							StringTemplate.create("0 as c_is_local"),
-							fonteHistoryWorkItems.cPriority,
-							fonteHistoryWorkItems.cResolution,
-							fonteHistoryWorkItems.cCreated,
-							fonteHistoryWorkItems.cOutlinenumber,
-							fonteHistoryWorkItems.fkUriProject,
-							StringTemplate.create("(select c_rev from "
-									+ lispa.schedulers.manager.DmAlmConstants
-											.GetPolarionSchemaSireHistory()
-									+ ".project where project.c_pk = fk_project) as fk_project"),
-							fonteHistoryWorkItems.cDeleted,
-							fonteHistoryWorkItems.cPlannedend,
-							fonteHistoryWorkItems.cUpdated,
-							fonteHistoryWorkItems.fkUriAuthor,
-							StringTemplate.create("(select c_rev from "
-									+ lispa.schedulers.manager.DmAlmConstants
-											.GetPolarionSchemaSireHistory()
-									+ ".t_user where t_user.c_pk = fk_author) as fk_author"),
-							fonteHistoryWorkItems.cUri,
-							fonteHistoryWorkItems.cTimespent,
-							fonteHistoryWorkItems.cStatus,
-							fonteHistoryWorkItems.cSeverity,
-							fonteHistoryWorkItems.cResolvedon,
-							fonteHistoryWorkItems.cTitle,
-							fonteHistoryWorkItems.cId,
-							fonteHistoryWorkItems.cRev,
-							fonteHistoryWorkItems.cPlannedstart,
-							fonteHistoryWorkItems.cDuedate,
-							fonteHistoryWorkItems.cRemainingestimate,
-							fonteHistoryWorkItems.cType,
-							fonteHistoryWorkItems.cLocation,
-							fonteHistoryWorkItems.fkUriTimepoint,
-							StringTemplate.create("(select c_rev from "
-									+ lispa.schedulers.manager.DmAlmConstants
-											.GetPolarionSchemaSireHistory()
-									+ ".timepoint where timepoint.c_pk = fk_timepoint) as fk_timepoint"),
-							fonteHistoryWorkItems.cInitialestimate,
-							fonteHistoryWorkItems.cPreviousstatus);
+							 fonteHistoryWorkItems.all()
+							);
 
 			logger.debug("TYPE: SIRE " + type.toString() + "  SIZE: "
 					+ historyworkitems.size());
@@ -237,176 +194,8 @@ public class SireHistoryWorkitemDAO {
 
 			for (Tuple hist : historyworkitems) {
 
-				Object[] vals = hist.toArray();
-				String fkUriModule = hist
-						.get(fonteHistoryWorkItems.fkUriModule) != null
-								? (queryConnOracle(OracleConnection, dialect)
-										.from(stgSubterra)
-										.where(stgSubterra.cId
-												.eq(Long.valueOf(hist.get(
-														fonteHistoryWorkItems.fkUriModule)
-														.toString())))
-										.where(stgSubterra.cRepo.eq(
-												lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-										.count() > 0
-												? queryConnOracle(
-														OracleConnection,
-														dialect).from(
-																stgSubterra)
-																.where(stgSubterra.cId
-																		.eq(Long.valueOf(
-																				hist.get(
-																						fonteHistoryWorkItems.fkUriModule)
-																						.toString())))
-																.where(stgSubterra.cRepo
-																		.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-																.list(stgSubterra.cPk)
-																.get(0)
-												: "")
-								: "";
-				String fkModule = fkUriModule != ""
-						? (fkUriModule + "%" + (hist
-								.get(fonteHistoryWorkItems.fkModule) != null
-										? hist.get(
-												fonteHistoryWorkItems.fkModule)
-												.toString()
-										: ""))
-						: "";
-				String fkUriProject = hist
-						.get(fonteHistoryWorkItems.fkUriProject) != null
-								? (queryConnOracle(OracleConnection, dialect)
-										.from(stgSubterra)
-										.where(stgSubterra.cId
-												.eq(Long.valueOf(hist.get(
-														fonteHistoryWorkItems.fkUriProject)
-														.toString())))
-										.where(stgSubterra.cRepo.eq(
-												lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-										.count() > 0
-												? queryConnOracle(
-														OracleConnection,
-														dialect).from(
-																stgSubterra)
-																.where(stgSubterra.cId
-																		.eq(Long.valueOf(
-																				hist.get(
-																						fonteHistoryWorkItems.fkUriProject)
-																						.toString())))
-																.where(stgSubterra.cRepo
-																		.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-																.list(stgSubterra.cPk)
-																.get(0)
-												: "")
-								: "";
-				String fkProject = fkUriProject != ""
-						? (fkUriProject + "%" + (hist
-								.get(fonteHistoryWorkItems.fkProject) != null
-										? hist.get(
-												fonteHistoryWorkItems.fkProject)
-												.toString()
-										: ""))
-						: "";
-				String fkUriAuthor = hist
-						.get(fonteHistoryWorkItems.fkUriAuthor) != null
-								? (queryConnOracle(OracleConnection, dialect)
-										.from(stgSubterra)
-										.where(stgSubterra.cId
-												.eq(Long.valueOf(hist.get(
-														fonteHistoryWorkItems.fkUriAuthor)
-														.toString())))
-										.where(stgSubterra.cRepo.eq(
-												lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-										.count() > 0
-												? queryConnOracle(
-														OracleConnection,
-														dialect).from(
-																stgSubterra)
-																.where(stgSubterra.cId
-																		.eq(Long.valueOf(
-																				hist.get(
-																						fonteHistoryWorkItems.fkUriAuthor)
-																						.toString())))
-																.where(stgSubterra.cRepo
-																		.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-																.list(stgSubterra.cPk)
-																.get(0)
-												: "")
-								: "";
-				String fkAuthor = fkUriAuthor != ""
-						? (fkUriAuthor + "%" + (hist
-								.get(fonteHistoryWorkItems.fkAuthor) != null
-										? hist.get(
-												fonteHistoryWorkItems.fkAuthor)
-												.toString()
-										: ""))
-						: "";
-				String cUri = hist.get(fonteHistoryWorkItems.cUri) != null
-						? (queryConnOracle(OracleConnection, dialect)
-								.from(stgSubterra)
-								.where(stgSubterra.cId.eq(Long.valueOf(
-										hist.get(fonteHistoryWorkItems.cUri)
-												.toString())))
-								.where(stgSubterra.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-								.count() > 0
-										? queryConnOracle(
-												OracleConnection, dialect)
-														.from(stgSubterra)
-														.where(stgSubterra.cId
-																.eq(Long.valueOf(
-																		hist.get(
-																				fonteHistoryWorkItems.cUri)
-																				.toString())))
-														.where(stgSubterra.cRepo
-																.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-														.list(stgSubterra.cPk)
-														.get(0)
-										: "")
-						: "";
-				String cPk = cUri != ""
-						? (cUri + "%"
-								+ (hist.get(fonteHistoryWorkItems.cRev) != null
-										? hist.get(fonteHistoryWorkItems.cRev)
-												.toString()
-										: ""))
-						: "";
-				String fkUriTimepoint = hist
-						.get(fonteHistoryWorkItems.fkUriTimepoint) != null
-								? (queryConnOracle(OracleConnection, dialect)
-										.from(stgSubterra)
-										.where(stgSubterra.cId
-												.eq(Long.valueOf(hist.get(
-														fonteHistoryWorkItems.fkUriTimepoint)
-														.toString())))
-										.where(stgSubterra.cRepo.eq(
-												lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-										.count() > 0
-												? queryConnOracle(
-														OracleConnection,
-														dialect).from(
-																stgSubterra)
-																.where(stgSubterra.cId
-																		.eq(Long.valueOf(
-																				hist.get(
-																						fonteHistoryWorkItems.fkUriTimepoint)
-																						.toString())))
-																.where(stgSubterra.cRepo
-																		.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-																.list(stgSubterra.cPk)
-																.get(0)
-												: "")
-								: "";
-				String fkTimepoint = fkUriTimepoint != ""
-						? (fkUriTimepoint + "%" + (hist
-								.get(fonteHistoryWorkItems.fkTimepoint) != null
-										? hist.get(
-												fonteHistoryWorkItems.fkTimepoint)
-												.toString()
-										: ""))
-						: "";
-
 				batchSizeCounter++;
-				insert.columns(stgWorkItems.fkModule, stgWorkItems.cIsLocal,
+				insert.columns(stgWorkItems.fkModule,
 						stgWorkItems.cPriority, stgWorkItems.cResolution,
 						stgWorkItems.cCreated, stgWorkItems.cOutlinenumber,
 						stgWorkItems.fkProject, stgWorkItems.cDeleted,
@@ -423,38 +212,39 @@ public class SireHistoryWorkitemDAO {
 						stgWorkItems.fkTimepoint, stgWorkItems.cInitialestimate,
 						stgWorkItems.fkUriTimepoint,
 						stgWorkItems.cPreviousstatus)
-						.values(fkModule,
-								hist.get(fonteHistoryWorkItems.cIsLocal),
-								hist.get(fonteHistoryWorkItems.cPriority),
+						.values(
+								hist.get(fonteHistoryWorkItems.fkModule), 
+								hist.get(fonteHistoryWorkItems.cPriority), 
 								hist.get(fonteHistoryWorkItems.cResolution),
-								hist.get(fonteHistoryWorkItems.cCreated),
+								hist.get(fonteHistoryWorkItems.cCreated), 
 								hist.get(fonteHistoryWorkItems.cOutlinenumber),
-								fkProject,
+								hist.get(fonteHistoryWorkItems.fkProject),
 								hist.get(fonteHistoryWorkItems.cDeleted),
-								hist.get(fonteHistoryWorkItems.cPlannedend),
+								hist.get(fonteHistoryWorkItems.cPlannedend), 
 								hist.get(fonteHistoryWorkItems.cUpdated),
-								StringUtils.getMaskedValue(fkAuthor), cUri,
-								fkUriModule,
+								hist.get(fonteHistoryWorkItems.fkAuthor),
+								hist.get(fonteHistoryWorkItems.cUri),
+								hist.get(fonteHistoryWorkItems.fkUriModule),
 								hist.get(fonteHistoryWorkItems.cTimespent),
 								hist.get(fonteHistoryWorkItems.cStatus),
 								hist.get(fonteHistoryWorkItems.cSeverity),
-								hist.get(fonteHistoryWorkItems.cResolvedon),
-								fkUriProject,
-								hist.get(fonteHistoryWorkItems.cTitle),
+								hist.get(fonteHistoryWorkItems.cResolvedon), 
+								hist.get(fonteHistoryWorkItems.fkUriProject),
+								hist.get(fonteHistoryWorkItems.cTitle), 
 								hist.get(fonteHistoryWorkItems.cId),
-								hist.get(fonteHistoryWorkItems.cRev),
+								hist.get(fonteHistoryWorkItems.cRev), 
 								hist.get(fonteHistoryWorkItems.cPlannedstart),
-								StringUtils.getMaskedValue(fkUriAuthor),
+								hist.get(fonteHistoryWorkItems.fkUriAuthor),
 								hist.get(fonteHistoryWorkItems.cDuedate),
-								hist.get(
-										fonteHistoryWorkItems.cRemainingestimate),
-								hist.get(fonteHistoryWorkItems.cType), cPk,
+								hist.get(fonteHistoryWorkItems.cRemainingestimate),
+								hist.get(fonteHistoryWorkItems.cType),
+								hist.get(fonteHistoryWorkItems.cPk),
 								hist.get(fonteHistoryWorkItems.cLocation),
-								fkTimepoint,
-								hist.get(
-										fonteHistoryWorkItems.cInitialestimate),
-								fkUriTimepoint,
-								hist.get(fonteHistoryWorkItems.cPreviousstatus))
+								hist.get(fonteHistoryWorkItems.fkTimepoint), 
+								hist.get(fonteHistoryWorkItems.cInitialestimate),
+								hist.get(fonteHistoryWorkItems.fkUriTimepoint),
+								hist.get(fonteHistoryWorkItems.cPreviousstatus)
+								)
 						.addBatch();
 				if (!historyworkitems.isEmpty()
 						&& batchSizeCounter == DmAlmConstants.BATCH_SIZE) {

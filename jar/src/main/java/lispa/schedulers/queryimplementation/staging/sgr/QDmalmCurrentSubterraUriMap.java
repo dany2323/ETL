@@ -20,7 +20,7 @@ public class QDmalmCurrentSubterraUriMap extends com.mysema.query.sql.Relational
 
     private static final long serialVersionUID = 1317911173;
 
-    public static final QDmalmCurrentSubterraUriMap currentSubterraUriMap = new QDmalmCurrentSubterraUriMap("DMALM_CURRENT_SUBTERRA_URI_MAP");
+    public static final QDmalmCurrentSubterraUriMap currentSubterraUriMap = new QDmalmCurrentSubterraUriMap("DM_ALM_SUBTERRA_URI_MAP");
 
     public final StringPath cPk = createString("C_PK");
     
@@ -32,15 +32,15 @@ public class QDmalmCurrentSubterraUriMap extends com.mysema.query.sql.Relational
 
 
     public QDmalmCurrentSubterraUriMap(String variable) {
-        super(DmalmCurrentSubterraUriMap.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_CURRENT_SUBTERRA_URI_MAP");
+        super(DmalmCurrentSubterraUriMap.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_SUBTERRA_URI_MAP");
     }
 
     public QDmalmCurrentSubterraUriMap(Path<? extends DmalmCurrentSubterraUriMap> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_CURRENT_SUBTERRA_URI_MAP");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_SUBTERRA_URI_MAP");
     }
 
     public QDmalmCurrentSubterraUriMap(PathMetadata<?> metadata) {
-        super(DmalmCurrentSubterraUriMap.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_CURRENT_SUBTERRA_URI_MAP");
+        super(DmalmCurrentSubterraUriMap.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_SUBTERRA_URI_MAP");
     }
 
 }

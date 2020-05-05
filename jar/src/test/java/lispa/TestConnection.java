@@ -5,7 +5,11 @@ import java.sql.Connection;
 import it.lispa.jotm.datasource.crypt.EncryptionHelper;
 import it.lispa.jotm.datasource.crypt.support.BaseEncryptionHelper;
 import junit.framework.TestCase;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryRevisionDAO;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DmAlmConfigReaderProperties;
+import lispa.schedulers.manager.Log4JConfiguration;
 
 public class TestConnection extends TestCase {
 
@@ -14,15 +18,18 @@ public class TestConnection extends TestCase {
 		
 		ConnectionManager cm = null;
 		Connection conn = null;
-		
+		DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm_pg.properties");
+		Log4JConfiguration.inizialize();
 		try  {
-			String pass_dm_alm = encryptionHelper.decrypt("7MiAQ4dH23xmc6cxwrOejg==");
-			String pass_dm_alm_preprod = encryptionHelper.decrypt("IOe3LleqpwAkIk3UwBbSZQ==");
-			String enc_pass_dm_alm_preprod = encryptionHelper.encrypt("dm_alm_pre_1706");
-			
-			System.out.println(pass_dm_alm+" - "+pass_dm_alm_preprod+" enc: "+enc_pass_dm_alm_preprod);
-//		cm = ConnectionManager.getInstance();
-//		conn = cm.getConnectionSIREHistory();
+		cm = ConnectionManager.getInstance();
+		conn = cm.getConnectionSIREHistory();
+		
+		long project_minRevision = SissHistoryProjectDAO.getMinRevision();
+		long polarion_maxRevision = SissHistoryRevisionDAO.getMaxRevision();
+		
+		System.out.print("SissHistoryProjectDAO.fillSissHistoryProject - minRevision: " + project_minRevision + ", maxRevision: " + polarion_maxRevision);
+
+
 //		
 		
 //		if(cm != null) cm.closeConnection(conn);
@@ -30,7 +37,7 @@ public class TestConnection extends TestCase {
 //		ConnectionManager.sysoutInfo();
 		}
 		catch(Exception e) {
-			
+			e.printStackTrace();
 		}
 		finally {
 			if(cm != null) cm.closeConnection(conn);

@@ -26,7 +26,7 @@ public class SissHistoryRevision extends com.mysema.query.sql.RelationalPathBase
 
     public final StringPath cPk = createString("C_PK");
     
-    public final StringPath cUri = createString("C_URI");
+    public final NumberPath<Long> cUri = createNumber("C_URI",Long.class);
     
     public final NumberPath<Long> cRev = createNumber("C_REV", Long.class);
     
@@ -43,10 +43,8 @@ public class SissHistoryRevision extends com.mysema.query.sql.RelationalPathBase
     
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
     
-    public final BooleanPath cInternalcommit = createBoolean("C_INTERNALCOMMIT");
+    public final BooleanPath cInternalCommit = createBoolean("C_INTERNALCOMMIT");
     
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
-
     public SissHistoryRevision(String variable) {
         super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryRevision.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "REVISION");
     }

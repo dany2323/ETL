@@ -40,7 +40,6 @@ public class SireHistoryUserDAO {
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> users = null;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -61,57 +60,35 @@ public class SireHistoryUserDAO {
 			users = query.from(fonteUsers)
 					.where(fonteUsers.cRev.gt(minRevision))
 					.where(fonteUsers.cRev.loe(maxRevision))
-					.list(fonteUsers.cAvatarfilename, fonteUsers.cDeleted,
-							fonteUsers.cDisablednotifications,
-							fonteUsers.cEmail, fonteUsers.cId,
-							fonteUsers.cInitials,
-							StringTemplate.create("0 as c_is_local"),
-							fonteUsers.cName, fonteUsers.cUri, fonteUsers.cRev);
+					.list(fonteUsers.all());
 
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
 					stgUsers);
-			int n_righe_inserite = 0;
+			int nRigheInserite = 0;
 			for (Tuple row : users) {
-				Object[] vals = row.toArray();
-				String cUri = vals[8] != null
-						? (queryConnOracle(connOracle, dialect)
-								.from(stgSubterra)
-								.where(stgSubterra.cId
-										.eq(Long.valueOf(vals[8].toString())))
-								.where(stgSubterra.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-								.count() > 0
-										? queryConnOracle(connOracle, dialect)
-												.from(stgSubterra)
-												.where(stgSubterra.cId
-														.eq(Long.valueOf(vals[8]
-																.toString())))
-												.where(stgSubterra.cRepo.eq(
-														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-												.list(stgSubterra.cPk).get(0)
-										: "")
-						: "";
-				String cPk = cUri + "%"
-						+ (vals[9] != null ? vals[9].toString() : "");
+				
 
 				insert.columns(stgUsers.cAvatarfilename, stgUsers.cDeleted,
 						stgUsers.cDisablednotifications, stgUsers.cEmail,
-						stgUsers.cId, stgUsers.cInitials, stgUsers.cIsLocal,
+						stgUsers.cId, stgUsers.cInitials,
 						stgUsers.cName, stgUsers.cPk, stgUsers.cRev,
 						stgUsers.cUri)
-						.values(vals[0], vals[1], vals[2],
-								StringUtils.getMaskedValue((String) vals[3]),
-								StringUtils.getMaskedValue((String) vals[4]),
-								vals[5], vals[6],
-								StringUtils.getMaskedValue((String) vals[7]),
-								StringUtils.getMaskedValue(cPk), vals[9],
-								StringUtils.getMaskedValue(cUri))
+						.values(row.get(fonteUsers.cAvatarfilename), 
+								row.get(fonteUsers.cDeleted),
+								row.get(fonteUsers.cDisablednotifications),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cEmail)),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cId)), 
+								StringUtils.getMaskedValue(row.get(fonteUsers.cInitials)),
+								StringUtils.getMaskedValue(row.get(fonteUsers.cName)),
+								row.get(fonteUsers.cPk),
+								row.get(fonteUsers.cRev),
+								row.get(fonteUsers.cUri))
 						.addBatch();
 
-				n_righe_inserite++;
+				nRigheInserite++;
 
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite
+					if (nRigheInserite
 							% lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
 						insert.execute();
 						connOracle.commit();

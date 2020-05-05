@@ -22,15 +22,13 @@ public class SissCurrentProject extends com.mysema.query.sql.RelationalPathBase<
 
     public static final SissCurrentProject project = new SissCurrentProject("DM_ALM_C_SISS_PROJECT");
 
-    public final BooleanPath cActive = createBoolean("C_ACTIVE");
+    public final NumberPath<Long> cActive = createNumber("C_ACTIVE",Long.class);
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 
     public final DatePath<java.sql.Date> cFinish = createDate("C_FINISH", java.sql.Date.class);
 
     public final StringPath cId = createString("C_ID");
-
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
 
     public final StringPath cLocation = createString("C_LOCATION");
 

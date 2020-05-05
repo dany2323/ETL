@@ -24,8 +24,6 @@ public class SissHistoryProjectgroup extends com.mysema.query.sql.RelationalPath
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
-
     public final StringPath cLocation = createString("C_LOCATION");
 
     public final StringPath cName = createString("C_NAME");

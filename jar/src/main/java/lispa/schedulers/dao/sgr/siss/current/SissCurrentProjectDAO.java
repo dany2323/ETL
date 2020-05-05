@@ -33,7 +33,6 @@ public class SissCurrentProjectDAO
 	private static Logger logger = Logger.getLogger(SissCurrentProjectDAO.class);
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject.project;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentProject stgProject  = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentProject.project;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 
 
 	public static void delete(Timestamp dataEsecuzione) throws Exception
@@ -95,13 +94,13 @@ public class SissCurrentProjectDAO
 		}
 	}
 	
-	public static long fillSissCurrentProject() throws Exception
+	public static void fillSissCurrentProject() throws Exception
 	{
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		Connection pgConnection = null;
-		long n_righe_inserite = 0;
+		long sizeCounter = 0;
 		
 		try{
 			
@@ -120,81 +119,54 @@ public class SissCurrentProjectDAO
 			SQLQuery query = new SQLQuery(pgConnection, dialect); 
 			
 
-			List<Tuple> projects = query.from(fonteProjects)
-					.where((fonteProjects.cLocation.length().subtract(fonteProjects.cLocation.toString().replaceAll("/", "").length())).goe(4))
-					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
-					.list(new QTuple(
-		                            StringTemplate.create("SUBSTRING("+fonteProjects.cTrackerprefix+",0,4000)") ,
-		                            StringTemplate.create("0") ,
-		                            StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteProjects.cUri + ") as c_pk"),
-		                            StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteProjects.fkUriLead + ") as fk_uri_lead"),
-		                            StringTemplate.create("CASE WHEN "+fonteProjects.cDeleted+"= 'true' THEN 1 ELSE 0 END") ,
-		                            fonteProjects.cFinish,
-		                            StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " + fonteProjects.cUri + ") as c_uri"),
-		                            fonteProjects.cStart,
-		                            StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " + fonteProjects.fkUriProjectgroup + ") as FK_URI_PROJECTGROUP"),
-		                            StringTemplate.create("CASE WHEN "+fonteProjects.cActive+"= 'true' THEN 1 ELSE 0 END") ,
-		                            StringTemplate.create("SUBSTRING("+fonteProjects.cLocation+",0,4000)") ,
-		                            StringTemplate.create("(SELECT e.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " e WHERE e.c_id = " + fonteProjects.fkUriProjectgroup + ") as fk_projectgroup"),
-		                            StringTemplate.create("(SELECT f.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " f WHERE f.c_id = " + fonteProjects.fkUriLead + ") as fk_lead"),
-		                            StringTemplate.create("to_char("+fonteProjects.cLockworkrecordsdate+", 'yyyy-MM-dd 00:00:00')"),
-		                            StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
-		                            StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
-		                            )
-							);
+			 List<Tuple> project = query.from(fonteProjects)
+	                    .where(fonteProjects.cLocation.notLike("default:/GRACO%"))
+	                    .list(fonteProjects.all());
+	            
+	            SQLInsertClause insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
 
-			logger.debug("fillSissCurrentProject - projects.size: "+ projects.size());
-			
-			SQLInsertClause insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
-			Iterator<Tuple> i = projects.iterator();
-			Object[] el= null;
-			
-			while (i.hasNext()) {
+	            for(Tuple el:project) {
 
-				el= ((Tuple)i.next()).toArray();
-
-				insert.columns(
-						stgProject.cTrackerprefix,
-						stgProject.cIsLocal,
-						stgProject.cPk,
-						stgProject.fkUriLead,
-						stgProject.cDeleted,
-						stgProject.cFinish,
-						stgProject.cUri,
-						stgProject.cStart,
-						stgProject.fkUriProjectgroup,
-						stgProject.cActive,
-						stgProject.cLocation,
-						stgProject.fkProjectgroup,
-						stgProject.fkLead,
-						stgProject.cLockworkrecordsdate,
-						stgProject.cName,
-						stgProject.cId
-						)
-						.values(
-								el[0] , 
-								el[1] , 
-								el[2] , 
-								StringUtils.getMaskedValue((String)el[3]) , 
-								el[4] , 
-								el[5] , 
-								el[6] , 
-								el[7] , 
-								el[8] , 
-								el[9] , 
-								el[10] ,
-								el[11] ,
-								StringUtils.getMaskedValue((String)el[12]) ,
-								el[13] ,
-								el[14] ,
-								el[15] 
-								)
-						.addBatch();
+					insert.columns(
+							stgProject.cTrackerprefix,
+							stgProject.cPk,
+							stgProject.fkUriLead,
+							stgProject.cDeleted,
+							stgProject.cFinish,
+							stgProject.cUri,
+							stgProject.cStart,
+							stgProject.fkUriProjectgroup,
+							stgProject.cActive,
+							stgProject.cLocation,
+							stgProject.fkProjectgroup,
+							stgProject.fkLead,
+							stgProject.cLockworkrecordsdate,
+							stgProject.cName,
+							stgProject.cId
+							)
+							.values(
+									el.get(fonteProjects.cTrackerprefix),
+									el.get(fonteProjects.cPk),
+									el.get(fonteProjects.fkUriLead),
+									el.get(fonteProjects.cDeleted),
+									el.get(fonteProjects.cFinish),
+									el.get(fonteProjects.cUri),
+									el.get(fonteProjects.cStart),
+									el.get(fonteProjects.fkUriProjectgroup),
+									el.get(fonteProjects.cActive),
+									el.get(fonteProjects.cLocation),
+									el.get(fonteProjects.fkProjectgroup),
+									el.get(fonteProjects.fkLead),
+									el.get(fonteProjects.cLockworkrecordsdate),
+									el.get(fonteProjects.cName),
+									el.get(fonteProjects.cId)
+									)
+							.addBatch();
 				
-				n_righe_inserite++;
+				sizeCounter++;
 				
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE == 0) {
+					if (sizeCounter % DmAlmConstants.BATCH_SIZE == 0) {
 						insert.execute();
 						OracleConnection.commit();
 						insert = new SQLInsertClause(OracleConnection, dialect, stgProject);
@@ -212,7 +184,7 @@ public class SissCurrentProjectDAO
 		ErrorManager.getInstance().exceptionOccurred(true, e);
 		logger.error(e.getMessage(), e);
 		
-		n_righe_inserite=0;
+		sizeCounter=0;
 		throw new DAOException(e);
 	}
 	finally
@@ -221,7 +193,6 @@ public class SissCurrentProjectDAO
 		if(cm != null) cm.closeConnection(pgConnection);
 	}
 
-	return n_righe_inserite;
 
 	}
 	

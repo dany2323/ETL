@@ -45,8 +45,6 @@ public class SireHistoryRevision extends com.mysema.query.sql.RelationalPathBase
     
     public final BooleanPath cInternalcommit = createBoolean("C_INTERNALCOMMIT");
     
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
-
     public SireHistoryRevision(String variable) {
         super(lispa.schedulers.bean.staging.sgr.sire.history.DmAlmSireHistoryRevision.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_REVISION");
     }

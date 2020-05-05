@@ -47,7 +47,6 @@ public class SissHistoryHyperlinkDAO {
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> hyperlinks = null;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 
@@ -81,83 +80,42 @@ public class SissHistoryHyperlinkDAO {
 					.where(fonteHistoryWorkItems.cRev
 							.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision)).list(
-							// fonteHyperlink.all()
-
-							fonteHyperlink.cRole, fonteHyperlink.cUrl,
-							fonteHyperlink.fkUriPWorkitem,
-							StringTemplate.create("(select c_rev from "
-									+ lispa.schedulers.manager.DmAlmConstants
-											.GetPolarionSchemaSissHistory()
-									+ ".workitem where workitem.c_pk = fk_p_workitem) as fk_p_workitem"));
-
-			logger.debug("fillSissHistoryHyperlink - hyperlink.size: "
-					+ (hyperlinks != null ? hyperlinks.size() : 0));
+							fonteHistoryWorkItems.all());
 
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
 					stgHyperlink);
-			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-					.getDataEsecuzione();
+
 			int batchcounter = 0;
 
 			for (Tuple row : hyperlinks) {
+
 				batchcounter++;
-
-				Object[] vals = row.toArray();
-				String fkUriPWorkitem = vals[2] != null
-						? (queryConnOracle(connOracle, dialect)
-								.from(stgSubterra)
-								.where(stgSubterra.cId
-										.eq(Long.valueOf(vals[2].toString())))
-								.where(stgSubterra.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS))
-								.count() > 0
-										? queryConnOracle(connOracle, dialect)
-												.from(stgSubterra)
-												.where(stgSubterra.cId
-														.eq(Long.valueOf(vals[2]
-																.toString())))
-												.where(stgSubterra.cRepo.eq(
-														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS))
-												.list(stgSubterra.cPk).get(0)
-										: "")
-						: "";
-				String fkPWorkitem = fkUriPWorkitem + "%"
-						+ (vals[3] != null ? vals[3].toString() : "");
-
 				insert.columns(
 
 						stgHyperlink.cRole, stgHyperlink.cUrl,
 						stgHyperlink.fkPWorkitem, stgHyperlink.fkUriPWorkitem
-				// stgHyperlink.dataCaricamento,
-				// stgHyperlink.sissHistoryHyperlinkPk
-
 				)
 
 						.values(
-
-								vals[0], vals[1], fkPWorkitem, fkUriPWorkitem
-						// dataEsecuzione,
-						// StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
-
+								row.get(fonteHyperlink.cRole), 
+								row.get(fonteHyperlink.cUrl),
+								row.get(fonteHyperlink.fkPWorkitem),
+								row.get(fonteHyperlink.fkUriPWorkitem)
 						).addBatch();
 
 				if (batchcounter % DmAlmConstants.BATCH_SIZE == 0
 						&& !insert.isEmpty()) {
 					insert.execute();
 					connOracle.commit();
-					logger.info("Hyperlink dei Work Item di tipo "
-							+ type.toString() + " importati con successo.");
 					insert = new SQLInsertClause(connOracle, dialect,
 							stgHyperlink);
 				}
 
 			}
 
-			if (!insert.isEmpty()) {
+			if(!insert.isEmpty()) {
 				insert.execute();
 				connOracle.commit();
-				logger.info("Hyperlink dei Work Item di tipo " + type.toString()
-						+ " importati con successo.");
 			}
 
 		} catch (Exception e) {

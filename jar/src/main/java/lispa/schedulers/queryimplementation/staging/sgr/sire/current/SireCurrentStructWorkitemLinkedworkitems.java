@@ -27,15 +27,15 @@ public class SireCurrentStructWorkitemLinkedworkitems extends com.mysema.query.s
 
     public final StringPath cRole = createString("C_ROLE");
 
-    public final BooleanPath cSuspect = createBoolean("C_SUSPECT");
+    public final NumberPath<Integer> cSuspect = createNumber("C_SUSPECT",Integer.class);
 
-    public final StringPath fkPWorkitem = createString("FK_P_WORKITEM");
+    public final NumberPath<Long> fkPWorkitem = createNumber("FK_P_WORKITEM",Long.class);
 
-    public final StringPath fkUriPWorkitem = createString("FK_URI_P_WORKITEM");
+    public final NumberPath<Long> fkUriPWorkitem = createNumber("FK_URI_P_WORKITEM",Long.class);
 
-    public final StringPath fkUriWorkitem = createString("FK_URI_WORKITEM");
+    public final NumberPath<Long> fkUriWorkitem = createNumber("FK_URI_WORKITEM",Long.class);
 
-    public final StringPath fkWorkitem = createString("FK_WORKITEM");
+    public final NumberPath<Long> fkWorkitem = createNumber("FK_WORKITEM",Long.class);
 
     public SireCurrentStructWorkitemLinkedworkitems(String variable) {
         super(lispa.schedulers.bean.staging.sgr.sire.current.DmAlmSireCurrentStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_STRUCT_WI_LINKWI");

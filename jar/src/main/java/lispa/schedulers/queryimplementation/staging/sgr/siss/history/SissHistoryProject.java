@@ -32,8 +32,6 @@ public class SissHistoryProject extends com.mysema.query.sql.RelationalPathBase<
 
     public final StringPath cId = createString("C_ID");
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
-
     public final StringPath cLocation = createString("C_LOCATION");
 
     public final DatePath<java.sql.Date> cLockworkrecordsdate = createDate("C_LOCKWORKRECORDSDATE", java.sql.Date.class);
@@ -57,9 +55,7 @@ public class SissHistoryProject extends com.mysema.query.sql.RelationalPathBase<
     public final StringPath fkUriLead = createString("FK_URI_LEAD");
 
     public final StringPath fkUriProjectgroup = createString("FK_URI_PROJECTGROUP");
-    
-    public final StringPath template = createString("TEMPLATE");
-    
+        
     public final StringPath cDescription = createString("C_DESCRIPTION");
 
     public SissHistoryProject(String variable) {

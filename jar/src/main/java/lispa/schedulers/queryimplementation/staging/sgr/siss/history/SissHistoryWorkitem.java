@@ -34,8 +34,6 @@ public class SissHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final NumberPath<Float> cInitialestimate = createNumber("C_INITIALESTIMATE", Float.class);
 
-    public final NumberPath<Integer> cIsLocal = createNumber("C_IS_LOCAL", Integer.class);
-
     public final StringPath cLocation = createString("C_LOCATION");
 
     public final StringPath cOutlinenumber = createString("C_OUTLINENUMBER");

@@ -1,100 +1,95 @@
 package lispa.schedulers.dao.sgr.siss.current;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
+
 import org.apache.log4j.Logger;
+
 import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.QTuple;
 import com.mysema.query.types.template.StringTemplate;
 
+import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.exception.DAOException;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
+
 public class SissCurrentWorkitemLinkedDAO {
 
-	private static Logger logger = Logger.getLogger(SissCurrentWorkitemLinkedDAO.class);
+	private static Logger logger = Logger
+			.getLogger(SissCurrentWorkitemLinkedDAO.class);
 
 	public static void fillSissCurrentWorkitemLinked() throws Exception {
 
 		ConnectionManager cm = null;
 		Connection oracleConnection = null;
-		Connection h2Connection = null;
+		Connection pgConnection = null;
 
 		try {
 
 			cm = ConnectionManager.getInstance();
 
-			h2Connection = cm.getConnectionSISSCurrent();
+			pgConnection = cm.getConnectionSISSCurrent();
 
 			oracleConnection = cm.getConnectionOracle();
 			oracleConnection.setAutoCommit(false);
 
-			lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems stgWorkItemLinked = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
+			lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems workItemLinked = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems fonteWorkitemLinked = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			PostgresTemplates dialect = new PostgresTemplates() {
 				{
 					setPrintSchema(true);
 				}
 			};
-			SQLQuery query = new SQLQuery(h2Connection, dialect);
+			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
-			List<Tuple> cfworkitems = query.from(fonteWorkitemLinked).list(
-					new QTuple(
-							StringTemplate.create("CASEWHEN ("
-									+ fonteWorkitemLinked.cSuspect
-									+ "= 'true', 1,0 )"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.cRole
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkPWorkitem
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.cRevision
-											+ ",0,4000)"),
-							StringTemplate.create("SUBSTRING("
-									+ fonteWorkitemLinked.fkUriPWorkitem
-									+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkUriWorkitem
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkWorkitem
-											+ ",0,4000)")));
+			List<Tuple> listWorkitemLinked = query.from(fonteWorkitemLinked)
+					.list(fonteWorkitemLinked.all());
 
-			logger.debug("fillSissCurrentWorkitemLinked - cfworkitems.sizw: "
-					+ cfworkitems.size());
+			logger.debug("fillSissCurrentWorkitemLinked - cfworkitems.size: "
+					+ listWorkitemLinked.size());
 
-			Iterator<Tuple> i = cfworkitems.iterator();
-			Object[] el = null;
+			SQLInsertClause insert = new SQLInsertClause(oracleConnection,
+					dialect, workItemLinked);
+			long nRigheInserite = 0;
 
-			while (i.hasNext()) {
+			for (Tuple el : listWorkitemLinked) {
 
-				el = ((Tuple) i.next()).toArray();
+				insert.columns(workItemLinked.cSuspect, workItemLinked.cRole,
+						workItemLinked.fkPWorkitem, workItemLinked.cRevision,
+						workItemLinked.fkUriPWorkitem,
+						workItemLinked.fkUriWorkitem, workItemLinked.fkWorkitem)
+						.values(el.get(fonteWorkitemLinked.cSuspect),
+								el.get(fonteWorkitemLinked.cRole),
+								el.get(fonteWorkitemLinked.fkPWorkitem),
+								el.get(fonteWorkitemLinked.cRevision),
+								el.get(fonteWorkitemLinked.fkUriPWorkitem),
+								el.get(fonteWorkitemLinked.fkUriWorkitem),
+								el.get(fonteWorkitemLinked.fkWorkitem))
+						.addBatch();
 
-				new SQLInsertClause(oracleConnection, dialect, stgWorkItemLinked)
-						.columns(stgWorkItemLinked.cSuspect, stgWorkItemLinked.cRole,
-								stgWorkItemLinked.fkPWorkitem,
-								stgWorkItemLinked.cRevision,
-								stgWorkItemLinked.fkUriPWorkitem,
-								stgWorkItemLinked.fkUriWorkitem,
-								stgWorkItemLinked.fkWorkitem)
-						.values(el[0],
-								el[1],
-								el[2],
-								el[3],
-								el[4],
-								el[5],
-								el[6]
-						).execute();
+				nRigheInserite++;
+
+				if (!insert.isEmpty()) {
+					if (nRigheInserite % DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						oracleConnection.commit();
+						insert = new SQLInsertClause(oracleConnection, dialect,
+								workItemLinked);
+					}
+				}
+
 			}
-
-			oracleConnection.commit();
+			if (!insert.isEmpty()) {
+				insert.execute();
+				oracleConnection.commit();
+			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -102,14 +97,14 @@ public class SissCurrentWorkitemLinkedDAO {
 			if (oracleConnection != null) {
 				oracleConnection.rollback();
 			}
-			
+
 			throw new DAOException(e);
 		} finally {
 			if (cm != null) {
 				cm.closeConnection(oracleConnection);
 			}
 			if (cm != null) {
-				cm.closeConnection(h2Connection);
+				cm.closeConnection(pgConnection);
 			}
 		}
 	}

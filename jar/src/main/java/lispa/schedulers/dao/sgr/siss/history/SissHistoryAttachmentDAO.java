@@ -36,16 +36,16 @@ public class SissHistoryAttachmentDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryAttachment fonteAttachment = SissHistoryAttachment.attachment;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryAttachment stgAttachment = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryAttachment.attachment;
 
+	public static void fillSissHistoryAttachment(long minRevision,
+			long maxRevision) throws SQLException, DAOException {
 
-	public static void fillSissHistoryAttachment(long minRevision, long maxRevision) throws SQLException, DAOException {
-		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> attachments = null;
 		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 		long n_righe_inserite = 0;
-		
+
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
@@ -65,118 +65,69 @@ public class SissHistoryAttachmentDAO {
 			attachments = query.from(fonteAttachment)
 					.where(fonteAttachment.cRev.gt(minRevision))
 					.where(fonteAttachment.cRev.loe(maxRevision))
-					.list(
-							fonteAttachment.cDeleted,
-							fonteAttachment.cFilename,
-							fonteAttachment.cId,
-							StringTemplate.create("0 as c_is_local"),
-							fonteAttachment.cLength,
-							fonteAttachment.cUri,
-							fonteAttachment.cRev,
-							fonteAttachment.cTitle,
-							fonteAttachment.cUpdated,
-							fonteAttachment.cUrl,
-							fonteAttachment.fkUriAuthor,
-							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSissHistory() + ".t_user where t_user.c_pk = fk_author) as fk_rev_author"),
-							fonteAttachment.fkUriProject,
-							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSissHistory() + ".project where project.c_pk = fk_project) as fk_rev_project"),
-							fonteAttachment.fkUriWorkitem,
-							StringTemplate.create("(select c_rev from " + DmAlmConstants.GetPolarionSchemaSissHistory() + ".workitem where workitem.c_pk = fk_workitem) as fk_rev_workitem")
-							);
+					.list(fonteAttachment.all());
 
-			logger.debug("fillSissHistoryAttachment - attachments.size: "+ (attachments != null ? attachments.size() : 0));
-			
-			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
-			
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
+					stgAttachment);
+			int batchCounter = 0;
+
 			for (Tuple row : attachments) {
 
-				Object[] vals = row.toArray();
-				String cUri = vals[5] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[5].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[5].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
-				String cPk = cUri+"%"+ (vals[6] != null ? vals[6].toString() : "");
-				String fkUriAuthor= vals[10] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[10].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[10].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
-				String fkUriProject = vals[12] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[12].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[12].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
-				String fkUriWorkitem = vals[14] != null ? (queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[14].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).count() > 0 ? queryConnOracle(connOracle, dialect).from(stgSubterra).where(stgSubterra.cId.eq(Long.valueOf(vals[14].toString()))).where(stgSubterra.cRepo.eq(lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS)).list(stgSubterra.cPk).get(0) : "") : "";
-				String fkAuthor = fkUriAuthor+"%"+(vals[11] != null ? vals[6].toString() : "");
-				String fkProject = fkUriProject+"%"+(vals[13] != null ? vals[6].toString() : "");
-				String fkWorkitem = fkUriWorkitem+"%"+(vals[15] != null ? vals[6].toString() : "");
-				
-				//Applico il cast a timespent solo se esistono dei valori data 
-				StringExpression dateValue = null;
-				if(vals[8] != null) {
-					dateValue = StringTemplate.create("to_timestamp('"+vals[8]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
-				}
+				insert.columns(stgAttachment.cDeleted, stgAttachment.cFilename,
+						stgAttachment.cId,
+						stgAttachment.cLength, stgAttachment.cPk,
+						stgAttachment.cRev, stgAttachment.cTitle,
+						stgAttachment.cUpdated, stgAttachment.cUri,
+						stgAttachment.cUrl, stgAttachment.fkAuthor,
+						stgAttachment.fkProject, stgAttachment.fkUriAuthor,
+						stgAttachment.fkUriProject, stgAttachment.fkUriWorkitem,
+						stgAttachment.fkWorkitem)
 
-				insert.columns(
-								stgAttachment.cDeleted,
-								stgAttachment.cFilename,
-								stgAttachment.cId,
-								stgAttachment.cIsLocal,
-								stgAttachment.cLength,
-								stgAttachment.cPk,
-								stgAttachment.cRev,
-								stgAttachment.cTitle,
-								stgAttachment.cUpdated,
-								stgAttachment.cUri,
-								stgAttachment.cUrl,
-//								stgAttachment.dataCaricamento,
-								stgAttachment.fkAuthor,
-								stgAttachment.fkProject,
-								stgAttachment.fkUriAuthor,
-								stgAttachment.fkUriProject,
-								stgAttachment.fkUriWorkitem,
-								stgAttachment.fkWorkitem
-//								stgAttachment.sissHistoryAttachmentPk
-						)
-						.values(
-								vals[0],
-								vals[1],
-								vals[2],
-								vals[3],
-								vals[4],
-								cPk,
-								vals[6],
-								vals[7],
-								dateValue,
-								cUri,
-								vals[10],
-//								dataEsecuzione,
-								StringUtils.getMaskedValue(fkAuthor),
-								fkProject,
-								StringUtils.getMaskedValue(fkUriAuthor),
-								fkUriProject,
-								fkUriWorkitem,
-								fkWorkitem
-//								StringTemplate.create("HISTORY_ATTACHMENT_SEQ.nextval")
-										
-						).addBatch();
-				
-				n_righe_inserite++;
-				
+						.values(row.get(fonteAttachment.cDeleted),
+								row.get(fonteAttachment.cFilename),
+								row.get(fonteAttachment.cId),
+								row.get(fonteAttachment.cLength),
+								row.get(fonteAttachment.cPk),
+								row.get(fonteAttachment.cRev),
+								row.get(fonteAttachment.cTitle),
+								row.get(fonteAttachment.cUpdated),
+								row.get(fonteAttachment.cUri),
+								row.get(fonteAttachment.cUrl),
+								row.get(fonteAttachment.fkAuthor),
+								row.get(fonteAttachment.fkProject),
+								row.get(fonteAttachment.fkUriAuthor),
+								row.get(fonteAttachment.fkUriProject),
+								row.get(fonteAttachment.fkUriWorkitem),
+								row.get(fonteAttachment.fkWorkitem))
+						.addBatch();
+
+				batchCounter++;
+
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+					if (batchCounter
+							% lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
 						insert.execute();
 						connOracle.commit();
-						insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
+						insert = new SQLInsertClause(connOracle, dialect,
+								stgAttachment);
 					}
 				}
 
 			}
-			
-			connOracle.commit();
+
 			if (!insert.isEmpty()) {
 				insert.execute();
 				connOracle.commit();
 			}
-			
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			
+
 			throw new DAOException(e);
-		}
-		finally {
-			if(cm != null) cm.closeConnection(pgConnection);
-			if(cm != null) cm.closeConnection(connOracle);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(pgConnection);
+			if (cm != null)
+				cm.closeConnection(connOracle);
 		}
 	}
 
@@ -184,7 +135,6 @@ public class SissHistoryAttachmentDAO {
 		ConnectionManager cm = null;
 		Connection oracle = null;
 		lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryAttachment stgAttachment = QSissHistoryAttachment.dmalmSissHistoryAttachment;
-
 
 		List<Long> max = new ArrayList<Long>();
 		try {
@@ -203,15 +153,16 @@ public class SissHistoryAttachmentDAO {
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
+
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+			if (cm != null)
+				cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
 	}
-	
+
 	public static void recoverSissHistoryAttachement() throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -219,22 +170,23 @@ public class SissHistoryAttachmentDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-	
+
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QSissHistoryAttachment stgHistoryAttachment = QSissHistoryAttachment.dmalmSissHistoryAttachment;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgHistoryAttachment).where(stgHistoryAttachment.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
+			// Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00",
+			// "yyyy-MM-dd HH:mm:ss");
+			new SQLDeleteClause(connection, dialect, stgHistoryAttachment)
+					.where(stgHistoryAttachment.dataCaricamento.eq(
+							DataEsecuzione.getInstance().getDataEsecuzione()))
+					.execute();
 			connection.commit();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
-			
+
 			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
 	}
@@ -245,18 +197,20 @@ public class SissHistoryAttachmentDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-	
+
 			SQLTemplates dialect = new HSQLDBTemplates();
 			new SQLDeleteClause(connection, dialect, stgAttachment).execute();
 			connection.commit();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(connection);
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
 	}
-	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+	private static SQLQuery queryConnOracle(Connection connOracle,
+			PostgresTemplates dialect) {
 		return new SQLQuery(connOracle, dialect);
 	}
 

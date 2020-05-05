@@ -31,8 +31,6 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final NumberPath<Float> cInitialestimate = createNumber("C_INITIALESTIMATE", Float.class);
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
-
     public final StringPath cLocation = createString("C_LOCATION");
 
     public final StringPath cOutlinenumber = createString("C_OUTLINENUMBER");

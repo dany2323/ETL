@@ -74,7 +74,7 @@ public class FillSISSHistoryFacade {
 					attachment_minRevision, polarion_maxRevision, logger));
 			hyperlink = new Thread(new SissHistoryHyperlinkRunnable(
 					minRevisionsByType, polarion_maxRevision, logger));
-			schede_servizio = new Thread(new SissSchedeServizioRunnable(logger));
+//			schede_servizio = new Thread(new SissSchedeServizioRunnable(logger));
 
 			project.start();
 			project.join();
@@ -97,8 +97,8 @@ public class FillSISSHistoryFacade {
 			hyperlink.start();
 			hyperlink.join();
 
-			schede_servizio.start();
-			schede_servizio.join();
+//			schede_servizio.start();
+//			schede_servizio.join();
 
 			wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));

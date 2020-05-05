@@ -47,7 +47,6 @@ public class SireHistoryCfWorkitemDAO {
 		Connection pgConnection = null;
 		List<Tuple> cfWorkitem = null;
 		String customFieldName = null;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -74,67 +73,17 @@ public class SireHistoryCfWorkitemDAO {
 					.where(fonteHistoryWorkItems.cType.eq(w_type.toString()))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevision))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-					.where(fonteCFWorkItems.cName.eq(CFName)).list(
-							// fonteCFWorkItems.all()
-
-							fonteCFWorkItems.cDateonlyValue,
-							fonteCFWorkItems.cFloatValue,
-							fonteCFWorkItems.cStringValue,
-							fonteCFWorkItems.cDateValue,
-							fonteCFWorkItems.cBooleanValue,
-							fonteCFWorkItems.cName,
-							fonteCFWorkItems.fkUriWorkitem,
-							StringTemplate.create("(select c_rev from "
-									+ lispa.schedulers.manager.DmAlmConstants
-											.GetPolarionSchemaSireHistory()
-									+ ".workitem where workitem.c_pk = fk_workitem) as fk_workitem"),
-							fonteCFWorkItems.cLongValue,
-							fonteCFWorkItems.cDurationtimeValue,
-							fonteCFWorkItems.cCurrencyValue);
+					.where(fonteCFWorkItems.cName.eq(CFName))
+					.list(fonteCFWorkItems.all());
 
 			logger.debug("CF_NAME: " + w_type.toString() + " " + CFName
 					+ "  SIZE: " + cfWorkitem.size());
 
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
 					stgCFWorkItems);
-			int count_batch = 0;
+			int countBatch = 0;
 
 			for (Tuple row : cfWorkitem) {
-
-				count_batch++;
-				Object[] val = row.toArray();
-				String fkUriWorkitem = val[6] != null
-						? (queryConnOracle(connOracle, dialect)
-								.from(stgSubterra)
-								.where(stgSubterra.cId
-										.eq(Long.valueOf(val[6].toString())))
-								.where(stgSubterra.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-								.count() > 0
-										? queryConnOracle(connOracle, dialect)
-												.from(stgSubterra)
-												.where(stgSubterra.cId
-														.eq(Long.valueOf(val[6]
-																.toString())))
-												.where(stgSubterra.cRepo.eq(
-														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-												.list(stgSubterra.cPk).get(0)
-										: "")
-						: "";
-				String fkWorkitem = fkUriWorkitem + "%"
-						+ (val[7] != null ? val[7].toString() : "");
-
-				// Applico il cast a timespent solo se esistono dei valori data
-				StringExpression dateOnlyValue = null;
-				if (val[0] != null) {
-					dateOnlyValue = StringTemplate.create(
-							"to_timestamp('" + val[0] + "', 'YYYY-MM-DD')");
-				}
-				StringExpression dateValue = null;
-				if (val[3] != null) {
-					dateValue = StringTemplate.create("to_timestamp('" + val[3]
-							+ "', 'YYYY-MM-DD HH24:MI:SS.FF')");
-				}
 
 				insert.columns(stgCFWorkItems.cDateonlyValue,
 						stgCFWorkItems.cFloatValue, stgCFWorkItems.cStringValue,
@@ -142,20 +91,22 @@ public class SireHistoryCfWorkitemDAO {
 						stgCFWorkItems.cName, stgCFWorkItems.fkUriWorkitem,
 						stgCFWorkItems.fkWorkitem, stgCFWorkItems.cLongValue,
 						stgCFWorkItems.cDurationtimeValue,
-						stgCFWorkItems.cCurrencyValue,
-						stgCFWorkItems.dataCaricamento,
-						stgCFWorkItems.dmalmHistoryCfWorkItemPk)
-						.values(dateOnlyValue, val[1], val[2], dateValue,
-								val[4], val[5], fkUriWorkitem, fkWorkitem,
-								val[8], val[9], val[10],
-								DataEsecuzione.getInstance()
-										.getDataEsecuzione(),
-								StringTemplate.create(
-										"HISTORY_CF_WORKITEM_SEQ.nextval"))
+						stgCFWorkItems.cCurrencyValue)
+						.values(row.get(fonteCFWorkItems.cDateonlyValue),
+								row.get(fonteCFWorkItems.cFloatValue),
+								row.get(fonteCFWorkItems.cStringValue),
+								row.get(fonteCFWorkItems.cDateValue),
+								row.get(fonteCFWorkItems.cBooleanValue),
+								row.get(fonteCFWorkItems.cName),
+								row.get(fonteCFWorkItems.fkUriWorkitem),
+								row.get(fonteCFWorkItems.fkWorkitem),
+								row.get(fonteCFWorkItems.cLongValue),
+								row.get(fonteCFWorkItems.cDurationtimeValue),
+								row.get(fonteCFWorkItems.cCurrencyValue))
 						.addBatch();
 
 				if (!insert.isEmpty()
-						&& count_batch % DmAlmConstants.BATCH_SIZE == 0) {
+						&& countBatch % DmAlmConstants.BATCH_SIZE == 0) {
 					insert.execute();
 					insert = new SQLInsertClause(connOracle, dialect,
 							stgCFWorkItems);
@@ -178,8 +129,6 @@ public class SireHistoryCfWorkitemDAO {
 
 			logger.info("Custom field '" + CFName + "' dei Work Item di tipo "
 					+ w_type.toString() + " importati con successo.");
-
-			// connOracle.commit();
 
 			ErrorManager.getInstance().resetCFDeadlock();
 		} catch (Exception e) {

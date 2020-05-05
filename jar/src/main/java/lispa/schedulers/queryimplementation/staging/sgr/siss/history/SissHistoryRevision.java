@@ -45,8 +45,6 @@ public class SissHistoryRevision extends com.mysema.query.sql.RelationalPathBase
     
     public final BooleanPath cInternalcommit = createBoolean("C_INTERNALCOMMIT");
     
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
-
     public SissHistoryRevision(String variable) {
         super(lispa.schedulers.bean.staging.sgr.siss.history.DmAlmSissHistoryRevision.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_REVISION");
     }

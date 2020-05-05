@@ -31,6 +31,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.mysema.query.sql.PostgresTemplates;
+import com.mysema.query.sql.SQLQuery;
+
 import it.lispa.jotm.datasource.crypt.EncryptionHelper;
 import it.lispa.jotm.datasource.crypt.support.BaseEncryptionHelper;
 import lispa.schedulers.exception.DAOException;
@@ -311,6 +314,9 @@ public class ConnectionManager{
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		}
+		catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
 
 		return c;
 
@@ -546,6 +552,11 @@ public class ConnectionManager{
 
 	public static PropertiesReader GetPropertiesReader() {
 		return propertiesReader;
+	}
+	
+	public static SQLQuery queryConnOracle(Connection connOracle,
+			PostgresTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
 	}
 
 }

@@ -22,7 +22,7 @@ public class SireCurrentProject extends com.mysema.query.sql.RelationalPathBase<
 
     public static final SireCurrentProject project = new SireCurrentProject("DM_ALM_C_SIRE_PROJECT");
 
-    public final BooleanPath cActive = createBoolean("C_ACTIVE");
+    public final NumberPath<Long> cActive = createNumber("C_ACTIVE",Long.class);
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 

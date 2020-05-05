@@ -48,18 +48,26 @@ public class SireHistoryRevisionDAO {
 	{
 
 		ConnectionManager cm = null;
-		Connection oracle = null;
+		Connection connPg = null;
 
 		List<Long> max = new ArrayList<Long>();
 		try{
 
-			cm 	   = ConnectionManager.getInstance();
-			oracle = cm.getConnectionOracle();
+			cm = ConnectionManager.getInstance();
+
+			connPg = cm.getConnectionSIRECurrent();
+
+			PostgresTemplates dialect = new PostgresTemplates()
+			{
+				{
+					setPrintSchema(true);
+				}
+			};
+
+			SQLQuery query 		 = new SQLQuery(connPg, dialect); 
+
 
 			Timestamp lastValid = DateUtils.addSecondsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -3600);
-
-			SQLTemplates dialect 				 = new HSQLDBTemplates();
-			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
 			max = query.from(fonteRevisions).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.castToNum(Long.class).max());
 
@@ -78,7 +86,7 @@ public class SireHistoryRevisionDAO {
 		}
 		finally
 		{
-			if(cm != null) cm.closeConnection(oracle);
+			if(cm != null) cm.closeConnection(connPg);
 		}
 		return max.get(0).longValue();
 	}
@@ -123,11 +131,14 @@ public class SireHistoryRevisionDAO {
 
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
+		Connection 	 	  connPg = null;
 		List<Tuple>       revisions = null;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
+			connPg = cm.getConnectionSIRECurrent();
+
 			revisions = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
@@ -139,77 +150,51 @@ public class SireHistoryRevisionDAO {
 				}
 			};
 
-			SQLQuery query 		 = new SQLQuery(connOracle, dialect); 
+			SQLQuery query= new SQLQuery(connPg, dialect); 
 
 			revisions = query.from(fonteRevisions)
 					.where(fonteRevisions.cCreated.gt(minRevision))
 					.where(fonteRevisions.cName.castToNum(Long.class).loe(maxRevision))
-					.list(
-							fonteSubterraUriMap.cPk,
-							fonteRevisions.cAuthor,
-							fonteRevisions.cCreated,
-							fonteRevisions.cDeleted,
-							fonteRevisions.cInternalcommit,
-							StringTemplate.create("0 as c_is_local"),
-							fonteRevisions.cMessage,
-							fonteRevisions.cName,
-							fonteRevisions.cRepositoryname,
-							fonteRevisions.cRev,
-							StringTemplate.create(fonteSubterraUriMap.cPk + " as c_uri")
-							);
-			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
+					.list(fonteRevisions.all());
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
-			int batch_size_counter=0;
+			int batchSizeCounter=0;
 			for(Tuple row : revisions) {
-				
-				Object[] vals = row.toArray();
-				
-				//Applico il cast a timespent solo se esistono dei valori data 
-				StringExpression dateValue = null;
-				if(vals[2] != null) {
-					dateValue = StringTemplate.create("to_timestamp('"+vals[2]+"', 'YYYY-MM-DD HH24:MI:SS.FF')");
-				}
-
+								
 				insert.columns(
 						stgRevisions.cPk,
 						stgRevisions.cAuthor,
 						stgRevisions.cCreated,
 						stgRevisions.cDeleted,
 						stgRevisions.cInternalcommit,
-						stgRevisions.cIsLocal,
 						stgRevisions.cMessage,
 						stgRevisions.cName,
 						stgRevisions.cRepositoryname,
 						stgRevisions.cRev,
 						stgRevisions.cUri
 						)
-						.values(								
-								vals[0],
-								StringUtils.getMaskedValue((String)vals[1]),
-								dateValue,
-								vals[3],
-								vals[4],
-								vals[5],
-								vals[6] != null && vals[6].toString().length() > 4000 ? vals[6].toString().substring(0, 4000) : vals[6],
-								vals[7],
-								vals[8],
-								vals[9],
-								vals[10]
+						.values(row.get(fonteRevisions.cPk),
+								StringUtils.getMaskedValue(row.get(fonteRevisions.cAuthor)),
+								row.get(fonteRevisions.cCreated),
+								row.get(fonteRevisions.cDeleted),
+								row.get(fonteRevisions.cInternalCommit),
+								row.get(fonteRevisions.cMessage),
+								row.get(fonteRevisions.cName),
+								row.get(fonteRevisions.cRepositoryname),
+								row.get(fonteRevisions.cRev),
+								row.get(fonteRevisions.cUri)
 								).addBatch();
-				batch_size_counter++;
-				if(!revisions.isEmpty() && batch_size_counter == DmAlmConstants.BATCH_SIZE) {
+				batchSizeCounter++;
+				if(!revisions.isEmpty() && batchSizeCounter == DmAlmConstants.BATCH_SIZE) {
 					insert.execute();
 					insert = new SQLInsertClause(connOracle, dialect, stgRevisions);
-					batch_size_counter = 0;
+					batchSizeCounter = 0;
 					
 				}
 			}
-			if(!revisions.isEmpty()) {
+			if(!insert.isEmpty()) {
 				insert.execute();
 				connOracle.commit();
 			}
-
-
 
 		}
 		catch(Exception e) {

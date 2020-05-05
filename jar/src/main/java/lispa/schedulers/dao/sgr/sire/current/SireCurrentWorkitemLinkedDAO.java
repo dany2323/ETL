@@ -5,101 +5,90 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.PostgresTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.QTuple;
+import com.mysema.query.types.template.StringTemplate;
+
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireCurrentWorkitemLinked;
-
-import org.apache.log4j.Logger;
-
-import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.PostgresTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.QTuple;
-import com.mysema.query.types.template.StringTemplate;
 
 public class SireCurrentWorkitemLinkedDAO {
 
 	private static Logger logger = Logger
 			.getLogger(SireCurrentWorkitemLinkedDAO.class);
 
-	public static long fillSireCurrentWorkitemLinked() throws Exception {
+	public static void fillSireCurrentWorkitemLinked() throws Exception {
+
 		ConnectionManager cm = null;
 		Connection oracleConnection = null;
 		Connection pgConnection = null;
-		long n_righe_inserite = 0;
 
 		try {
+
 			cm = ConnectionManager.getInstance();
 
 			pgConnection = cm.getConnectionSIRECurrent();
-			oracleConnection = cm.getConnectionOracle();
 
+			oracleConnection = cm.getConnectionOracle();
 			oracleConnection.setAutoCommit(false);
 
-			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap; 
+			lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems workItemLinked = lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems fonteWorkitemLinked = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
-			lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems stg_WorkitemLinked = lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 
-			PostgresTemplates dialect = new PostgresTemplates() 
-			{
+			PostgresTemplates dialect = new PostgresTemplates() {
 				{
 					setPrintSchema(true);
 				}
 			};
 			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
-			List<Tuple> cfworkitems = query.from(fonteWorkitemLinked).list(
-					
-					new QTuple(
-							StringTemplate.create("CASE WHEN " + fonteWorkitemLinked.cSuspect + "= 'true' THEN 1 ELSE 0 END as c_suspect"), 
-							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRole + ",0,4000) as c_role"),
-							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteWorkitemLinked.fkUriPWorkitem + ") as fk_p_workitem"), 
-							StringTemplate.create("SUBSTRING(" + fonteWorkitemLinked.cRevision + ",0,4000) as c_revision"),
-							StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteWorkitemLinked.fkUriPWorkitem + ") as fk_uri_p_workitem"), 
-							StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteWorkitemLinked.fkUriWorkitem + ") as fk_uri_workitem"), 
-							StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " +  fonteWorkitemLinked.fkUriWorkitem + ") as fk_workitem")
-							)
-					);
+			List<Tuple> listWorkitemLinked = query.from(fonteWorkitemLinked)
+					.list(fonteWorkitemLinked.all());
 
-			logger.debug("fillSireCurrentWorkitemLinked - cfworkitems.size: " + cfworkitems.size());
-			
-			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, stg_WorkitemLinked);
-			Iterator<Tuple> i = cfworkitems.iterator();
-			Object[] el = null;
+			logger.debug(
+					"fillSireCurrentWorkitemLinked - listWorkitemLinked.size: "
+							+ listWorkitemLinked.size());
 
-			while (i.hasNext()) {
+			SQLInsertClause insert = new SQLInsertClause(oracleConnection,
+					dialect, workItemLinked);
 
-				el = ((Tuple) i.next()).toArray();
-				
-				insert.columns(stg_WorkitemLinked.cSuspect,
-						stg_WorkitemLinked.cRole,
-						stg_WorkitemLinked.fkPWorkitem,
-						stg_WorkitemLinked.cRevision,
-						stg_WorkitemLinked.fkUriPWorkitem,
-						stg_WorkitemLinked.fkUriWorkitem,
-						stg_WorkitemLinked.fkWorkitem)
-						.values(el[0],
-								el[1],
-								el[2],
-								el[3],
-								el[4],
-								el[5],
-								el[6])
+			long nRigheInserite = 0;
+
+			for (Tuple el : listWorkitemLinked) {
+
+				insert.columns(
+						workItemLinked.cSuspect,
+						workItemLinked.cRole,
+						workItemLinked.fkPWorkitem, workItemLinked.cRevision,
+						workItemLinked.fkUriPWorkitem,
+						workItemLinked.fkUriWorkitem, workItemLinked.fkWorkitem
+						)
+						.values(
+								el.get(fonteWorkitemLinked.cSuspect),
+								el.get(fonteWorkitemLinked.cRole),
+								el.get(fonteWorkitemLinked.fkPWorkitem),
+								el.get(fonteWorkitemLinked.cRevision),
+								el.get(fonteWorkitemLinked.fkUriPWorkitem),
+								el.get(fonteWorkitemLinked.fkUriWorkitem),
+								el.get(fonteWorkitemLinked.fkWorkitem)
+								)
 						.addBatch();
-				
-				n_righe_inserite++;
-				
+
+				nRigheInserite++;
+
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE == 0) {
+					if (nRigheInserite % DmAlmConstants.BATCH_SIZE == 0) {
 						insert.execute();
 						oracleConnection.commit();
-						insert = new SQLInsertClause(oracleConnection, dialect, stg_WorkitemLinked);
+						insert = new SQLInsertClause(oracleConnection, dialect,
+								workItemLinked);
 					}
 				}
 
@@ -112,7 +101,6 @@ public class SireCurrentWorkitemLinkedDAO {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
-			n_righe_inserite = 0;
 			if (oracleConnection != null) {
 				oracleConnection.rollback();
 			}
@@ -126,34 +114,5 @@ public class SireCurrentWorkitemLinkedDAO {
 				cm.closeConnection(pgConnection);
 			}
 		}
-
-		return n_righe_inserite;
 	}
-
-	public static void delete(Timestamp dataEsecuzione) throws Exception {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QSireCurrentWorkitemLinked stgProjectgroup = QSireCurrentWorkitemLinked.sireCurrentWorkitemLinked;
-
-			new SQLDeleteClause(connection, dialect, stgProjectgroup).where(
-					stgProjectgroup.dataCaricamento.lt(dataEsecuzione).or(
-							stgProjectgroup.dataCaricamento.eq(DataEsecuzione
-									.getInstance().getDataEsecuzione())))
-					.execute();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-	}
-
 }

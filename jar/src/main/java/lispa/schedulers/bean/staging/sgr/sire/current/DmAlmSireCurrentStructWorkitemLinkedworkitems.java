@@ -10,15 +10,15 @@ public class DmAlmSireCurrentStructWorkitemLinkedworkitems {
 
     private String cRole;
 
-    private Boolean cSuspect;
+    private Integer cSuspect;
 
-    private String fkPWorkitem;
+    private Long fkPWorkitem;
 
-    private String fkUriPWorkitem;
+    private Long fkUriPWorkitem;
 
-    private String fkUriWorkitem;
+    private Long fkUriWorkitem;
 
-    private String fkWorkitem;
+    private Long fkWorkitem;
 
     public String getcRevision() {
         return cRevision;
@@ -36,43 +36,43 @@ public class DmAlmSireCurrentStructWorkitemLinkedworkitems {
         this.cRole = cRole;
     }
 
-    public Boolean getcSuspect() {
+    public Integer getcSuspect() {
         return cSuspect;
     }
 
-    public void setcSuspect(Boolean cSuspect) {
+    public void setcSuspect(Integer cSuspect) {
         this.cSuspect = cSuspect;
     }
 
-    public String getFkPWorkitem() {
+    public Long getFkPWorkitem() {
         return fkPWorkitem;
     }
 
-    public void setFkPWorkitem(String fkPWorkitem) {
+    public void setFkPWorkitem(Long fkPWorkitem) {
         this.fkPWorkitem = fkPWorkitem;
     }
 
-    public String getFkUriPWorkitem() {
+    public Long getFkUriPWorkitem() {
         return fkUriPWorkitem;
     }
 
-    public void setFkUriPWorkitem(String fkUriPWorkitem) {
+    public void setFkUriPWorkitem(Long fkUriPWorkitem) {
         this.fkUriPWorkitem = fkUriPWorkitem;
     }
 
-    public String getFkUriWorkitem() {
+    public Long getFkUriWorkitem() {
         return fkUriWorkitem;
     }
 
-    public void setFkUriWorkitem(String fkUriWorkitem) {
+    public void setFkUriWorkitem(Long fkUriWorkitem) {
         this.fkUriWorkitem = fkUriWorkitem;
     }
 
-    public String getFkWorkitem() {
+    public Long getFkWorkitem() {
         return fkWorkitem;
     }
 
-    public void setFkWorkitem(String fkWorkitem) {
+    public void setFkWorkitem(Long fkWorkitem) {
         this.fkWorkitem = fkWorkitem;
     }
 }

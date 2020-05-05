@@ -5,7 +5,7 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class DmAlmSireCurrentProject {
 
-    private Boolean cActive;
+    private Integer cActive;
 
     private Boolean cDeleted;
 
@@ -39,11 +39,11 @@ public class DmAlmSireCurrentProject {
 
     private String fkUriProjectgroup;
 
-    public Boolean getcActive() {
+    public Integer getcActive() {
         return cActive;
     }
 
-    public void setcActive(Boolean cActive) {
+    public void setcActive(Integer cActive) {
         this.cActive = cActive;
     }
 

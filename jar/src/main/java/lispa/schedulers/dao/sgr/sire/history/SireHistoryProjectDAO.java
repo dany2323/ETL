@@ -50,8 +50,6 @@ public class SireHistoryProjectDAO {
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> projects = null;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentRevision stgRevision = QDmalmCurrentRevision.currentRevision;
 
 		try {
 			logger.debug(
@@ -80,20 +78,7 @@ public class SireHistoryProjectDAO {
 							.from(fonteProjects2)
 							.where(fonteProjects2.cName.like("%{READONLY}%"))
 							.list(fonteProjects2.cId)))
-					.list(fonteProjects.cTrackerprefix,
-							StringTemplate.create("0"), fonteProjects.cUri,
-							fonteProjects.fkUriLead, fonteProjects.cDeleted,
-							fonteProjects.cFinish, fonteProjects.cUri,
-							fonteProjects.cStart,
-							fonteProjects.fkUriProjectgroup,
-							fonteProjects.cActive, fonteProjects.cLocation,
-							StringTemplate.create("(select c_rev from "
-									+ lispa.schedulers.manager.DmAlmConstants
-											.GetPolarionSchemaSireHistory()
-									+ ".t_user where t_user.c_pk = fk_lead) as fk_rev_lead"),
-							fonteProjects.cLockworkrecordsdate,
-							fonteProjects.cName, fonteProjects.cId,
-							fonteProjects.cRev, fonteProjects.cDescription);
+					.list(fonteProjects.all());
 
 			logger.debug(
 					"SireHistoryProjectDAO.fillSireHistoryProject - projects.size: "
@@ -103,91 +88,11 @@ public class SireHistoryProjectDAO {
 					stgProjects);
 			int nRigheInserite = 0;
 			for (Tuple row : projects) {
-				Object[] vals = row.toArray();
-				String cUri = vals[2] != null
-						? (queryConnOracle(connOracle, dialect)
-								.from(stgSubterra)
-								.where(stgSubterra.cId
-										.eq(Long.valueOf(vals[2].toString())))
-								.where(stgSubterra.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-								.count() > 0
-										? queryConnOracle(connOracle, dialect)
-												.from(stgSubterra)
-												.where(stgSubterra.cId
-														.eq(Long.valueOf(vals[2]
-																.toString())))
-												.where(stgSubterra.cRepo.eq(
-														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-												.list(stgSubterra.cPk).get(0)
-										: "")
-						: "";
-				String cPk = cUri + "%" + vals[15] != null
-						? vals[15].toString()
-						: "";
-				String fkUriLead = vals[3] != null
-						? (queryConnOracle(connOracle, dialect)
-								.from(stgSubterra)
-								.where(stgSubterra.cId
-										.eq(Long.valueOf(vals[3].toString())))
-								.where(stgSubterra.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-								.count() > 0
-										? queryConnOracle(connOracle, dialect)
-												.from(stgSubterra)
-												.where(stgSubterra.cId
-														.eq(Long.valueOf(vals[3]
-																.toString())))
-												.where(stgSubterra.cRepo.eq(
-														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-												.list(stgSubterra.cPk).get(0)
-										: "")
-						: "";
-				String fkLead = fkUriLead + "%"
-						+ (vals[11] != null ? vals[11].toString() : "");
-				String fkUriProjectgroup = vals[8] != null
-						? (queryConnOracle(connOracle, dialect)
-								.from(stgSubterra)
-								.where(stgSubterra.cId
-										.eq(Long.valueOf(vals[8].toString())))
-								.where(stgSubterra.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-								.count() > 0
-										? queryConnOracle(connOracle, dialect)
-												.from(stgSubterra)
-												.where(stgSubterra.cId
-														.eq(Long.valueOf(vals[8]
-																.toString())))
-												.where(stgSubterra.cRepo.eq(
-														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-												.list(stgSubterra.cPk).get(0)
-										: "")
-						: "";
-				String fkProjectgroup = fkUriProjectgroup + "%"
-						+ (vals[11] != null ? vals[11].toString() : "");
-				String cCreated = vals[15] != null
-						? (queryConnOracle(connOracle, dialect)
-								.from(stgRevision)
-								.where(stgRevision.cName
-										.eq(Long.valueOf(vals[15].toString())))
-								.where(stgRevision.cRepo.eq(
-										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-								.count() > 0
-										? queryConnOracle(connOracle, dialect)
-												.from(stgRevision)
-												.where(stgRevision.cName.eq(
-														Long.valueOf(vals[15]
-																.toString())))
-												.where(stgRevision.cRepo.eq(
-														lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SIRE))
-												.list(stgRevision.cCreated)
-												.get(0).toString()
-										: "")
-						: "";
+			
 
 				// Applico il cast a timespent solo se esistono dei valori data
 				
-				insert.columns(stgProjects.cTrackerprefix, stgProjects.cIsLocal,
+				insert.columns(stgProjects.cTrackerprefix,
 						stgProjects.cPk, stgProjects.fkUriLead,
 						stgProjects.cDeleted, stgProjects.cFinish,
 						stgProjects.cUri, stgProjects.cStart,
@@ -196,14 +101,24 @@ public class SireHistoryProjectDAO {
 						stgProjects.fkLead, stgProjects.cLockworkrecordsdate,
 						stgProjects.cName, stgProjects.cId,stgProjects.cRev,
 						stgProjects.cDescription)
-						.values(vals[0], vals[1], cPk,
-								StringUtils.getMaskedValue(fkUriLead), vals[4],
-								vals[5], cUri, vals[7], fkUriProjectgroup,
-								vals[9], vals[10], fkProjectgroup,
-								StringUtils.getMaskedValue(fkLead), vals[12],
-								vals[13], vals[14],								
-								vals[15], vals[16])
-						.execute();
+						.values(row.get(fonteProjects.cTrackerprefix), 
+								row.get(fonteProjects.cPk), 
+								StringUtils.getMaskedValue(row.get(fonteProjects.fkUriLead)),
+								row.get(fonteProjects.cDeleted), 
+								row.get(fonteProjects.cFinish),
+								row.get(fonteProjects.cUri), 
+								row.get(fonteProjects.cStart),
+								row.get(fonteProjects.fkUriProjectgroup), 
+								row.get(fonteProjects.cActive),
+								row.get(fonteProjects.cLocation), 
+								row.get(fonteProjects.fkProjectgroup),
+								row.get(fonteProjects.fkLead), 
+								row.get(fonteProjects.cLockworkrecordsdate),
+								row.get(fonteProjects.cName), 
+								row.get(fonteProjects.cId),
+								row.get(fonteProjects.cRev),
+								row.get(fonteProjects.cDescription))
+						.addBatch();
 				nRigheInserite++;
 				if (!insert.isEmpty()) {
 					if (nRigheInserite

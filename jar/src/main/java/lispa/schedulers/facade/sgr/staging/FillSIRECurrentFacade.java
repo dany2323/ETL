@@ -1,8 +1,12 @@
 package lispa.schedulers.facade.sgr.staging;
 
 import java.util.Date;
+
+import org.apache.log4j.Logger;
+
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentProjectDAO;
+import lispa.schedulers.dao.sgr.sire.current.SireCurrentSubterraUriMapDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemLinkedDAO;
 import lispa.schedulers.manager.ErrorManager;
@@ -11,14 +15,16 @@ import lispa.schedulers.svn.ProjectRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
-import org.apache.log4j.Logger;
 
 public class FillSIRECurrentFacade {
 
 	public static void execute(Logger logger) {
 
 		try {
-
+			logger.debug("START fillSireCurrentSubterraUriMap");
+			SireCurrentSubterraUriMapDAO.fillSireCurrentSubterraUriMap();
+			logger.debug("STOP fillSireCurrentSubterraUriMap");
+			
 			logger.debug("START fillSireCurrentWorkitemLinked");
 			SireCurrentWorkitemLinkedDAO.fillSireCurrentWorkitemLinked();
 			logger.debug("STOP fillSireCurrentWorkitemLinked");
