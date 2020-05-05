@@ -39,7 +39,7 @@ public class SireCurrentRevisionDAO {
 			oracleConnection.setAutoCommit(false);
 
 			QDmalmCurrentRevision stgRevision = QDmalmCurrentRevision.currentRevision;
-			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentRevision fonteSireRevision =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentRevision.revision; 
+			lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentRevision fonteSireRevision =lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentRevision.revision; 
 
 			PostgresTemplates dialect = new PostgresTemplates() {
 				{

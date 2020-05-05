@@ -18,7 +18,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem;
+import lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem;
 import lispa.schedulers.runnable.staging.sire.history.SireSchedeServizioRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryAttachmentRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryHyperlinkRunnable;
@@ -33,7 +33,7 @@ import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class FillSIREHistoryFacade {
 
-	static SireHistoryWorkitem fonteWorkItems = SireHistoryWorkitem.workitem;
+	static HistoryWorkitem fonteWorkItems = HistoryWorkitem.workitem;
 	private static int wait;
 
 	public static void execute(Logger logger) {

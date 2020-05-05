@@ -2,7 +2,6 @@ package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,25 +14,21 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.expr.StringExpression;
-import com.mysema.query.types.template.StringTemplate;
 
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.manager.DmAlmConstants;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryAttachment;
+import lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryAttachment;
 import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryAttachment;
-import lispa.schedulers.utils.StringUtils;
 
 public class SissHistoryAttachmentDAO {
 
 	private static Logger logger = Logger
 			.getLogger(SissHistoryAttachmentDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryAttachment fonteAttachment = SissHistoryAttachment.attachment;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryAttachment fonteAttachment = HistoryAttachment.attachment;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryAttachment stgAttachment = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryAttachment.attachment;
 
 	public static void fillSissHistoryAttachment(long minRevision,
@@ -43,8 +38,6 @@ public class SissHistoryAttachmentDAO {
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> attachments = null;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
-		long n_righe_inserite = 0;
 
 		try {
 			cm = ConnectionManager.getInstance();

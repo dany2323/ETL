@@ -31,7 +31,7 @@ public class SissHistoryWorkitemLinkedDAO
 
 	private static Logger logger = Logger.getLogger(SissHistoryWorkitemLinkedDAO.class); 	
 	
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 	
 		
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems stgLinkedWorkitems = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;

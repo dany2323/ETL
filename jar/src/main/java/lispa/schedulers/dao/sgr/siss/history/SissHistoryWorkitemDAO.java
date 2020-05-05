@@ -58,17 +58,8 @@ public class SissHistoryWorkitemDAO {
 
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryWorkitem stgWorkItems = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryWorkitem.workitem;
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem.workitem;
 
-	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-			.getDataEsecuzione();
-
-	private static String url = "";
-	private static String name = "";
-	private static String psw = "";
-
-	private static SVNRepository repository;
-	private static ISVNAuthenticationManager authManager;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryWorkitem stg_WorkItems = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryWorkitem.workitem;
 
 	public static void delete(EnumWorkitemType type) throws Exception {

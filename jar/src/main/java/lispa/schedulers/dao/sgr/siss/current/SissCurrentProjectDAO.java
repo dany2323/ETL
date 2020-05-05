@@ -31,7 +31,7 @@ public class SissCurrentProjectDAO
 {
 
 	private static Logger logger = Logger.getLogger(SissCurrentProjectDAO.class);
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject.project;
+	static lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentProject.project;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentProject stgProject  = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentProject.project;
 
 

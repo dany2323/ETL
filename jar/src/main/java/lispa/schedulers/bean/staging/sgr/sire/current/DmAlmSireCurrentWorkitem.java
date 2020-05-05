@@ -21,7 +21,7 @@ public class DmAlmSireCurrentWorkitem {
 
     private String cOutlinenumber;
 
-    private String cPk;
+    private Long cPk;
 
     private java.sql.Timestamp cPlannedend;
 
@@ -133,11 +133,11 @@ public class DmAlmSireCurrentWorkitem {
         this.cOutlinenumber = cOutlinenumber;
     }
 
-    public String getcPk() {
+    public Long getcPk() {
         return cPk;
     }
 
-    public void setcPk(String cPk) {
+    public void setcPk(Long cPk) {
         this.cPk = cPk;
     }
 

@@ -10,7 +10,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConstants;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryAttachment;
+import lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryAttachment;
 import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment;
 import lispa.schedulers.utils.StringUtils;
@@ -32,16 +32,16 @@ public class SireHistoryAttachmentDAO {
 	private static Logger logger = Logger
 			.getLogger(SireHistoryAttachmentDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryAttachment fonteAttachment = SireHistoryAttachment.attachment;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryAttachment fonteAttachment = HistoryAttachment.attachment;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryAttachment stgAttachment = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryAttachment.attachment;
 
-	public static void fillSireHistoryAttachment(long minRevision, long maxRevision) throws SQLException, DAOException {
-		
+	public static void fillSireHistoryAttachment(long minRevision,
+			long maxRevision) throws SQLException, DAOException {
+
 		ConnectionManager cm = null;
 		Connection connOracle = null;
 		Connection pgConnection = null;
 		List<Tuple> attachments = null;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -63,33 +63,23 @@ public class SireHistoryAttachmentDAO {
 					.where(fonteAttachment.cRev.gt(minRevision))
 					.where(fonteAttachment.cRev.loe(maxRevision))
 					.list(fonteAttachment.all());
-			
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
+
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
+					stgAttachment);
 			int batchCounter = 0;
-			
+
 			for (Tuple row : attachments) {
 
-				insert.columns(
-								stgAttachment.cDeleted,
-								stgAttachment.cFilename,
-								stgAttachment.cId,
-								stgAttachment.cLength,
-								stgAttachment.cPk,
-								stgAttachment.cRev,
-								stgAttachment.cTitle,
-								stgAttachment.cUpdated,
-								stgAttachment.cUri,
-								stgAttachment.cUrl,
-								stgAttachment.fkAuthor,
-								stgAttachment.fkProject,
-								stgAttachment.fkUriAuthor,
-								stgAttachment.fkUriProject,
-								stgAttachment.fkUriWorkitem,
-								stgAttachment.fkWorkitem
-						)
-								
-						.values(
-								row.get(fonteAttachment.cDeleted),
+				insert.columns(stgAttachment.cDeleted, stgAttachment.cFilename,
+						stgAttachment.cId, stgAttachment.cLength,
+						stgAttachment.cPk, stgAttachment.cRev,
+						stgAttachment.cTitle, stgAttachment.cUpdated,
+						stgAttachment.cUri, stgAttachment.cUrl,
+						stgAttachment.fkAuthor, stgAttachment.fkProject,
+						stgAttachment.fkUriAuthor, stgAttachment.fkUriProject,
+						stgAttachment.fkUriWorkitem, stgAttachment.fkWorkitem)
+
+						.values(row.get(fonteAttachment.cDeleted),
 								row.get(fonteAttachment.cFilename),
 								row.get(fonteAttachment.cId),
 								row.get(fonteAttachment.cLength),
@@ -104,34 +94,37 @@ public class SireHistoryAttachmentDAO {
 								row.get(fonteAttachment.fkUriAuthor),
 								row.get(fonteAttachment.fkUriProject),
 								row.get(fonteAttachment.fkUriWorkitem),
-								row.get(fonteAttachment.fkWorkitem)							
-						).addBatch();
-				
-						batchCounter++;
-				
+								row.get(fonteAttachment.fkWorkitem))
+						.addBatch();
+
+				batchCounter++;
+
 				if (!insert.isEmpty()) {
-					if (batchCounter % lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+					if (batchCounter
+							% lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
 						insert.execute();
 						connOracle.commit();
-						insert = new SQLInsertClause(connOracle, dialect, stgAttachment);
+						insert = new SQLInsertClause(connOracle, dialect,
+								stgAttachment);
 					}
 				}
 
 			}
-			
+
 			if (!insert.isEmpty()) {
 				insert.execute();
 				connOracle.commit();
 			}
-			
+
 		} catch (Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
-			
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
 			throw new DAOException(e);
-		}
-		finally {
-			if(cm != null) cm.closeConnection(pgConnection);
-			if(cm != null) cm.closeConnection(connOracle);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(pgConnection);
+			if (cm != null)
+				cm.closeConnection(connOracle);
 		}
 	}
 
@@ -139,7 +132,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		ConnectionManager cm = null;
 		Connection oracle = null;
 		lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment stgAttachment = QSireHistoryAttachment.dmalmSireHistoryAttachment;
-
 
 		List<Long> max = new ArrayList<Long>();
 		try {
@@ -158,15 +150,16 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
+
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+			if (cm != null)
+				cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
 	}
-	
+
 	public static void recoverSireHistoryAttachement() throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -174,22 +167,23 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-	
+
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QSireHistoryAttachment stgHistoryAttachment = QSireHistoryAttachment.dmalmSireHistoryAttachment;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgHistoryAttachment).where(stgHistoryAttachment.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
+			// Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00",
+			// "yyyy-MM-dd HH:mm:ss");
+			new SQLDeleteClause(connection, dialect, stgHistoryAttachment)
+					.where(stgHistoryAttachment.dataCaricamento.eq(
+							DataEsecuzione.getInstance().getDataEsecuzione()))
+					.execute();
 			connection.commit();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
-			
+
 			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
 	}
@@ -200,18 +194,20 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-	
+
 			SQLTemplates dialect = new HSQLDBTemplates();
 			new SQLDeleteClause(connection, dialect, stgAttachment).execute();
 			connection.commit();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(connection);
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
 	}
-	private static SQLQuery queryConnOracle(Connection connOracle, PostgresTemplates dialect) {
+	private static SQLQuery queryConnOracle(Connection connOracle,
+			PostgresTemplates dialect) {
 		return new SQLQuery(connOracle, dialect);
 	}
 

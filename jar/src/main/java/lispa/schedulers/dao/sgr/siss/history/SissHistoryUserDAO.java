@@ -29,10 +29,8 @@ public class SissHistoryUserDAO {
 
 	private static Logger logger = Logger.getLogger(SissHistoryUserDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser fonteUsers = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser.user;
-
-	// private static QSissHistoryUser stgUsers =
-	// QSissHistoryUser.sissHistoryUser;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryUser  fonteUsers= 
+			lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryUser.user;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryUser stgUsers = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryUser.user;
 	public static void fillSissHistoryUser(long minRevision, long maxRevision)
 			throws Exception {

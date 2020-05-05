@@ -7,7 +7,6 @@ import com.mysema.query.types.PathMetadata;
 
 import javax.annotation.Generated;
 
-import lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryAttachment;
 import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.Path;

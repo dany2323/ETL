@@ -28,8 +28,8 @@ public class SireHistoryUserDAO {
 
 	private static Logger logger = Logger.getLogger(SireHistoryUserDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser  fonteUsers= 
-			lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryUser  fonteUsers= 
+			lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryUser.user;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryUser stgUsers = 
 			lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryUser.user;
 	

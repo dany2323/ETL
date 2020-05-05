@@ -1,13 +1,16 @@
 package lispa.schedulers.facade.sgr.staging;
 
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
+
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.Logger;
+
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryAttachmentDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
@@ -18,8 +21,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem;
-import lispa.schedulers.runnable.staging.siss.history.SissSchedeServizioRunnable;
+import lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryAttachmentRunnable;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryHyperlinkRunnable;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryProjectGroupRunnable;
@@ -33,7 +35,7 @@ import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class FillSISSHistoryFacade {
 
-	static SissHistoryWorkitem fonteWorkItems = SissHistoryWorkitem.workitem;
+	static HistoryWorkitem fonteWorkItems = HistoryWorkitem.workitem;
 	private static int wait;
 
 	public static void execute(Logger logger) {

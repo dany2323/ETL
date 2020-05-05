@@ -38,8 +38,8 @@ public class SireHistoryProjectDAO {
 	private static Logger logger = Logger
 			.getLogger(SireHistoryProjectDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject.project;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject.project;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryProject stgProjects = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryProject.project;
 
 

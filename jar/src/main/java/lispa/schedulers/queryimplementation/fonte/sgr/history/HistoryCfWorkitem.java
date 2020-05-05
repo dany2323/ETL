@@ -1,0 +1,62 @@
+package lispa.schedulers.queryimplementation.fonte.sgr.history;
+
+import static com.mysema.query.types.PathMetadataFactory.*;
+
+import com.mysema.query.types.path.*;
+import com.mysema.query.types.PathMetadata;
+
+import javax.annotation.Generated;
+
+import lispa.schedulers.constant.DmAlmConstants;
+
+import com.mysema.query.types.Path;
+
+
+/**
+ * SireHistoryCfWorkitem is a Querydsl query type for SireHistoryCfWorkitem
+ */
+@Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
+public class HistoryCfWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.fonte.sgr.history.HistoryCfWorkitem> {
+
+    private static final long serialVersionUID = -1899539286;
+
+    public static final HistoryCfWorkitem cfWorkitem = new HistoryCfWorkitem("CF_WORKITEM");
+    
+    public final StringPath fkWorkitem = createString("FK_WORKITEM");
+    
+    public final StringPath cName = createString("C_NAME");
+    
+    public final StringPath fkUriWorkitem = createString("FK_URI_WORKITEM");
+
+    public final BooleanPath cBooleanValue = createBoolean("C_BOOLEAN_VALUE");
+
+    public final DateTimePath<java.sql.Timestamp> cDateValue = createDateTime("C_DATE_VALUE", java.sql.Timestamp.class);
+
+    public final DatePath<java.sql.Date> cDateonlyValue = createDate("C_DATEONLY_VALUE", java.sql.Date.class);
+
+    public final NumberPath<Float> cDurationtimeValue = createNumber("C_DURATIONTIME_VALUE", Float.class);
+
+    public final NumberPath<Float> cFloatValue = createNumber("C_FLOAT_VALUE", Float.class);
+    
+    public final NumberPath<java.math.BigDecimal> cCurrencyValue = createNumber("C_CURRENCY_VALUE", java.math.BigDecimal.class);
+
+    public final NumberPath<Long> cLongValue = createNumber("C_LONG_VALUE", Long.class);
+
+    public final StringPath cStringValue = createString("C_STRING_VALUE");
+    
+    public final StringPath cTextValue = createString("C_TEXT_VALUE");
+
+    public HistoryCfWorkitem(String variable) {
+        super(lispa.schedulers.bean.fonte.sgr.history.HistoryCfWorkitem.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "CF_WORKITEM");
+    }
+
+    public HistoryCfWorkitem(Path<? extends lispa.schedulers.bean.fonte.sgr.history.HistoryCfWorkitem> path) {
+        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "CF_WORKITEM");
+    }
+
+    public HistoryCfWorkitem(PathMetadata<?> metadata) {
+        super(lispa.schedulers.bean.fonte.sgr.history.HistoryCfWorkitem.class, metadata, DmAlmConstants.POLARION_SCHEMA, "CF_WORKITEM");
+    }
+
+}
+

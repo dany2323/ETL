@@ -56,12 +56,9 @@ public class SireHistoryWorkitemDAO {
 	private static Logger logger = Logger
 			.getLogger(SireHistoryWorkitemDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem stgWorkItems = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem.workitem;
 
-
-	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-			.getDataEsecuzione();
 
 	private static String url = "";
 	private static String name = "";

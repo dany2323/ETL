@@ -2,7 +2,6 @@ package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,18 +11,13 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.PostgresTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.expr.StringExpression;
-import com.mysema.query.types.template.StringTemplate;
 
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryCfWorkitem;
 import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryCfWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
@@ -31,11 +25,11 @@ public class SissHistoryCfWorkitemDAO {
 	private static Logger logger = Logger
 			.getLogger(SissHistoryCfWorkitemDAO.class);
 
-	private static SissHistoryCfWorkitem fonteCFWorkItems = SissHistoryCfWorkitem.cfWorkitem;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryCfWorkitem fonteCFWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryCfWorkitem.cfWorkitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryCfWorkitem stgCFWorkItems = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryCfWorkitem.cfWorkitem;
 
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem.workitem;
 
 	public static void fillSissHistoryCfWorkitemByWorkitemType(long minRevision,
 			long maxRevision, EnumWorkitemType w_type, String CFName)

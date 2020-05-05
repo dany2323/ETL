@@ -39,7 +39,7 @@ public class SissCurrentRevisionDAO {
 			oracleConnection.setAutoCommit(false);
 
 			QDmalmCurrentRevision stgRevision = QDmalmCurrentRevision.currentRevision;
-			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentRevision fonteSissRevision =lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentRevision.revision; 
+			lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentRevision fonteSissRevision =lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentRevision.revision; 
 
 			PostgresTemplates dialect = new PostgresTemplates() {
 				{

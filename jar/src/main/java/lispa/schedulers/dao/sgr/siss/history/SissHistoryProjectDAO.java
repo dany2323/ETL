@@ -36,8 +36,8 @@ public class SissHistoryProjectDAO {
 	private static Logger logger = Logger
 			.getLogger(SissHistoryProjectDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject.project;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject.project;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject.project;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject.project;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryProject stgProjects = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryProject.project;
 
 	public static void fillSissHistoryProject(long minRevision,

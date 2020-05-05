@@ -34,15 +34,9 @@ import com.mysema.query.types.template.StringTemplate;
 public class SireHistoryRevisionDAO {
 
 	private static Logger logger = Logger.getLogger(SireHistoryRevisionDAO.class);
-
-//	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
-//	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 	
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryRevision.revision;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision stgRevisions = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision.revision;
-
-
-	private static QDmalmCurrentSubterraUriMap fonteSubterraUriMap = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 	public static long getMaxRevision() throws Exception
 	{

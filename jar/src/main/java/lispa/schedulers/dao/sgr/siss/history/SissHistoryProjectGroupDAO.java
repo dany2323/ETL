@@ -29,7 +29,7 @@ public class SissHistoryProjectGroupDAO {
 	private static Logger logger = Logger
 			.getLogger(SissHistoryProjectGroupDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProjectgroup.projectgroup;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProjectgroup.projectgroup;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryProjectgroup stgProjectGroups = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryProjectgroup.projectgroup;
 
 	public static void fillSissHistoryProjectGroup() throws Exception {

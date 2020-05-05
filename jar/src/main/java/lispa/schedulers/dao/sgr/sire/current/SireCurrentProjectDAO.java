@@ -55,7 +55,7 @@ public class SireCurrentProjectDAO
 			{ {
 				setPrintSchema(true);
 			}};
-			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject.project;
+			lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentProject.project;
 			
             SQLQuery query = new SQLQuery(pgConnection, dialect); 
 

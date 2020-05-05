@@ -29,10 +29,10 @@ public class SireHistoryCfWorkitemDAO {
 	private static Logger logger = Logger
 			.getLogger(SireHistoryCfWorkitemDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem fonteCFWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem.cfWorkitem;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryCfWorkitem fonteCFWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryCfWorkitem.cfWorkitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryCfWorkitem stgCFWorkItems = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryCfWorkitem.sireHistoryCfWorkitem;
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem.workitem;
 
 	/**
 	 * Importo tutti i CF collegati a Workitem del tipo w_type e con C_NAME

@@ -26,7 +26,7 @@ import com.mysema.query.types.template.StringTemplate;
 
 public class SireHistoryProjectGroupDAO {
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup.projectgroup;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProjectgroup.projectgroup;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryProjectgroup stgProjectGroups = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryProjectgroup.projectgroup;
 
 	private static Logger logger = Logger

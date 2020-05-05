@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentWorkitem;
+
+import lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentWorkitem;
 import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -28,7 +29,7 @@ public class SireCurrentWorkitemDAO {
 
 	private static Logger logger = Logger
 			.getLogger(SireCurrentWorkitemDAO.class);
-	private static SireCurrentWorkitem sireCurrentWorkitem = SireCurrentWorkitem.workitem;
+	private static CurrentWorkitem sireCurrentWorkitem = CurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentWorkitem stgCurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentWorkitem.workitem;
 
 	public static void fillSireCurrentWorkitems()

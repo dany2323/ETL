@@ -2,7 +2,6 @@ package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,15 +15,13 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryHyperlink;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryHyperlink;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryHyperlink;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
@@ -33,11 +30,11 @@ public class SissHistoryHyperlinkDAO {
 	private static Logger logger = Logger
 			.getLogger(SissHistoryHyperlinkDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryHyperlink fonteHyperlink = SissHistoryHyperlink.structWorkitemHyperlinks;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryHyperlink fonteHyperlink = HistoryHyperlink.structWorkitemHyperlinks;
 
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryHyperlink stgHyperlink = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryHyperlink.structWorkitemHyperlinks;
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem.workitem;
 
 	public static void fillSissHistoryHyperlink(EnumWorkitemType type,
 			Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision)

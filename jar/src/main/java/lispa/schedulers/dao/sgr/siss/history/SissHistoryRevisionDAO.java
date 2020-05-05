@@ -35,19 +35,9 @@ public class SissHistoryRevisionDAO {
 	private static Logger logger = Logger
 			.getLogger(SissHistoryRevisionDAO.class);
 
-	// private static
-	// lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision
-	// fonteRevisions =
-	// lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision.revision;
-	// private static
-	// lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap
-	// fonteSubterraUriMap =
-	// lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 	
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryRevision stgRevisions = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryRevision.revision;
-//	private static QDmalmCurrentRevision fonteRevisions = QDmalmCurrentRevision.currentRevision; // QDmalmCurrentRevision.re
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision.revision;
-	private static QDmalmCurrentSubterraUriMap fonteSubterraUriMap = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryRevision.revision;
 
 	public static long getMaxRevision() throws Exception {
 
@@ -74,9 +64,6 @@ public class SissHistoryRevisionDAO {
 			SQLQuery query = new SQLQuery(oracle, dialect);
 
 			max = query.from(fonteRevisions).where(fonteRevisions.cCreated.before(lastValid)).list(fonteRevisions.cName.castToNum(Long.class).max());
-//			max = query.from(fonteRevisions).list(fonteRevisions.cName.castToNum(Long.class).max());
-
-
 
 			if (max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;

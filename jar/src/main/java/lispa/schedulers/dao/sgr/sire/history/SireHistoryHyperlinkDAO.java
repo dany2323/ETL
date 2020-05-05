@@ -22,7 +22,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryHyperlink;
+import lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryHyperlink;
 import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryHyperlink;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
@@ -34,9 +34,9 @@ public class SireHistoryHyperlinkDAO {
 			.getLogger(SireHistoryHyperlinkDAO.class);
 
 	
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryHyperlink fonteHyperlink = SireHistoryHyperlink.structWorkitemHyperlinks;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryHyperlink fonteHyperlink = HistoryHyperlink.structWorkitemHyperlinks;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryHyperlink stgHyperlink = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryHyperlink.structWorkitemHyperlinks;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryWorkitem.workitem;
 
 	public static void fillSireHistoryHyperlink(EnumWorkitemType type,
 			Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision)

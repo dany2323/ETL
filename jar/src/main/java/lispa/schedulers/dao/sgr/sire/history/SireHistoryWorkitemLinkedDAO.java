@@ -28,7 +28,7 @@ public class SireHistoryWorkitemLinkedDAO {
 	private static Logger logger = Logger
 			.getLogger(SireHistoryWorkitemLinkedDAO.class);
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems stgLinkedWorkitems = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 
 	public static void fillSireHistoryWorkitemLinked() throws SQLException, DAOException {

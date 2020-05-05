@@ -35,7 +35,7 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final StringPath cOutlinenumber = createString("C_OUTLINENUMBER");
 
-    public final StringPath cPk = createString("C_PK");
+    public final NumberPath<Long> cPk = createNumber("C_PK",Long.class);
 
     public final DateTimePath<java.sql.Timestamp> cPlannedend = createDateTime("C_PLANNEDEND", java.sql.Timestamp.class);
 

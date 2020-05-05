@@ -36,7 +36,7 @@ public class SireCurrentSubterraUriMapDAO {
 			oracleConnection.setAutoCommit(false);
 
 			QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
-			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap; 
+			lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentSubterraUriMap.urimap; 
 
 			PostgresTemplates dialect = new PostgresTemplates() {
 				{

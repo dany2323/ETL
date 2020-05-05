@@ -1,30 +1,26 @@
 package lispa.schedulers.dao.sgr.siss.current;
 
-import java.sql.Connection; 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List; 
-import lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentWorkitem;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
-import lispa.schedulers.utils.StringUtils;
+import java.util.List;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.PostgresTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.dml.SQLInsertClause;
+
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
-import lispa.schedulers.exception.DAOException; 
+import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import com.mysema.query.Tuple; 
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.PostgresTemplates;
-import com.mysema.query.sql.SQLQuery; 
-import com.mysema.query.sql.SQLTemplates; 
-import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.QTuple;
-import com.mysema.query.types.template.StringTemplate;
+import lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentWorkitem;
+import lispa.schedulers.utils.StringUtils;
 
 public class SissCurrentWorkitemDAO {
 
-	private static SissCurrentWorkitem sissCurrentWorkitem = SissCurrentWorkitem.workitem;
+	private static CurrentWorkitem sissCurrentWorkitem = CurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem stgCurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem.workitem; 
  
 	public static void fillSissCurrentWorkitems() throws SQLException,DAOException { 

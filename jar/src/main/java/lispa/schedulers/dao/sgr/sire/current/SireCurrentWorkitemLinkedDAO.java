@@ -40,7 +40,7 @@ public class SireCurrentWorkitemLinkedDAO {
 			oracleConnection.setAutoCommit(false);
 
 			lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems workItemLinked = lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
-			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems fonteWorkitemLinked = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
+			lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentStructWorkitemLinkedworkitems fonteWorkitemLinked = lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 
 			PostgresTemplates dialect = new PostgresTemplates() {
 				{
