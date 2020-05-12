@@ -28,7 +28,7 @@ public class QSireCurrentWorkitemLinked extends com.mysema.query.sql.RelationalP
 
     public final StringPath cRole = createString("C_ROLE");
 
-    public final BooleanPath cSuspect = createBoolean("C_SUSPECT");
+    public final NumberPath<Integer> cSuspect = createNumber("C_SUSPECT",Integer.class);
 
     public final StringPath fkPWorkitem = createString("FK_P_WORKITEM");
 

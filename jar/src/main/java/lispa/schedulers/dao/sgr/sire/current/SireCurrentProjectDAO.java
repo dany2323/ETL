@@ -25,272 +25,261 @@ import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.QTuple;
 import com.mysema.query.types.template.StringTemplate;
 
-public class SireCurrentProjectDAO
-{
+public class SireCurrentProjectDAO {
 
-	private static Logger logger = Logger.getLogger(SireCurrentProjectDAO.class); 
+	private static Logger logger = Logger
+			.getLogger(SireCurrentProjectDAO.class);
 
-	public static long fillSireCurrentProject() throws Exception
-	{
+	public static long fillSireCurrentProject() throws Exception {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
-		Connection H2Connection = null;
-		long n_righe_inserite = 0;
+		long nRigheInserite = 0;
 
-		try{
+		try {
 
 			cm = ConnectionManager.getInstance();
-			H2Connection = cm.getConnectionSIRECurrent();
 			OracleConnection = cm.getConnectionOracle();
 
 			OracleConnection.setAutoCommit(false);
 
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
-			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject.project;
+			QSireCurrentProject stgProject = QSireCurrentProject.sireCurrentProject;
+			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject.project;
+            lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 
-			SQLTemplates dialect = new HSQLDBTemplates()
-			{ {
-				setPrintSchema(true);
-			}};
-			SQLQuery query = new SQLQuery(H2Connection, dialect); 
 
+			SQLTemplates dialect = new HSQLDBTemplates() {
+				{
+					setPrintSchema(true);
+				}
+			};
+			SQLQuery query = new SQLQuery(OracleConnection, dialect);
 
 			List<Tuple> project = query.from(fonteProjects)
-					//					.where(fonteProjects.cLocation.like("default:/Sviluppo/%"))
-					.where((fonteProjects.cLocation.length().subtract(fonteProjects.cLocation.toString().replaceAll("/", "").length())).goe(4))
-					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
-					.list(new QTuple(
-							StringTemplate.create("SUBSTRING("+fonteProjects.cTrackerprefix+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cIsLocal+"= 'true', 1,0 )") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cPk+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkUriLead+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cDeleted+"= 'true', 1,0 )") ,
-							fonteProjects.cFinish,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cUri+",0,4000)") ,
-							fonteProjects.cStart,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkUriProjectgroup+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cActive+"= 'true', 1,0 )") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cLocation+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkProjectgroup+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkLead+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+fonteProjects.cLockworkrecordsdate+", {ts 'yyyy-MM-dd 00:00:00'})"),
-							StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
-							)
-							);
+                    //                    .where(fonteProjects.cLocation.like("default:/Sviluppo/%"))
+                    .where((fonteProjects.cLocation.length().subtract(fonteProjects.cLocation.toString().replaceAll("/", "").length())).goe(4))
+                    .where(fonteProjects.cLocation.notLike("default:/GRACO%"))
+                    .list(new QTuple(
+                            StringTemplate.create("SUBSTRING("+fonteProjects.cTrackerprefix+",0,4000)") ,
+                            StringTemplate.create("0") ,
+                            StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteProjects.cUri + " AND C_REPOSITORY='SIRE') as c_pk"),
+                            StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteProjects.fkUriLead + " AND C_REPOSITORY='SIRE') as fk_uri_lead"),
+                            StringTemplate.create("CASE WHEN "+fonteProjects.cDeleted+"= 'true' THEN 1 ELSE 0 END") ,
+                            fonteProjects.cFinish,
+                            StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " + fonteProjects.cUri + " AND C_REPOSITORY='SIRE') as c_uri"),
+                            fonteProjects.cStart,
+                            StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " + fonteProjects.fkUriProjectgroup + " AND C_REPOSITORY='SIRE') as FK_URI_PROJECTGROUP"),
+                            StringTemplate.create("CASE WHEN "+fonteProjects.cActive+"= 'true' THEN 1 ELSE 0 END") ,
+                            StringTemplate.create("SUBSTRING("+fonteProjects.cLocation+",0,4000)") ,
+                            StringTemplate.create("(SELECT e.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " e WHERE e.c_id = " + fonteProjects.fkUriProjectgroup + " AND C_REPOSITORY='SIRE') as fk_projectgroup"),
+                            StringTemplate.create("(SELECT f.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " f WHERE f.c_id = " + fonteProjects.fkUriLead + " AND C_REPOSITORY='SIRE') as fk_lead"),
+                            StringTemplate.create("to_char("+fonteProjects.cLockworkrecordsdate+", 'yyyy-MM-dd 00:00:00')"),
+                            StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
+                            StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
+                            )
+                            );
 
 
 			Iterator<Tuple> i = project.iterator();
-			Object[] el= null;
+			Object[] el = null;
 
 			while (i.hasNext()) {
 
-				el= ((Tuple)i.next()).toArray();
+				el = ((Tuple) i.next()).toArray();
 
 				new SQLInsertClause(OracleConnection, dialect, stgProject)
-				.columns(
-						stgProject.cTrackerprefix,
-						stgProject.cIsLocal,
-						stgProject.cPk,
-						stgProject.fkUriLead,
-						stgProject.cDeleted,
-						stgProject.cFinish,
-						stgProject.cUri,
-						stgProject.cStart,
-						stgProject.fkUriProjectgroup,
-						stgProject.cActive,
-						stgProject.cLocation,
-						stgProject.fkProjectgroup,
-						stgProject.fkLead,
-						stgProject.cLockworkrecordsdate,
-						stgProject.cName,
-						stgProject.cId,
-						stgProject.dataCaricamento,
-						stgProject.sireCurrentProjectPk
-						)
-						.values(
-								el[0] , 
-								el[1] , 
-								el[2] , 
-								StringUtils.getMaskedValue((String)el[3]) , 
-								el[4] , 
-								el[5] , 
-								el[6] , 
-								el[7] , 
-								el[8] , 
-								el[9] , 
-								el[10] ,
-								el[11] ,
-								StringUtils.getMaskedValue((String)el[12]) ,
-								el[13] ,
-								el[14] ,
-								el[15] ,
-								DataEsecuzione.getInstance().getDataEsecuzione(),
-								StringTemplate.create("CURRENT_PROJECT_SEQ.nextval")
-								)
-								.execute();
+						.columns(stgProject.cTrackerprefix, stgProject.cIsLocal,
+								stgProject.cPk, stgProject.fkUriLead,
+								stgProject.cDeleted, stgProject.cFinish,
+								stgProject.cUri, stgProject.cStart,
+								stgProject.fkUriProjectgroup,
+								stgProject.cActive, stgProject.cLocation,
+								stgProject.fkProjectgroup, stgProject.fkLead,
+								stgProject.cLockworkrecordsdate,
+								stgProject.cName, stgProject.cId,
+								stgProject.dataCaricamento,
+								stgProject.sireCurrentProjectPk)
+						.values(el[0], el[1], el[2],
+								StringUtils.getMaskedValue((String) el[3]),
+								el[4], el[5], el[6], el[7], el[8], el[9],
+								el[10], el[11],
+								StringUtils.getMaskedValue((String) el[12]),
+								el[13], el[14], el[15],
+								DataEsecuzione.getInstance()
+										.getDataEsecuzione(),
+								StringTemplate
+										.create("CURRENT_PROJECT_SEQ.nextval"))
+						.execute();
 
-				n_righe_inserite++;
+				nRigheInserite++;
 
 			}
 
 			OracleConnection.commit();
 
-		}
-		catch (Exception e)
-		{
-ErrorManager.getInstance().exceptionOccurred(true, e);
-			
-			n_righe_inserite=0;
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+			nRigheInserite = 0;
 			throw new DAOException(e);
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(OracleConnection);
-			if(cm != null) cm.closeConnection(H2Connection);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(OracleConnection);
 		}
 
-		return n_righe_inserite;
+		return nRigheInserite;
 	}
 
-	public static List<Tuple> getC_NameNull(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-		List<Tuple> project 	= new ArrayList<Tuple>();
-
-		try
-		{
-			cm 			= ConnectionManager.getInstance();
-			connection 	= cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSireCurrentProject   stgProject 	 	= QSireCurrentProject.sireCurrentProject;
-
-			project = 
-					query.from(stgProject)
-					.where(stgProject.dataCaricamento.eq(dataEsecuzione))
-					.where(stgProject.cName.isNull()).list(stgProject.all()) ;
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-		return project;
-	}
-
-	public static List<Tuple> getAllProjectSW(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
+	public static List<Tuple> getC_NameNull(Timestamp dataEsecuzione)
+			throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
 		List<Tuple> project = new ArrayList<Tuple>();
 
-		try{
+		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
+			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+			SQLQuery query = new SQLQuery(connection, dialect);
+			QSireCurrentProject stgProject = QSireCurrentProject.sireCurrentProject;
 
-			//	select  DMALM_SIRE_CURRENT_PROJECT.* from DMALM_SIRE_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
-
-			project = 
-
-					query.from(stgProject)
+			project = query.from(stgProject)
 					.where(stgProject.dataCaricamento.eq(dataEsecuzione))
-					.where(stgProject.cName.trim().like("SW-%")).list(stgProject.all()) ;
+					.where(stgProject.cName.isNull()).list(stgProject.all());
 
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
 		return project;
 	}
 
-	public static List<Tuple> getAllProjectC_Name(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
+	public static List<Tuple> getAllProjectSW(Timestamp dataEsecuzione)
+			throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
 		List<Tuple> project = new ArrayList<Tuple>();
 
-		try{
-			cm 			= ConnectionManager.getInstance();
-			connection 	= cm.getConnectionOracle();
-
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			SQLQuery query 							= new SQLQuery(connection, dialect); 
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
-
-			project = 
-
-					query.from(stgProject)
-					.where(stgProject.dataCaricamento.eq(dataEsecuzione))
-					.where(stgProject.cName.trim().like("SW-%"))
-					.list(
-							stgProject.cName, // il campo C_NAME
-							StringTemplate.create("INSTR(C_NAME,'{')"), // la posizione del carattere  {
-							StringTemplate.create("INSTR(C_NAME,'}')"), // la posizione del carattere  }
-							StringTemplate.create("REPLACE(REPLACE(REGEXP_SUBSTR(C_NAME, '{[a-zA-Z0-9_.*!?-]+}'), '{',''),'}','') as name"), // il contenuto delle parentesi { }
-							StringTemplate.create("SUBSTR(C_NAME, INSTR(C_NAME,'}')+1, LENGTH(C_NAME)-INSTR(C_NAME,'}') )")); // la descrizione, quello che viene dopo  il caratter "}"
-
-		}
-		catch(Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
-		}
-
-		return project;
-	}
-
-	public static void delete(Timestamp dataEsecuzione) throws Exception
-	{
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
-
-
-		try{
+		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
+			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+			SQLQuery query = new SQLQuery(connection, dialect);
+			QSireCurrentProject stgProject = QSireCurrentProject.sireCurrentProject;
+
+			// select DMALM_SIRE_CURRENT_PROJECT.* from
+			// DMALM_SIRE_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
+
+			project =
+
+					query.from(stgProject)
+							.where(stgProject.dataCaricamento
+									.eq(dataEsecuzione))
+							.where(stgProject.cName.trim().like("SW-%"))
+							.list(stgProject.all());
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return project;
+	}
+
+	public static List<Tuple> getAllProjectC_Name(Timestamp dataEsecuzione)
+			throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		List<Tuple> project = new ArrayList<Tuple>();
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+			SQLQuery query = new SQLQuery(connection, dialect);
+			QSireCurrentProject stgProject = QSireCurrentProject.sireCurrentProject;
+
+			project =
+
+					query.from(stgProject)
+							.where(stgProject.dataCaricamento
+									.eq(dataEsecuzione))
+							.where(stgProject.cName.trim().like("SW-%"))
+							.list(stgProject.cName, // il campo C_NAME
+									StringTemplate.create("INSTR(C_NAME,'{')"), // la
+																				// posizione
+																				// del
+																				// carattere
+																				// {
+									StringTemplate.create("INSTR(C_NAME,'}')"), // la
+																				// posizione
+																				// del
+																				// carattere
+																				// }
+									StringTemplate.create(
+											"REPLACE(REPLACE(REGEXP_SUBSTR(C_NAME, '{[a-zA-Z0-9_.*!?-]+}'), '{',''),'}','') as name"), // il
+																																		// contenuto
+																																		// delle
+																																		// parentesi
+																																		// {
+																																		// }
+									StringTemplate.create(
+											"SUBSTR(C_NAME, INSTR(C_NAME,'}')+1, LENGTH(C_NAME)-INSTR(C_NAME,'}') )")); // la
+																														// descrizione,
+																														// quello
+																														// che
+																														// viene
+																														// dopo
+																														// il
+																														// caratter
+																														// "}"
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
+		}
+
+		return project;
+	}
+
+	public static void delete(Timestamp dataEsecuzione) throws Exception {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+			QSireCurrentProject stgProject = QSireCurrentProject.sireCurrentProject;
 
 			new SQLDeleteClause(connection, dialect, stgProject)
-			.where(stgProject.dataCaricamento.lt(dataEsecuzione).or(stgProject.dataCaricamento
-					.gt(DateUtils.addDaysToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(),-1))))
+					.where(stgProject.dataCaricamento.lt(dataEsecuzione)
+							.or(stgProject.dataCaricamento.gt(
+									DateUtils.addDaysToTimestamp(DataEsecuzione
+											.getInstance().getDataEsecuzione(),
+											-1))))
 					.execute();
 
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 	}
 
@@ -305,19 +294,16 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
+			QSireCurrentProject stgProject = QSireCurrentProject.sireCurrentProject;
 
 			new SQLDeleteClause(connection, dialect, stgProject)
-			.where(stgProject.dataCaricamento.eq(
-					date)).execute();
+					.where(stgProject.dataCaricamento.eq(date)).execute();
 
-		} catch (Exception e) 
-		{
-			
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
+		} catch (Exception e) {
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
 	}
@@ -333,18 +319,18 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 
-			QSireCurrentProject   stgProject  = QSireCurrentProject.sireCurrentProject;
+			QSireCurrentProject stgProject = QSireCurrentProject.sireCurrentProject;
 
 			new SQLDeleteClause(connection, dialect, stgProject)
-			.where(stgProject.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
+					.where(stgProject.dataCaricamento.eq(
+							DataEsecuzione.getInstance().getDataEsecuzione()))
+					.execute();
 
-		} catch (Exception e) 
-		{
-			
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
+		} catch (Exception e) {
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
 	}

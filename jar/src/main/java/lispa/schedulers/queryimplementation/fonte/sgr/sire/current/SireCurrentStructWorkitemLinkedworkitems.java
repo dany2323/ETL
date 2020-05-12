@@ -20,32 +20,33 @@ public class SireCurrentStructWorkitemLinkedworkitems extends com.mysema.query.s
 
     private static final long serialVersionUID = -1264613616;
 
-    public static final SireCurrentStructWorkitemLinkedworkitems structWorkitemLinkedworkitems = new SireCurrentStructWorkitemLinkedworkitems("STRUCT_WORKITEM_LINKEDWORKITEMS");
+    public static final SireCurrentStructWorkitemLinkedworkitems structWorkitemLinkedworkitems = new SireCurrentStructWorkitemLinkedworkitems("DM_ALM_C_SIRE_STRUCT_WI_LINKWI");
+
+    public final NumberPath<Long> fkPWorkitem = createNumber("FK_P_WORKITEM",Long.class);
+    
+    public final NumberPath<Long> fkUriPWorkitem = createNumber("FK_URI_P_WORKITEM",Long.class);
+
+    public final StringPath cRole = createString("C_ROLE");
+   
+    public final NumberPath<Long> fkWorkitem = createNumber("FK_WORKITEM",Long.class);
+
+    public final NumberPath<Long> fkUriWorkitem = createNumber("FK_URI_WORKITEM",Long.class);
 
     public final StringPath cRevision = createString("C_REVISION");
 
-    public final StringPath cRole = createString("C_ROLE");
+    public final NumberPath<Integer> cSuspect = createNumber("C_SUSPECT",Integer.class);
 
-    public final BooleanPath cSuspect = createBoolean("C_SUSPECT");
-
-    public final StringPath fkPWorkitem = createString("FK_P_WORKITEM");
-
-    public final StringPath fkUriPWorkitem = createString("FK_URI_P_WORKITEM");
-
-    public final StringPath fkUriWorkitem = createString("FK_URI_WORKITEM");
-
-    public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
     public SireCurrentStructWorkitemLinkedworkitems(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_STRUCT_WI_LINKWI");
     }
 
     public SireCurrentStructWorkitemLinkedworkitems(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_STRUCT_WI_LINKWI");
     }
 
     public SireCurrentStructWorkitemLinkedworkitems(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.class, metadata, DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentStructWorkitemLinkedworkitems.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_STRUCT_WI_LINKWI");
     }
 
 }

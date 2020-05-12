@@ -21,7 +21,7 @@ public class SissCurrentStructWorkitemLinkedworkitems extends com.mysema.query.s
 
     private static final long serialVersionUID = -1544427472;
 
-    public static final SissCurrentStructWorkitemLinkedworkitems structWorkitemLinkedworkitems = new SissCurrentStructWorkitemLinkedworkitems("STRUCT_WORKITEM_LINKEDWORKITEMS");
+    public static final SissCurrentStructWorkitemLinkedworkitems structWorkitemLinkedworkitems = new SissCurrentStructWorkitemLinkedworkitems("DM_ALM_C_SISS_STRUCT_WI_LINKWI");
 
     public final StringPath cRevision = createString("C_REVISION");
 
@@ -38,15 +38,15 @@ public class SissCurrentStructWorkitemLinkedworkitems extends com.mysema.query.s
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
     public SissCurrentStructWorkitemLinkedworkitems(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_STRUCT_WI_LINKWI");
     }
 
     public SissCurrentStructWorkitemLinkedworkitems(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_STRUCT_WI_LINKWI");
     }
 
     public SissCurrentStructWorkitemLinkedworkitems(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.class, metadata, DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_STRUCT_WI_LINKWI");
     }
 
 }

@@ -20,7 +20,7 @@ public class SireCurrentProject extends com.mysema.query.sql.RelationalPathBase<
 
     private static final long serialVersionUID = -39681300;
 
-    public static final SireCurrentProject project = new SireCurrentProject("PROJECT");
+    public static final SireCurrentProject project = new SireCurrentProject("DM_ALM_C_SIRE_PROJECT");
 
     public final BooleanPath cActive = createBoolean("C_ACTIVE");
 
@@ -57,15 +57,15 @@ public class SireCurrentProject extends com.mysema.query.sql.RelationalPathBase<
     public final StringPath fkUriProjectgroup = createString("FK_URI_PROJECTGROUP");
 
     public SireCurrentProject(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentProject.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentProject.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_PROJECT");
     }
 
     public SireCurrentProject(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentProject> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_PROJECT");
     }
 
     public SireCurrentProject(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentProject.class, metadata, DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentProject.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SIRE_PROJECT");
     }
 
 }

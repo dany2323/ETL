@@ -12,7 +12,7 @@ public class SissCurrentWorkitemLinked {
 
     private String cRole;
 
-    private Boolean cSuspect;
+    private Integer cSuspect;
 
     private String fkPWorkitem;
 
@@ -38,11 +38,11 @@ public class SissCurrentWorkitemLinked {
         this.cRole = cRole;
     }
 
-    public Boolean getcSuspect() {
+    public Integer getcSuspect() {
         return cSuspect;
     }
 
-    public void setcSuspect(Boolean cSuspect) {
+    public void setcSuspect(Integer cSuspect) {
         this.cSuspect = cSuspect;
     }
 

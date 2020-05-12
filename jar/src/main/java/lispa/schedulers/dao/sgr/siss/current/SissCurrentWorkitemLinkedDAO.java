@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -86,18 +87,15 @@ public class SissCurrentWorkitemLinkedDAO {
 
 		ConnectionManager cm = null;
 		Connection oracleConnection = null;
-		Connection h2Connection = null;
-
+		long nRigheInserite=0;
 		try {
 
 			cm = ConnectionManager.getInstance();
 
-			h2Connection = cm.getConnectionSISSCurrent();
-
 			oracleConnection = cm.getConnectionOracle();
 			oracleConnection.setAutoCommit(false);
 
-			QSissCurrentWorkitemLinked workItemLinked = QSissCurrentWorkitemLinked.sissCurrentWorkitemLinked;
+			QSissCurrentWorkitemLinked stgSissCurrentWorkLinked = QSissCurrentWorkitemLinked.sissCurrentWorkitemLinked;
 			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems fonteWorkitemLinked = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 
 			SQLTemplates dialect = new HSQLDBTemplates() {
@@ -105,67 +103,58 @@ public class SissCurrentWorkitemLinkedDAO {
 					setPrintSchema(true);
 				}
 			};
-			SQLQuery query = new SQLQuery(h2Connection, dialect);
+			SQLQuery query = new SQLQuery(oracleConnection, dialect);
 
-			List<Tuple> cfworkitems = query.from(fonteWorkitemLinked).list(
-					new QTuple(
-							StringTemplate.create("CASEWHEN ("
-									+ fonteWorkitemLinked.cSuspect
-									+ "= 'true', 1,0 )"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.cRole
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkPWorkitem
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.cRevision
-											+ ",0,4000)"),
-							StringTemplate.create("SUBSTRING("
-									+ fonteWorkitemLinked.fkUriPWorkitem
-									+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkUriWorkitem
-											+ ",0,4000)"), StringTemplate
-									.create("SUBSTRING("
-											+ fonteWorkitemLinked.fkWorkitem
-											+ ",0,4000)")));
+			List<Tuple> sireCurrentWorkitem = query.from(fonteWorkitemLinked)
+					.list(fonteWorkitemLinked.all());
 
-			logger.debug("fillSissCurrentWorkitemLinked - cfworkitems.sizw: "
-					+ cfworkitems.size());
+			logger.debug("fillSireCurrentWorkitemLinked - size: "
+					+ sireCurrentWorkitem.size());
 
-			Iterator<Tuple> i = cfworkitems.iterator();
-			Object[] el = null;
+			SQLInsertClause insert = new SQLInsertClause(oracleConnection,
+					dialect, stgSissCurrentWorkLinked);
 
-			while (i.hasNext()) {
+			for (Tuple el : sireCurrentWorkitem) {
 
-				el = ((Tuple) i.next()).toArray();
-
-				new SQLInsertClause(oracleConnection, dialect, workItemLinked)
-						.columns(workItemLinked.cSuspect, workItemLinked.cRole,
-								workItemLinked.fkPWorkitem,
-								workItemLinked.cRevision,
-								workItemLinked.fkUriPWorkitem,
-								workItemLinked.fkUriWorkitem,
-								workItemLinked.fkWorkitem,
-								workItemLinked.dataCaricamento,
-								workItemLinked.dmalmCurrentWorkitemLinkedPk)
-						.values(el[0],
-								el[1],
-								el[2],
-								el[3],
-								el[4],
-								el[5],
-								el[6],
+				insert.columns(stgSissCurrentWorkLinked.cSuspect,
+						stgSissCurrentWorkLinked.cRole,
+						stgSissCurrentWorkLinked.fkPWorkitem,
+						stgSissCurrentWorkLinked.cRevision,
+						stgSissCurrentWorkLinked.fkUriPWorkitem,
+						stgSissCurrentWorkLinked.fkUriWorkitem,
+						stgSissCurrentWorkLinked.fkWorkitem,
+						stgSissCurrentWorkLinked.dataCaricamento,
+						stgSissCurrentWorkLinked.dmalmCurrentWorkitemLinkedPk)
+						.values(el.get(fonteWorkitemLinked.cSuspect),
+								el.get(fonteWorkitemLinked.cRole),
+								el.get(fonteWorkitemLinked.fkPWorkitem),
+								el.get(fonteWorkitemLinked.cRevision),
+								el.get(fonteWorkitemLinked.fkUriPWorkitem),
+								el.get(stgSissCurrentWorkLinked.fkUriWorkitem),
+								el.get(stgSissCurrentWorkLinked.fkWorkitem),
 								DataEsecuzione.getInstance()
 										.getDataEsecuzione(),
-								StringTemplate
-										.create("CURRENT_WORK_LINKED_SEQ.nextval"))
-						.execute();
+								StringTemplate.create(
+										"CURRENT_WORK_LINKED_SEQ.nextval"))
+						.addBatch();
+
+				nRigheInserite++;
+
+				if (!insert.isEmpty()) {
+					if (nRigheInserite % DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						oracleConnection.commit();
+						insert = new SQLInsertClause(oracleConnection, dialect,
+								stgSissCurrentWorkLinked);
+					}
+				}
 
 			}
+			if (!insert.isEmpty()) {
+				insert.execute();
+				oracleConnection.commit();
+			}
 
-			oracleConnection.commit();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -178,9 +167,6 @@ public class SissCurrentWorkitemLinkedDAO {
 		} finally {
 			if (cm != null) {
 				cm.closeConnection(oracleConnection);
-			}
-			if (cm != null) {
-				cm.closeConnection(h2Connection);
 			}
 		}
 
