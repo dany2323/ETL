@@ -1,0 +1,1 @@
+truncate table dmalm_user_roles_sgr 

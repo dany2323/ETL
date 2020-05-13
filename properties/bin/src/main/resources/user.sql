@@ -1,0 +1,30 @@
+  select 'SIRE' as ID_REPOSITORY,
+	 hu.C_INITIALS as INITIALS_USER,
+	 hu.C_DISABLEDNOTIFICATIONS as DISABLED_NOTIFICATION,
+	 hu.C_NAME as USER_NAME,
+	 hu.C_DELETED as DELETED,
+	 hu.C_ID as ID_USER,
+	 hu.C_REV as REVISION,
+	 hu.C_EMAIL as USER_EMAIL,
+	 hu.C_AVATARFILENAME as USER_AVATAR_FILENAME,
+	 hu.DATA_CARICAMENTO as DATA_CARICAMENTO,
+	 hu.SIRE_HISTORY_USER_PK as DMALM_USER_PK
+	 	from dmalm_sire_history_user hu 
+	 	where hu.DATA_CARICAMENTO = ?
+		and hu.c_id is not null
+	union all  
+  select 'SISS' as ID_REPOSITORY,
+	 hu.C_INITIALS as INITIALS_USER,
+	 hu.C_DISABLEDNOTIFICATIONS as DISABLED_NOTIFICATION,
+	 hu.C_NAME as USER_NAME,
+	 hu.C_DELETED as DELETED,
+	 hu.C_ID as ID_USER,
+	 hu.C_REV as REVISION,
+	 hu.C_EMAIL as USER_EMAIL,
+	 hu.C_AVATARFILENAME as USER_AVATAR_FILENAME,
+	 hu.DATA_CARICAMENTO as DATA_CARICAMENTO,
+	 hu.SISS_HISTORY_USER_PK as DMALM_USER_PK
+ 		from dmalm_siss_history_user hu 
+ 		where hu.DATA_CARICAMENTO = ?
+ 		and hu.c_id is not null
+		order by ID_REPOSITORY,ID_USER,REVISION 
