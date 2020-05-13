@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentWorkitem;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;

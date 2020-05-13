@@ -11,7 +11,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitemLinked;
 import lispa.schedulers.utils.enums.Workitem_Type;
 
@@ -42,7 +42,7 @@ public class SissHistoryWorkitemLinkedDAO
 		Connection 	 	  connOracle = null;
 		Connection        pgConnection = null;
 		List<Tuple>       linkedWorkitems = null;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+		lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap stgSubterra = QSireDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 		
 		try {
 			cm = ConnectionManager.getInstance();

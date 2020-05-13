@@ -45,7 +45,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
@@ -138,7 +138,7 @@ public class SissHistoryWorkitemDAO {
 		Connection SissHistoryConnection = null;
 
 		List<Tuple> historyworkitems = new ArrayList<Tuple>();
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+		lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap stgSubterra = QSireDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 

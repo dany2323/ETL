@@ -11,7 +11,7 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConstants;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryAttachment;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment;
 import lispa.schedulers.utils.StringUtils;
 

@@ -7,7 +7,8 @@ import java.util.List;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.current.QSissDmalmCurrentSubterraUriMap;
 
 import org.apache.log4j.Logger;
 
@@ -38,7 +39,7 @@ public class SissCurrentSubterraUriMapDAO {
 
 			oracleConnection.setAutoCommit(false);
 
-			QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+			QSissDmalmCurrentSubterraUriMap stgSubterra = QSissDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 			lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentSubterraUriMap fontesissSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.current.CurrentSubterraUriMap.urimap; 
 
 			PostgresTemplates dialect = new PostgresTemplates() {
@@ -61,10 +62,8 @@ public class SissCurrentSubterraUriMapDAO {
 				el = ((Tuple) i.next()).toArray();
 
 				insert.columns(stgSubterra.cPk,
-								stgSubterra.cRepo,
 								stgSubterra.cId)
 						.values(	el[0],
-								DmAlmConstants.REPOSITORY_SISS,
 								el[1])
 						.addBatch();
 
@@ -114,7 +113,7 @@ public class SissCurrentSubterraUriMapDAO {
 			connection = cm.getConnectionOracle();
 
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+			QSireDmalmCurrentSubterraUriMap stgSubterra = QSireDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 			new SQLDeleteClause(connection, dialect, stgSubterra).where(stgSubterra.cRepo.eq(DmAlmConstants.REPOSITORY_SISS)).execute();
 			logger.debug("STOP Eliminazione dati SUBTERRA_URI SISS");

@@ -17,7 +17,7 @@ import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
@@ -41,7 +41,7 @@ public class SissHistoryCfWorkitemDAO {
 		List<Tuple> cfWorkitem = null;
 		String customFieldName = null;
 		boolean scaricaCF = false;
-		lispa.schedulers.queryimplementation.staging.sgr.QDmalmCurrentSubterraUriMap stgSubterra = QDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+		lispa.schedulers.queryimplementation.staging.sgr.sire.current.QSireDmalmCurrentSubterraUriMap stgSubterra = QSireDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
 		try {
 			cm = ConnectionManager.getInstance();
