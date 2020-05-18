@@ -22,15 +22,15 @@ public class SireCurrentProject extends com.mysema.query.sql.RelationalPathBase<
 
     public static final SireCurrentProject project = new SireCurrentProject("DM_ALM_C_SIRE_PROJECT");
 
-    public final BooleanPath cActive = createBoolean("C_ACTIVE");
+    public final NumberPath<Integer> cActive = createNumber("C_ACTIVE",Integer.class);
 
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final NumberPath<Integer> cDeleted = createNumber("C_DELETED",Integer.class);
 
     public final DatePath<java.sql.Date> cFinish = createDate("C_FINISH", java.sql.Date.class);
 
     public final StringPath cId = createString("C_ID");
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final NumberPath<Integer> cIsLocal = createNumber("C_IS_LOCAL",Integer.class);
 
     public final StringPath cLocation = createString("C_LOCATION");
 

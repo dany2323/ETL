@@ -8,6 +8,7 @@ import com.mysema.query.types.PathMetadata;
 import javax.annotation.Generated;
 
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser;
 
 import com.mysema.query.types.Path;
 
@@ -20,13 +21,19 @@ public class SissHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
 
     private static final long serialVersionUID = -1076062280;
 
-    public static final SissHistoryUser user = new SissHistoryUser("USER");
+    public static final SissHistoryUser user = new SissHistoryUser("DM_ALM_H_SISS_USER");
+
+    public final StringPath cPk = createString("C_PK");
+    
+    public final StringPath cUri = createString("C_URI");
+    
+    public final NumberPath<Long> cRev = createNumber("C_REV", Long.class);
 
     public final StringPath cAvatarfilename = createString("C_AVATARFILENAME");
 
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final StringPath cDeleted = createString("C_DELETED");
 
-    public final BooleanPath cDisablednotifications = createBoolean("C_DISABLEDNOTIFICATIONS");
+    public final StringPath cDisablednotifications = createString("C_DISABLEDNOTIFICATIONS");
 
     public final StringPath cEmail = createString("C_EMAIL");
 
@@ -34,26 +41,20 @@ public class SissHistoryUser extends com.mysema.query.sql.RelationalPathBase<lis
 
     public final StringPath cInitials = createString("C_INITIALS");
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final StringPath cIsLocal = createString("C_IS_LOCAL");
 
     public final StringPath cName = createString("C_NAME");
 
-    public final StringPath cPk = createString("C_PK");
-
-    public final NumberPath<Long> cRev = createNumber("C_REV", Long.class);
-
-    public final StringPath cUri = createString("C_URI");
-
     public SissHistoryUser(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_USER");
     }
 
     public SissHistoryUser(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_USER");
     }
 
     public SissHistoryUser(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser.class, metadata, DmAlmConstants.POLARION_SCHEMA, "USER");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryUser.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_USER");
     }
 
 }

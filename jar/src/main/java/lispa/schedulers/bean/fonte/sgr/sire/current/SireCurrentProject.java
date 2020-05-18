@@ -5,15 +5,15 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class SireCurrentProject {
 
-    private Boolean cActive;
+    private Integer cActive;
 
-    private Boolean cDeleted;
+    private Integer cDeleted;
 
     private java.sql.Date cFinish;
 
     private String cId;
 
-    private Boolean cIsLocal;
+    private Integer cIsLocal;
 
     private String cLocation;
 
@@ -39,19 +39,19 @@ public class SireCurrentProject {
 
     private String fkUriProjectgroup;
 
-    public Boolean getcActive() {
+    public Integer getcActive() {
         return cActive;
     }
 
-    public void setcActive(Boolean cActive) {
+    public void setcActive(Integer cActive) {
         this.cActive = cActive;
     }
 
-    public Boolean getcDeleted() {
+    public Integer getcDeleted() {
         return cDeleted;
     }
 
-    public void setcDeleted(Boolean cDeleted) {
+    public void setcDeleted(Integer cDeleted) {
         this.cDeleted = cDeleted;
     }
 
@@ -71,11 +71,11 @@ public class SireCurrentProject {
         this.cId = cId;
     }
 
-    public Boolean getcIsLocal() {
+    public Integer getcIsLocal() {
         return cIsLocal;
     }
 
-    public void setcIsLocal(Boolean cIsLocal) {
+    public void setcIsLocal(Integer cIsLocal) {
         this.cIsLocal = cIsLocal;
     }
 

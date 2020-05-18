@@ -23,11 +23,11 @@ public class SissHistoryRevision {
 	
 	private String cRepositoryname;
 	
-	private Boolean cDeleted;
+	private String cDeleted;
 	
-	private Boolean cInternalcommit;
+	private String cInternalcommit;
 	
-	private Boolean cIsLocal;
+	private String cIsLocal;
 	
 	public String getcPk() {
 		return cPk;
@@ -93,27 +93,27 @@ public class SissHistoryRevision {
 		this.cRepositoryname = cRepositoryname;
 	}
 
-	public Boolean getcDeleted() {
+	public String getcDeleted() {
 		return cDeleted;
 	}
 
-	public void setcDeleted(Boolean cDeleted) {
+	public void setcDeleted(String cDeleted) {
 		this.cDeleted = cDeleted;
 	}
 
-	public Boolean getcInternalcommit() {
+	public String getcInternalcommit() {
 		return cInternalcommit;
 	}
 
-	public void setcInternalcommit(Boolean cInternalcommit) {
+	public void setcInternalcommit(String cInternalcommit) {
 		this.cInternalcommit = cInternalcommit;
 	}
 
-	public Boolean getcIsLocal() {
+	public String getcIsLocal() {
 		return cIsLocal;
 	}
 
-	public void setcIsLocal(Boolean cIsLocal) {
+	public void setcIsLocal(String cIsLocal) {
 		this.cIsLocal = cIsLocal;
 	}
 

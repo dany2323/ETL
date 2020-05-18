@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.current.QSissCurrentProject;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.current.QSissCurrentProject;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
@@ -94,105 +96,158 @@ public class SissCurrentProjectDAO
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
-		Connection H2Connection = null;
-		long n_righe_inserite = 0;
+		long nRigheInserite = 0;
 		
 		try{
 			
 			cm = ConnectionManager.getInstance();
 
-			H2Connection = cm.getConnectionSISSCurrent();
 			OracleConnection = cm.getConnectionOracle();
 
 			OracleConnection.setAutoCommit(false);
 
-			QSissCurrentProject   stgProject  = QSissCurrentProject.sissCurrentProject;
-			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject.project;
+			QSissCurrentProject stgProject = QSissCurrentProject.sissCurrentProject;
+			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject.project;
+			lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap fonteSissSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap.urimap;
 
-			SQLTemplates dialect = new HSQLDBTemplates(){ {
-			    setPrintSchema(true);
-			}};
-			SQLQuery query = new SQLQuery(H2Connection, dialect); 
+			SQLTemplates dialect = new HSQLDBTemplates() {
+				{
+					setPrintSchema(true);
+				}
+			};
+			SQLQuery query = new SQLQuery(OracleConnection, dialect);
 
-
-			List<Tuple> projects = query.from(fonteProjects)
-//					.where(fonteProjects.cLocation.like("default:/Sviluppo/%"))
-					.where((fonteProjects.cLocation.length().subtract(fonteProjects.cLocation.toString().replaceAll("/", "").length())).goe(4))
+			List<Tuple> project = query.from(fonteProjects)
+					// .where(fonteProjects.cLocation.like("default:/Sviluppo/%"))
+					.where((fonteProjects.cLocation.length()
+							.subtract(fonteProjects.cLocation.toString()
+									.replaceAll("/", "").length())).goe(4))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
 					.list(new QTuple(
-							StringTemplate.create("SUBSTRING("+fonteProjects.cTrackerprefix+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cIsLocal+"= 'true', 1,0 )") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cPk+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkUriLead+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cDeleted+"= 'true', 1,0 )") ,
+							fonteProjects.cTrackerprefix,
+							StringTemplate.create("0"),
+							StringTemplate.create("(SELECT a.c_pk FROM "
+									+ fonteSissSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSissSubterraUriMap.getTableName()
+									+ " a WHERE a.c_id = " + fonteProjects.cUri
+									+ " ) as c_pk"),
+							StringTemplate.create("(SELECT b.c_pk FROM "
+									+ fonteSissSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSissSubterraUriMap.getTableName()
+									+ " b WHERE b.c_id = "
+									+ fonteProjects.fkUriLead
+									+ " ) as fk_uri_lead"),
+							StringTemplate.create(
+									"CASE WHEN " + fonteProjects.cDeleted
+											+ "= 'true' THEN 1 ELSE 0 END"),
 							fonteProjects.cFinish,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cUri+",0,4000)") ,
+							StringTemplate.create("(SELECT c.c_pk FROM "
+									+ fonteSissSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSissSubterraUriMap.getTableName()
+									+ " c WHERE c.c_id = " + fonteProjects.cUri
+									+ " ) as c_uri"),
 							fonteProjects.cStart,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkUriProjectgroup+",0,4000)") ,
-							StringTemplate.create("CASEWHEN ("+fonteProjects.cActive+"= 'true', 1,0 )") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cLocation+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkProjectgroup+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.fkLead+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+fonteProjects.cLockworkrecordsdate+", {ts 'yyyy-MM-dd 00:00:00'})"),
-							StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
-							StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
-							)
-							);
+							StringTemplate.create("(SELECT d.c_pk FROM "
+									+ fonteSissSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSissSubterraUriMap.getTableName()
+									+ " d WHERE d.c_id = "
+									+ fonteProjects.fkUriProjectgroup
+									+ " ) as FK_URI_PROJECTGROUP"),
+							StringTemplate
+									.create("NVL("+fonteProjects.cActive
+											+ ",0)"),
+							fonteProjects.cLocation,
+							StringTemplate.create("(SELECT e.c_pk FROM "
+									+ fonteSissSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSissSubterraUriMap.getTableName()
+									+ " e WHERE e.c_id = "
+									+ fonteProjects.fkUriProjectgroup
+									+ " ) as fk_projectgroup"),
+							StringTemplate.create("(SELECT f.c_pk FROM "
+									+ fonteSissSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSissSubterraUriMap.getTableName()
+									+ " f WHERE f.c_id = "
+									+ fonteProjects.fkUriLead
+									+ " ) as fk_lead"),
+							StringTemplate.create("to_char("
+									+ fonteProjects.cLockworkrecordsdate
+									+ ", 'yyyy-MM-dd 00:00:00')"),
+							fonteProjects.cName,
+							fonteProjects.cId));
 
-			Iterator<Tuple> i = projects.iterator();
-			Object[] el= null;
+			SQLInsertClause insert = new SQLInsertClause(OracleConnection,
+					dialect, stgProject);
 
-			while (i.hasNext()) {
+			for (Tuple el : project) {
 
-				el= ((Tuple)i.next()).toArray();
-
-				new SQLInsertClause(OracleConnection, dialect, stgProject)
-				.columns(
+				insert.columns(
 						stgProject.cTrackerprefix,
 						stgProject.cIsLocal,
 						stgProject.cPk,
 						stgProject.fkUriLead,
 						stgProject.cDeleted,
 						stgProject.cFinish,
-						stgProject.cUri,
+						stgProject.cUri, 
 						stgProject.cStart,
-						stgProject.fkUriProjectgroup,
+						stgProject.fkUriProjectgroup, 
 						stgProject.cActive,
-						stgProject.cLocation,
+						stgProject.cLocation, 
 						stgProject.fkProjectgroup,
-						stgProject.fkLead,
+						stgProject.fkLead, 
 						stgProject.cLockworkrecordsdate,
-						stgProject.cName,
+						stgProject.cName, 
 						stgProject.cId,
 						stgProject.dataCaricamento,
-						stgProject.dmalmCurrentProjectPk
-						)
-						.values(
-								el[0] , 
-								el[1] , 
-								el[2] , 
-								StringUtils.getMaskedValue((String)el[3]) , 
-								el[4] , 
-								el[5] , 
-								el[6] , 
-								el[7] , 
-								el[8] , 
-								el[9] , 
-								el[10] ,
-								el[11] ,
-								StringUtils.getMaskedValue((String)el[12]) ,
-								el[13] ,
-								el[14] ,
-								el[15] ,
-								DataEsecuzione.getInstance().getDataEsecuzione(),
-								StringTemplate.create("CURRENT_PROJECT_SEQ.nextval")
-								)
-								.execute();
-				
-				n_righe_inserite++;
+						stgProject.sissCurrentProjectPk)
+						.values(el.get(fonteProjects.cTrackerprefix),
+								el.get(fonteProjects.cIsLocal),
+								el.get(fonteProjects.cPk),
+								el.get(fonteProjects.fkUriLead),
+								el.get(fonteProjects.cDeleted),
+								el.get(fonteProjects.cFinish),
+								el.get(fonteProjects.cUri),
+								el.get(fonteProjects.cStart),
+								el.get(fonteProjects.fkUriProjectgroup),
+								el.get(fonteProjects.cActive),
+								el.get(fonteProjects.cLocation),
+								el.get(fonteProjects.fkProjectgroup),
+								el.get(fonteProjects.fkLead),
+								el.get(fonteProjects.cLockworkrecordsdate),
+								el.get(fonteProjects.cName),
+								el.get(fonteProjects.cId),
+								DataEsecuzione.getInstance()
+										.getDataEsecuzione(),
+								StringTemplate
+										.create("CURRENT_PROJECT_SEQ.nextval"))
+						.addBatch();
+
+				nRigheInserite++;
+
+				if (!insert.isEmpty()) {
+					if (nRigheInserite % DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						OracleConnection.commit();
+						insert = new SQLInsertClause(OracleConnection, dialect,
+								stgProject);
+					}
+				}
+
+			}
+			if (!insert.isEmpty()) {
+
+				insert.execute();
+				OracleConnection.commit();
+				insert = new SQLInsertClause(OracleConnection, dialect,
+						stgProject);
+
 			}
 
-			OracleConnection.commit();
 
 		}
 	catch (Exception e)
@@ -200,16 +255,15 @@ public class SissCurrentProjectDAO
 		ErrorManager.getInstance().exceptionOccurred(true, e);
 		logger.error(e.getMessage(), e);
 		
-		n_righe_inserite=0;
+		nRigheInserite=0;
 		throw new DAOException(e);
 	}
 	finally
 	{
 		if(cm != null) cm.closeConnection(OracleConnection);
-		if(cm != null) cm.closeConnection(H2Connection);
 	}
 
-	return n_righe_inserite;
+	return nRigheInserite;
 
 	}
 	
@@ -261,7 +315,7 @@ public class SissCurrentProjectDAO
 			SQLQuery query 							= new SQLQuery(connection, dialect); 
 			QSissCurrentProject   stgProject  = QSissCurrentProject.sissCurrentProject;
 			
-			//select  DMALM_SIRE_CURRENT_PROJECT.* from DMALM_SIRE_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
+			//select  DMALM_SISS_CURRENT_PROJECT.* from DMALM_SISS_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
 			
 			project = 
 					
@@ -288,7 +342,7 @@ public class SissCurrentProjectDAO
 //	INSTR(C_NAME,'{'), 
 //	INSTR(C_NAME,'}'), 
 //	REPLACE(REPLACE(REGEXP_SUBSTR(C_NAME, '{[a-zA-Z0-9_.*!?-]+}'), '{',''),'}','')   
-//	from DMALM_SIRE_CURRENT_PROJECT 
+//	from DMALM_SISS_CURRENT_PROJECT 
 //	where ltrim(c_name) like 'SW-%'
 	
 	public static List<Tuple> getAllProjectC_Name(Timestamp dataEsecuzione) throws Exception
@@ -305,7 +359,7 @@ public class SissCurrentProjectDAO
 			SQLQuery query 							= new SQLQuery(connection, dialect); 
 			QSissCurrentProject   stgProject  = QSissCurrentProject.sissCurrentProject;
 			
-			//select  DMALM_SIRE_CURRENT_PROJECT.* from DMALM_SIRE_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
+			//select  DMALM_SISS_CURRENT_PROJECT.* from DMALM_SISS_CURRENT_PROJECT where ltrim(c_name) like 'SW-%'
 			
 			project = 
 					

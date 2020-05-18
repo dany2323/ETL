@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -45,8 +46,7 @@ public class SireCurrentProjectDAO {
 
 			QSireCurrentProject stgProject = QSireCurrentProject.sireCurrentProject;
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentProject.project;
-            lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap =lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
-
+			lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 
 			SQLTemplates dialect = new HSQLDBTemplates() {
 				{
@@ -56,66 +56,135 @@ public class SireCurrentProjectDAO {
 			SQLQuery query = new SQLQuery(OracleConnection, dialect);
 
 			List<Tuple> project = query.from(fonteProjects)
-                    //                    .where(fonteProjects.cLocation.like("default:/Sviluppo/%"))
-                    .where((fonteProjects.cLocation.length().subtract(fonteProjects.cLocation.toString().replaceAll("/", "").length())).goe(4))
-                    .where(fonteProjects.cLocation.notLike("default:/GRACO%"))
-                    .list(new QTuple(
-                            StringTemplate.create("SUBSTRING("+fonteProjects.cTrackerprefix+",0,4000)") ,
-                            StringTemplate.create("0") ,
-                            StringTemplate.create("(SELECT a.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " a WHERE a.c_id = " + fonteProjects.cUri + " AND C_REPOSITORY='SIRE') as c_pk"),
-                            StringTemplate.create("(SELECT b.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " b WHERE b.c_id = " + fonteProjects.fkUriLead + " AND C_REPOSITORY='SIRE') as fk_uri_lead"),
-                            StringTemplate.create("CASE WHEN "+fonteProjects.cDeleted+"= 'true' THEN 1 ELSE 0 END") ,
-                            fonteProjects.cFinish,
-                            StringTemplate.create("(SELECT c.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " c WHERE c.c_id = " + fonteProjects.cUri + " AND C_REPOSITORY='SIRE') as c_uri"),
-                            fonteProjects.cStart,
-                            StringTemplate.create("(SELECT d.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " d WHERE d.c_id = " + fonteProjects.fkUriProjectgroup + " AND C_REPOSITORY='SIRE') as FK_URI_PROJECTGROUP"),
-                            StringTemplate.create("CASE WHEN "+fonteProjects.cActive+"= 'true' THEN 1 ELSE 0 END") ,
-                            StringTemplate.create("SUBSTRING("+fonteProjects.cLocation+",0,4000)") ,
-                            StringTemplate.create("(SELECT e.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " e WHERE e.c_id = " + fonteProjects.fkUriProjectgroup + " AND C_REPOSITORY='SIRE') as fk_projectgroup"),
-                            StringTemplate.create("(SELECT f.c_pk FROM " + fonteSireSubterraUriMap.getSchemaName() + "." + fonteSireSubterraUriMap.getTableName() + " f WHERE f.c_id = " + fonteProjects.fkUriLead + " AND C_REPOSITORY='SIRE') as fk_lead"),
-                            StringTemplate.create("to_char("+fonteProjects.cLockworkrecordsdate+", 'yyyy-MM-dd 00:00:00')"),
-                            StringTemplate.create("SUBSTRING("+fonteProjects.cName+",0,4000)") ,
-                            StringTemplate.create("SUBSTRING("+fonteProjects.cId+",0,4000)") 
-                            )
-                            );
+					// .where(fonteProjects.cLocation.like("default:/Sviluppo/%"))
+					.where((fonteProjects.cLocation.length()
+							.subtract(fonteProjects.cLocation.toString()
+									.replaceAll("/", "").length())).goe(4))
+					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
+					.list(new QTuple(
+							fonteProjects.cTrackerprefix,
+							StringTemplate.create("0"),
+							StringTemplate.create("(SELECT a.c_pk FROM "
+									+ fonteSireSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSireSubterraUriMap.getTableName()
+									+ " a WHERE a.c_id = " + fonteProjects.cUri
+									+ " ) as c_pk"),
+							StringTemplate.create("(SELECT b.c_pk FROM "
+									+ fonteSireSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSireSubterraUriMap.getTableName()
+									+ " b WHERE b.c_id = "
+									+ fonteProjects.fkUriLead
+									+ " ) as fk_uri_lead"),
+							StringTemplate.create(
+									"CASE WHEN " + fonteProjects.cDeleted
+											+ "= 'true' THEN 1 ELSE 0 END"),
+							fonteProjects.cFinish,
+							StringTemplate.create("(SELECT c.c_pk FROM "
+									+ fonteSireSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSireSubterraUriMap.getTableName()
+									+ " c WHERE c.c_id = " + fonteProjects.cUri
+									+ " ) as c_uri"),
+							fonteProjects.cStart,
+							StringTemplate.create("(SELECT d.c_pk FROM "
+									+ fonteSireSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSireSubterraUriMap.getTableName()
+									+ " d WHERE d.c_id = "
+									+ fonteProjects.fkUriProjectgroup
+									+ " ) as FK_URI_PROJECTGROUP"),
+							StringTemplate
+									.create("NVL("+fonteProjects.cActive
+											+ ",0)"),
+							fonteProjects.cLocation,
+							StringTemplate.create("(SELECT e.c_pk FROM "
+									+ fonteSireSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSireSubterraUriMap.getTableName()
+									+ " e WHERE e.c_id = "
+									+ fonteProjects.fkUriProjectgroup
+									+ " ) as fk_projectgroup"),
+							StringTemplate.create("(SELECT f.c_pk FROM "
+									+ fonteSireSubterraUriMap.getSchemaName()
+									+ "."
+									+ fonteSireSubterraUriMap.getTableName()
+									+ " f WHERE f.c_id = "
+									+ fonteProjects.fkUriLead
+									+ " ) as fk_lead"),
+							StringTemplate.create("to_char("
+									+ fonteProjects.cLockworkrecordsdate
+									+ ", 'yyyy-MM-dd 00:00:00')"),
+							fonteProjects.cName,
+							fonteProjects.cId));
 
+			SQLInsertClause insert = new SQLInsertClause(OracleConnection,
+					dialect, stgProject);
 
-			Iterator<Tuple> i = project.iterator();
-			Object[] el = null;
+			for (Tuple el : project) {
 
-			while (i.hasNext()) {
-
-				el = ((Tuple) i.next()).toArray();
-
-				new SQLInsertClause(OracleConnection, dialect, stgProject)
-						.columns(stgProject.cTrackerprefix, stgProject.cIsLocal,
-								stgProject.cPk, stgProject.fkUriLead,
-								stgProject.cDeleted, stgProject.cFinish,
-								stgProject.cUri, stgProject.cStart,
-								stgProject.fkUriProjectgroup,
-								stgProject.cActive, stgProject.cLocation,
-								stgProject.fkProjectgroup, stgProject.fkLead,
-								stgProject.cLockworkrecordsdate,
-								stgProject.cName, stgProject.cId,
-								stgProject.dataCaricamento,
-								stgProject.sireCurrentProjectPk)
-						.values(el[0], el[1], el[2],
-								StringUtils.getMaskedValue((String) el[3]),
-								el[4], el[5], el[6], el[7], el[8], el[9],
-								el[10], el[11],
-								StringUtils.getMaskedValue((String) el[12]),
-								el[13], el[14], el[15],
+				insert.columns(
+						stgProject.cTrackerprefix,
+						stgProject.cIsLocal,
+						stgProject.cPk,
+						stgProject.fkUriLead,
+						stgProject.cDeleted,
+						stgProject.cFinish,
+						stgProject.cUri, 
+						stgProject.cStart,
+						stgProject.fkUriProjectgroup, 
+						stgProject.cActive,
+						stgProject.cLocation, 
+						stgProject.fkProjectgroup,
+						stgProject.fkLead, 
+						stgProject.cLockworkrecordsdate,
+						stgProject.cName, 
+						stgProject.cId,
+						stgProject.dataCaricamento,
+						stgProject.sireCurrentProjectPk)
+						.values(el.get(fonteProjects.cTrackerprefix),
+								el.get(fonteProjects.cIsLocal),
+								el.get(fonteProjects.cPk),
+								el.get(fonteProjects.fkUriLead),
+								el.get(fonteProjects.cDeleted),
+								el.get(fonteProjects.cFinish),
+								el.get(fonteProjects.cUri),
+								el.get(fonteProjects.cStart),
+								el.get(fonteProjects.fkUriProjectgroup),
+								el.get(fonteProjects.cActive),
+								el.get(fonteProjects.cLocation),
+								el.get(fonteProjects.fkProjectgroup),
+								el.get(fonteProjects.fkLead),
+								el.get(fonteProjects.cLockworkrecordsdate),
+								el.get(fonteProjects.cName),
+								el.get(fonteProjects.cId),
 								DataEsecuzione.getInstance()
 										.getDataEsecuzione(),
 								StringTemplate
 										.create("CURRENT_PROJECT_SEQ.nextval"))
-						.execute();
+						.addBatch();
 
 				nRigheInserite++;
 
-			}
+				if (!insert.isEmpty()) {
+					if (nRigheInserite % DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						OracleConnection.commit();
+						insert = new SQLInsertClause(OracleConnection, dialect,
+								stgProject);
+					}
+				}
 
-			OracleConnection.commit();
+			}
+			if (!insert.isEmpty()) {
+
+				insert.execute();
+				OracleConnection.commit();
+				insert = new SQLInsertClause(OracleConnection, dialect,
+						stgProject);
+
+			}
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -226,13 +295,13 @@ public class SireCurrentProjectDAO {
 																				// del
 																				// carattere
 																				// }
-									StringTemplate.create(
-											"REPLACE(REPLACE(REGEXP_SUBSTR(C_NAME, '{[a-zA-Z0-9_.*!?-]+}'), '{',''),'}','') as name"), // il
-																																		// contenuto
-																																		// delle
-																																		// parentesi
-																																		// {
-																																		// }
+									StringTemplate
+											.create("REPLACE(REPLACE(REGEXP_SUBSTR(C_NAME, '{[a-zA-Z0-9_.*!?-]+}'), '{',''),'}','') as name"), // il
+																																				// contenuto
+																																				// delle
+																																				// parentesi
+																																				// {
+																																				// }
 									StringTemplate.create(
 											"SUBSTR(C_NAME, INSTR(C_NAME,'}')+1, LENGTH(C_NAME)-INSTR(C_NAME,'}') )")); // la
 																														// descrizione,

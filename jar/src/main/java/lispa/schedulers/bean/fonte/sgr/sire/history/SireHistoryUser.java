@@ -7,9 +7,9 @@ public class SireHistoryUser {
 
     private String cAvatarfilename;
 
-    private Boolean cDeleted;
+    private String cDeleted;
 
-    private Boolean cDisablednotifications;
+    private Integer cDisablednotifications;
 
     private String cEmail;
 
@@ -17,7 +17,7 @@ public class SireHistoryUser {
 
     private String cInitials;
 
-    private Boolean cIsLocal;
+    private String cIsLocal;
 
     private String cName;
 
@@ -35,19 +35,19 @@ public class SireHistoryUser {
         this.cAvatarfilename = cAvatarfilename;
     }
 
-    public Boolean getcDeleted() {
+    public String getcDeleted() {
         return cDeleted;
     }
 
-    public void setcDeleted(Boolean cDeleted) {
+    public void setcDeleted(String cDeleted) {
         this.cDeleted = cDeleted;
     }
 
-    public Boolean getcDisablednotifications() {
+    public Integer getcDisablednotifications() {
         return cDisablednotifications;
     }
 
-    public void setcDisablednotifications(Boolean cDisablednotifications) {
+    public void setcDisablednotifications(Integer cDisablednotifications) {
         this.cDisablednotifications = cDisablednotifications;
     }
 
@@ -75,11 +75,11 @@ public class SireHistoryUser {
         this.cInitials = cInitials;
     }
 
-    public Boolean getcIsLocal() {
+    public String getcIsLocal() {
         return cIsLocal;
     }
 
-    public void setcIsLocal(Boolean cIsLocal) {
+    public void setcIsLocal(String cIsLocal) {
         this.cIsLocal = cIsLocal;
     }
 

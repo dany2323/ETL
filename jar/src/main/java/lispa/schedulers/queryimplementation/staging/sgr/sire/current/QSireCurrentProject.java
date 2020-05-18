@@ -24,15 +24,15 @@ public class QSireCurrentProject extends com.mysema.query.sql.RelationalPathBase
 
     public static final QSireCurrentProject sireCurrentProject = new QSireCurrentProject("DMALM_SIRE_CURRENT_PROJECT");
 
-    public final BooleanPath cActive = createBoolean("C_ACTIVE");
+    public final NumberPath<Integer> cActive = createNumber("C_ACTIVE",Integer.class);
 
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final NumberPath<Integer> cDeleted = createNumber("C_DELETED",Integer.class);
 
     public final DateTimePath<java.sql.Timestamp> cFinish = createDateTime("C_FINISH", java.sql.Timestamp.class);
 
     public final StringPath cId = createString("C_ID");
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final NumberPath<Integer> cIsLocal = createNumber("C_IS_LOCAL",Integer.class);
 
     public final StringPath cLocation = createString("C_LOCATION");
 

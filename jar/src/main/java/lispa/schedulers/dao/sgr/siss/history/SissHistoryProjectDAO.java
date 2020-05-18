@@ -1,6 +1,7 @@
 package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
+import com.mysema.query.types.expr.StringExpression;
 import com.mysema.query.types.template.StringTemplate;
 
 public class SissHistoryProjectDAO {
@@ -38,110 +40,207 @@ public class SissHistoryProjectDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision.revision;
 
-	public static void fillSissHistoryProject(long minRevision, long maxRevision)
-			throws Exception {
-
-		ConnectionManager cm = null;
-		Connection connOracle = null;
-		Connection connH2 = null;
-		List<Tuple> projects = null;
-
-		try {
-			logger.debug("SissHistoryProjectDAO.fillSissHistoryProject - minRevision: " + minRevision + ", maxRevision: " + maxRevision);
-			
-			cm = ConnectionManager.getInstance();
-			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSISSHistory();
-			projects = new ArrayList<Tuple>();
-
-			connOracle.setAutoCommit(false);
-
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
-
-			SQLQuery query = new SQLQuery(connH2, dialect);
-
-			projects = query
-					.from(fonteProjects, fonteRevisions)
-					.where(fonteRevisions.cName.castToNum(Long.class).eq(
-							fonteProjects.cRev))
-					.where(fonteProjects.cRev.gt(minRevision))
-					.where(fonteProjects.cRev.loe(maxRevision))
-					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
-					.where(fonteProjects.cId.notIn(new SQLSubQuery()
-							.from(fonteProjects2)
-							.where(fonteProjects2.cName.like("%{READONLY}%"))
-							.list(fonteProjects2.cId)))
-					.list(fonteProjects.cTrackerprefix, fonteProjects.cIsLocal,
-							fonteProjects.cPk, fonteProjects.fkUriLead,
-							fonteProjects.cDeleted, fonteProjects.cFinish,
-							fonteProjects.cUri, fonteProjects.cStart,
-							fonteProjects.fkUriProjectgroup,
-							fonteProjects.cActive, fonteProjects.cLocation,
-							fonteProjects.fkProjectgroup, fonteProjects.fkLead,
-							fonteProjects.cLockworkrecordsdate,
-							fonteProjects.cName, fonteProjects.cId,
-							fonteProjects.cRev, fonteProjects.cDescription,
-							fonteRevisions.cName, fonteRevisions.cCreated);
-			
-			logger.debug("SissHistoryProjectDAO.fillSissHistoryProject - projects.size: " + (projects==null?"NULL":projects.size()));
-			
-			for (Tuple row : projects) {
-				new SQLInsertClause(connOracle, dialect, stgProjects)
-						.columns(stgProjects.cTrackerprefix,
-								stgProjects.cIsLocal, stgProjects.cPk,
-								stgProjects.fkUriLead, stgProjects.cDeleted,
-								stgProjects.cFinish, stgProjects.cUri,
-								stgProjects.cStart,
-								stgProjects.fkUriProjectgroup,
-								stgProjects.cActive, stgProjects.cLocation,
-								stgProjects.fkProjectgroup, stgProjects.fkLead,
-								stgProjects.cLockworkrecordsdate,
-								stgProjects.cName, stgProjects.cId,
-								stgProjects.dataCaricamento,
-								stgProjects.dmalmProjectPk, stgProjects.cRev,
-								stgProjects.cCreated, stgProjects.cDescription)
-						.values(row.get(fonteProjects.cTrackerprefix),
-								row.get(fonteProjects.cIsLocal),
-								row.get(fonteProjects.cPk),
-								StringUtils.getMaskedValue(row.get(fonteProjects.fkUriLead)),
-								row.get(fonteProjects.cDeleted),
-								row.get(fonteProjects.cFinish),
-								row.get(fonteProjects.cUri),
-								row.get(fonteProjects.cStart),
-								row.get(fonteProjects.fkUriProjectgroup),
-								row.get(fonteProjects.cActive),
-								row.get(fonteProjects.cLocation),
-								row.get(fonteProjects.fkProjectgroup),
-								StringUtils.getMaskedValue(row.get(fonteProjects.fkLead)),
-								row.get(fonteProjects.cLockworkrecordsdate),
-								row.get(fonteProjects.cName),
-								row.get(fonteProjects.cId),
-								DataEsecuzione.getInstance()
-										.getDataEsecuzione(),
-								StringTemplate
-										.create("HISTORY_PROJECT_SEQ.nextval"),
-								row.get(fonteProjects.cRev),
-								row.get(fonteRevisions.cCreated),
-								row.get(fonteProjects.cDescription)).execute();
-			}
-
-			connOracle.commit();
-			ConnectionManager.getInstance().dismiss();
-			updateProjectTemplate(minRevision, maxRevision);
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null)
-				cm.closeConnection(connH2);
-			if (cm != null)
-				cm.closeConnection(connOracle);
-		}
+	public static void fillSissHistoryProject(long minRevision,
+			long maxRevision) throws Exception {
+//
+//		ConnectionManager cm = null;
+//		Connection connOracle = null;
+//		List<Tuple> projects = null;
+//		lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap fonteSissSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap.urimap;
+//		lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentRevision fonteRevision = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentRevision.currentRevision;
+//
+//
+//		try {
+//			logger.debug(
+//					"SissHistoryProjectDAO.fillSissHistoryProject - minRevision: "
+//							+ minRevision + ", maxRevision: " + maxRevision);
+//
+//			cm = ConnectionManager.getInstance();
+//			connOracle = cm.getConnectionOracle();
+//			projects = new ArrayList<Tuple>();
+//
+//			connOracle.setAutoCommit(false);
+//
+//			SQLTemplates dialect = new HSQLDBTemplates() {
+//				{
+//					setPrintSchema(true);
+//				}
+//			};
+//
+//			SQLQuery query = new SQLQuery(connOracle, dialect);
+//
+//			projects = query.from(fonteProjects)
+//					.where(fonteProjects.cRev.gt(minRevision))
+//					.where(fonteProjects.cRev.loe(maxRevision))
+//					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
+//					.where(fonteProjects.cId.notIn(new SQLSubQuery()
+//							.from(fonteProjects2)
+//							.where(fonteProjects2.cName.like("%{READONLY}%"))
+//							.list(fonteProjects2.cId)))
+//					.list(fonteProjects.cTrackerprefix,
+//							StringTemplate.create("0"), 
+//							fonteProjects.cUri,
+//							fonteProjects.fkUriLead, 
+//							fonteProjects.cDeleted,
+//							fonteProjects.cFinish, 
+//							fonteProjects.cUri,
+//							fonteProjects.cStart,
+//							fonteProjects.fkUriProjectgroup,
+//							fonteProjects.cActive, 
+//							fonteProjects.cLocation,
+//							fonteProjects.cLockworkrecordsdate,
+//							fonteProjects.cName, fonteProjects.cId,
+//							fonteProjects.cRev, fonteProjects.cDescription);
+//
+//			logger.debug(
+//					"SissHistoryProjectDAO.fillSissHistoryProject - projects.size: "
+//							+ (projects == null ? "NULL" : projects.size()));
+//			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
+//					.getDataEsecuzione();
+//
+//			for (Tuple row : projects) {
+//				Object[] vals = row.toArray();
+//
+//				String cUri = vals[2] != null
+//						? (queryConnOracle(connOracle, dialect)
+//								.from(fonteSissSubterraUriMap)
+//								.where(fonteSissSubterraUriMap.cId
+//										.eq(Long.valueOf(vals[2].toString())))
+//								.count() > 0
+//										? queryConnOracle(connOracle, dialect)
+//												.from(fonteSissSubterraUriMap)
+//												.where(fonteSissSubterraUriMap.cId
+//														.eq(Long.valueOf(vals[2]
+//																.toString())))
+//												
+//												.list(fonteSissSubterraUriMap.cPk).get(0)
+//										: "")
+//						: "";
+//				String cPk = cUri + "%" + vals[15] != null
+//						? vals[15].toString()
+//						: "";
+//				String fkUriLead = vals[3] != null
+//						? (queryConnOracle(connOracle, dialect)
+//								.from(fonteSissSubterraUriMap)
+//								.where(fonteSissSubterraUriMap.cId
+//										.eq(Long.valueOf(vals[3].toString())))
+//								.count() > 0
+//										? queryConnOracle(connOracle, dialect)
+//												.from(fonteSissSubterraUriMap)
+//												.where(fonteSissSubterraUriMap.cId
+//														.eq(Long.valueOf(vals[3]
+//																.toString())))
+//												.list(fonteSissSubterraUriMap.cPk).get(0)
+//										: "")
+//						: "";
+//				String fkLead = fkUriLead + "%"
+//						+ (vals[11] != null ? vals[11].toString() : "");
+//				String fkUriProjectgroup = vals[8] != null
+//						? (queryConnOracle(connOracle, dialect)
+//								.from(fonteSissSubterraUriMap)
+//								.where(fonteSissSubterraUriMap.cId
+//										.eq(Long.valueOf(vals[8].toString())))
+//								.count() > 0
+//										? queryConnOracle(connOracle, dialect)
+//												.from(fonteSissSubterraUriMap)
+//												.where(fonteSissSubterraUriMap.cId
+//														.eq(Long.valueOf(vals[8]
+//																.toString())))
+//												.list(fonteSissSubterraUriMap.cPk).get(0)
+//										: "")
+//						: "";
+//				String fkProjectgroup = fkUriProjectgroup + "%"
+//						+ (vals[11] != null ? vals[11].toString() : "");
+//				String cCreated = vals[15] != null
+//						? (queryConnOracle(connOracle, dialect)
+//								.from(stgRevision)
+//								.where(stgRevision.cName
+//										.eq(Long.valueOf(vals[15].toString())))
+//								.where(stgRevision.cRepo.eq(
+//										lispa.schedulers.constant.DmAlmConstants.REPOSITORY_SISS))
+//								.count() > 0
+//										? queryConnOracle(connOracle, dialect)
+//												.from(stgRevision)
+//												.where(stgRevision.cName.eq(
+//														Long.valueOf(vals[15]
+//																.toString())))
+//												rs.constant.DmAlmConstants.REPOSITORY_SISS))
+//												.list(stgRevision.cCreated)
+//												.get(0).toString()
+//										: "")
+//						: "";
+//
+//				// Applico il cast a timespent solo se esistono dei valori data
+//				StringExpression dateValue = null;
+//				if (cCreated != "") {
+//					dateValue = StringTemplate.create("to_timestamp('"
+//							+ cCreated + "', 'YYYY-MM-DD HH24:MI:SS.FF')");
+//				}
+//
+//				new SQLInsertClause(connOracle, dialect, stgProjects)
+//						.columns(stgProjects.cTrackerprefix,
+//								stgProjects.cIsLocal, stgProjects.cPk,
+//								stgProjects.fkUriLead, stgProjects.cDeleted,
+//								stgProjects.cFinish, stgProjects.cUri,
+//								stgProjects.cStart,
+//								stgProjects.fkUriProjectgroup,
+//								stgProjects.cActive, stgProjects.cLocation,
+//								stgProjects.fkProjectgroup, stgProjects.fkLead,
+//								stgProjects.cLockworkrecordsdate,
+//								stgProjects.cName, stgProjects.cId,
+//								stgProjects.dataCaricamento,
+//								stgProjects.dmalmProjectPk, stgProjects.cRev,
+//								stgProjects.cCreated, stgProjects.cDescription)
+//						.values(vals[0], vals[1], cPk,
+//								StringUtils.getMaskedValue(fkUriLead), vals[4],
+//								vals[5], cUri, vals[7], fkUriProjectgroup,
+//								vals[9], vals[10], fkProjectgroup,
+//								StringUtils.getMaskedValue(fkLead), vals[12],
+//								vals[13], vals[14], dataEsecuzione,
+//								StringTemplate
+//										.create("HISTORY_PROJECT_SEQ.nextval"),
+//								vals[15], dateValue, vals[16]
+//
+//						/*
+//						 * row.get(fonteProjects.cTrackerprefix),
+//						 * row.get(fonteProjects.cIsLocal),
+//						 * row.get(fonteProjects.cPk),
+//						 * StringUtils.getMaskedValue(row.get(fonteProjects.
+//						 * fkUriLead)), row.get(fonteProjects.cDeleted),
+//						 * row.get(fonteProjects.cFinish),
+//						 * row.get(fonteProjects.cUri),
+//						 * row.get(fonteProjects.cStart),
+//						 * row.get(fonteProjects.fkUriProjectgroup),
+//						 * row.get(fonteProjects.cActive),
+//						 * row.get(fonteProjects.cLocation),
+//						 * row.get(fonteProjects.fkProjectgroup),
+//						 * StringUtils.getMaskedValue(row.get(fonteProjects.
+//						 * fkLead)),
+//						 * row.get(fonteProjects.cLockworkrecordsdate),
+//						 * row.get(fonteProjects.cName),
+//						 * row.get(fonteProjects.cId),
+//						 * DataEsecuzione.getInstance() .getDataEsecuzione(),
+//						 * StringTemplate
+//						 * .create("HISTORY_PROJECT_SEQ.nextval"),
+//						 * row.get(fonteProjects.cRev),
+//						 * row.get(fonteRevisions.cCreated),
+//						 * row.get(fonteProjects.cDescription)
+//						 */
+//						).execute();
+//			}
+//
+//			connOracle.commit();
+//			ConnectionManager.getInstance().dismiss();
+//			updateProjectTemplate(minRevision, maxRevision);
+//
+//		} catch (Exception e) {
+//			ErrorManager.getInstance().exceptionOccurred(true, e);
+//
+//			throw new DAOException(e);
+//		} finally {
+//			if (cm != null)
+//				cm.closeConnection(connOracle);
+//		}
 	}
 
 	public static long getMinRevision() throws Exception {
@@ -176,7 +275,8 @@ public class SissHistoryProjectDAO {
 		return max.get(0).longValue();
 	}
 
-	public static void updateProjectTemplate(long minRevision, long maxRevision) {
+	public static void updateProjectTemplate(long minRevision,
+			long maxRevision) {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
@@ -189,9 +289,7 @@ public class SissHistoryProjectDAO {
 			SQLTemplates dialect = new HSQLDBTemplates();
 			SQLQuery query = new SQLQuery(oracle, dialect);
 
-			projects = query
-					.from(stgProjects)
-					.distinct()
+			projects = query.from(stgProjects).distinct()
 					.where(stgProjects.cRev.gt(minRevision))
 					.where(stgProjects.cRev.loe(maxRevision))
 					.list(stgProjects.cUri, stgProjects.cLocation,
@@ -242,42 +340,41 @@ public class SissHistoryProjectDAO {
 			logger.debug("START: SET SISS PROJECTs with Template NULL");
 			for (Tuple tupla : template) {
 				new SQLUpdateClause(oracle, dialect, stgProjects)
-						.where(stgProjects.cId.equalsIgnoreCase(tupla
-								.get(stgProjects.cId)))
+						.where(stgProjects.cId
+								.equalsIgnoreCase(tupla.get(stgProjects.cId)))
 						.set(stgProjects.cTemplate,
-								tupla.get(stgProjects.cTemplate)).execute();
+								tupla.get(stgProjects.cTemplate))
+						.execute();
 			}
-			
+
 			SQLQuery query_1 = new SQLQuery(oracle, dialect);
-			stillNullTemplate = query_1
-					.from(stgProjects)
-					.distinct()
-					.where(stgProjects.cTemplate.isNull())
-					.list(stgProjects.cId, stgProjects.cRev,
-							stgProjects.cLocation);
-			
+			stillNullTemplate = query_1.from(stgProjects).distinct()
+					.where(stgProjects.cTemplate.isNull()).list(stgProjects.cId,
+							stgProjects.cRev, stgProjects.cLocation);
+
 			logger.debug("START SET SISS PROJECTs WITH TEMPLATE STILL NULL ");
-			
+
 			for (Tuple t : stillNullTemplate)
 				try {
 					tmplt = ProjectTemplateINI.getLastRevisionTemplateIniFile(
-							ProjectTemplateINI.getProjectSVNPath(t
-									.get(stgProjects.cLocation)),
+							ProjectTemplateINI.getProjectSVNPath(
+									t.get(stgProjects.cLocation)),
 							DmAlmConstants.REPOSITORY_SISS);
 					new SQLUpdateClause(oracle, dialect, stgProjects)
-							.where(stgProjects.cId.equalsIgnoreCase(t
-									.get(stgProjects.cId)))
+							.where(stgProjects.cId
+									.equalsIgnoreCase(t.get(stgProjects.cId)))
 							.where(stgProjects.cTemplate.isNull())
 							.set(stgProjects.cTemplate, tmplt).execute();
 					logger.info("UPDATE DONE ON PROJECT_ID "
 							+ t.get(stgProjects.cId));
 				} catch (Exception e) {
-					logger.error("IMPOSSIBILE SETTARE IL TEMPLATE: PATH NON ESISTENTE");
+					logger.error(
+							"IMPOSSIBILE SETTARE IL TEMPLATE: PATH NON ESISTENTE");
 					logger.error(e.getMessage());
 				}
-			
+
 			oracle.commit();
-			
+
 			logger.debug("STOP SET SISS PROJECTs with Template NULL");
 		} catch (Exception e) {
 
@@ -294,7 +391,8 @@ public class SissHistoryProjectDAO {
 
 	}
 
-	private static void setTemplate(String location, long revision, String repo) {
+	private static void setTemplate(String location, long revision,
+			String repo) {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
@@ -337,9 +435,10 @@ public class SissHistoryProjectDAO {
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QSissHistoryProject stgProjects = QSissHistoryProject.sissHistoryProject;
 
-			new SQLDeleteClause(connection, dialect, stgProjects).where(
-					stgProjects.dataCaricamento.eq(DataEsecuzione.getInstance()
-							.getDataEsecuzione())).execute();
+			new SQLDeleteClause(connection, dialect, stgProjects)
+					.where(stgProjects.dataCaricamento.eq(
+							DataEsecuzione.getInstance().getDataEsecuzione()))
+					.execute();
 			connection.commit();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -403,14 +502,13 @@ public class SissHistoryProjectDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 			QSissHistoryProject stgProjectA = QSissHistoryProject.sissHistoryProject;
 			QSissHistoryProject stgProjectB = QSissHistoryProject.sissHistoryProject;
-			projects = query
-					.from(stgProjectA)
+			projects = query.from(stgProjectA)
 					.where(stgProjectA.cTemplate.eq(template.toString()))
-					.where(stgProjectA.cRev.in(new SQLSubQuery()
-							.from(stgProjectB)
-							.where(stgProjectB.cId.eq(stgProjectA.cId))
-							.groupBy(stgProjectB.cId)
-							.list(stgProjectB.cRev.max())))
+					.where(stgProjectA.cRev
+							.in(new SQLSubQuery().from(stgProjectB)
+									.where(stgProjectB.cId.eq(stgProjectA.cId))
+									.groupBy(stgProjectB.cId)
+									.list(stgProjectB.cRev.max())))
 					.list(stgProjectA.all());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -422,5 +520,8 @@ public class SissHistoryProjectDAO {
 
 		return projects;
 	}
-
+	private static SQLQuery queryConnOracle(Connection connOracle,
+			SQLTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
 }

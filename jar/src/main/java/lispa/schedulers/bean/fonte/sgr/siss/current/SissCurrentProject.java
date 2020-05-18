@@ -6,7 +6,7 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class SissCurrentProject {
 
-    private Boolean cActive;
+    private Integer cActive;
 
     private Boolean cDeleted;
 
@@ -14,7 +14,7 @@ public class SissCurrentProject {
 
     private String cId;
 
-    private Boolean cIsLocal;
+    private Integer cIsLocal;
 
     private String cLocation;
 
@@ -40,11 +40,11 @@ public class SissCurrentProject {
 
     private String fkUriProjectgroup;
 
-    public Boolean getcActive() {
+    public Integer getcActive() {
         return cActive;
     }
 
-    public void setcActive(Boolean cActive) {
+    public void setcActive(Integer cActive) {
         this.cActive = cActive;
     }
 
@@ -72,11 +72,11 @@ public class SissCurrentProject {
         this.cId = cId;
     }
 
-    public Boolean getcIsLocal() {
+    public Integer getcIsLocal() {
         return cIsLocal;
     }
 
-    public void setcIsLocal(Boolean cIsLocal) {
+    public void setcIsLocal(Integer cIsLocal) {
         this.cIsLocal = cIsLocal;
     }
 

@@ -20,9 +20,9 @@ public class SissCurrentProject extends com.mysema.query.sql.RelationalPathBase<
 
     private static final long serialVersionUID = 502430732;
 
-    public static final SissCurrentProject project = new SissCurrentProject("PROJECT");
+    public static final SissCurrentProject project = new SissCurrentProject("DM_ALM_C_SISS_PROJECT");
 
-    public final BooleanPath cActive = createBoolean("C_ACTIVE");
+    public final NumberPath<Integer> cActive = createNumber("C_ACTIVE",Integer.class);
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 
@@ -30,7 +30,7 @@ public class SissCurrentProject extends com.mysema.query.sql.RelationalPathBase<
 
     public final StringPath cId = createString("C_ID");
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final NumberPath<Integer> cIsLocal = createNumber("C_IS_LOCAL",Integer.class);
 
     public final StringPath cLocation = createString("C_LOCATION");
 
@@ -59,15 +59,15 @@ public class SissCurrentProject extends com.mysema.query.sql.RelationalPathBase<
     public final com.mysema.query.sql.PrimaryKey<lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentProject> projectPk = createPrimaryKey(cPk);
 
     public SissCurrentProject(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentProject.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentProject.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_PROJECT");
     }
 
     public SissCurrentProject(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentProject> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_PROJECT");
     }
 
     public SissCurrentProject(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentProject.class, metadata, DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentProject.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_PROJECT");
     }
 
 }

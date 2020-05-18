@@ -22,7 +22,7 @@ public class SireHistoryRevision extends com.mysema.query.sql.RelationalPathBase
 
     private static final long serialVersionUID = -1899539286;
 
-    public static final SireHistoryRevision revision = new SireHistoryRevision("REVISION");
+    public static final SireHistoryRevision revision = new SireHistoryRevision("DM_ALM_H_SIRE_REVISION");
 
     public final StringPath cPk = createString("C_PK");
     
@@ -41,22 +41,22 @@ public class SireHistoryRevision extends com.mysema.query.sql.RelationalPathBase
     
     public final StringPath cRepositoryname = createString("C_REPOSITORYNAME");
     
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final StringPath cDeleted = createString("C_DELETED");
     
-    public final BooleanPath cInternalcommit = createBoolean("C_INTERNALCOMMIT");
+    public final StringPath cInternalcommit = createString("C_INTERNALCOMMIT");
     
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final StringPath cIsLocal = createString("C_IS_LOCAL");
 
     public SireHistoryRevision(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRevision.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "REVISION");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRevision.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_REVISION");
     }
 
     public SireHistoryRevision(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRevision> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "REVISION");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_REVISION");
     }
 
     public SireHistoryRevision(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRevision.class, metadata, DmAlmConstants.POLARION_SCHEMA, "REVISION");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRevision.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_REVISION");
     }
 
 }

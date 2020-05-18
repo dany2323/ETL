@@ -16,7 +16,7 @@ import com.mysema.query.types.Path;
  * SireCurrentWorkitem is a Querydsl query type for SireCurrentWorkitem
  */
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
-public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentWorkitem> {
+public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase<lispa.schedulers.bean.fonte.sgr.sire.current.SissCurrentWorkitem> {
 
     private static final long serialVersionUID = -195947471;
 
@@ -89,15 +89,15 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
     public final StringPath fkUriTimepoint = createString("FK_URI_TIMEPOINT");
 
     public SireCurrentWorkitem(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentWorkitem.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(lispa.schedulers.bean.fonte.sgr.sire.current.SissCurrentWorkitem.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
     }
 
-    public SireCurrentWorkitem(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentWorkitem> path) {
+    public SireCurrentWorkitem(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.current.SissCurrentWorkitem> path) {
         super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
     }
 
     public SireCurrentWorkitem(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.current.SireCurrentWorkitem.class, metadata, DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(lispa.schedulers.bean.fonte.sgr.sire.current.SissCurrentWorkitem.class, metadata, DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
     }
 
 }
