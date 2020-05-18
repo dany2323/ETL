@@ -6,7 +6,7 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class SissHistoryProject {
 
-    private Boolean cActive;
+	private Boolean cActive;
 
     private Boolean cDeleted;
 

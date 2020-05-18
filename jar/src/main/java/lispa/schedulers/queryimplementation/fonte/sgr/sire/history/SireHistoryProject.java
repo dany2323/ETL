@@ -20,7 +20,7 @@ public class SireHistoryProject extends com.mysema.query.sql.RelationalPathBase<
 
     private static final long serialVersionUID = -39681300;
 
-    public static final SireHistoryProject project = new SireHistoryProject("PROJECT");
+    public static final SireHistoryProject project = new SireHistoryProject("DM_ALM_H_SIRE_PROJECT");
 
     public final BooleanPath cActive = createBoolean("C_ACTIVE");
 
@@ -28,9 +28,9 @@ public class SireHistoryProject extends com.mysema.query.sql.RelationalPathBase<
 
     public final DatePath<java.sql.Date> cFinish = createDate("C_FINISH", java.sql.Date.class);
 
-    public final StringPath cId = createString("C_ID");
+    public final DatePath<java.sql.Date> cCreated = createDate("C_CREATED", java.sql.Date.class);
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final StringPath cId = createString("C_ID");
 
     public final StringPath cLocation = createString("C_LOCATION");
 
@@ -55,21 +55,19 @@ public class SireHistoryProject extends com.mysema.query.sql.RelationalPathBase<
     public final StringPath fkUriLead = createString("FK_URI_LEAD");
 
     public final StringPath fkUriProjectgroup = createString("FK_URI_PROJECTGROUP");
-    
-    public final StringPath template = createString("TEMPLATE");
-    
+        
     public final StringPath cDescription = createString("C_DESCRIPTION");
 
     public SireHistoryProject(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProject.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProject.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECT");
     }
 
     public SireHistoryProject(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProject> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECT");
     }
 
     public SireHistoryProject(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProject.class, metadata, DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProject.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECT");
     }
 
 }

@@ -8,6 +8,7 @@ import com.mysema.query.types.PathMetadata;
 import javax.annotation.Generated;
 
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject;
 
 import com.mysema.query.types.Path;
 
@@ -20,7 +21,7 @@ public class SissHistoryProject extends com.mysema.query.sql.RelationalPathBase<
 
     private static final long serialVersionUID = 502430732;
 
-    public static final SissHistoryProject project = new SissHistoryProject("PROJECT");
+    public static final SissHistoryProject project = new SissHistoryProject("DM_ALM_H_SISS_PROJECT");
 
     public final BooleanPath cActive = createBoolean("C_ACTIVE");
 
@@ -28,9 +29,9 @@ public class SissHistoryProject extends com.mysema.query.sql.RelationalPathBase<
 
     public final DatePath<java.sql.Date> cFinish = createDate("C_FINISH", java.sql.Date.class);
 
-    public final StringPath cId = createString("C_ID");
+    public final DatePath<java.sql.Date> cCreated = createDate("C_CREATED", java.sql.Date.class);
 
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
+    public final StringPath cId = createString("C_ID");
 
     public final StringPath cLocation = createString("C_LOCATION");
 
@@ -55,23 +56,21 @@ public class SissHistoryProject extends com.mysema.query.sql.RelationalPathBase<
     public final StringPath fkUriLead = createString("FK_URI_LEAD");
 
     public final StringPath fkUriProjectgroup = createString("FK_URI_PROJECTGROUP");
-    
-    public final StringPath template = createString("TEMPLATE");
-    
+        
     public final StringPath cDescription = createString("C_DESCRIPTION");
-
+    
     public final com.mysema.query.sql.PrimaryKey<lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProject> projectPk = createPrimaryKey(cPk);
 
     public SissHistoryProject(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProject.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProject.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_PROJECT");
     }
 
     public SissHistoryProject(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProject> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_PROJECT");
     }
 
     public SissHistoryProject(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProject.class, metadata, DmAlmConstants.POLARION_SCHEMA, "PROJECT");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProject.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_PROJECT");
     }
 
 }

@@ -5,7 +5,7 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class SireHistoryProject {
 
-    private Boolean cActive;
+	private Boolean cActive;
 
     private Boolean cDeleted;
 

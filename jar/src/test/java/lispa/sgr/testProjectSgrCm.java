@@ -65,7 +65,7 @@ public class testProjectSgrCm extends TestCase {
 				// .list(fonteProjects2.cId)
 				// )
 				// )
-				.list(fonteProjects.cTrackerprefix, fonteProjects.cIsLocal,
+				.list(fonteProjects.cTrackerprefix,
 						fonteProjects.cPk, fonteProjects.fkUriLead,
 						fonteProjects.cDeleted, fonteProjects.cFinish,
 						fonteProjects.cUri, fonteProjects.cStart,

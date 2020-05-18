@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import org.apache.log4j.Logger;
 
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryUserDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryRevisionDAO;
@@ -37,9 +38,8 @@ public class DmAlmETL {
 			
 //			long user_minRevision = SissHistoryUserDAO.getMinRevision();
 			long polarion_maxRevision = SireHistoryRevisionDAO.getMaxRevision();
-			Timestamp revision_minRevision = SireHistoryRevisionDAO
-					.getMinRevision();
-			SireHistoryRevisionDAO.fillSireHistoryRevision(revision_minRevision, polarion_maxRevision);
+			long revision_minRevision = SireHistoryProjectDAO.getMinRevision();
+			SireHistoryProjectDAO.fillSireHistoryProject(revision_minRevision, polarion_maxRevision);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
