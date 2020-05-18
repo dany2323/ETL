@@ -103,7 +103,7 @@ public class SireHistoryProjectDAO {
 						stgProjects.cDescription)
 						.values(row.get(fonteProjects.cTrackerprefix), 
 								row.get(fonteProjects.cPk), 
-								StringUtils.getMaskedValue(row.get(fonteProjects.fkUriLead)),
+								row.get(fonteProjects.fkUriLead),
 								row.get(fonteProjects.cDeleted), 
 								row.get(fonteProjects.cFinish),
 								row.get(fonteProjects.cUri), 
