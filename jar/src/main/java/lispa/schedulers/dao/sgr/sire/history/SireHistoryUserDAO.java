@@ -58,8 +58,6 @@ public class SireHistoryUserDAO {
 			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			users = query.from(fonteUsers)
-					.where(fonteUsers.cRev.gt(minRevision))
-					.where(fonteUsers.cRev.loe(maxRevision))
 					.list(fonteUsers.all());
 
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
