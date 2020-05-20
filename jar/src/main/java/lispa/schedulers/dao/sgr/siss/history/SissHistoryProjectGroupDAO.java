@@ -42,7 +42,7 @@ public class SissHistoryProjectGroupDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			pgConnection = cm.getConnectionSISSCurrent();
+			pgConnection = cm.getConnectionSISSHistory();
 			projectgroups = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);

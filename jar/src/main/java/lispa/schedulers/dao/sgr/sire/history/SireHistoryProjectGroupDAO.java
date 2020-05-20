@@ -43,7 +43,7 @@ public class SireHistoryProjectGroupDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			pgConnection = cm.getConnectionSIRECurrent();
+			pgConnection = cm.getConnectionSIREHistory();
 			projectgroups = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
