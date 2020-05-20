@@ -139,7 +139,7 @@ public class DateUtils {
 				format.setLenient(false);
 				dataFineValidita = format.parse(data);
 			} catch (ParseException exception) {
-
+				exception.printStackTrace();
 			}
 		}
 

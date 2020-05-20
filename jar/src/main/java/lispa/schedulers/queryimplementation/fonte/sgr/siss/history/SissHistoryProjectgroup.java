@@ -20,7 +20,7 @@ public class SissHistoryProjectgroup extends com.mysema.query.sql.RelationalPath
 
     private static final long serialVersionUID = 2090213875;
 
-    public static final SissHistoryProjectgroup projectgroup = new SissHistoryProjectgroup("PROJECTGROUP");
+    public static final SissHistoryProjectgroup projectgroup = new SissHistoryProjectgroup("DM_ALM_H_SISS_PROJECTGROUP");
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 
@@ -43,15 +43,15 @@ public class SissHistoryProjectgroup extends com.mysema.query.sql.RelationalPath
     public final com.mysema.query.sql.PrimaryKey<lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProjectgroup> projectgroupPk = createPrimaryKey(cPk);
 
     public SissHistoryProjectgroup(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProjectgroup.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "PROJECTGROUP");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProjectgroup.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_PROJECTGROUP");
     }
 
     public SissHistoryProjectgroup(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProjectgroup> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "PROJECTGROUP");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_PROJECTGROUP");
     }
 
     public SissHistoryProjectgroup(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProjectgroup.class, metadata, DmAlmConstants.POLARION_SCHEMA, "PROJECTGROUP");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryProjectgroup.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_PROJECTGROUP");
     }
 
 }

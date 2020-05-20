@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lispa.schedulers.constant.DmAlmConstants;
@@ -14,6 +15,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryProject;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProject;
 import lispa.schedulers.svn.ProjectTemplateINI;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Template_Type;
 
@@ -39,6 +41,7 @@ public class SireHistoryProjectDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser fonteUser = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
+	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup.projectgroup;
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
 
@@ -60,7 +63,7 @@ public class SireHistoryProjectDAO {
 
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			projects = new ArrayList<Tuple>();
+			projects = new ArrayList<>();
 
 			connOracle.setAutoCommit(false);
 
@@ -92,6 +95,11 @@ public class SireHistoryProjectDAO {
 									+ fonteUser.getTableName() + " where "
 									+ fonteUser.getTableName()
 									+ ".c_pk = fk_lead) as c_rev_user"),
+							StringTemplate.create("(select c_rev from "
+									+ fonteProjectGroups.getSchemaName() + "."
+									+ fonteProjectGroups.getTableName() + " where "
+									+ fonteProjectGroups.getTableName()
+									+ ".c_pk = FK_PROJECTGROUP) as c_rev_projectgroup"),
 							fonteProjects.cLockworkrecordsdate,
 							fonteProjects.cName, fonteProjects.cId,
 							fonteProjects.cRev, fonteProjects.cDescription);
@@ -122,9 +130,9 @@ public class SireHistoryProjectDAO {
 												.get(0)
 										: "")
 						: "";
-				String cPk = cUri + "%" + row.get(fonteProjects.cRev) != null
+				String cPk = cUri + "%" + (row.get(fonteProjects.cRev) != null
 						? String.valueOf(row.get(fonteProjects.cRev))
-						: "";
+						: "");
 				String fkUriLead = row.get(fonteProjects.fkUriLead) != null
 						? (queryConnOracle(connOracle, dialect)
 								.from(fonteSireSubterraUriMap)
@@ -149,21 +157,21 @@ public class SireHistoryProjectDAO {
 										.from(fonteSireSubterraUriMap)
 										.where(fonteSireSubterraUriMap.cId
 												.eq(Long.valueOf(row.get(
-														fonteProjects.fkUriLead))))
+														fonteProjects.fkUriProjectgroup))))
 										.count() > 0
 												? queryConnOracle(connOracle,
 														dialect).from(
 																fonteSireSubterraUriMap)
 																.where(fonteSireSubterraUriMap.cId
 																		.eq(Long.valueOf(
-																				row.get(fonteProjects.fkUriLead))))
+																				row.get(fonteProjects.fkUriProjectgroup))))
 																.list(fonteSireSubterraUriMap.cPk)
 																.get(0)
 												: "")
 								: "";
 				String fkProjectgroup = fkUriProjectgroup + "%"
-						+ (row.get(fonteUser.cRev) != null
-								? row.get(fonteUser.cRev)
+						+ (row.toArray()[12] != null
+								? row.toArray()[12]
 								: "");
 				String cCreated = row.get(fonteProjects.cRev) != null
 						? (queryConnOracle(connOracle, dialect)
@@ -182,38 +190,57 @@ public class SireHistoryProjectDAO {
 						: "";
 
 				// Applico il cast a timespent solo se esistono dei valori data
-				StringExpression dateValue = null;
+				Date dateValue = null;
 				if (cCreated != "") {
-					dateValue = StringTemplate.create("to_timestamp('"
-							+ cCreated + "', 'YYYY-MM-DD HH24:MI:SS.FF')");
+					
+					dateValue=DateUtils.stringToDate(cCreated, "yyyy-MM-dd hh:mm:ss.SSS");
 				}
 
-				insert.columns(stgProjects.cTrackerprefix, stgProjects.cIsLocal,
-						stgProjects.cPk, stgProjects.fkUriLead,
-						stgProjects.cDeleted, stgProjects.cFinish,
-						stgProjects.cUri, stgProjects.cStart,
-						stgProjects.fkUriProjectgroup, stgProjects.cActive,
-						stgProjects.cLocation, stgProjects.fkProjectgroup,
-						stgProjects.fkLead, stgProjects.cLockworkrecordsdate,
-						stgProjects.cName, stgProjects.cId,
+				insert.columns(stgProjects.cTrackerprefix, 
+						stgProjects.cIsLocal,
+						stgProjects.cPk, 
+						stgProjects.fkUriLead,
+						stgProjects.cDeleted, 
+						stgProjects.cFinish,
+						stgProjects.cUri, 
+						stgProjects.cStart,
+						stgProjects.fkUriProjectgroup, 
+						stgProjects.cActive,
+						stgProjects.cLocation, 
+						stgProjects.fkProjectgroup,
+						stgProjects.fkLead, 
+						stgProjects.cLockworkrecordsdate,
+						stgProjects.cName, 
+						stgProjects.cId,
 						stgProjects.dataCaricamento,
-						stgProjects.sireHistoryProjectPk, stgProjects.cRev,
-						stgProjects.cCreated, stgProjects.cDescription)
+						stgProjects.sireHistoryProjectPk, 
+						stgProjects.cRev,
+						stgProjects.cCreated, 
+						stgProjects.cDescription
+						)
 						.values(row.get(fonteProjects.cTrackerprefix),
-								0, cPk, fkUriLead,
+								0, 
+								cPk, 
+								StringUtils.getMaskedValue(fkUriLead),
 								row.get(fonteProjects.cDeleted),
-								row.get(fonteProjects.cFinish), cUri,
-								fonteProjects.cStart, fkUriProjectgroup,
+								row.get(fonteProjects.cFinish), 
+								cUri,
+								row.get(fonteProjects.cStart), 
+								fkUriProjectgroup,
 								row.get(fonteProjects.cActive),
 								row.get(fonteProjects.cLocation),
-								fkProjectgroup, fkLead,
+								fkProjectgroup,
+								StringUtils.getMaskedValue(fkLead),
 								row.get(fonteProjects.cLockworkrecordsdate),
 								row.get(fonteProjects.cName),
-								row.get(fonteProjects.cId), dataEsecuzione,
+								row.get(fonteProjects.cId), 
+								dataEsecuzione,
 								StringTemplate
 										.create("HISTORY_PROJECT_SEQ.nextval"),
-								row.get(fonteProjects.cRev), dateValue,
-								row.get(fonteProjects.cDescription))
+								row.get(fonteProjects.cRev), 
+								dateValue,
+								row.get(fonteProjects.cDescription)
+								)
 						.addBatch();
 
 				if (!insert.isEmpty()) {

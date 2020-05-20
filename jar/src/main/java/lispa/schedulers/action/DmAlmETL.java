@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryUserDAO;
+import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryUserDAO;
 import lispa.schedulers.exception.PropertiesReaderException;

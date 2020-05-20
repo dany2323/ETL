@@ -20,7 +20,7 @@ public class SireHistoryProjectgroup extends com.mysema.query.sql.RelationalPath
 
     private static final long serialVersionUID = -1506318573;
 
-    public static final SireHistoryProjectgroup projectgroup = new SireHistoryProjectgroup("PROJECTGROUP");
+    public static final SireHistoryProjectgroup projectgroup = new SireHistoryProjectgroup("DM_ALM_H_SIRE_PROJECTGROUP");
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 
@@ -41,15 +41,15 @@ public class SireHistoryProjectgroup extends com.mysema.query.sql.RelationalPath
     public final StringPath fkUriParent = createString("FK_URI_PARENT");
 
     public SireHistoryProjectgroup(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProjectgroup.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "PROJECTGROUP");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProjectgroup.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECTGROUP");
     }
 
     public SireHistoryProjectgroup(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProjectgroup> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "PROJECTGROUP");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECTGROUP");
     }
 
     public SireHistoryProjectgroup(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProjectgroup.class, metadata, DmAlmConstants.POLARION_SCHEMA, "PROJECTGROUP");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryProjectgroup.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_PROJECTGROUP");
     }
 
 }
