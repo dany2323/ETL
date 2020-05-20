@@ -41,7 +41,6 @@ public class SireHistoryProjectDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser fonteUser = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
-	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup.projectgroup;
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
 
@@ -95,11 +94,6 @@ public class SireHistoryProjectDAO {
 									+ fonteUser.getTableName() + " where "
 									+ fonteUser.getTableName()
 									+ ".c_pk = fk_lead) as c_rev_user"),
-							StringTemplate.create("(select c_rev from "
-									+ fonteProjectGroups.getSchemaName() + "."
-									+ fonteProjectGroups.getTableName() + " where "
-									+ fonteProjectGroups.getTableName()
-									+ ".c_pk = FK_PROJECTGROUP) as c_rev_projectgroup"),
 							fonteProjects.cLockworkrecordsdate,
 							fonteProjects.cName, fonteProjects.cId,
 							fonteProjects.cRev, fonteProjects.cDescription);
@@ -170,8 +164,8 @@ public class SireHistoryProjectDAO {
 												: "")
 								: "";
 				String fkProjectgroup = fkUriProjectgroup + "%"
-						+ (row.toArray()[12] != null
-								? row.toArray()[12]
+						+ (row.get(fonteProjects.cRev) != null
+								? row.get(fonteProjects.cRev)
 								: "");
 				String cCreated = row.get(fonteProjects.cRev) != null
 						? (queryConnOracle(connOracle, dialect)

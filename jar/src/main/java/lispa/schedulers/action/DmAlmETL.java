@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import org.apache.log4j.Logger;
 
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectGroupDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryUserDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
@@ -13,6 +14,7 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryUserDAO;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.Log4JConfiguration;
+import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup;
 
 public class DmAlmETL {
 
@@ -38,9 +40,11 @@ public class DmAlmETL {
 //			SireHistoryUserDAO.fillSireHistoryUser(user_minRevision, polarion_maxRevision);
 			
 //			long user_minRevision = SissHistoryUserDAO.getMinRevision();
-			long polarion_maxRevision = SireHistoryRevisionDAO.getMaxRevision();
-			long revision_minRevision = SireHistoryProjectDAO.getMinRevision();
-			SireHistoryProjectDAO.fillSireHistoryProject(revision_minRevision, polarion_maxRevision);
+//			long polarion_maxRevision = SireHistoryRevisionDAO.getMaxRevision();
+//			long revision_minRevision = SireHistoryProjectDAO.getMinRevision();
+//			SireHistoryProjectDAO.fillSireHistoryProject(revision_minRevision, polarion_maxRevision);
+			
+			SireHistoryProjectGroupDAO.fillSireHistoryProjectGroup();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -34,23 +35,21 @@ public class SissHistoryProjectGroupDAO
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
 		List<Tuple>       projectgroups = null;
 		
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSISSHistory();
-			projectgroups = new ArrayList<Tuple>();
+			projectgroups = new ArrayList<>();
 			
 			connOracle.setAutoCommit(false);
 			
-			SQLTemplates dialect = new HSQLDBTemplates()
+			OracleTemplates dialect = new OracleTemplates()
 			{ {
 			    setPrintSchema(true);
 			}};
 			
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+			SQLQuery query 		 = new SQLQuery(connOracle, dialect); 
 			
 			projectgroups = query.from(fonteProjectGroups)
 					.list(
@@ -97,7 +96,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 		
