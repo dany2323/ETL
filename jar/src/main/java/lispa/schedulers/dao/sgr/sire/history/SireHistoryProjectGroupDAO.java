@@ -44,7 +44,7 @@ public class SireHistoryProjectGroupDAO {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
 			pgConnection = cm.getConnectionSIRECurrent();
-			projectgroups = new ArrayList<Tuple>();
+			projectgroups = new ArrayList<>();
 
 			connOracle.setAutoCommit(false);
 
