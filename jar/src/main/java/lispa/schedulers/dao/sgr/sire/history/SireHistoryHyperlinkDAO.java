@@ -77,7 +77,7 @@ public class SireHistoryHyperlinkDAO {
 					.where(fonteHistoryWorkItems.cRev
 							.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision)).list(
-							fonteHistoryWorkItems.all());
+							fonteHyperlink.all());
 
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
 					stgHyperlink);

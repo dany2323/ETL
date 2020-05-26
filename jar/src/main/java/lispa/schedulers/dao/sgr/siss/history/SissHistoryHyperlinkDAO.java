@@ -77,7 +77,7 @@ public class SissHistoryHyperlinkDAO {
 					.where(fonteHistoryWorkItems.cRev
 							.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision)).list(
-							fonteHistoryWorkItems.all());
+							fonteHyperlink.all());
 
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
 					stgHyperlink);
@@ -85,7 +85,7 @@ public class SissHistoryHyperlinkDAO {
 			int batchcounter = 0;
 
 			for (Tuple row : hyperlinks) {
-
+				
 				batchcounter++;
 				insert.columns(
 
