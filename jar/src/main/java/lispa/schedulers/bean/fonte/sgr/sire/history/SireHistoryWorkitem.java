@@ -5,7 +5,7 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class SireHistoryWorkitem {
 
-    private Boolean cAutosuspect;
+	private Boolean cAutosuspect;
 
     private java.sql.Timestamp cCreated;
 

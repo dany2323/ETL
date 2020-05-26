@@ -67,7 +67,7 @@ public class TestSIREHistoryAttachment extends TestCase {
 						attachment.get(fonteAttachment.cUri),
 						attachment.get(fonteAttachment.cRev),
 						attachment.get(fonteAttachment.cDeleted),
-						attachment.get(fonteAttachment.cIsLocal),
+						0,
 						attachment.get(fonteAttachment.fkAuthor),
 						attachment.get(fonteAttachment.fkUriAuthor),
 						attachment.get(fonteAttachment.cFilename),

@@ -20,7 +20,7 @@ public class SissHistoryHyperlink extends com.mysema.query.sql.RelationalPathBas
 
     private static final long serialVersionUID = -67527503;
 
-    public static final SissHistoryHyperlink structWorkitemHyperlinks = new SissHistoryHyperlink("STRUCT_WORKITEM_HYPERLINKS");
+    public static final SissHistoryHyperlink structWorkitemHyperlinks = new SissHistoryHyperlink("DM_ALM_H_SISS_STRUCT_WI_HYLINK");
 
     public final StringPath cRole = createString("C_ROLE");
 
@@ -31,15 +31,15 @@ public class SissHistoryHyperlink extends com.mysema.query.sql.RelationalPathBas
     public final StringPath fkUriPWorkitem = createString("FK_URI_P_WORKITEM");
 
     public SissHistoryHyperlink(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryHyperlink.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_HYPERLINKS");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryHyperlink.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_STRUCT_WI_HYLINK");
     }
 
     public SissHistoryHyperlink(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryHyperlink> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_HYPERLINKS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_STRUCT_WI_HYLINK");
     }
 
     public SissHistoryHyperlink(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryHyperlink.class, metadata, DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_HYPERLINKS");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryHyperlink.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_STRUCT_WI_HYLINK");
     }
 
 }

@@ -100,12 +100,13 @@ public class SireHistoryProjectGroupDAO {
 						stgProjectGroups.sireHistoryProjGroupPk)
 						.values(row.get(fonteProjectGroups.cLocation),
 								row.get(fonteProjectGroups.cIsLocal),
-								row.get(fonteProjectGroups.cPk), fkUriParent,
-								row.get(fonteProjectGroups.fkParent),
+								row.get(fonteSireSubterraUriMap.cPk),
+								fkUriParent,
+								fkUriParent,
 								row.get(fonteProjectGroups.cName),
 								row.get(fonteProjectGroups.cDeleted),
 								row.get(fonteProjectGroups.cRev),
-								row.get(fonteProjectGroups.cUri),
+								row.get(fonteSireSubterraUriMap.cPk),
 								DataEsecuzione.getInstance()
 										.getDataEsecuzione(),
 								StringTemplate.create(

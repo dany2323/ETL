@@ -343,7 +343,7 @@ public class SireHistoryWorkitemDAO {
 						stgWorkItems.dataCaricamento,
 						stgWorkItems.dmalmHistoryWorkitemPk)
 						.values(hist.get(fonteHistoryWorkItems.fkModule),
-								hist.get(fonteHistoryWorkItems.cIsLocal),
+								0,
 								hist.get(fonteHistoryWorkItems.cPriority),
 								hist.get(fonteHistoryWorkItems.cAutosuspect),
 								hist.get(fonteHistoryWorkItems.cResolution),

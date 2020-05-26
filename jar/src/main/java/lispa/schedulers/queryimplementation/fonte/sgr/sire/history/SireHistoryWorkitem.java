@@ -20,21 +20,19 @@ public class SireHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     private static final long serialVersionUID = 1747155943;
 
-    public static final SireHistoryWorkitem workitem = new SireHistoryWorkitem("WORKITEM");
+    public static final SireHistoryWorkitem workitem = new SireHistoryWorkitem("DM_ALM_H_SIRE_WORKITEM");
 
-    public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
+    public final NumberPath<Integer> cAutosuspect = createNumber("C_AUTOSUSPECT", Integer.class);
 
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final NumberPath<Integer> cDeleted = createNumber("C_DELETED", Integer.class);
 
     public final DatePath<java.sql.Date> cDuedate = createDate("C_DUEDATE", java.sql.Date.class);
 
     public final StringPath cId = createString("C_ID");
 
     public final NumberPath<Float> cInitialestimate = createNumber("C_INITIALESTIMATE", Float.class);
-
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
 
     public final StringPath cLocation = createString("C_LOCATION");
 
@@ -89,15 +87,15 @@ public class SireHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
     public final StringPath fkUriTimepoint = createString("FK_URI_TIMEPOINT");
 
     public SireHistoryWorkitem(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryWorkitem.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_WORKITEM");
     }
 
     public SireHistoryWorkitem(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryWorkitem> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_WORKITEM");
     }
 
     public SireHistoryWorkitem(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryWorkitem.class, metadata, DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryWorkitem.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_WORKITEM");
     }
 
 }

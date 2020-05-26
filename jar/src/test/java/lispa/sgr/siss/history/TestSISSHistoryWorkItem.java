@@ -129,9 +129,7 @@ public class TestSISSHistoryWorkItem extends TestCase {
 					.list(new QTuple(
 							StringTemplate.create("SUBSTRING("
 									+ fonteWorkItems.fkModule + ",0,4000)"),
-							StringTemplate.create("CASEWHEN ("
-									+ fonteWorkItems.cIsLocal
-									+ "= 'true', 1,0 )"),
+							StringTemplate.create("0"),
 							StringTemplate.create("SUBSTRING("
 									+ fonteWorkItems.cPriority + ",0,4000)"),
 							StringTemplate.create("CASEWHEN ("

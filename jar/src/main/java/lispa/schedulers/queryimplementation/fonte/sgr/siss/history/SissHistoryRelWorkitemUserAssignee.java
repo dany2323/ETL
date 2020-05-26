@@ -20,7 +20,7 @@ public class SissHistoryRelWorkitemUserAssignee extends com.mysema.query.sql.Rel
 
     private static final long serialVersionUID = -704953430;
 
-    public static final SissHistoryRelWorkitemUserAssignee relWorkitemUserAssignee = new SissHistoryRelWorkitemUserAssignee("REL_WORKITEM_USER_ASSIGNEE");
+    public static final SissHistoryRelWorkitemUserAssignee relWorkitemUserAssignee = new SissHistoryRelWorkitemUserAssignee("DM_ALM_H_SISS_REL_WI_USER_ASS");
 
     public final StringPath fkUriUser = createString("FK_URI_USER");
 
@@ -31,15 +31,15 @@ public class SissHistoryRelWorkitemUserAssignee extends com.mysema.query.sql.Rel
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
     public SissHistoryRelWorkitemUserAssignee(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryRelWorkitemUserAssignee.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "REL_WORKITEM_USER_ASSIGNEE");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryRelWorkitemUserAssignee.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_REL_WI_USER_ASS");
     }
 
     public SissHistoryRelWorkitemUserAssignee(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryRelWorkitemUserAssignee> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "REL_WORKITEM_USER_ASSIGNEE");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_REL_WI_USER_ASS");
     }
 
     public SissHistoryRelWorkitemUserAssignee(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryRelWorkitemUserAssignee.class, metadata, DmAlmConstants.POLARION_SCHEMA, "REL_WORKITEM_USER_ASSIGNEE");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryRelWorkitemUserAssignee.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_REL_WI_USER_ASS");
     }
 
 }

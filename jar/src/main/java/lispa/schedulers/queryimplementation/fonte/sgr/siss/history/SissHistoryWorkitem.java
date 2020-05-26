@@ -20,21 +20,19 @@ public class SissHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     private static final long serialVersionUID = 1372759751;
 
-    public static final SissHistoryWorkitem workitem = new SissHistoryWorkitem("WORKITEM");
+    public static final SissHistoryWorkitem workitem = new SissHistoryWorkitem("DM_ALM_H_SISS_WORKITEM");
 
-    public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
+    public final NumberPath<Integer> cAutosuspect = createNumber("C_AUTOSUSPECT", Integer.class);
 
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final NumberPath<Integer> cDeleted = createNumber("C_DELETED", Integer.class);
 
     public final DatePath<java.sql.Date> cDuedate = createDate("C_DUEDATE", java.sql.Date.class);
 
     public final StringPath cId = createString("C_ID");
 
     public final NumberPath<Float> cInitialestimate = createNumber("C_INITIALESTIMATE", Float.class);
-
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
 
     public final StringPath cLocation = createString("C_LOCATION");
 
@@ -89,15 +87,15 @@ public class SissHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
     public final StringPath fkUriTimepoint = createString("FK_URI_TIMEPOINT");
 
     public SissHistoryWorkitem(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryWorkitem.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_WORKITEM");
     }
 
     public SissHistoryWorkitem(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryWorkitem> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_WORKITEM");
     }
 
     public SissHistoryWorkitem(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryWorkitem.class, metadata, DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryWorkitem.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_WORKITEM");
     }
 
 }

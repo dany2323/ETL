@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -44,7 +45,7 @@ public class SissHistoryUserDAO {
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
+			OracleTemplates dialect = new OracleTemplates() {
 				{
 					setPrintSchema(true);
 				}
@@ -208,7 +209,7 @@ public class SissHistoryUserDAO {
 
 	}
 	private static SQLQuery queryConnOracle(Connection connOracle,
-			SQLTemplates dialect) {
+			OracleTemplates dialect) {
 		return new SQLQuery(connOracle, dialect);
 	}
 

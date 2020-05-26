@@ -21,148 +21,175 @@ import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.template.StringTemplate;
 
-public class SissHistoryProjectGroupDAO
-{
+public class SissHistoryProjectGroupDAO {
 
-	private static Logger logger = Logger.getLogger(SissHistoryProjectGroupDAO.class); 
-	
+	private static Logger logger = Logger
+			.getLogger(SissHistoryProjectGroupDAO.class);
+
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProjectgroup fonteProjectGroups = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProjectgroup.projectgroup;
-	
+
 	private static QSissHistoryProjectgroup stgProjectGroups = QSissHistoryProjectgroup.sissHistoryProjectgroup;
-	
-	
+
 	public static void fillSissHistoryProjectGroup() throws Exception {
-		
-		ConnectionManager cm   = null;
-		Connection 	 	  connOracle = null;
-		List<Tuple>       projectgroups = null;
-		
+
+		ConnectionManager cm = null;
+		Connection connOracle = null;
+		lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap fonteSissSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap.urimap;
+		long nRigheInserite = 0;
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			projectgroups = new ArrayList<>();
-			
+			List<Tuple> projectgroups = new ArrayList<>();
+
 			connOracle.setAutoCommit(false);
-			
-			OracleTemplates dialect = new OracleTemplates()
-			{ {
-			    setPrintSchema(true);
-			}};
-			
-			SQLQuery query 		 = new SQLQuery(connOracle, dialect); 
-			
+
+			OracleTemplates dialect = new OracleTemplates() {
+				{
+					setPrintSchema(true);
+				}
+			};
+
+			SQLQuery query = new SQLQuery(connOracle, dialect);
+
 			projectgroups = query.from(fonteProjectGroups)
-					.list(
-							fonteProjectGroups.all()
-							);
-			
-			for(Tuple row : projectgroups) {
-				new SQLInsertClause(connOracle, dialect, stgProjectGroups)
-				.columns(
-						stgProjectGroups.cLocation,
-						stgProjectGroups.cIsLocal,
-						stgProjectGroups.cPk,
-						stgProjectGroups.fkUriParent,
-						stgProjectGroups.fkParent,
-						stgProjectGroups.cName,
-						stgProjectGroups.cDeleted,
-						stgProjectGroups.cRev,
-						stgProjectGroups.cUri,
+					.join(fonteSissSubterraUriMap)
+					.on(fonteProjectGroups.cUri.castToNum(Long.class)
+							.eq(fonteSissSubterraUriMap.cId))
+					.list(fonteProjectGroups.cLocation,
+							fonteSissSubterraUriMap.cPk,
+							fonteProjectGroups.fkUriParent,
+							fonteProjectGroups.cName,
+							fonteProjectGroups.cDeleted,
+							fonteProjectGroups.fkParent,
+							fonteProjectGroups.cRev, StringTemplate.create(
+									fonteSissSubterraUriMap.cPk + " as c_uri"));
+
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
+					stgProjectGroups);
+
+			for (Tuple row : projectgroups) {
+				
+				String fkUriParent = row
+						.get(fonteProjectGroups.fkUriParent) != null
+								? (queryConnOracle(connOracle, dialect)
+										.from(fonteSissSubterraUriMap)
+										.where(fonteSissSubterraUriMap.cId
+												.eq(Long.valueOf(row.get(
+														fonteProjectGroups.fkUriParent))))
+										.count() > 0
+												? queryConnOracle(connOracle,
+														dialect).from(
+																fonteSissSubterraUriMap)
+																.where(fonteSissSubterraUriMap.cId
+																		.eq(Long.valueOf(
+																				row.get(fonteProjectGroups.fkUriParent))))
+																.list(fonteSissSubterraUriMap.cPk)
+																.get(0)
+												: "")
+								: "";
+
+				insert.columns(stgProjectGroups.cLocation,
+						stgProjectGroups.cIsLocal, stgProjectGroups.cPk,
+						stgProjectGroups.fkUriParent, stgProjectGroups.fkParent,
+						stgProjectGroups.cName, stgProjectGroups.cDeleted,
+						stgProjectGroups.cRev, stgProjectGroups.cUri,
 						stgProjectGroups.dataCaricamento,
-						stgProjectGroups.dmalmProjgroupPk
-						)
-						.values(								
-								row.get(fonteProjectGroups.cLocation),
-								row.get(fonteProjectGroups.cIsLocal),
-								row.get(fonteProjectGroups.cPk),
-								row.get(fonteProjectGroups.fkUriParent),
-								row.get(fonteProjectGroups.fkParent),
+						stgProjectGroups.dmalmProjgroupPk)
+						.values(row.get(fonteProjectGroups.cLocation),
+								0,
+								row.get(fonteSissSubterraUriMap.cPk), 
+								fkUriParent,
+								fkUriParent,
 								row.get(fonteProjectGroups.cName),
 								row.get(fonteProjectGroups.cDeleted),
 								row.get(fonteProjectGroups.cRev),
-								row.get(fonteProjectGroups.cUri),
-								DataEsecuzione.getInstance().getDataEsecuzione(),
-								 StringTemplate.create("HISTORY_PROJGROUP_SEQ.nextval")
-								)
-								.execute();
+								row.get(fonteSissSubterraUriMap.cPk),
+								DataEsecuzione.getInstance()
+										.getDataEsecuzione(),
+								StringTemplate.create(
+										"HISTORY_PROJGROUP_SEQ.nextval"))
+						.addBatch();
+				nRigheInserite++;
+				if (!insert.isEmpty()) {
+					if (nRigheInserite
+							% lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
+						insert.execute();
+						connOracle.commit();
+						insert = new SQLInsertClause(connOracle, dialect,
+								stgProjectGroups);
+					}
+				}
 
-				
 			}
-			connOracle.commit();
-		}
-		catch(Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
-			
-			throw new DAOException(e);
-		}
-		finally {
-			if(cm != null) cm.closeConnection(connOracle);
-		}
-		
-	}
+			if (!insert.isEmpty()) {
+				insert.execute();
+				connOracle.commit();
+			}
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 
+			throw new DAOException(e);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connOracle);
+		}
+
+	}
 
 	public static long getMinRevision() throws Exception {
 		ConnectionManager cm = null;
 		Connection oracle = null;
 
 		List<Long> max = new ArrayList<Long>();
-		try{
+		try {
 
-			cm 	   = ConnectionManager.getInstance();
+			cm = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 
-			SQLTemplates dialect 				 = new HSQLDBTemplates();
-			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
+			SQLTemplates dialect = new HSQLDBTemplates();
+			SQLQuery query = new SQLQuery(oracle, dialect);
 
-			max = query.from(stgProjectGroups).list(stgProjectGroups.cRev.max());
+			max = query.from(stgProjectGroups)
+					.list(stgProjectGroups.cRev.max());
 
-			if(max == null || max.size() == 0 || max.get(0) == null)
-			{
+			if (max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;
 			}
 
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
+
 			throw new DAOException(e);
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(oracle);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
-	} 
-	
+	}
+
 	public static void delete() throws DAOException {
-		ConnectionManager cm 	= null;
-		Connection connection 	= null;
+		ConnectionManager cm = null;
+		Connection connection = null;
 
-
-		try{
+		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect 					= new HSQLDBTemplates(); // SQL-dialect
+			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 
 			new SQLDeleteClause(connection, dialect, stgProjectGroups)
-			.execute();
+					.execute();
 
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
-		}
-		finally
-		{
-			if(cm != null) cm.closeConnection(connection);
+
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 	}
-	
+
 	public static void recoverSissHistoryProjectGroup() throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -170,24 +197,28 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-	
+
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QSissHistoryProjectgroup stgProjectGroups = QSissHistoryProjectgroup.sissHistoryProjectgroup; 
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgProjectGroups).where(stgProjectGroups.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
+			QSissHistoryProjectgroup stgProjectGroups = QSissHistoryProjectgroup.sissHistoryProjectgroup;
+			// Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00",
+			// "yyyy-MM-dd HH:mm:ss");
+			new SQLDeleteClause(connection, dialect, stgProjectGroups)
+					.where(stgProjectGroups.dataCaricamento.eq(
+							DataEsecuzione.getInstance().getDataEsecuzione()))
+					.execute();
 			connection.commit();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
-			
+
 			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
-	}	
-	
+	}
+	private static SQLQuery queryConnOracle(Connection connOracle,
+			OracleTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
 }

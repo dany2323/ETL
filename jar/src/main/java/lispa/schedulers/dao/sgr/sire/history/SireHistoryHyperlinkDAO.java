@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -41,32 +42,24 @@ public class SireHistoryHyperlinkDAO {
 		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
 		List<Tuple> hyperlinks = null;
 
 		try {
 			
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSIREHistory();
 			hyperlinks = new ArrayList<Tuple>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
+			OracleTemplates dialect = new OracleTemplates();
+			
 			
 			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				
-			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
-				connH2 = cm.getConnectionSIREHistory();
-			}
+			
 
-			SQLQuery query = new SQLQuery(connH2, dialect);
+			SQLQuery query = new SQLQuery(connOracle, dialect);
 
 			hyperlinks = query.from(fonteHyperlink)
 					.join(fonteHistoryWorkItems)
@@ -128,7 +121,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 	}

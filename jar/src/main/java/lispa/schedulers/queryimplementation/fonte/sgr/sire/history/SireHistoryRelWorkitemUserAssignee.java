@@ -20,7 +20,7 @@ public class SireHistoryRelWorkitemUserAssignee extends com.mysema.query.sql.Rel
 
     private static final long serialVersionUID = -444495222;
 
-    public static final SireHistoryRelWorkitemUserAssignee relWorkitemUserAssignee = new SireHistoryRelWorkitemUserAssignee("REL_WORKITEM_USER_ASSIGNEE");
+    public static final SireHistoryRelWorkitemUserAssignee relWorkitemUserAssignee = new SireHistoryRelWorkitemUserAssignee("DM_ALM_H_SIRE_REL_WI_USER_ASS");
 
     public final StringPath fkUriUser = createString("FK_URI_USER");
 
@@ -31,15 +31,15 @@ public class SireHistoryRelWorkitemUserAssignee extends com.mysema.query.sql.Rel
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
     public SireHistoryRelWorkitemUserAssignee(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "REL_WORKITEM_USER_ASSIGNEE");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_REL_WI_USER_ASS");
     }
 
     public SireHistoryRelWorkitemUserAssignee(Path<? extends lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "REL_WORKITEM_USER_ASSIGNEE");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_REL_WI_USER_ASS");
     }
 
     public SireHistoryRelWorkitemUserAssignee(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.class, metadata, DmAlmConstants.POLARION_SCHEMA, "REL_WORKITEM_USER_ASSIGNEE");
+        super(lispa.schedulers.bean.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SIRE_REL_WI_USER_ASS");
     }
 
 }

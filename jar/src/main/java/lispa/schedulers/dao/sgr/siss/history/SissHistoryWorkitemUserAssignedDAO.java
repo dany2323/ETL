@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -36,39 +37,29 @@ public class SissHistoryWorkitemUserAssignedDAO {
 
 	private static QSissHistoryRelWorkUserAss stgWorkitemUserAssignees = QSissHistoryRelWorkUserAss.sissHistoryRelWorkUserAss;
 
-	public static void fillSissHistoryWorkitemUserAssigned(
+	public static void  fillSissHistoryWorkitemUserAssigned(
 			Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision)
 			throws Exception {
 
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
 		List<Tuple> workItemUserAssignees = null;
+		lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap fonteSissSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap.urimap;
+		lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser fonteUsers = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser.user;
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSISSHistory();
-			workItemUserAssignees = new ArrayList<Tuple>();
+			workItemUserAssignees = new ArrayList<>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
+			OracleTemplates dialect = new OracleTemplates();
 
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType
 					.values()) {
 
-				if (connH2.isClosed()) {
-					if (cm != null)
-						cm.closeConnection(connH2);
-					connH2 = cm.getConnectionSISSHistory();
-				}
-
-				SQLQuery query = new SQLQuery(connH2, dialect);
+				SQLQuery query = new SQLQuery(connOracle, dialect);
 
 				workItemUserAssignees = query.from(fonteHistoryWorkItems)
 						.join(fonteWorkitemAssignees)
@@ -78,7 +69,20 @@ public class SissHistoryWorkitemUserAssignedDAO {
 						.where(fonteHistoryWorkItems.cRev
 								.gt(minRevisionByType.get(type)))
 						.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-						.list(fonteWorkitemAssignees.all());
+						.list(fonteWorkitemAssignees.fkUriUser,
+								StringTemplate.create("(select c_rev from "
+										+ fonteUsers.getSchemaName() + "."
+										+ fonteUsers.getTableName() + " where "
+										+ fonteUsers.getTableName()
+										+ ".c_pk = fk_user) as fk_user"),
+								fonteWorkitemAssignees.fkUriWorkitem,
+								StringTemplate.create("(select c_rev from "
+										+ fonteHistoryWorkItems.getSchemaName()
+										+ "."
+										+ fonteHistoryWorkItems.getTableName()
+										+ " where "
+										+ fonteHistoryWorkItems.getTableName()
+										+ ".c_pk = fk_workitem) as fk_workitem"));
 
 				SQLInsertClause insert = new SQLInsertClause(connOracle,
 						dialect, stgWorkitemUserAssignees);
@@ -86,16 +90,62 @@ public class SissHistoryWorkitemUserAssignedDAO {
 				int batchcounter = 0;
 
 				for (Tuple row : workItemUserAssignees) {
-					insert.columns(stgWorkitemUserAssignees.fkUser,
+
+					String fkUriUser = row
+							.get(fonteWorkitemAssignees.fkUriUser) != null
+									? (queryConnOracle(connOracle, dialect)
+											.from(fonteSissSubterraUriMap)
+											.where(fonteSissSubterraUriMap.cId
+													.eq(Long.valueOf(row.get(
+															fonteWorkitemAssignees.fkUriUser))))
+											.count() > 0
+													? queryConnOracle(
+															connOracle, dialect)
+																	.from(fonteSissSubterraUriMap)
+																	.where(fonteSissSubterraUriMap.cId
+																			.eq(Long.valueOf(
+																					row.get(fonteWorkitemAssignees.fkUriUser))))
+																	.list(fonteSissSubterraUriMap.cPk)
+																	.get(0)
+													: "")
+									: "";
+					String fkUser = fkUriUser + "%"
+							+ (row.get(fonteWorkitemAssignees.fkUser) != null
+									? row.get(fonteWorkitemAssignees.fkUser)
+									: "");
+					String fkUriWorkitem = row
+							.get(fonteWorkitemAssignees.fkUriWorkitem) != null
+									? (queryConnOracle(connOracle, dialect)
+											.from(fonteSissSubterraUriMap)
+											.where(fonteSissSubterraUriMap.cId
+													.eq(Long.valueOf(row.get(
+															fonteWorkitemAssignees.fkUriWorkitem))))
+											.count() > 0
+													? queryConnOracle(
+															connOracle, dialect)
+																	.from(fonteSissSubterraUriMap)
+																	.where(fonteSissSubterraUriMap.cId
+																			.eq(Long.valueOf(
+																					row.get(fonteWorkitemAssignees.fkUriWorkitem))))
+																	.list(fonteSissSubterraUriMap.cPk)
+																	.get(0)
+													: "")
+									: "";
+					String fkWorkitem = fkUriWorkitem + "%" + (row
+							.get(fonteWorkitemAssignees.fkWorkitem) != null
+									? row.get(fonteWorkitemAssignees.fkWorkitem)
+									: "");
+
+					insert.columns(
+							stgWorkitemUserAssignees.fkUser,
 							stgWorkitemUserAssignees.fkUriWorkitem,
 							stgWorkitemUserAssignees.fkWorkitem,
 							stgWorkitemUserAssignees.fkUriUser,
 							stgWorkitemUserAssignees.dataCaricamento,
 							stgWorkitemUserAssignees.dmalmWorkUserAssPk)
-							.values(StringUtils.getMaskedValue(
-									row.get(fonteWorkitemAssignees.fkUser)),
-									row.get(fonteWorkitemAssignees.fkUriWorkitem),
-									row.get(fonteWorkitemAssignees.fkWorkitem),
+							.values(StringUtils.getMaskedValue(fkUser),
+									fkUriWorkitem,
+									fkWorkitem,
 									StringUtils.getMaskedValue(row.get(
 											fonteWorkitemAssignees.fkUriUser)),
 									DataEsecuzione.getInstance()
@@ -109,6 +159,7 @@ public class SissHistoryWorkitemUserAssignedDAO {
 					if (batchcounter % DmAlmConstants.BATCH_SIZE == 0
 							&& !insert.isEmpty()) {
 						insert.execute();
+						connOracle.commit();
 						insert = new SQLInsertClause(connOracle, dialect,
 								stgWorkitemUserAssignees);
 					}
@@ -117,17 +168,15 @@ public class SissHistoryWorkitemUserAssignedDAO {
 
 				if (!insert.isEmpty()) {
 					insert.execute();
+					connOracle.commit();
 				}
 
-				connOracle.commit();
 			}
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 			throw new DAOException(e);
 		} finally {
-			if (cm != null)
-				cm.closeConnection(connH2);
 			if (cm != null)
 				cm.closeConnection(connOracle);
 		}
@@ -189,4 +238,8 @@ public class SissHistoryWorkitemUserAssignedDAO {
 
 	}
 
+	private static SQLQuery queryConnOracle(Connection connOracle,
+			OracleTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
+	}
 }

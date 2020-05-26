@@ -20,7 +20,7 @@ public class SissHistoryAttachment extends com.mysema.query.sql.RelationalPathBa
 
     private static final long serialVersionUID = 1398826238;
 
-    public static final SissHistoryAttachment attachment = new SissHistoryAttachment("ATTACHMENT");
+    public static final SissHistoryAttachment attachment = new SissHistoryAttachment("DM_ALM_H_SISS_ATTACHMENT");
 
     public final SimplePath<java.sql.Blob> cContent = createSimple("C_CONTENT", java.sql.Blob.class);
 
@@ -29,8 +29,6 @@ public class SissHistoryAttachment extends com.mysema.query.sql.RelationalPathBa
     public final StringPath cFilename = createString("C_FILENAME");
 
     public final StringPath cId = createString("C_ID");
-
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
 
     public final NumberPath<Long> cLength = createNumber("C_LENGTH", Long.class);
 
@@ -57,19 +55,19 @@ public class SissHistoryAttachment extends com.mysema.query.sql.RelationalPathBa
     public final StringPath fkUriWorkitem = createString("FK_URI_WORKITEM");
 
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
-
+    
     public final com.mysema.query.sql.PrimaryKey<lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryAttachment> constraintA = createPrimaryKey(cPk);
 
     public SissHistoryAttachment(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryAttachment.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "ATTACHMENT");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryAttachment.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_ATTACHMENT");
     }
 
     public SissHistoryAttachment(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryAttachment> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "ATTACHMENT");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_ATTACHMENT");
     }
 
     public SissHistoryAttachment(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryAttachment.class, metadata, DmAlmConstants.POLARION_SCHEMA, "ATTACHMENT");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryAttachment.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_H_SISS_ATTACHMENT");
     }
 
 }

@@ -397,7 +397,7 @@ public class SissHistoryWorkitemDAO {
 						stgWorkItems.dataCaricamento,
 						stgWorkItems.dmalmWorkitemPk)
 						.values(hist.get(fonteHistoryWorkItems.fkModule),
-								hist.get(fonteHistoryWorkItems.cIsLocal),
+								0,
 								hist.get(fonteHistoryWorkItems.cPriority),
 								hist.get(fonteHistoryWorkItems.cAutosuspect),
 								hist.get(fonteHistoryWorkItems.cResolution),

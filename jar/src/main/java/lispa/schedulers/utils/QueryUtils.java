@@ -10,6 +10,9 @@ import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.apache.log4j.Logger;
 
+import com.mysema.query.sql.OracleTemplates;
+import com.mysema.query.sql.SQLQuery;
+
 public class QueryUtils {
 	private static Logger logger = Logger.getLogger(QueryUtils.class);
 	
@@ -227,5 +230,10 @@ public class QueryUtils {
 			numberInParameters--;
 		}
 		return "{call "+ procedure +"(" + parameters.substring(0, parameters.length()-1) + ")}";
+	}
+	
+	public static SQLQuery queryConnOracle(Connection connOracle,
+			OracleTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
 	}
 }
