@@ -26,7 +26,7 @@ public class SissHistoryWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
 
-    public final NumberPath<Integer> cDeleted = createNumber("C_DELETED", Integer.class);
+    public final StringPath cDeleted = createString("C_DELETED");
 
     public final DatePath<java.sql.Date> cDuedate = createDate("C_DUEDATE", java.sql.Date.class);
 

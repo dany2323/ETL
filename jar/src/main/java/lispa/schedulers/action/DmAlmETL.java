@@ -1,13 +1,16 @@
 package lispa.schedulers.action;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryHyperlinkDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectGroupDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryUserDAO;
+import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryUserDAO;
@@ -15,6 +18,8 @@ import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProjectgroup;
+import lispa.schedulers.utils.enums.Workitem_Type;
+import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class DmAlmETL {
 
@@ -30,12 +35,12 @@ public class DmAlmETL {
 	 */
 	
 	public static void main(String[] args) throws PropertiesReaderException {
-		DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm.properties");
+		DmAlmConfigReaderProperties.setFileProperties("/Users/danielecortis/Documents/Clienti/Lispa/Datamart/Test_locale/props/dm_alm_pg.properties");
 		Log4JConfiguration.inizialize();
 		
 		try {
 //			long user_minRevision = SireHistoryUserDAO.getMinRevision();
-//			long polarion_maxRevision = SireHistoryRevisionDAO.getMaxRevision();
+			long polarion_maxRevision = SireHistoryRevisionDAO.getMaxRevision();
 //
 //			SireHistoryUserDAO.fillSireHistoryUser(user_minRevision, polarion_maxRevision);
 			
@@ -43,8 +48,11 @@ public class DmAlmETL {
 //			long polarion_maxRevision = SireHistoryRevisionDAO.getMaxRevision();
 //			long revision_minRevision = SireHistoryProjectDAO.getMinRevision();
 //			SireHistoryProjectDAO.fillSireHistoryProject(revision_minRevision, polarion_maxRevision);
+			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+
+			SireHistoryWorkitemDAO.fillSireHistoryWorkitem(SireHistoryWorkitemDAO.getMinRevisionByType(), Long.MAX_VALUE, type);
+			}
 			
-			SireHistoryProjectGroupDAO.fillSireHistoryProjectGroup();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

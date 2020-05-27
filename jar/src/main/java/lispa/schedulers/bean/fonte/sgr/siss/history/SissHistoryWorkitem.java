@@ -9,7 +9,7 @@ public class SissHistoryWorkitem {
 
     private java.sql.Timestamp cCreated;
 
-    private Boolean cDeleted;
+    private String cDeleted;
 
     private java.sql.Date cDuedate;
 
@@ -87,11 +87,11 @@ public class SissHistoryWorkitem {
         this.cCreated = cCreated;
     }
 
-    public Boolean getcDeleted() {
+    public String getcDeleted() {
         return cDeleted;
     }
 
-    public void setcDeleted(Boolean cDeleted) {
+    public void setcDeleted(String cDeleted) {
         this.cDeleted = cDeleted;
     }
 

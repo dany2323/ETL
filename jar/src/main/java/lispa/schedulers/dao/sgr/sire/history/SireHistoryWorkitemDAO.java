@@ -26,6 +26,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitem;
 import lispa.schedulers.queryimplementation.target.QDmalmStatoWorkitem;
+import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
@@ -47,6 +48,7 @@ import org.w3c.dom.NodeList;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -77,15 +79,15 @@ public class SireHistoryWorkitemDAO {
 
 		try {
 
-			url = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SIRE_SVN_URL);
-			name = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
-			psw = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+			url = DmAlmConfigReader.getInstance()
+					.getProperty(DmAlmConfigReaderProperties.SIRE_SVN_URL);
+			name = DmAlmConfigReader.getInstance()
+					.getProperty(DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
+			psw = DmAlmConfigReader.getInstance()
+					.getProperty(DmAlmConfigReaderProperties.SIRE_SVN_PSW);
 
-			repository = SVNRepositoryFactory.create(SVNURL
-					.parseURIEncoded(url));
+			repository = SVNRepositoryFactory
+					.create(SVNURL.parseURIEncoded(url));
 			authManager = SVNWCUtil.createDefaultAuthenticationManager(name,
 					psw);
 
@@ -110,7 +112,8 @@ public class SireHistoryWorkitemDAO {
 		Connection oracle = null;
 
 		try {
-			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType
+					.values()) {
 
 				List<Long> max = new ArrayList<Long>();
 
@@ -275,115 +278,295 @@ public class SireHistoryWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
-		Connection SireHistoryConnection = null;
-
-		List<Tuple> historyworkitems = new ArrayList<Tuple>();
+		List<Tuple> historyworkitems = new ArrayList<>();
+		lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryProject.project;
+		lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser fonteUser = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
+		lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 
 		try {
 
 			cm = ConnectionManager.getInstance();
 
-			SireHistoryConnection = cm.getConnectionSIREHistory();
 			OracleConnection = cm.getConnectionOracle();
 
 			OracleConnection.setAutoCommit(true);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
+			OracleTemplates dialect = new OracleTemplates();
 
 			SQLQuery queryHistory = null;
 
-			if (!ConnectionManager.getInstance().isAlive(SireHistoryConnection)) {
-				if (cm != null)
-					cm.closeConnection(SireHistoryConnection);
-				SireHistoryConnection = cm.getConnectionSIREHistory();
-			}
+			queryHistory = new SQLQuery(OracleConnection, dialect);
 
-			queryHistory = new SQLQuery(SireHistoryConnection, dialect);
-			historyworkitems = queryHistory
-					.from(fonteHistoryWorkItems)
+			historyworkitems = queryHistory.from(fonteHistoryWorkItems)
 					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
-					.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType
-							.get(type)))
-					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-					.list(fonteHistoryWorkItems.all());
+					.where(fonteHistoryWorkItems.cRev
+							.gt(minRevisionByType.get(type)))
+					.where(fonteHistoryWorkItems.cRev.loe(maxRevision)).list(
+							fonteHistoryWorkItems.fkUriModule,
+							StringTemplate.create("0 as c_is_local"),
+							fonteHistoryWorkItems.cPriority,
+							fonteHistoryWorkItems.cResolution,
+							fonteHistoryWorkItems.cCreated,
+							fonteHistoryWorkItems.cOutlinenumber,
+							fonteHistoryWorkItems.fkUriProject,
+							StringTemplate.create("(select c_rev from "
+									+ fonteProjects.getSchemaName() + "."
+									+ fonteProjects.getTableName()
+									+ " where "+fonteProjects.getTableName()+".c_pk = fk_project) as fk_project"),
+							fonteHistoryWorkItems.cDeleted,
+							fonteHistoryWorkItems.cPlannedend,
+							fonteHistoryWorkItems.cUpdated,
+							fonteHistoryWorkItems.fkUriAuthor,
+							StringTemplate.create("(select c_rev from "
+									+ fonteUser.getSchemaName() + "."
+									+ fonteUser.getTableName()
+									+ " where "+fonteUser.getTableName()+".c_pk = fk_author) as fk_author"),
+							fonteHistoryWorkItems.cUri,
+							fonteHistoryWorkItems.cTimespent,
+							fonteHistoryWorkItems.cStatus,
+							fonteHistoryWorkItems.cSeverity,
+							fonteHistoryWorkItems.cResolvedon,
+							fonteHistoryWorkItems.cTitle,
+							fonteHistoryWorkItems.cId,
+							fonteHistoryWorkItems.cRev,
+							fonteHistoryWorkItems.cPlannedstart,
+							fonteHistoryWorkItems.cDuedate,
+							fonteHistoryWorkItems.cRemainingestimate,
+							fonteHistoryWorkItems.cType,
+							fonteHistoryWorkItems.cLocation,
+							fonteHistoryWorkItems.fkUriTimepoint,
+							fonteHistoryWorkItems.cInitialestimate,
+							fonteHistoryWorkItems.cPreviousstatus
+							);
 
 			logger.debug("TYPE: SIRE " + type.toString() + "  SIZE: "
-					+ historyworkitems.size() + " minRevision: "+ minRevisionByType
-					.get(type) + " - maxRevision: "+ maxRevision);
+					+ historyworkitems.size() + " minRevision: "
+					+ minRevisionByType.get(type) + " - maxRevision: "
+					+ maxRevision);
 
 			SQLInsertClause insert = new SQLInsertClause(OracleConnection,
 					dialect, stgWorkItems);
 
-			int batch_size_counter = 0;
+			int batchSizeCounter = 0;
 
 			for (Tuple hist : historyworkitems) {
-				batch_size_counter++;
+				batchSizeCounter++;
+
+				String fkUriModule = hist
+						.get(fonteHistoryWorkItems.fkUriModule) != null
+								? (QueryUtils
+										.queryConnOracle(OracleConnection,
+												dialect)
+										.from(fonteSireSubterraUriMap)
+										.where(fonteSireSubterraUriMap.cId
+												.eq(Long.valueOf(hist.get(
+														fonteHistoryWorkItems.fkUriModule)
+														.toString())))
+										.count() > 0
+												? QueryUtils.queryConnOracle(
+														OracleConnection,
+														dialect)
+														.from(fonteSireSubterraUriMap)
+														.where(fonteSireSubterraUriMap.cId
+																.eq(Long.valueOf(
+																		hist.get(
+																				fonteHistoryWorkItems.fkUriModule)
+																				.toString())))
+														.list(fonteSireSubterraUriMap.cPk)
+														.get(0)
+												: "")
+								: "";
+				String fkModule = fkUriModule != ""
+						? (fkUriModule + "%" + (hist
+								.get(fonteHistoryWorkItems.fkModule) != null
+										? hist.get(
+												fonteHistoryWorkItems.fkModule)
+												.toString()
+										: ""))
+						: "";
+				String fkUriProject = hist
+						.get(fonteHistoryWorkItems.fkUriProject) != null
+								? (QueryUtils
+										.queryConnOracle(OracleConnection,
+												dialect)
+										.from(fonteSireSubterraUriMap)
+										.where(fonteSireSubterraUriMap.cId
+												.eq(Long.valueOf(hist.get(
+														fonteHistoryWorkItems.fkUriProject))))
+										.count() > 0
+												? QueryUtils.queryConnOracle(
+														OracleConnection,
+														dialect)
+														.from(fonteSireSubterraUriMap)
+														.where(fonteSireSubterraUriMap.cId
+																.eq(Long.valueOf(
+																		hist.get(
+																				fonteHistoryWorkItems.fkUriProject)
+																				.toString())))
+														.list(fonteSireSubterraUriMap.cPk)
+														.get(0)
+												: "")
+								: "";
+				String fkProject = fkUriProject != ""
+						? (fkUriProject + "%" + (hist
+								.get(fonteHistoryWorkItems.fkProject) != null
+										? hist.get(
+												fonteHistoryWorkItems.fkProject)
+												.toString()
+										: ""))
+						: "";
+				String fkUriAuthor = hist
+						.get(fonteHistoryWorkItems.fkUriAuthor) != null
+								? (QueryUtils
+										.queryConnOracle(OracleConnection,
+												dialect)
+										.from(fonteSireSubterraUriMap)
+										.where(fonteSireSubterraUriMap.cId
+												.eq(Long.valueOf(hist.get(
+														fonteHistoryWorkItems.fkUriAuthor)
+														.toString())))
+										.count() > 0
+												? QueryUtils.queryConnOracle(
+														OracleConnection,
+														dialect)
+														.from(fonteSireSubterraUriMap)
+														.where(fonteSireSubterraUriMap.cId
+																.eq(Long.valueOf(
+																		hist.get(
+																				fonteHistoryWorkItems.fkUriAuthor)
+																				.toString())))
+														.list(fonteSireSubterraUriMap.cPk)
+														.get(0)
+												: "")
+								: "";
+				String fkAuthor = fkUriAuthor != ""
+						? (fkUriAuthor + "%" + (hist
+								.get(fonteHistoryWorkItems.fkAuthor) != null
+										? hist.get(
+												fonteHistoryWorkItems.fkAuthor)
+												.toString()
+										: ""))
+						: "";
+				String cUri = hist.get(fonteHistoryWorkItems.cUri) != null
+						? (QueryUtils.queryConnOracle(OracleConnection, dialect)
+								.from(fonteSireSubterraUriMap)
+								.where(fonteSireSubterraUriMap.cId
+										.eq(Long.valueOf(hist
+												.get(fonteHistoryWorkItems.cUri)
+												.toString())))
+								.count() > 0
+										? QueryUtils
+												.queryConnOracle(
+														OracleConnection,
+														dialect)
+												.from(fonteSireSubterraUriMap)
+												.where(fonteSireSubterraUriMap.cId
+														.eq(Long.valueOf(hist
+																.get(fonteHistoryWorkItems.cUri)
+																.toString())))
+												.list(fonteSireSubterraUriMap.cPk)
+												.get(0)
+										: "")
+						: "";
+				String cPk = cUri != ""
+						? (cUri + "%"
+								+ (hist.get(fonteHistoryWorkItems.cRev) != null
+										? hist.get(fonteHistoryWorkItems.cRev)
+												.toString()
+										: ""))
+						: "";
+				String fkUriTimepoint = hist
+						.get(fonteHistoryWorkItems.fkUriTimepoint) != null
+								? (QueryUtils
+										.queryConnOracle(OracleConnection,
+												dialect)
+										.from(fonteSireSubterraUriMap)
+										.where(fonteSireSubterraUriMap.cId
+												.eq(Long.valueOf(hist.get(
+														fonteHistoryWorkItems.fkUriTimepoint)
+														.toString())))
+										.count() > 0
+												? QueryUtils.queryConnOracle(
+														OracleConnection,
+														dialect)
+														.from(fonteSireSubterraUriMap)
+														.where(fonteSireSubterraUriMap.cId
+																.eq(Long.valueOf(
+																		hist.get(
+																				fonteHistoryWorkItems.fkUriTimepoint)
+																				.toString())))
+														.list(fonteSireSubterraUriMap.cPk)
+														.get(0)
+												: "")
+								: "";
+				String fkTimepoint = fkUriTimepoint != ""
+						? (fkUriTimepoint + "%" + (hist
+								.get(fonteHistoryWorkItems.fkTimepoint) != null
+										? hist.get(
+												fonteHistoryWorkItems.fkTimepoint)
+												.toString()
+										: ""))
+						: "";
+
 				insert.columns(stgWorkItems.fkModule, stgWorkItems.cIsLocal,
-						stgWorkItems.cPriority, stgWorkItems.cAutosuspect,
-						stgWorkItems.cResolution, stgWorkItems.cCreated,
-						stgWorkItems.cOutlinenumber, stgWorkItems.fkProject,
-						stgWorkItems.cDeleted, stgWorkItems.cPlannedend,
-						stgWorkItems.cUpdated, stgWorkItems.fkAuthor,
-						stgWorkItems.cUri, stgWorkItems.fkUriModule,
-						stgWorkItems.cTimespent, stgWorkItems.cStatus,
-						stgWorkItems.cSeverity, stgWorkItems.cResolvedon,
-						stgWorkItems.fkUriProject, stgWorkItems.cTitle,
-						stgWorkItems.cId, stgWorkItems.cRev,
-						stgWorkItems.cPlannedstart, stgWorkItems.fkUriAuthor,
-						stgWorkItems.cDuedate, stgWorkItems.cRemainingestimate,
-						stgWorkItems.cType, stgWorkItems.cPk,
-						stgWorkItems.cLocation, stgWorkItems.fkTimepoint,
-						stgWorkItems.cInitialestimate,
+						stgWorkItems.cPriority, stgWorkItems.cResolution,
+						stgWorkItems.cCreated, stgWorkItems.cOutlinenumber,
+						stgWorkItems.fkProject, stgWorkItems.cDeleted,
+						stgWorkItems.cPlannedend, stgWorkItems.cUpdated,
+						stgWorkItems.fkAuthor, stgWorkItems.cUri,
+						stgWorkItems.fkUriModule, stgWorkItems.cTimespent,
+						stgWorkItems.cStatus, stgWorkItems.cSeverity,
+						stgWorkItems.cResolvedon, stgWorkItems.fkUriProject,
+						stgWorkItems.cTitle, stgWorkItems.cId,
+						stgWorkItems.cRev, stgWorkItems.cPlannedstart,
+						stgWorkItems.fkUriAuthor, stgWorkItems.cDuedate,
+						stgWorkItems.cRemainingestimate, stgWorkItems.cType,
+						stgWorkItems.cPk, stgWorkItems.cLocation,
+						stgWorkItems.fkTimepoint, stgWorkItems.cInitialestimate,
 						stgWorkItems.fkUriTimepoint,
 						stgWorkItems.cPreviousstatus,
 						stgWorkItems.dataCaricamento,
 						stgWorkItems.dmalmHistoryWorkitemPk)
-						.values(hist.get(fonteHistoryWorkItems.fkModule),
-								0,
+						.values(fkModule, 0,
 								hist.get(fonteHistoryWorkItems.cPriority),
-								hist.get(fonteHistoryWorkItems.cAutosuspect),
 								hist.get(fonteHistoryWorkItems.cResolution),
 								hist.get(fonteHistoryWorkItems.cCreated),
 								hist.get(fonteHistoryWorkItems.cOutlinenumber),
-								hist.get(fonteHistoryWorkItems.fkProject),
+								fkProject,
 								hist.get(fonteHistoryWorkItems.cDeleted),
 								hist.get(fonteHistoryWorkItems.cPlannedend),
 								hist.get(fonteHistoryWorkItems.cUpdated),
-								StringUtils.getMaskedValue(hist.get(fonteHistoryWorkItems.fkAuthor)),
-								hist.get(fonteHistoryWorkItems.cUri),
-								hist.get(fonteHistoryWorkItems.fkUriModule),
+								StringUtils.getMaskedValue(fkAuthor), cUri,
+								fkUriModule,
 								hist.get(fonteHistoryWorkItems.cTimespent),
 								hist.get(fonteHistoryWorkItems.cStatus),
 								hist.get(fonteHistoryWorkItems.cSeverity),
 								hist.get(fonteHistoryWorkItems.cResolvedon),
-								hist.get(fonteHistoryWorkItems.fkUriProject),
-								hist.get(fonteHistoryWorkItems.cTitle)!=null?hist.get(fonteHistoryWorkItems.cTitle).substring(0, Math.min(hist.get(fonteHistoryWorkItems.cTitle).length(), 999)):null,
+								fkUriProject,
+								hist.get(fonteHistoryWorkItems.cTitle),
 								hist.get(fonteHistoryWorkItems.cId),
 								hist.get(fonteHistoryWorkItems.cRev),
 								hist.get(fonteHistoryWorkItems.cPlannedstart),
-								StringUtils.getMaskedValue(hist.get(fonteHistoryWorkItems.fkUriAuthor)),
+								StringUtils.getMaskedValue(fkUriAuthor),
 								hist.get(fonteHistoryWorkItems.cDuedate),
-								hist.get(fonteHistoryWorkItems.cRemainingestimate),
-								hist.get(fonteHistoryWorkItems.cType),
-								hist.get(fonteHistoryWorkItems.cPk),
+								hist.get(
+										fonteHistoryWorkItems.cRemainingestimate),
+								hist.get(fonteHistoryWorkItems.cType), cPk,
 								hist.get(fonteHistoryWorkItems.cLocation),
-								hist.get(fonteHistoryWorkItems.fkTimepoint),
-								hist.get(fonteHistoryWorkItems.cInitialestimate),
-								hist.get(fonteHistoryWorkItems.fkUriTimepoint),
+								fkTimepoint,
+								hist.get(
+										fonteHistoryWorkItems.cInitialestimate),
+								fkUriTimepoint,
 								hist.get(fonteHistoryWorkItems.cPreviousstatus),
-								dataEsecuzione,
-								StringTemplate
+								dataEsecuzione, StringTemplate
 										.create("HISTORY_WORKITEM_SEQ.nextval")
 
 						).addBatch();
 				if (!historyworkitems.isEmpty()
-						&& batch_size_counter == DmAlmConstants.BATCH_SIZE) {
+						&& batchSizeCounter == DmAlmConstants.BATCH_SIZE) {
 					insert.execute();
-					batch_size_counter = 0;
+					OracleConnection.commit();
+					batchSizeCounter = 0;
 					insert = new SQLInsertClause(OracleConnection, dialect,
 							stgWorkItems);
 				}
@@ -392,16 +575,9 @@ public class SireHistoryWorkitemDAO {
 
 			if (!insert.isEmpty()) {
 				insert.execute();
+				OracleConnection.commit();
 			}
 
-			// List<String> customFields =
-			// EnumUtils.getCFEnumerationByType(type);
-			// cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
-			// if (!cfDeadlock){
-			// SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemType(
-			// minRevisionByType.get(type), maxRevision, type,
-			// customFields);
-			// }
 			logger.debug("STOP TYPE: SIRE " + type.toString() + "  SIZE: "
 					+ historyworkitems.size());
 
@@ -411,10 +587,8 @@ public class SireHistoryWorkitemDAO {
 			 * la relativa descrizione presente nel file XML presente al path
 			 * indicato nel campo C_LOCATION.
 			 */
-			if (DmAlmConfigReader
-					.getInstance()
-					.getProperty(
-							DmAlmConfigReaderProperties.UPDATE_DESCRIZIONE_ENABLER)
+			if (DmAlmConfigReader.getInstance().getProperty(
+					DmAlmConfigReaderProperties.UPDATE_DESCRIZIONE_ENABLER)
 					.equals(DmAlmConstants.ENABLER)) {
 				updateDescriptions(minRevisionByType.get(type), maxRevision,
 						type.toString());
@@ -438,16 +612,14 @@ public class SireHistoryWorkitemDAO {
 			if (cm != null) {
 				cm.closeConnection(OracleConnection);
 			}
-			if (cm != null) {
-				cm.closeConnection(SireHistoryConnection);
-			}
 		}
 	}
 
-	public static void delete(Timestamp dataEsecuzioneDeleted) throws Exception {
+	public static void delete(Timestamp dataEsecuzioneDeleted)
+			throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		List <Integer> listPk = new ArrayList<>();
+		List<Integer> listPk = new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -455,18 +627,18 @@ public class SireHistoryWorkitemDAO {
 			// elimina le righe vecchie dallo Staging lasciando la max(revision)
 			// per ogni tipologia di workitem
 			// sono inoltre lasciate le revision relative a:
-			// 'chiuso', 'chiuso_falso', 'in_esercizio', 'in_esecuzione', 'completo', 'eseguito'
-			// i "defect" non sono eliminati altrimenti la query non riesce a calcolare la data chiusura
+			// 'chiuso', 'chiuso_falso', 'in_esercizio', 'in_esecuzione',
+			// 'completo', 'eseguito'
+			// i "defect" non sono eliminati altrimenti la query non riesce a
+			// calcolare la data chiusura
 			// nei casi di riapertura e nuova chiusura
-			String subSql=QueryManager
-					.getInstance()
-					.getQuery(
-							DmAlmConfigReaderProperties.SQL_GET_MAX_PK_WORKITEM_TYPE_SIRE);
-			
-			try(PreparedStatement ps2=connection.prepareStatement(subSql);){
-	
-				try(ResultSet rs = ps2.executeQuery();){
-					while (rs.next()) {						
+			String subSql = QueryManager.getInstance().getQuery(
+					DmAlmConfigReaderProperties.SQL_GET_MAX_PK_WORKITEM_TYPE_SIRE);
+
+			try (PreparedStatement ps2 = connection.prepareStatement(subSql);) {
+
+				try (ResultSet rs = ps2.executeQuery();) {
+					while (rs.next()) {
 						listPk.add(rs.getInt(1));
 					}
 					int numberInParameters = listPk.size();
@@ -475,23 +647,25 @@ public class SireHistoryWorkitemDAO {
 						parameters += "?,";
 						numberInParameters--;
 					}
-					parameters = parameters.substring(0, parameters.length()-1);
-					String query=QueryManager
-					.getInstance()
-					.getQuery(
+					parameters = parameters.substring(0,
+							parameters.length() - 1);
+					String query = QueryManager.getInstance().getQuery(
 							DmAlmConfigReaderProperties.SQL_DELETE_SIRE_HISTORY_WORKITEM);
 					String sql = query.replace("!", parameters);
-					try(PreparedStatement ps = connection.prepareStatement(sql);){
+					try (PreparedStatement ps = connection
+							.prepareStatement(sql);) {
 						ps.setTimestamp(1, dataEsecuzioneDeleted);
-						//Array array=connection.createArrayOf("NUMBER", listPk.toArray());
-						for (int i=0;i<listPk.size();i++) {
-							ps.setInt(i+2, listPk.get(i));
+						// Array array=connection.createArrayOf("NUMBER",
+						// listPk.toArray());
+						for (int i = 0; i < listPk.size(); i++) {
+							ps.setInt(i + 2, listPk.get(i));
 						}
-						ps.setTimestamp(listPk.size()+2, DataEsecuzione.getInstance().getDataEsecuzione());
-						
+						ps.setTimestamp(listPk.size() + 2, DataEsecuzione
+								.getInstance().getDataEsecuzione());
+
 						ps.execute();
 						ps.close();
-			
+
 						connection.commit();
 					}
 				}
@@ -520,8 +694,8 @@ public class SireHistoryWorkitemDAO {
 
 			QSireHistoryWorkitem stgWorkItems = QSireHistoryWorkitem.sireHistoryWorkitem;
 
-			new SQLDeleteClause(connection, dialect, stgWorkItems).where(
-					stgWorkItems.dataCaricamento.eq(date)).execute();
+			new SQLDeleteClause(connection, dialect, stgWorkItems)
+					.where(stgWorkItems.dataCaricamento.eq(date)).execute();
 
 		} catch (Exception e) {
 
@@ -560,7 +734,7 @@ public class SireHistoryWorkitemDAO {
 					.where(stgWorkItems.cRev.loe(maxRevision))
 					.where(stgWorkItems.cType.eq(type)).list(
 
-					stgWorkItems.cLocation, stgWorkItems.cRev
+							stgWorkItems.cLocation, stgWorkItems.cRev
 
 					);
 
@@ -645,9 +819,11 @@ public class SireHistoryWorkitemDAO {
 							// "");
 							new SQLUpdateClause(oracleConnection, dialect,
 									stgWorkItems)
-									.set(stgWorkItems.cDescription, description)
-									.where(stgWorkItems.cLocation.eq(location))
-									.execute();
+											.set(stgWorkItems.cDescription,
+													description)
+											.where(stgWorkItems.cLocation
+													.eq(location))
+											.execute();
 						}
 
 					}
@@ -677,9 +853,10 @@ public class SireHistoryWorkitemDAO {
 			QSireHistoryWorkitem stgWorkItems = QSireHistoryWorkitem.sireHistoryWorkitem;
 			// Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00",
 			// "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgWorkItems).where(
-					stgWorkItems.dataCaricamento.eq(DataEsecuzione
-							.getInstance().getDataEsecuzione())).execute();
+			new SQLDeleteClause(connection, dialect, stgWorkItems)
+					.where(stgWorkItems.dataCaricamento.eq(
+							DataEsecuzione.getInstance().getDataEsecuzione()))
+					.execute();
 			connection.commit();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -708,9 +885,7 @@ public class SireHistoryWorkitemDAO {
 
 			QDmalmStatoWorkitem statoWorkitem = QDmalmStatoWorkitem.dmalmStatoWorkitem;
 
-			workitems = query
-					.from(stgWorkItems)
-					.distinct()
+			workitems = query.from(stgWorkItems).distinct()
 					.leftJoin(statoWorkitem)
 					.on(statoWorkitem.cdStato.eq(stgWorkItems.cStatus).and(
 							statoWorkitem.origineStato.eq(stgWorkItems.cType)))

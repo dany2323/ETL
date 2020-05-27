@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -32,103 +33,99 @@ public class SissHistoryHyperlinkDAO {
 			.getLogger(SissHistoryHyperlinkDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryHyperlink fonteHyperlink = SissHistoryHyperlink.structWorkitemHyperlinks;
-	
+
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryHyperlink stgHyperlink = QSissHistoryHyperlink.dmalmSissHistoryHyperlink;
 
-	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
-	
-	public static void fillSissHistoryHyperlink(Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
-		
+	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
+
+	public static void fillSissHistoryHyperlink(
+			Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision)
+			throws SQLException, DAOException {
+
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
 		List<Tuple> hyperlinks = null;
 
 		try {
-			
+
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSISSHistory();
-			hyperlinks = new ArrayList<Tuple>();
+			hyperlinks = new ArrayList<>();
 
 			connOracle.setAutoCommit(false);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
+			OracleTemplates dialect = new OracleTemplates();
 
-			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
-				
-				if(connH2.isClosed()) {
-					if(cm != null) cm.closeConnection(connH2);
-					connH2 = cm.getConnectionSISSHistory();
-				}
-			
-				SQLQuery query = new SQLQuery(connH2, dialect);
-	
+			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType
+					.values()) {
+
+				SQLQuery query = new SQLQuery(connOracle, dialect);
+
 				hyperlinks = query.from(fonteHyperlink)
 						.join(fonteHistoryWorkItems)
-						.on(fonteHistoryWorkItems.cPk.eq(fonteHyperlink.fkPWorkitem))
+						.on(fonteHistoryWorkItems.cPk
+								.eq(fonteHyperlink.fkPWorkitem))
 						.where(fonteHistoryWorkItems.cType.eq(type.toString()))
-						.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
+						.where(fonteHistoryWorkItems.cRev
+								.gt(minRevisionByType.get(type)))
 						.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 						.list(fonteHyperlink.all());
-	
-				SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgHyperlink);
-				
+
+				SQLInsertClause insert = new SQLInsertClause(connOracle,
+						dialect, stgHyperlink);
+
 				int batchcounter = 0;
-				
+
 				for (Tuple row : hyperlinks) {
+
 					batchcounter++;
-					
-					insert
-							.columns(
-									
-									stgHyperlink.cRole,
-									stgHyperlink.cUri,
-									stgHyperlink.fkPWorkitem,
-									stgHyperlink.fkUriPWorkitem,
-									stgHyperlink.dataCaricamento,
-									stgHyperlink.sissHistoryHyperlinkPk
-									
-							)
-									
+
+					insert.columns(
+
+							stgHyperlink.cRole, stgHyperlink.cUri,
+							stgHyperlink.fkPWorkitem,
+							stgHyperlink.fkUriPWorkitem,
+							stgHyperlink.dataCaricamento,
+							stgHyperlink.sissHistoryHyperlinkPk
+
+					)
+
 							.values(
-									
+
 									row.get(fonteHyperlink.cRole),
 									row.get(fonteHyperlink.cUrl),
 									row.get(fonteHyperlink.fkPWorkitem),
 									row.get(fonteHyperlink.fkUriPWorkitem),
-									DataEsecuzione.getInstance().getDataEsecuzione(),
-									StringTemplate.create("HISTORY_HYPERLINK_SEQ.nextval")
-											
-							)
-							.addBatch();
-					
-					if(batchcounter % DmAlmConstants.BATCH_SIZE == 0 && !insert.isEmpty()) {
+									DataEsecuzione.getInstance()
+											.getDataEsecuzione(),
+									StringTemplate.create(
+											"HISTORY_HYPERLINK_SEQ.nextval")
+
+							).addBatch();
+
+					if (batchcounter % DmAlmConstants.BATCH_SIZE == 0
+							&& !insert.isEmpty()) {
 						insert.execute();
-						insert  = new SQLInsertClause(connOracle, dialect, stgHyperlink);
+						connOracle.commit();
+						insert = new SQLInsertClause(connOracle, dialect,
+								stgHyperlink);
 					}
-					
+
 				}
-				
-				if(!insert.isEmpty()) {
+
+				if (!insert.isEmpty()) {
 					insert.execute();
+					connOracle.commit();
+
 				}
-				
-				connOracle.commit();
 			}
-			
 		} catch (Exception e) {
-ErrorManager.getInstance().exceptionOccurred(true, e);
-			
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
 			throw new DAOException(e);
-		}
-		finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connOracle);
 		}
 	}
 	public static void recoverSissHistoryHyperlink() throws Exception {
@@ -138,24 +135,25 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-	
+
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QSissHistoryHyperlink stgHyperlink = QSissHistoryHyperlink.dmalmSissHistoryHyperlink;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
-			new SQLDeleteClause(connection, dialect, stgHyperlink).where(stgHyperlink.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione())).execute();
+			// Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00",
+			// "yyyy-MM-dd HH:mm:ss");
+			new SQLDeleteClause(connection, dialect, stgHyperlink)
+					.where(stgHyperlink.dataCaricamento.eq(
+							DataEsecuzione.getInstance().getDataEsecuzione()))
+					.execute();
 			connection.commit();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
-			
+
 			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
+		} finally {
+			if (cm != null)
+				cm.closeConnection(connection);
 		}
 
 	}
-	
+
 }
