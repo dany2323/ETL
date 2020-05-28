@@ -69,8 +69,6 @@ public class SissHistoryProjectDAO {
 			SQLQuery query = new SQLQuery(pgConnection, dialect);
 
 			projects = query.from(fonteProjects)
-					.where(fonteProjects.cRev.gt(minRevision)
-							.and(fonteProjects.cRev.loe(maxRevision)))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
 					.where(fonteProjects.cId.notIn(new SQLSubQuery()
 							.from(fonteProjects2)

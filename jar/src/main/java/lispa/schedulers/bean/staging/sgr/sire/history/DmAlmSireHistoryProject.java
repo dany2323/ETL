@@ -5,9 +5,9 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class DmAlmSireHistoryProject {
 
-    private Boolean cActive;
+    private Integer cActive;
 
-    private Boolean cDeleted;
+    private Integer cDeleted;
 
     private java.sql.Date cFinish;
 
@@ -53,19 +53,19 @@ public class DmAlmSireHistoryProject {
 		this.template = template;
 	}
 
-	public Boolean getcActive() {
+	public Integer getcActive() {
         return cActive;
     }
 
-    public void setcActive(Boolean cActive) {
+    public void setcActive(Integer cActive) {
         this.cActive = cActive;
     }
 
-    public Boolean getcDeleted() {
+    public Integer getcDeleted() {
         return cDeleted;
     }
 
-    public void setcDeleted(Boolean cDeleted) {
+    public void setcDeleted(Integer cDeleted) {
         this.cDeleted = cDeleted;
     }
 

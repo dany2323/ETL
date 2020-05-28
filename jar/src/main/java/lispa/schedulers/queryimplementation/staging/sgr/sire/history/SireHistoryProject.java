@@ -22,9 +22,9 @@ public class SireHistoryProject extends com.mysema.query.sql.RelationalPathBase<
 
     public static final SireHistoryProject project = new SireHistoryProject("DM_ALM_H_SIRE_PROJECT");
 
-    public final BooleanPath cActive = createBoolean("C_ACTIVE");
+    public final NumberPath<Integer> cActive = createNumber("C_ACTIVE",Integer.class);
 
-    public final BooleanPath cDeleted = createBoolean("C_DELETED");
+    public final NumberPath<Integer> cDeleted = createNumber("C_DELETED",Integer.class);
 
     public final DatePath<java.sql.Date> cFinish = createDate("C_FINISH", java.sql.Date.class);
 

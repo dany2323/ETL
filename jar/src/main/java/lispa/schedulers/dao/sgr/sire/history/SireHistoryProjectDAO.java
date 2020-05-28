@@ -42,7 +42,6 @@ public class SireHistoryProjectDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject fonteProjects2 = lispa.schedulers.queryimplementation.fonte.sgr.history.HistoryProject.project;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryProject stgProjects = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryProject.project;
 
-
 	public static void fillSireHistoryProject(long minRevision,
 			long maxRevision) throws SQLException, DAOException {
 
@@ -71,8 +70,6 @@ public class SireHistoryProjectDAO {
 
 			SQLQuery query = new SQLQuery(pgConnection, dialect);
 			projects = query.from(fonteProjects)
-					.where(fonteProjects.cRev.gt(minRevision)
-							.and(fonteProjects.cRev.loe(maxRevision)))
 					.where(fonteProjects.cLocation.notLike("default:/GRACO%"))
 					.where(fonteProjects.cId.notIn(new SQLSubQuery()
 							.from(fonteProjects2)
@@ -83,42 +80,41 @@ public class SireHistoryProjectDAO {
 			logger.debug(
 					"SireHistoryProjectDAO.fillSireHistoryProject - projects.size: "
 							+ (projects == null ? "NULL" : projects.size()));
-			
+
 			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect,
 					stgProjects);
 			int nRigheInserite = 0;
 			for (Tuple row : projects) {
-			
-
 				// Applico il cast a timespent solo se esistono dei valori data
-				
-				insert.columns(stgProjects.cTrackerprefix,
-						stgProjects.cPk, stgProjects.fkUriLead,
-						stgProjects.cDeleted, stgProjects.cFinish,
-						stgProjects.cUri, stgProjects.cStart,
-						stgProjects.fkUriProjectgroup, stgProjects.cActive,
-						stgProjects.cLocation, stgProjects.fkProjectgroup,
-						stgProjects.fkLead, stgProjects.cLockworkrecordsdate,
-						stgProjects.cName, stgProjects.cId,stgProjects.cRev,
+
+				insert.columns(stgProjects.cTrackerprefix, stgProjects.cPk,
+						stgProjects.fkUriLead, stgProjects.cDeleted,
+						stgProjects.cFinish, stgProjects.cUri,
+						stgProjects.cStart, stgProjects.fkUriProjectgroup,
+						stgProjects.cActive, stgProjects.cLocation,
+						stgProjects.fkProjectgroup, stgProjects.fkLead,
+						stgProjects.cLockworkrecordsdate, stgProjects.cName,
+						stgProjects.cId, stgProjects.cRev,
 						stgProjects.cDescription)
-						.values(row.get(fonteProjects.cTrackerprefix), 
-								row.get(fonteProjects.cPk), 
+						.values(row.get(fonteProjects.cTrackerprefix),
+								row.get(fonteProjects.cPk),
 								row.get(fonteProjects.fkUriLead),
-								row.get(fonteProjects.cDeleted), 
+								row.get(fonteProjects.cDeleted),
 								row.get(fonteProjects.cFinish),
-								row.get(fonteProjects.cUri), 
+								row.get(fonteProjects.cUri),
 								row.get(fonteProjects.cStart),
-								row.get(fonteProjects.fkUriProjectgroup), 
+								row.get(fonteProjects.fkUriProjectgroup),
 								row.get(fonteProjects.cActive),
-								row.get(fonteProjects.cLocation), 
+								row.get(fonteProjects.cLocation),
 								row.get(fonteProjects.fkProjectgroup),
-								row.get(fonteProjects.fkLead), 
+								row.get(fonteProjects.fkLead),
 								row.get(fonteProjects.cLockworkrecordsdate),
-								row.get(fonteProjects.cName), 
+								row.get(fonteProjects.cName),
 								row.get(fonteProjects.cId),
 								row.get(fonteProjects.cRev),
-								row.get(fonteProjects.cDescription))
-						.addBatch();
+								row.get(fonteProjects.cDescription)
+
+						).addBatch();
 				nRigheInserite++;
 				if (!insert.isEmpty()) {
 					if (nRigheInserite
@@ -185,7 +181,6 @@ public class SireHistoryProjectDAO {
 
 		return max.get(0).longValue();
 	}
-
 
 	public static void delete() throws Exception {
 		ConnectionManager cm = null;
