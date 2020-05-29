@@ -2,119 +2,127 @@ package lispa.schedulers.bean.fonte.sgr.siss.history;
 
 import javax.annotation.Generated;
 
-
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class SissHistoryCfWorkitem {
 
-    private Boolean cBooleanValue;
+	private Boolean cBooleanValue;
 
-    private java.math.BigDecimal cCurrencyValue;
+	private java.math.BigDecimal cCurrencyValue;
 
-    private java.sql.Timestamp cDateValue;
+	private java.sql.Timestamp cDateValue;
 
-    private java.sql.Date cDateonlyValue;
+	private java.sql.Date cDateonlyValue;
 
-    private Float cDurationtimeValue;
+	private Float cDurationtimeValue;
 
-    private Float cFloatValue;
+	private Float cFloatValue;
 
-    private Long cLongValue;
+	private Long cLongValue;
 
-    private String cName;
+	private String cName;
 
-    private String cStringValue;
+	private String cStringValue;
 
-    private String fkUriWorkitem;
+	private String cTextValue;
 
-    private String fkWorkitem;
+	private String fkUriWorkitem;
 
-    public Boolean getcBooleanValue() {
-        return cBooleanValue;
-    }
+	private String fkWorkitem;
 
-    public void setcBooleanValue(Boolean cBooleanValue) {
-        this.cBooleanValue = cBooleanValue;
-    }
+	public Boolean getcBooleanValue() {
+		return cBooleanValue;
+	}
 
-    public java.math.BigDecimal getcCurrencyValue() {
-        return cCurrencyValue;
-    }
+	public void setcBooleanValue(Boolean cBooleanValue) {
+		this.cBooleanValue = cBooleanValue;
+	}
 
-    public void setcCurrencyValue(java.math.BigDecimal cCurrencyValue) {
-        this.cCurrencyValue = cCurrencyValue;
-    }
+	public java.math.BigDecimal getcCurrencyValue() {
+		return cCurrencyValue;
+	}
 
-    public java.sql.Timestamp getcDateValue() {
-        return cDateValue;
-    }
+	public void setcCurrencyValue(java.math.BigDecimal cCurrencyValue) {
+		this.cCurrencyValue = cCurrencyValue;
+	}
 
-    public void setcDateValue(java.sql.Timestamp cDateValue) {
-        this.cDateValue = cDateValue;
-    }
+	public java.sql.Timestamp getcDateValue() {
+		return cDateValue;
+	}
 
-    public java.sql.Date getcDateonlyValue() {
-        return cDateonlyValue;
-    }
+	public void setcDateValue(java.sql.Timestamp cDateValue) {
+		this.cDateValue = cDateValue;
+	}
 
-    public void setcDateonlyValue(java.sql.Date cDateonlyValue) {
-        this.cDateonlyValue = cDateonlyValue;
-    }
+	public java.sql.Date getcDateonlyValue() {
+		return cDateonlyValue;
+	}
 
-    public Float getcDurationtimeValue() {
-        return cDurationtimeValue;
-    }
+	public void setcDateonlyValue(java.sql.Date cDateonlyValue) {
+		this.cDateonlyValue = cDateonlyValue;
+	}
 
-    public void setcDurationtimeValue(Float cDurationtimeValue) {
-        this.cDurationtimeValue = cDurationtimeValue;
-    }
+	public Float getcDurationtimeValue() {
+		return cDurationtimeValue;
+	}
 
-    public Float getcFloatValue() {
-        return cFloatValue;
-    }
+	public void setcDurationtimeValue(Float cDurationtimeValue) {
+		this.cDurationtimeValue = cDurationtimeValue;
+	}
 
-    public void setcFloatValue(Float cFloatValue) {
-        this.cFloatValue = cFloatValue;
-    }
+	public Float getcFloatValue() {
+		return cFloatValue;
+	}
 
-    public Long getcLongValue() {
-        return cLongValue;
-    }
+	public void setcFloatValue(Float cFloatValue) {
+		this.cFloatValue = cFloatValue;
+	}
 
-    public void setcLongValue(Long cLongValue) {
-        this.cLongValue = cLongValue;
-    }
+	public Long getcLongValue() {
+		return cLongValue;
+	}
 
-    public String getcName() {
-        return cName;
-    }
+	public void setcLongValue(Long cLongValue) {
+		this.cLongValue = cLongValue;
+	}
 
-    public void setcName(String cName) {
-        this.cName = cName;
-    }
+	public String getcName() {
+		return cName;
+	}
 
-    public String getcStringValue() {
-        return cStringValue;
-    }
+	public void setcName(String cName) {
+		this.cName = cName;
+	}
 
-    public void setcStringValue(String cStringValue) {
-        this.cStringValue = cStringValue;
-    }
+	public String getcStringValue() {
+		return cStringValue;
+	}
 
-    public String getFkUriWorkitem() {
-        return fkUriWorkitem;
-    }
+	public void setcStringValue(String cStringValue) {
+		this.cStringValue = cStringValue;
+	}
 
-    public void setFkUriWorkitem(String fkUriWorkitem) {
-        this.fkUriWorkitem = fkUriWorkitem;
-    }
+	public String getcTextValue() {
+		return cTextValue;
+	}
 
-    public String getFkWorkitem() {
-        return fkWorkitem;
-    }
+	public void setcTextValue(String cTextValue) {
+		this.cTextValue = cTextValue;
+	}
 
-    public void setFkWorkitem(String fkWorkitem) {
-        this.fkWorkitem = fkWorkitem;
-    }
+	public String getFkUriWorkitem() {
+		return fkUriWorkitem;
+	}
+
+	public void setFkUriWorkitem(String fkUriWorkitem) {
+		this.fkUriWorkitem = fkUriWorkitem;
+	}
+
+	public String getFkWorkitem() {
+		return fkWorkitem;
+	}
+
+	public void setFkWorkitem(String fkWorkitem) {
+		this.fkWorkitem = fkWorkitem;
+	}
 
 }
-

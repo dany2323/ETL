@@ -26,6 +26,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
 import lispa.schedulers.queryimplementation.target.QDmalmStatoWorkitem;
+import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
@@ -46,6 +47,7 @@ import org.w3c.dom.NodeList;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -324,129 +326,305 @@ public class SissHistoryWorkitemDAO {
 	}
 
 	public static void fillSissHistoryWorkitem(
-			Map<EnumWorkitemType, Long> minRevisionsByType, long maxRevision,
+			Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision,
 			EnumWorkitemType type) throws Exception {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
-		Connection SissHistoryConnection = null;
 
 		List<Tuple> historyworkitems = new ArrayList<Tuple>();
+		lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject fonteProjects = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryProject.project;
+		lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser fonteUser = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryUser.user;
+		lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap fonteSissSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap.urimap;
 
 		try {
 
 			cm = ConnectionManager.getInstance();
 
-			SissHistoryConnection = cm.getConnectionSISSHistory();
 			OracleConnection = cm.getConnectionOracle();
 
 			OracleConnection.setAutoCommit(true);
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
+			OracleTemplates dialect = new OracleTemplates();
 
 			SQLQuery queryHistory = null;
 
-			if (!ConnectionManager.getInstance().isAlive(SissHistoryConnection)) {
-				if (cm != null)
-					cm.closeConnection(SissHistoryConnection);
-				SissHistoryConnection = cm.getConnectionSISSHistory();
-			}
+			
+			queryHistory = new SQLQuery(OracleConnection, dialect);
 
-			queryHistory = new SQLQuery(SissHistoryConnection, dialect);
-
-			historyworkitems = queryHistory
-					.from(fonteHistoryWorkItems)
+			historyworkitems = queryHistory.from(fonteHistoryWorkItems)
 					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
-					.where(fonteHistoryWorkItems.cRev.gt(minRevisionsByType
-							.get(type)))
-					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-					.list(fonteHistoryWorkItems.all());
+					.where(fonteHistoryWorkItems.cRev
+							.gt(minRevisionByType.get(type)))
+					.where(fonteHistoryWorkItems.cRev.loe(maxRevision)).list(
+							fonteHistoryWorkItems.fkUriModule,
+							StringTemplate.create("0 as c_is_local"),
+							fonteHistoryWorkItems.cPriority,
+							fonteHistoryWorkItems.cResolution,
+							fonteHistoryWorkItems.cCreated,
+							fonteHistoryWorkItems.cOutlinenumber,
+							fonteHistoryWorkItems.fkUriProject,
+							StringTemplate.create("(select c_rev from "
+									+ fonteProjects.getSchemaName() + "."
+									+ fonteProjects.getTableName()
+									+ " where "+fonteProjects.getTableName()+".c_pk = fk_project) as FK_PROJECT"),
+							fonteHistoryWorkItems.cDeleted,
+							fonteHistoryWorkItems.cPlannedend,
+							fonteHistoryWorkItems.cUpdated,
+							fonteHistoryWorkItems.fkUriAuthor,
+							StringTemplate.create("(select c_rev from "
+									+ fonteUser.getSchemaName() + "."
+									+ fonteUser.getTableName()
+									+ " where "+fonteUser.getTableName()+".c_pk = fk_author) as fk_author"),
+							fonteHistoryWorkItems.cUri,
+							fonteHistoryWorkItems.cTimespent,
+							fonteHistoryWorkItems.cStatus,
+							fonteHistoryWorkItems.cSeverity,
+							fonteHistoryWorkItems.cResolvedon,
+							fonteHistoryWorkItems.cTitle,
+							fonteHistoryWorkItems.cId,
+							fonteHistoryWorkItems.cRev,
+							fonteHistoryWorkItems.cPlannedstart,
+							fonteHistoryWorkItems.cDuedate,
+							fonteHistoryWorkItems.cRemainingestimate,
+							fonteHistoryWorkItems.cType,
+							fonteHistoryWorkItems.cLocation,
+							fonteHistoryWorkItems.fkUriTimepoint,
+							fonteHistoryWorkItems.cInitialestimate,
+							fonteHistoryWorkItems.cPreviousstatus
+							);
 
 			logger.debug("TYPE: SISS " + type.toString() + "  SIZE: "
-					+ historyworkitems.size());
+					+ historyworkitems.size() + " minRevision: "
+					+ minRevisionByType.get(type) + " - maxRevision: "
+					+ maxRevision);
 
 			SQLInsertClause insert = new SQLInsertClause(OracleConnection,
 					dialect, stgWorkItems);
 
-			int batch_size_counter = 0;
+			int batchSizeCounter = 0;
 
 			for (Tuple hist : historyworkitems) {
-				batch_size_counter++;
+				batchSizeCounter++;
+				
+				String fkUriModule = hist
+						.get(fonteHistoryWorkItems.fkUriModule) != null
+								? (QueryUtils
+										.queryConnOracle(OracleConnection,
+												dialect)
+										.from(fonteSissSubterraUriMap)
+										.where(fonteSissSubterraUriMap.cId
+												.eq(Long.valueOf(hist.get(
+														fonteHistoryWorkItems.fkUriModule)
+														.toString())))
+										.count() > 0
+												? QueryUtils.queryConnOracle(
+														OracleConnection,
+														dialect)
+														.from(fonteSissSubterraUriMap)
+														.where(fonteSissSubterraUriMap.cId
+																.eq(Long.valueOf(
+																		hist.get(
+																				fonteHistoryWorkItems.fkUriModule)
+																				.toString())))
+														.list(fonteSissSubterraUriMap.cPk)
+														.get(0)
+												: "")
+								: "";
+				String fkModule = fkUriModule != ""
+						? (fkUriModule + "%" + (hist
+								.get(fonteHistoryWorkItems.fkModule) != null
+										? hist.get(
+												fonteHistoryWorkItems.fkModule)
+												.toString()
+										: ""))
+						: "";
+				String fkUriProject = hist
+						.get(fonteHistoryWorkItems.fkUriProject) != null
+								? (QueryUtils
+										.queryConnOracle(OracleConnection,
+												dialect)
+										.from(fonteSissSubterraUriMap)
+										.where(fonteSissSubterraUriMap.cId
+												.eq(Long.valueOf(hist.get(
+														fonteHistoryWorkItems.fkUriProject))))
+										.count() > 0
+												? QueryUtils.queryConnOracle(
+														OracleConnection,
+														dialect)
+														.from(fonteSissSubterraUriMap)
+														.where(fonteSissSubterraUriMap.cId
+																.eq(Long.valueOf(
+																		hist.get(
+																				fonteHistoryWorkItems.fkUriProject)
+																				.toString())))
+														.list(fonteSissSubterraUriMap.cPk)
+														.get(0)
+												: "")
+								: "";
+				String fkProject = fkUriProject != ""
+						? (fkUriProject + "%" + (hist.toArray()[7] != null
+										? hist.toArray()[7]
+										: ""))
+						: "";
+				String fkUriAuthor = hist
+						.get(fonteHistoryWorkItems.fkUriAuthor) != null
+								? (QueryUtils
+										.queryConnOracle(OracleConnection,
+												dialect)
+										.from(fonteSissSubterraUriMap)
+										.where(fonteSissSubterraUriMap.cId
+												.eq(Long.valueOf(hist.get(
+														fonteHistoryWorkItems.fkUriAuthor)
+														.toString())))
+										.count() > 0
+												? QueryUtils.queryConnOracle(
+														OracleConnection,
+														dialect)
+														.from(fonteSissSubterraUriMap)
+														.where(fonteSissSubterraUriMap.cId
+																.eq(Long.valueOf(
+																		hist.get(
+																				fonteHistoryWorkItems.fkUriAuthor)
+																				.toString())))
+														.list(fonteSissSubterraUriMap.cPk)
+														.get(0)
+												: "")
+								: "";
+				String fkAuthor = fkUriAuthor != ""
+						? (fkUriAuthor + "%" + (hist.toArray()[12] != null
+										? hist.toArray()[12]
+										: ""))
+						: "";
+				String cUri = hist.get(fonteHistoryWorkItems.cUri) != null
+						? (QueryUtils.queryConnOracle(OracleConnection, dialect)
+								.from(fonteSissSubterraUriMap)
+								.where(fonteSissSubterraUriMap.cId
+										.eq(Long.valueOf(hist
+												.get(fonteHistoryWorkItems.cUri)
+												.toString())))
+								.count() > 0
+										? QueryUtils
+												.queryConnOracle(
+														OracleConnection,
+														dialect)
+												.from(fonteSissSubterraUriMap)
+												.where(fonteSissSubterraUriMap.cId
+														.eq(Long.valueOf(hist
+																.get(fonteHistoryWorkItems.cUri)
+																.toString())))
+												.list(fonteSissSubterraUriMap.cPk)
+												.get(0)
+										: "")
+						: "";
+				String cPk = cUri != ""
+						? (cUri + "%"
+								+ (hist.get(fonteHistoryWorkItems.cRev) != null
+										? hist.get(fonteHistoryWorkItems.cRev)
+												.toString()
+										: ""))
+						: "";
+				String fkUriTimepoint = hist
+						.get(fonteHistoryWorkItems.fkUriTimepoint) != null
+								? (QueryUtils
+										.queryConnOracle(OracleConnection,
+												dialect)
+										.from(fonteSissSubterraUriMap)
+										.where(fonteSissSubterraUriMap.cId
+												.eq(Long.valueOf(hist.get(
+														fonteHistoryWorkItems.fkUriTimepoint)
+														.toString())))
+										.count() > 0
+												? QueryUtils.queryConnOracle(
+														OracleConnection,
+														dialect)
+														.from(fonteSissSubterraUriMap)
+														.where(fonteSissSubterraUriMap.cId
+																.eq(Long.valueOf(
+																		hist.get(
+																				fonteHistoryWorkItems.fkUriTimepoint)
+																				.toString())))
+														.list(fonteSissSubterraUriMap.cPk)
+														.get(0)
+												: "")
+								: "";
+				String fkTimepoint = fkUriTimepoint != ""
+						? (fkUriTimepoint + "%" + (hist
+								.get(fonteHistoryWorkItems.fkTimepoint) != null
+										? hist.get(
+												fonteHistoryWorkItems.fkTimepoint)
+												.toString()
+										: ""))
+						: "";
+				
 				insert.columns(stgWorkItems.fkModule, stgWorkItems.cIsLocal,
-						stgWorkItems.cPriority, stgWorkItems.cAutosuspect,
-						stgWorkItems.cResolution, stgWorkItems.cCreated,
-						stgWorkItems.cOutlinenumber, stgWorkItems.fkProject,
-						stgWorkItems.cDeleted, stgWorkItems.cPlannedend,
-						stgWorkItems.cUpdated, stgWorkItems.fkAuthor,
-						stgWorkItems.cUri, stgWorkItems.fkUriModule,
-						stgWorkItems.cTimespent, stgWorkItems.cStatus,
-						stgWorkItems.cSeverity, stgWorkItems.cResolvedon,
-						stgWorkItems.fkUriProject, stgWorkItems.cTitle,
-						stgWorkItems.cId, stgWorkItems.cRev,
-						stgWorkItems.cPlannedstart, stgWorkItems.fkUriAuthor,
-						stgWorkItems.cDuedate, stgWorkItems.cRemainingestimate,
-						stgWorkItems.cType, stgWorkItems.cPk,
-						stgWorkItems.cLocation, stgWorkItems.fkTimepoint,
-						stgWorkItems.cInitialestimate,
+						stgWorkItems.cPriority, stgWorkItems.cResolution,
+						stgWorkItems.cCreated, stgWorkItems.cOutlinenumber,
+						stgWorkItems.fkProject, stgWorkItems.cDeleted,
+						stgWorkItems.cPlannedend, stgWorkItems.cUpdated,
+						stgWorkItems.fkAuthor, stgWorkItems.cUri,
+						stgWorkItems.fkUriModule, stgWorkItems.cTimespent,
+						stgWorkItems.cStatus, stgWorkItems.cSeverity,
+						stgWorkItems.cResolvedon, stgWorkItems.fkUriProject,
+						stgWorkItems.cTitle, stgWorkItems.cId,
+						stgWorkItems.cRev, stgWorkItems.cPlannedstart,
+						stgWorkItems.fkUriAuthor, stgWorkItems.cDuedate,
+						stgWorkItems.cRemainingestimate, stgWorkItems.cType,
+						stgWorkItems.cPk, stgWorkItems.cLocation,
+						stgWorkItems.fkTimepoint, stgWorkItems.cInitialestimate,
 						stgWorkItems.fkUriTimepoint,
 						stgWorkItems.cPreviousstatus,
 						stgWorkItems.dataCaricamento,
 						stgWorkItems.dmalmWorkitemPk)
-						.values(hist.get(fonteHistoryWorkItems.fkModule),
-								0,
+						.values(fkModule, 0,
 								hist.get(fonteHistoryWorkItems.cPriority),
-								hist.get(fonteHistoryWorkItems.cAutosuspect),
 								hist.get(fonteHistoryWorkItems.cResolution),
 								hist.get(fonteHistoryWorkItems.cCreated),
 								hist.get(fonteHistoryWorkItems.cOutlinenumber),
-								hist.get(fonteHistoryWorkItems.fkProject),
+								fkProject,
 								hist.get(fonteHistoryWorkItems.cDeleted),
 								hist.get(fonteHistoryWorkItems.cPlannedend),
 								hist.get(fonteHistoryWorkItems.cUpdated),
-								StringUtils.getMaskedValue(hist.get(fonteHistoryWorkItems.fkAuthor)),
-								hist.get(fonteHistoryWorkItems.cUri),
-								hist.get(fonteHistoryWorkItems.fkUriModule),
+								StringUtils.getMaskedValue(fkAuthor), cUri,
+								fkUriModule,
 								hist.get(fonteHistoryWorkItems.cTimespent),
 								hist.get(fonteHistoryWorkItems.cStatus),
 								hist.get(fonteHistoryWorkItems.cSeverity),
 								hist.get(fonteHistoryWorkItems.cResolvedon),
-								hist.get(fonteHistoryWorkItems.fkUriProject),
-								hist.get(fonteHistoryWorkItems.cTitle)!=null?hist.get(fonteHistoryWorkItems.cTitle).substring(0, Math.min(hist.get(fonteHistoryWorkItems.cTitle).length(), 999)):null,
+								fkUriProject,
+								hist.get(fonteHistoryWorkItems.cTitle),
 								hist.get(fonteHistoryWorkItems.cId),
 								hist.get(fonteHistoryWorkItems.cRev),
 								hist.get(fonteHistoryWorkItems.cPlannedstart),
-								StringUtils.getMaskedValue(hist.get(fonteHistoryWorkItems.fkUriAuthor)),
+								StringUtils.getMaskedValue(fkUriAuthor),
 								hist.get(fonteHistoryWorkItems.cDuedate),
-								hist.get(fonteHistoryWorkItems.cRemainingestimate),
-								hist.get(fonteHistoryWorkItems.cType),
-								hist.get(fonteHistoryWorkItems.cPk),
+								hist.get(
+										fonteHistoryWorkItems.cRemainingestimate),
+								hist.get(fonteHistoryWorkItems.cType), cPk,
 								hist.get(fonteHistoryWorkItems.cLocation),
-								hist.get(fonteHistoryWorkItems.fkTimepoint),
-								hist.get(fonteHistoryWorkItems.cInitialestimate),
-								hist.get(fonteHistoryWorkItems.fkUriTimepoint),
+								fkTimepoint,
+								hist.get(
+										fonteHistoryWorkItems.cInitialestimate),
+								fkUriTimepoint,
 								hist.get(fonteHistoryWorkItems.cPreviousstatus),
-								dataEsecuzione,
-								StringTemplate
+								dataEsecuzione, StringTemplate
 										.create("HISTORY_WORKITEM_SEQ.nextval")
 
 						).addBatch();
 				if (!historyworkitems.isEmpty()
-						&& batch_size_counter == DmAlmConstants.BATCH_SIZE) {
+						&& batchSizeCounter == DmAlmConstants.BATCH_SIZE) {
 					insert.execute();
+					OracleConnection.commit();
+					batchSizeCounter = 0;
 					insert = new SQLInsertClause(OracleConnection, dialect,
 							stgWorkItems);
-					batch_size_counter = 0;
-
 				}
 
 			}
 
 			if (!insert.isEmpty()) {
 				insert.execute();
+				OracleConnection.commit();
 			}
 
 			logger.debug("STOP TYPE: SISS " + type.toString() + "  SIZE: "
@@ -463,7 +641,7 @@ public class SissHistoryWorkitemDAO {
 					.getProperty(
 							DmAlmConfigReaderProperties.UPDATE_DESCRIZIONE_ENABLER)
 					.equals(DmAlmConstants.ENABLER)) {
-				updateDescriptions(minRevisionsByType.get(type), maxRevision,
+				updateDescriptions(minRevisionByType.get(type), maxRevision,
 						type.toString());
 			}
 			ErrorManager.getInstance().resetDeadlock();
@@ -483,9 +661,6 @@ public class SissHistoryWorkitemDAO {
 		} finally {
 			if (cm != null) {
 				cm.closeConnection(OracleConnection);
-			}
-			if (cm != null) {
-				cm.closeConnection(SissHistoryConnection);
 			}
 		}
 

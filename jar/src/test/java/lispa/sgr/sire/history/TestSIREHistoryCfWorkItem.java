@@ -66,7 +66,7 @@ extends TestCase
 
 			QSireHistoryCfWorkitem   stgCFWorkItems  = QSireHistoryCfWorkitem.sireHistoryCfWorkitem;
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem  fonteCFWorkItems  = 
-					lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem.cfWorkitem;
+					lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem.sireHistoryCfWorkitem;
 
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			SQLQuery query = new SQLQuery(H2Connection, dialect); 

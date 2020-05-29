@@ -312,7 +312,7 @@ public class SireHistoryWorkitemDAO {
 							StringTemplate.create("(select c_rev from "
 									+ fonteProjects.getSchemaName() + "."
 									+ fonteProjects.getTableName()
-									+ " where "+fonteProjects.getTableName()+".c_pk = fk_project) as fk_project"),
+									+ " where "+fonteProjects.getTableName()+".c_pk = fk_project) as FK_PROJECT"),
 							fonteHistoryWorkItems.cDeleted,
 							fonteHistoryWorkItems.cPlannedend,
 							fonteHistoryWorkItems.cUpdated,
@@ -351,7 +351,7 @@ public class SireHistoryWorkitemDAO {
 
 			for (Tuple hist : historyworkitems) {
 				batchSizeCounter++;
-
+				
 				String fkUriModule = hist
 						.get(fonteHistoryWorkItems.fkUriModule) != null
 								? (QueryUtils
@@ -408,11 +408,8 @@ public class SireHistoryWorkitemDAO {
 												: "")
 								: "";
 				String fkProject = fkUriProject != ""
-						? (fkUriProject + "%" + (hist
-								.get(fonteHistoryWorkItems.fkProject) != null
-										? hist.get(
-												fonteHistoryWorkItems.fkProject)
-												.toString()
+						? (fkUriProject + "%" + (hist.toArray()[7] != null
+										? hist.toArray()[7]
 										: ""))
 						: "";
 				String fkUriAuthor = hist
@@ -440,11 +437,8 @@ public class SireHistoryWorkitemDAO {
 												: "")
 								: "";
 				String fkAuthor = fkUriAuthor != ""
-						? (fkUriAuthor + "%" + (hist
-								.get(fonteHistoryWorkItems.fkAuthor) != null
-										? hist.get(
-												fonteHistoryWorkItems.fkAuthor)
-												.toString()
+						? (fkUriAuthor + "%" + (hist.toArray()[12] != null
+										? hist.toArray()[12]
 										: ""))
 						: "";
 				String cUri = hist.get(fonteHistoryWorkItems.cUri) != null
@@ -507,7 +501,7 @@ public class SireHistoryWorkitemDAO {
 												.toString()
 										: ""))
 						: "";
-
+				
 				insert.columns(stgWorkItems.fkModule, stgWorkItems.cIsLocal,
 						stgWorkItems.cPriority, stgWorkItems.cResolution,
 						stgWorkItems.cCreated, stgWorkItems.cOutlinenumber,

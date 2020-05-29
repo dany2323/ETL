@@ -16,6 +16,7 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryCfWorkitem;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryCfWorkitem;
+import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Splitted_CF;
 import lispa.schedulers.utils.enums.Workitem_Type;
@@ -25,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -99,65 +101,110 @@ public class SissHistoryCfWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Connection connH2 = null;
 		List<Tuple> cfWorkitem = null;
 		String customFieldName = null;
 		boolean scaricaCF = false;
+		lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap fonteSissSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentSubterraUriMap.urimap;
 
 		try {
 			cm = ConnectionManager.getInstance();
-			cfWorkitem = new ArrayList<Tuple>();
 
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
+			cfWorkitem = new ArrayList<>();
+
+			OracleTemplates dialect = new OracleTemplates();
 
 			for (String c_name : CFName) {
-				//evita di scaricare nuovamente eventuali CF scaricati prima del deadlock, 
+				// evita di scaricare nuovamente eventuali CF scaricati prima
+				// del deadlock,
 				// riprende lo scarico solo dal CF in deadlock in poi
-				if(ErrorManager.getInstance().cfNameDeadLock() == null || c_name.equals(ErrorManager.getInstance().cfNameDeadLock())) {
+				if (ErrorManager.getInstance().cfNameDeadLock() == null
+						|| c_name.equals(
+								ErrorManager.getInstance().cfNameDeadLock())) {
 					scaricaCF = true;
 				}
-				
-				if(scaricaCF) {
+
+				if (scaricaCF) {
 					customFieldName = c_name;
-					
+
 					connOracle = cm.getConnectionOracle();
-					connH2 = cm.getConnectionSISSHistory();
 
 					connOracle.setAutoCommit(true);
 
-					SQLQuery query = new SQLQuery(connH2, dialect);
+					SQLQuery query = new SQLQuery(connOracle, dialect);
 
-					cfWorkitem = query
-							.from(fonteHistoryWorkItems)
+					cfWorkitem = query.from(fonteHistoryWorkItems)
 							.join(fonteCFWorkItems)
 							.on(fonteCFWorkItems.fkWorkitem
 									.eq(fonteHistoryWorkItems.cPk))
-							.where(fonteHistoryWorkItems.cType.eq(w_type.toString()))
-							.where(fonteHistoryWorkItems.cRev.gt(minRevision))
+							.where(fonteHistoryWorkItems.cType
+									.eq(w_type.toString()))
+							.where(fonteHistoryWorkItems.cRev.goe(minRevision))
 							.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-							.where(fonteCFWorkItems.cName.eq(c_name))
-							.list(fonteCFWorkItems.all());
+							.where(fonteCFWorkItems.cName.eq(c_name)).list(
+									// fonteCFWorkItems.all()
 
+									fonteCFWorkItems.cDateonlyValue,
+									fonteCFWorkItems.cFloatValue,
+									fonteCFWorkItems.cStringValue,
+									fonteCFWorkItems.cDateValue,
+									fonteCFWorkItems.cBooleanValue,
+									fonteCFWorkItems.cName,
+									fonteCFWorkItems.fkUriWorkitem,
+									StringTemplate.create("(select c_rev from "
+											+ fonteHistoryWorkItems
+													.getSchemaName()
+											+ "."
+											+ fonteHistoryWorkItems
+													.getTableName()
+											+ " where "
+											+ fonteHistoryWorkItems
+													.getTableName()
+											+ ".c_pk = fk_workitem) as fk_workitem"),
+									fonteCFWorkItems.cLongValue,
+									fonteCFWorkItems.cDurationtimeValue,
+									fonteCFWorkItems.cCurrencyValue);
+					
 					logger.debug("CF_NAME: " + w_type.toString() + " " + c_name
 							+ "  SIZE: " + cfWorkitem.size());
 
 					SQLInsertClause insert = new SQLInsertClause(connOracle,
 							dialect, stgCFWorkItems);
-					int count_batch = 0;
+					int countBatch = 0;
 
 					for (Tuple row : cfWorkitem) {
 
-						count_batch++;
+						countBatch++;
+
+						String fkUriWorkitem = row
+								.get(fonteCFWorkItems.fkUriWorkitem) != null
+										? (QueryUtils
+												.queryConnOracle(connOracle,
+														dialect)
+												.from(fonteSissSubterraUriMap)
+												.where(fonteSissSubterraUriMap.cId
+														.eq(Long.valueOf(row
+																.get(fonteCFWorkItems.fkUriWorkitem))))
+												.count() > 0
+														? QueryUtils.queryConnOracle(
+																connOracle,
+																dialect).from(
+																		fonteSissSubterraUriMap)
+																		.where(fonteSissSubterraUriMap.cId
+																				.eq(Long.valueOf(
+																						row.get(fonteCFWorkItems.fkUriWorkitem))))
+																		.list(fonteSissSubterraUriMap.cPk)
+																		.get(0)
+														: "")
+										: "";
+						String fkWorkitem = fkUriWorkitem + "%"
+								+ (row.toArray()[7] != null ? row.toArray()[7].toString() : "");
 
 						insert.columns(stgCFWorkItems.cDateonlyValue,
 								stgCFWorkItems.cFloatValue,
 								stgCFWorkItems.cStringValue,
 								stgCFWorkItems.cDateValue,
-								stgCFWorkItems.cBooleanValue, stgCFWorkItems.cName,
+								stgCFWorkItems.cBooleanValue,
+								stgCFWorkItems.cName,
 								stgCFWorkItems.fkUriWorkitem,
 								stgCFWorkItems.fkWorkitem,
 								stgCFWorkItems.cLongValue,
@@ -165,26 +212,28 @@ public class SissHistoryCfWorkitemDAO {
 								stgCFWorkItems.cCurrencyValue,
 								stgCFWorkItems.dataCaricamento,
 								stgCFWorkItems.dmalmCfWorkitemPk)
-								.values(row.get(fonteCFWorkItems.cDateonlyValue),
+								.values(row
+										.get(fonteCFWorkItems.cDateonlyValue),
 										row.get(fonteCFWorkItems.cFloatValue),
 										row.get(fonteCFWorkItems.cStringValue),
 										row.get(fonteCFWorkItems.cDateValue),
 										row.get(fonteCFWorkItems.cBooleanValue),
 										row.get(fonteCFWorkItems.cName),
-										row.get(fonteCFWorkItems.fkUriWorkitem),
-										row.get(fonteCFWorkItems.fkWorkitem),
+										fkUriWorkitem,
+										fkWorkitem,
 										row.get(fonteCFWorkItems.cLongValue),
 										row.get(fonteCFWorkItems.cDurationtimeValue),
 										row.get(fonteCFWorkItems.cCurrencyValue),
 										DataEsecuzione.getInstance()
 												.getDataEsecuzione(),
-										StringTemplate
-												.create("HISTORY_CF_WORKITEM_SEQ.nextval"))
+										StringTemplate.create(
+												"HISTORY_CF_WORKITEM_SEQ.nextval"))
 								.addBatch();
 
-						if (!insert.isEmpty()
-								&& count_batch % DmAlmConstants.BATCH_SIZE == 0) {
+						if (!insert.isEmpty() && countBatch
+								% DmAlmConstants.BATCH_SIZE == 0) {
 							insert.execute();
+							connOracle.commit();
 							insert = new SQLInsertClause(connOracle, dialect,
 									stgCFWorkItems);
 						}
@@ -193,16 +242,15 @@ public class SissHistoryCfWorkitemDAO {
 
 					if (!insert.isEmpty()) {
 						insert.execute();
-					}
-
-					if (cm != null) {
-						cm.closeConnection(connH2);
+						connOracle.commit();
 					}
 					if (cm != null) {
 						cm.closeConnection(connOracle);
 					}
 				}
 			}
+
+			
 		} catch (Exception e) {
 			Throwable cause = e;
 			while (cause.getCause() != null)
@@ -215,9 +263,6 @@ public class SissHistoryCfWorkitemDAO {
 			}
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connH2);
-			}
 			if (cm != null) {
 				cm.closeConnection(connOracle);
 			}
