@@ -4,12 +4,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryUser;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -25,7 +23,7 @@ public class SireHistoryUserDAO {
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser  fonteUsers= 
 			lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryUser.user;
-	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryUser stg_fonteUsers = 
+	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryUser stg_Users = 
 			lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryUser.user;
 
 	public static void fillSireHistoryUser(long minRevision, long maxRevision) throws SQLException, DAOException {
@@ -58,19 +56,19 @@ public class SireHistoryUserDAO {
 							);
 
 			for(Tuple row : users) {
-				new SQLInsertClause(connOracle, dialect, stg_fonteUsers)
+				new SQLInsertClause(connOracle, dialect, stg_Users)
 				.columns(
-						stg_fonteUsers.cAvatarfilename,
-						stg_fonteUsers.cDeleted,
-						stg_fonteUsers.cDisablednotifications,
-						stg_fonteUsers.cEmail,
-						stg_fonteUsers.cId,
-						stg_fonteUsers.cInitials,
-						stg_fonteUsers.cIsLocal,
-						stg_fonteUsers.cName,
-						stg_fonteUsers.cPk,
-						stg_fonteUsers.cRev,
-						stg_fonteUsers.cUri
+						stg_Users.cAvatarfilename,
+						stg_Users.cDeleted,
+						stg_Users.cDisablednotifications,
+						stg_Users.cEmail,
+						stg_Users.cId,
+						stg_Users.cInitials,
+						stg_Users.cIsLocal,
+						stg_Users.cName,
+						stg_Users.cPk,
+						stg_Users.cRev,
+						stg_Users.cUri
 						)
 						.values(								
 								row.get(fonteUsers.cAvatarfilename),
@@ -98,12 +96,12 @@ public class SireHistoryUserDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connH2);
+			cm.closeQuietly(connOracle);
 		}
 	} 
 
-	public static long getMinRevision() throws Exception {
+	public static long getMinRevision() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracle = null;
 
@@ -113,11 +111,10 @@ public class SireHistoryUserDAO {
 			cm 	   = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 
-			QSireHistoryUser   stgUsers  = QSireHistoryUser.sireHistoryUser;
 			SQLTemplates dialect 				 = new HSQLDBTemplates();
 			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
-			max = query.from(stgUsers).list(stgUsers.cRev.max());
+			max = query.from(stg_Users).list(stg_Users.cRev.max());
 
 			if(max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;
@@ -125,32 +122,28 @@ public class SireHistoryUserDAO {
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+			cm.closeQuietly(oracle);
 		}
 
 		return max.get(0).longValue();
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		SQLTemplates dialect = new HSQLDBTemplates();
 		try {
 			cm = ConnectionManager.getInstance();
 			OracleConnection = cm.getConnectionOracle();
-			new SQLDeleteClause(OracleConnection, dialect, stg_fonteUsers)
+			new SQLDeleteClause(OracleConnection, dialect, stg_Users)
 				.execute();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
+			cm.closeQuietly(OracleConnection);
 		}
 	}
 }

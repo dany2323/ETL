@@ -2,12 +2,13 @@ package lispa.schedulers.dao.mps;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -18,11 +19,8 @@ import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MpsUtils;
 import lispa.schedulers.utils.NumberUtils;
 import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
-
 import au.com.bytecode.opencsv.CSVReader;
-
 import com.google.common.collect.Lists;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLTemplates;
@@ -75,19 +73,16 @@ public class StgMpsContrattiDAO {
 			logger.error(e.getMessage(), e);
 			Exception exc = new Exception("MPS file non trovato " + pathCSV
 					+ ", elaborazione Mps terminata");
-
 			ErrorManager.getInstance().exceptionOccurred(true, exc);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 
 		return hm;
 	}
 
-	public static void fillStgMpsContratti() throws PropertiesReaderException,
-			DAOException, SQLException {
+	public static void fillStgMpsContratti() throws PropertiesReaderException, DAOException {
 		String pathCSV = MpsUtils
 				.currentMpsFile(DmAlmConstants.FILENAME_MPS_CONTRATTI);
 
@@ -237,14 +232,11 @@ public class StgMpsContrattiDAO {
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (Exception e) {
+				} catch (IOException | SQLException | NoSuchAlgorithmException e) {
 					logger.error(e.getMessage(), e);
-					ErrorManager.getInstance().exceptionOccurred(true, e);
-					throw new DAOException(e);
+					throw new DAOException();
 				} finally {
-					if (cm != null) {
-						cm.closeConnection(connection);
-					}
+					cm.closeQuietly(connection);
 				}
 			}
 		}
@@ -254,52 +246,33 @@ public class StgMpsContrattiDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		QDmalmStgMpsContratti qstgmpscontratti = QDmalmStgMpsContratti.dmalmStgMpsContratti;
+		new SQLDeleteClause(connection, dialect, qstgmpscontratti)
+				.execute();
 
-			QDmalmStgMpsContratti qstgmpscontratti = QDmalmStgMpsContratti.dmalmStgMpsContratti;
-
-			new SQLDeleteClause(connection, dialect, qstgmpscontratti)
-					.execute();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		cm.closeQuietly(connection);
 	}
 
-	public static void recoverStgMpsContratti() throws DAOException {
+	public static void recoverStgMpsContratti() throws SQLException, DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 
-			QDmalmStgMpsContratti qstgmpscontratti = QDmalmStgMpsContratti.dmalmStgMpsContratti;
+		QDmalmStgMpsContratti qstgmpscontratti = QDmalmStgMpsContratti.dmalmStgMpsContratti;
 
-			new SQLDeleteClause(connection, dialect, qstgmpscontratti)
-					.execute();
+		new SQLDeleteClause(connection, dialect, qstgmpscontratti)
+				.execute();
 
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		connection.commit();
+		cm.closeQuietly(connection);
 	}
 }

@@ -1,18 +1,16 @@
 package lispa.schedulers.dao.sgr.sire.history;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryAttachment;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment;
 import lispa.schedulers.utils.StringUtils;
-import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -22,11 +20,10 @@ import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class SireHistoryAttachmentDAO {
 
-	private static Logger logger = Logger.getLogger(SireHistoryAttachmentDAO.class);
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryAttachment fonteAttachment = SireHistoryAttachment.attachment;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryAttachment stg_Attachment = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryAttachment.attachment;
 	
-	public static void fillSireHistoryAttachment(long minRevision, long maxRevision) throws SQLException, DAOException {
+	public static void fillSireHistoryAttachment(long minRevision, long maxRevision) throws DAOException {
 		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
@@ -98,7 +95,7 @@ public class SireHistoryAttachmentDAO {
 			
 			connOracle.commit();
 			
-		} catch (Exception e) {
+		} catch (NoSuchAlgorithmException | SQLException e) {
 			Throwable cause = e;
 			while (cause.getCause() != null)
 				cause = cause.getCause();
@@ -109,58 +106,50 @@ public class SireHistoryAttachmentDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connH2);
+			cm.closeQuietly(connOracle);
 		}
 	}
 
-	public static long getMinRevision() throws Exception {
+	public static long getMinRevision() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracle = null;
 
 		List<Long> max = new ArrayList<Long>();
-		try {
 			
-			QSireHistoryAttachment stgAttachment = QSireHistoryAttachment.dmalmSireHistoryAttachment;
-			cm = ConnectionManager.getInstance();
-			oracle = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		oracle = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates();
-			SQLQuery query = new SQLQuery(oracle, dialect);
+		SQLTemplates dialect = new HSQLDBTemplates();
+		SQLQuery query = new SQLQuery(oracle, dialect);
 
-			max = query.from(stgAttachment).list(stgAttachment.cRev.max());
+		max = query.from(stg_Attachment).list(stg_Attachment.cRev.max());
 
-			if (max == null || max.size() == 0 || max.get(0) == null) {
-				return 0;
-			}
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			
-			throw new DAOException(e);
-		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+		if (max == null || max.size() == 0 || max.get(0) == null) {
+			return 0;
 		}
+
+		cm.closeQuietly(oracle);
 
 		return max.get(0).longValue();
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-	
-			SQLTemplates dialect = new HSQLDBTemplates();
-			new SQLDeleteClause(connection, dialect, stg_Attachment).execute();
-			connection.commit();
-		} catch(Exception e) {
-			throw new DAOException(e);
-		} finally {
-			if(cm != null) cm.closeConnection(connection);
-		}
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
+		SQLTemplates dialect = new HSQLDBTemplates();
+		new SQLDeleteClause(connection, dialect, stg_Attachment).execute();
+		try {
+			connection.commit();
+		} catch (SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			throw new DAOException();
+		} finally {
+			cm.closeQuietly(connection);
+		}
 	}
 }

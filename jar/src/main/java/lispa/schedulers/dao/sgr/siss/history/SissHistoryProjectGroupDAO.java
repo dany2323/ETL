@@ -8,9 +8,7 @@ import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProjectgroup;
 import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -100,14 +98,13 @@ public class SissHistoryProjectGroupDAO {
 		List<Long> max = new ArrayList<Long>();
 		try{
 			
-			QSissHistoryProjectgroup stgProjectGroups = QSissHistoryProjectgroup.sissHistoryProjectgroup;
 			cm 	   = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 
 			SQLTemplates dialect 				 = new HSQLDBTemplates();
 			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
-			max = query.from(stgProjectGroups).list(stgProjectGroups.cRev.max());
+			max = query.from(stg_ProjectGroups).list(stg_ProjectGroups.cRev.max());
 
 			if(max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;

@@ -1,6 +1,8 @@
 package lispa.schedulers.dao.sgr.sire.current;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import lispa.schedulers.exception.DAOException;
@@ -17,7 +19,7 @@ import com.mysema.query.types.template.StringTemplate;
 
 public class SireCurrentProjectDAO {
 
-	public static long fillSireCurrentProject() throws Exception {
+	public static long fillSireCurrentProject() throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
@@ -119,11 +121,9 @@ public class SireCurrentProjectDAO {
 
 			OracleConnection.commit();
 
-		} catch (Exception e) {
+		} catch (SQLException | NoSuchAlgorithmException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			
 			n_righe_inserite=0;
-			throw new DAOException(e);
 		} finally {
 			if(cm != null) cm.closeConnection(OracleConnection);
 			if(cm != null) cm.closeConnection(H2Connection);

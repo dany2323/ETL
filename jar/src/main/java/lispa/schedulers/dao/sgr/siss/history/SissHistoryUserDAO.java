@@ -1,15 +1,12 @@
 package lispa.schedulers.dao.sgr.siss.history;
 
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryUser;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -109,11 +106,10 @@ public class SissHistoryUserDAO {
 			cm 	   = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 
-			QSissHistoryUser stgUsers = QSissHistoryUser.sissHistoryUser;
 			SQLTemplates dialect = new HSQLDBTemplates();
 			SQLQuery query = new SQLQuery(oracle, dialect); 
 
-			max = query.from(stgUsers).list(stgUsers.cRev.max());
+			max = query.from(stg_Users).list(stg_Users.cRev.max());
 
 			if(max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;

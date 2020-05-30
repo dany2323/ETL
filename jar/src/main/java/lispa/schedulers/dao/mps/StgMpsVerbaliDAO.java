@@ -2,12 +2,12 @@ package lispa.schedulers.dao.mps;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -17,11 +17,8 @@ import lispa.schedulers.queryimplementation.staging.mps.QDmalmStgMpsVerbali;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MpsUtils;
 import lispa.schedulers.utils.NumberUtils;
-
 import org.apache.log4j.Logger;
-
 import au.com.bytecode.opencsv.CSVReader;
-
 import com.google.common.collect.Lists;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLTemplates;
@@ -74,8 +71,7 @@ public class StgMpsVerbaliDAO {
 		return hm;
 	}
 
-	public static void fillStgMpsVerbali() throws PropertiesReaderException,
-			DAOException, SQLException {
+	public static void fillStgMpsVerbali() throws PropertiesReaderException, DAOException {
 		String pathCSV = MpsUtils
 				.currentMpsFile(DmAlmConstants.FILENAME_MPS_VERBALI);
 
@@ -159,14 +155,11 @@ public class StgMpsVerbaliDAO {
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (Exception e) {
+				} catch (IOException | SQLException e) {
 					logger.error(e.getMessage(), e);
-					ErrorManager.getInstance().exceptionOccurred(true, e);
-					throw new DAOException(e);
+					throw new DAOException();
 				} finally {
-					if (cm != null) {
-						cm.closeConnection(connection);
-					}
+					cm.closeQuietly(connection);
 				}
 			}
 		}
@@ -176,50 +169,31 @@ public class StgMpsVerbaliDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		QDmalmStgMpsVerbali qstgmpsverbali = QDmalmStgMpsVerbali.dmalmStgMpsVerbali;
+		new SQLDeleteClause(connection, dialect, qstgmpsverbali).execute();
 
-			QDmalmStgMpsVerbali qstgmpsverbali = QDmalmStgMpsVerbali.dmalmStgMpsVerbali;
-
-			new SQLDeleteClause(connection, dialect, qstgmpsverbali).execute();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		cm.closeQuietly(connection);
 	}
 
-	public static void recoverStgMpsVerbali() throws DAOException {
+	public static void recoverStgMpsVerbali() throws SQLException, DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 
-			QDmalmStgMpsVerbali qstgmpsverbali = QDmalmStgMpsVerbali.dmalmStgMpsVerbali;
+		QDmalmStgMpsVerbali qstgmpsverbali = QDmalmStgMpsVerbali.dmalmStgMpsVerbali;
 
-			new SQLDeleteClause(connection, dialect, qstgmpsverbali).execute();
+		new SQLDeleteClause(connection, dialect, qstgmpsverbali).execute();
 
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		connection.commit();
+		cm.closeQuietly(connection);
 	}
 }

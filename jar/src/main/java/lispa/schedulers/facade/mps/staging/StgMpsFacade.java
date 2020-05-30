@@ -1,7 +1,5 @@
 package lispa.schedulers.facade.mps.staging;
 
-import java.sql.SQLException;
-
 import lispa.schedulers.dao.mps.StgMpsAttivitaDAO;
 import lispa.schedulers.dao.mps.StgMpsContrattiDAO;
 import lispa.schedulers.dao.mps.StgMpsFirmatariVerbaleDAO;
@@ -13,6 +11,8 @@ import lispa.schedulers.dao.mps.StgMpsVerbaliDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ErrorManager;
+
+import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
@@ -26,61 +26,37 @@ public class StgMpsFacade {
 			StgMpsAttivitaDAO.fillStgMpsAttivita();
 			logger.debug("StgMpsFacade.fillStgMps - STOP fillStgMpsAttivita");
 			
-			if (ErrorManager.getInstance().hasError())
-				return;
-			
 			logger.debug("StgMpsFacade.fillStgMps - START fillStgMpsContratti");
 			StgMpsContrattiDAO.fillStgMpsContratti();
 			logger.debug("StgMpsFacade.fillStgMps - STOP fillStgMpsContratti");
 		
-			if (ErrorManager.getInstance().hasError())
-				return;
-
 			logger.debug("StgMpsFacade.fillStgMps - START fillStgMpsFirmatariVerbale");
 			StgMpsFirmatariVerbaleDAO.fillStgMpsFirmatariVerbale();
 			logger.debug("StgMpsFacade.fillStgMps - STOP fillStgMpsFirmatariVerbale");
-			
-			if (ErrorManager.getInstance().hasError())
-				return;
 			
 			logger.debug("StgMpsFacade.fillStgMps - START fillStgMpsRespContratto");
 			StgMpsRespContrattoDAO.fillStgMpsRespContratto();
 			logger.debug("StgMpsFacade.fillStgMps - STOP fillStgMpsRespContratto");
 			
-			if (ErrorManager.getInstance().hasError())
-				return;
-
 			logger.debug("StgMpsFacade.fillStgMps - START fillStgMpsVerbali");
 			StgMpsVerbaliDAO.fillStgMpsVerbali(); 
 			logger.debug("StgMpsFacade.fillStgMps - STOP fillStgMpsVerbali");
-			
-			if (ErrorManager.getInstance().hasError())
-				return;
 			
 			logger.debug("StgMpsFacade.fillStgMps - START fillStgMpsRilasciVerbali");
 			StgMpsRilasciVerbaliDAO.fillStgMpsRilasciVerbali(); 
 			logger.debug("StgMpsFacade.fillStgMps - STOP fillStgMpsRilasciVerbali");
 			
-			if (ErrorManager.getInstance().hasError())
-				return;
-
 			logger.debug("StgMpsFacade.fillStgMps - START fillStgMpsRilasci");
 			StgMpsRilasciDAO.fillStgMpsRilasci(); 
 			logger.debug("StgMpsFacade.fillStgMps - STOP fillStgMpsRilasci");
 			
-			if (ErrorManager.getInstance().hasError())
-				return;
-
 			logger.debug("StgMpsFacade.fillStgMps - START fillStgMpsRespOfferta");
 			StgMpsRespOffertaDAO.fillStgMpsRespOfferta(); 
 			logger.debug("StgMpsFacade.fillStgMps - STOP fillStgMpsRespOfferta");
 	
 		} catch (DAOException e) {
 			logger.error(e.getMessage(), e);
-			
-		} catch (SQLException e) {
-			logger.error(e.getMessage(), e);
-			
+			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 	}
 
@@ -120,16 +96,12 @@ public class StgMpsFacade {
 			logger.debug("StgMpsFacade.deleteStgMps - STOP deleteStgMpsRespOfferta");
 
 		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
+			logger.error(e.getMessage(), e);
 		}
-
 	}
 
 	public static void recoverStaging() {
+		
 		try {
 
 			logger.debug("StgMpsFacade.recoverStaging - START recoverStgMpsAttivita");
@@ -164,13 +136,8 @@ public class StgMpsFacade {
 			StgMpsRespOffertaDAO.recoverStgMpsRespOfferta();
 			logger.debug("StgMpsFacade.recoverStaging - STOP recoverStgMpsRespOfferta");
 			
-		} catch (DAOException e) {
+		} catch (SQLException | DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
 		}
-
 	}
 }

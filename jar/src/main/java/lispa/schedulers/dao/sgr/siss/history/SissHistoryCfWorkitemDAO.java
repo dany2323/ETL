@@ -114,12 +114,8 @@ public class SissHistoryCfWorkitemDAO {
 
 			connOracle.commit();
 			
-			if (cm != null) {
-				cm.closeConnection(connH2);
-			}
-			if (cm != null) {
-				cm.closeConnection(connOracle);
-			}
+			cm.closeQuietly(connOracle);
+			cm.closeQuietly(connH2);
 			
 			ErrorManager.getInstance().resetCFDeadlock();
 			
@@ -135,12 +131,8 @@ public class SissHistoryCfWorkitemDAO {
 			}
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connH2);
-			}
-			if (cm != null) {
-				cm.closeConnection(connOracle);
-			}
+			cm.closeQuietly(connOracle);
+			cm.closeQuietly(connH2);
 		}
 	}
 }

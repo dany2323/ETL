@@ -8,9 +8,8 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitemLinked;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -19,16 +18,12 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
-public class SireHistoryWorkitemLinkedDAO
-{
+public class SireHistoryWorkitemLinkedDAO {
 
 	private static Logger logger = Logger.getLogger(SireHistoryWorkitemLinkedDAO.class); 
-	
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
-		
-	private static QSireHistoryWorkitemLinked stgLinkedWorkitems = QSireHistoryWorkitemLinked.sireHistoryWorkitemLinked;
+	private static SireHistoryStructWorkitemLinkedworkitems stgLinkedWorkitems = SireHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 
 	public static void fillSireHistoryWorkitemLinked() throws SQLException, DAOException {
 		
@@ -52,7 +47,7 @@ public class SireHistoryWorkitemLinkedDAO
 			
 				
 			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
+				cm.closeQuietly(connH2);
 				connH2 = cm.getConnectionSIREHistory();
 			}
 			
@@ -75,9 +70,7 @@ public class SireHistoryWorkitemLinkedDAO
         						stgLinkedWorkitems.fkUriPWorkitem,
         						stgLinkedWorkitems.fkUriWorkitem,
         						stgLinkedWorkitems.fkWorkitem,
-        						stgLinkedWorkitems.sSuspect,
-        						stgLinkedWorkitems.dataCaricamento,
-        						stgLinkedWorkitems.sireHistoryWorkLinkedPk
+        						stgLinkedWorkitems.cSuspect
 						)
 						.values
 						(								
@@ -87,9 +80,7 @@ public class SireHistoryWorkitemLinkedDAO
 								row.get(fonteLinkedWorkitems.fkUriPWorkitem),
 								row.get(fonteLinkedWorkitems.fkUriWorkitem),
 								row.get(fonteLinkedWorkitems.fkWorkitem),
-								row.get(fonteLinkedWorkitems.cSuspect),
-								DataEsecuzione.getInstance().getDataEsecuzione(),
-								StringTemplate.create("HISTORY_WORK_LINKED_SEQ.nextval")
+								row.get(fonteLinkedWorkitems.cSuspect)
 						)
 								.addBatch();
 				
@@ -108,8 +99,7 @@ public class SireHistoryWorkitemLinkedDAO
 			
 			connOracle.commit();
 			
-		}
-		catch(Exception e) {
+		} catch(Exception e) {
 			Throwable cause = e;
 			while (cause.getCause() != null)
 				cause = cause.getCause();
@@ -121,13 +111,13 @@ public class SireHistoryWorkitemLinkedDAO
 			}
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connOracle);
+			cm.closeQuietly(connH2);
 		}
 		
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -138,18 +128,12 @@ public class SireHistoryWorkitemLinkedDAO
 			SQLTemplates dialect = new HSQLDBTemplates();
 			new SQLDeleteClause(connection, dialect, stgLinkedWorkitems).execute();
 			connection.commit();
-		}
-		catch(Exception e){
+			
+		} catch(Exception e){
 			logger.error(e.getMessage(), e);
-			
-			
 			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
+		} finally {
+			cm.closeQuietly(connection);
 		}
-
 	}
-	
 }

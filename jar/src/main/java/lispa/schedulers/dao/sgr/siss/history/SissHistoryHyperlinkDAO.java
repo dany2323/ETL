@@ -26,7 +26,7 @@ public class SissHistoryHyperlinkDAO {
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryHyperlink stg_Hyperlink = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryHyperlink.structWorkitemHyperlinks;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
 	
-	public static void fillSissHistoryHyperlink(EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
+	public static void fillSissHistoryHyperlink(EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws DAOException {
 		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
@@ -49,7 +49,7 @@ public class SissHistoryHyperlinkDAO {
 			};
 
 			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
+				cm.closeQuietly(connH2);
 				connH2 = cm.getConnectionSISSHistory();
 			}
 		
@@ -107,12 +107,12 @@ public class SissHistoryHyperlinkDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connOracle);
+			cm.closeQuietly(connH2);
 		}
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		SQLTemplates dialect = new HSQLDBTemplates();
@@ -126,9 +126,7 @@ public class SissHistoryHyperlinkDAO {
 
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
+			cm.closeQuietly(OracleConnection);
 		}
 	}
 }

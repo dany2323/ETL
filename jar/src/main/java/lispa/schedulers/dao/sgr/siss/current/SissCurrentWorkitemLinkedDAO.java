@@ -105,12 +105,8 @@ public class SissCurrentWorkitemLinkedDAO {
 			
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(oracleConnection);
-			}
-			if (cm != null) {
-				cm.closeConnection(h2Connection);
-			}
+			cm.closeQuietly(oracleConnection);
+			cm.closeQuietly(h2Connection);
 		}
 	}
 }

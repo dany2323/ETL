@@ -12,7 +12,6 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
@@ -77,11 +76,10 @@ public class SissHistoryRevisionDAO {
 			cm 	   = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 
-			QSissHistoryRevision   stgRevision  = QSissHistoryRevision.sissHistoryRevision;
 			SQLTemplates dialect 				 = new HSQLDBTemplates();
 			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
-			max = query.from(stgRevision).list(stgRevision.cCreated.max());
+			max = query.from(stg_Revisions).list(stg_Revisions.cCreated.max());
 
 			if(max == null || max.size() == 0 || max.get(0) == null) {
 				return DateUtils.stringToTimestamp("1900-01-01 00:00:00", "yyyy-MM-dd 00:00:00");

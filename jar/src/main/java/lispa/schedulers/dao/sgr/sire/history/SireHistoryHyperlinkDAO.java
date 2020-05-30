@@ -49,7 +49,7 @@ public class SireHistoryHyperlinkDAO {
 			};
 			
 			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
+				cm.closeQuietly(connH2);
 				connH2 = cm.getConnectionSIREHistory();
 			}
 
@@ -106,12 +106,12 @@ public class SireHistoryHyperlinkDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connH2);
+			cm.closeQuietly(connOracle);
 		}
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		SQLTemplates dialect = new HSQLDBTemplates();
@@ -125,9 +125,7 @@ public class SireHistoryHyperlinkDAO {
 
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
+			cm.closeQuietly(OracleConnection);
 		}
 	}
 }

@@ -2,7 +2,9 @@ package lispa.schedulers.dao.mps;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -72,8 +74,7 @@ public class StgMpsRespOffertaDAO {
 		return hm;
 	}
 
-	public static void fillStgMpsRespOfferta()
-			throws PropertiesReaderException, DAOException, SQLException {
+	public static void fillStgMpsRespOfferta() throws PropertiesReaderException, DAOException {
 		String pathCSV = MpsUtils
 				.currentMpsFile(DmAlmConstants.FILENAME_MPS_RESP_OFFERTA);
 
@@ -196,14 +197,11 @@ public class StgMpsRespOffertaDAO {
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (Exception e) {
+				} catch (IOException | SQLException | NoSuchAlgorithmException e) {
 					logger.error(e.getMessage(), e);
-					ErrorManager.getInstance().exceptionOccurred(true, e);
-					throw new DAOException(e);
+					throw new DAOException();
 				} finally {
-					if (cm != null) {
-						cm.closeConnection(connection);
-					}
+					cm.closeQuietly(connection);
 				}
 			}
 		}
@@ -213,52 +211,31 @@ public class StgMpsRespOffertaDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		QDmalmStgMpsRespOfferta qstgmpsrespofferta = QDmalmStgMpsRespOfferta.dmalmStgMpsRespOfferta;
+		new SQLDeleteClause(connection, dialect, qstgmpsrespofferta)
+				.execute();
 
-			QDmalmStgMpsRespOfferta qstgmpsrespofferta = QDmalmStgMpsRespOfferta.dmalmStgMpsRespOfferta;
-
-			new SQLDeleteClause(connection, dialect, qstgmpsrespofferta)
-					.execute();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		cm.closeQuietly(connection);
 	}
 
-	public static void recoverStgMpsRespOfferta() throws DAOException {
+	public static void recoverStgMpsRespOfferta() throws SQLException, DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		QDmalmStgMpsRespOfferta qstgmpsrespofferta = QDmalmStgMpsRespOfferta.dmalmStgMpsRespOfferta;
+		new SQLDeleteClause(connection, dialect, qstgmpsrespofferta)
+				.execute();
 
-			QDmalmStgMpsRespOfferta qstgmpsrespofferta = QDmalmStgMpsRespOfferta.dmalmStgMpsRespOfferta;
-
-			new SQLDeleteClause(connection, dialect, qstgmpsrespofferta)
-					.execute();
-
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		connection.commit();
+		cm.closeQuietly(connection);
 	}
 }

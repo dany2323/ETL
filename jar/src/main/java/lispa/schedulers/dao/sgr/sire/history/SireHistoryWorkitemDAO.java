@@ -10,7 +10,6 @@ import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
@@ -29,7 +28,7 @@ public class SireHistoryWorkitemDAO {
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem stg_HistoryWorkItems = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem.workitem;
 
 	public static Map<EnumWorkitemType, Long> getMinRevisionByType()
-			throws Exception {
+			throws DAOException {
 
 		HashMap<EnumWorkitemType, Long> map = new HashMap<EnumWorkitemType, Long>();
 
@@ -37,7 +36,6 @@ public class SireHistoryWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
-		QSireHistoryWorkitem stgWorkItems = QSireHistoryWorkitem.sireHistoryWorkitem;
 		
 		try {
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
@@ -49,9 +47,9 @@ public class SireHistoryWorkitemDAO {
 
 				SQLQuery query = new SQLQuery(oracle, dialect);
 
-				max = query.from(stgWorkItems)
-						.where(stgWorkItems.cType.eq(type.toString()))
-						.list(stgWorkItems.cRev.max());
+				max = query.from(stg_HistoryWorkItems)
+						.where(stg_HistoryWorkItems.cType.eq(type.toString()))
+						.list(stg_HistoryWorkItems.cRev.max());
 
 				if (max == null || max.size() == 0 || max.get(0) == null) {
 					map.put(type, 0L);
@@ -62,12 +60,9 @@ public class SireHistoryWorkitemDAO {
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(oracle);
-			}
+			cm.closeQuietly(oracle);
 		}
 
 		return map;
@@ -76,7 +71,7 @@ public class SireHistoryWorkitemDAO {
 
 	public static void fillSireHistoryWorkitem(
 			Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision,
-			EnumWorkitemType type) throws Exception {
+			EnumWorkitemType type) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
@@ -102,8 +97,7 @@ public class SireHistoryWorkitemDAO {
 			SQLQuery queryHistory = null;
 
 			if (!ConnectionManager.getInstance().isAlive(SireHistoryConnection)) {
-				if (cm != null)
-					cm.closeConnection(SireHistoryConnection);
+				cm.closeQuietly(SireHistoryConnection);
 				SireHistoryConnection = cm.getConnectionSIREHistory();
 			}
 
@@ -207,16 +201,12 @@ public class SireHistoryWorkitemDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
-			if (cm != null) {
-				cm.closeConnection(SireHistoryConnection);
-			}
+			cm.closeQuietly(OracleConnection);
+			cm.closeQuietly(SireHistoryConnection);
 		}
 	}
 	
-	public static void delete(EnumWorkitemType type) throws Exception {
+	public static void delete(EnumWorkitemType type) throws DAOException {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		SQLTemplates dialect = new HSQLDBTemplates();
@@ -228,12 +218,9 @@ public class SireHistoryWorkitemDAO {
 				.execute();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
+			cm.closeQuietly(OracleConnection);
 		}
 	}
 }

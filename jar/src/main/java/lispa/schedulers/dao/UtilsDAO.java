@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.apache.log4j.Logger;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
@@ -36,9 +37,7 @@ public class UtilsDAO {
 			} catch (Exception e) {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			} finally {
-				if (cm != null) {
-					cm.closeConnection(connection);
-				}
+				cm.closeQuietly(connection);
 			}
 		
 		return seqId;
@@ -64,30 +63,29 @@ public class UtilsDAO {
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeQuietly(connection);
 		}
 		
 		return maxValue;
 	}
-	public static void killsBOSessions() throws DAOException {
+	public static void killsBOSessions() {
 		ConnectionManager cm = null;
 		Connection conn = null;
-		
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.STORED_PROCEDURE_KILL_BO_SESSIONS,0);
 			try(CallableStatement callableStatement=conn.prepareCall(procedure) ){
 				callableStatement.execute();
-			} catch (Exception e) {
+			} catch (SQLException e) {
 				logger.debug(e.getMessage());
+			} finally {
+				cm.closeQuietly(conn);
 			}
-		} catch (Exception e) {
+		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			throw new DAOException(e);
+		} finally {
+			cm.closeQuietly(conn);
 		}
-		
 	}
 }

@@ -1,10 +1,13 @@
 package lispa.schedulers.dao.sgr.sire.current;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.ErrorManager;
+
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -18,7 +21,7 @@ public class SireCurrentWorkitemLinkedDAO {
 
 	private static Logger logger = Logger.getLogger(SireCurrentWorkitemLinkedDAO.class);
 
-	public static long fillSireCurrentWorkitemLinked() throws Exception {
+	public static long fillSireCurrentWorkitemLinked() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracleConnection = null;
 		Connection h2Connection = null;
@@ -98,15 +101,9 @@ public class SireCurrentWorkitemLinkedDAO {
 
 			oracleConnection.commit();
 
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			n_righe_inserite = 0;
-			if (oracleConnection != null) {
-				oracleConnection.rollback();
-			}
-
-			throw new DAOException(e);
+		} catch (SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			n_righe_inserite=0;
 		} finally {
 			if (cm != null) {
 				cm.closeConnection(oracleConnection);

@@ -25,7 +25,9 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SISS_HISTORY_
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -408,50 +410,49 @@ public class ConnectionManager{
 	 * @param conn
 	 * @throws DAOException
 	 */
-	public synchronized void closeConnection(Connection conn)
-			throws DAOException {
-
-		try {
-			if (isAlive(conn)) {
-				try {
-					conn.setAutoCommit(true);
-				} catch (SQLException e) {
-					return;
-				}
-
-				String URL = conn.getMetaData().getURL();
-				String user = conn.getMetaData().getUserName();
-
-				// a seconda dell'url della connessione, la inserisco nel Pool
-				// apposito
-				if (URL.equals(propertiesReader.getProperty(DM_ALM_DB_URL)) && user.equalsIgnoreCase(propertiesReader.getProperty(DM_ALM_USER))) {
-					connectionOraclePool.add(conn);
-				} else if (URL.equals(propertiesReader
-						.getProperty(ELETTRA_DB_URL)) && user.equalsIgnoreCase(propertiesReader.getProperty(ELETTRA_USER))) {
-					connectionOracleFonteElettraPool.add(conn);
-				}
-				// Elimino tutto cio' che nell'URL della connessione viene dopo
-				// il carattere ';'
-				else if (URL.equals(propertiesReader.getProperty(
-						SIRE_CURRENT_URL).split(";")[0])) {
-					connectionSireCurrentPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
-						SIRE_HISTORY_URL).split(";")[0])) {
-					connectionSireHistoryPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
-						SISS_CURRENT_URL).split(";")[0])) {
-					connectionSissCurrentPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
-						SISS_HISTORY_URL).split(";")[0])) {
-					connectionSissHistoryPool.add(conn);
-				}
-			} else {
-
-			}
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
-	}
+//	public synchronized void closeConnection(Connection conn) throws DAOException {
+//
+//		try {
+//			if (isAlive(conn)) {
+//				try {
+//					conn.setAutoCommit(true);
+//				} catch (SQLException e) {
+//					return;
+//				}
+//
+//				String URL = conn.getMetaData().getURL();
+//				String user = conn.getMetaData().getUserName();
+//
+//				// a seconda dell'url della connessione, la inserisco nel Pool
+//				// apposito
+//				if (URL.equals(propertiesReader.getProperty(DM_ALM_DB_URL)) && user.equalsIgnoreCase(propertiesReader.getProperty(DM_ALM_USER))) {
+//					connectionOraclePool.add(conn);
+//				} else if (URL.equals(propertiesReader
+//						.getProperty(ELETTRA_DB_URL)) && user.equalsIgnoreCase(propertiesReader.getProperty(ELETTRA_USER))) {
+//					connectionOracleFonteElettraPool.add(conn);
+//				}
+//				// Elimino tutto cio' che nell'URL della connessione viene dopo
+//				// il carattere ';'
+//				else if (URL.equals(propertiesReader.getProperty(
+//						SIRE_CURRENT_URL).split(";")[0])) {
+//					connectionSireCurrentPool.add(conn);
+//				} else if (URL.equals(propertiesReader.getProperty(
+//						SIRE_HISTORY_URL).split(";")[0])) {
+//					connectionSireHistoryPool.add(conn);
+//				} else if (URL.equals(propertiesReader.getProperty(
+//						SISS_CURRENT_URL).split(";")[0])) {
+//					connectionSissCurrentPool.add(conn);
+//				} else if (URL.equals(propertiesReader.getProperty(
+//						SISS_HISTORY_URL).split(";")[0])) {
+//					connectionSissHistoryPool.add(conn);
+//				}
+//			} else {
+//
+//			}
+//		} catch (SQLException e) {
+//			throw new DAOException(e);
+//		}
+//	}
 
 	public synchronized boolean isAlive(Connection conn) {
 
@@ -541,6 +542,48 @@ public class ConnectionManager{
 	public static void sysoutInfo() {
 
 	}
+	
+	public void close(Connection conn) throws SQLException {
+        if (conn != null) {
+            conn.close();
+            logger.debug("*** ConnectionManager - CONNESSIONE ORACLE CHIUSA ***");
+        }
+    }
 
+    public void closeQuietly(Connection conn) {
+        try {
+            close(conn);
+        } catch (SQLException e) { // NOPMD
+            // quiet
+        }
+    }
+    
+    public void close(Statement stat) throws SQLException {
+        if (stat != null) {
+            stat.close();
+        }
+    }
+
+    public void closeQuietly(Statement stat) {
+        try {
+            close(stat);
+        } catch (SQLException e) { // NOPMD
+            // quiet
+        }
+    }
+    
+    public void close(ResultSet rs) throws SQLException {
+        if (rs != null) {
+            rs.close();
+        }
+    }
+
+    public void closeQuietly(ResultSet rs) {
+        try {
+            close(rs);
+        } catch (SQLException e) { // NOPMD
+            // quiet
+        }
+    }
 
 }

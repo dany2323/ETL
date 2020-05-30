@@ -22,7 +22,7 @@ public class SissCurrentProjectDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject fonteProjects  = lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentProject.project;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentProject stg_Project  = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentProject.project;
 	
-	public static long fillSissCurrentProject() throws Exception {
+	public static long fillSissCurrentProject() throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
@@ -118,19 +118,14 @@ public class SissCurrentProjectDAO {
 
 			OracleConnection.commit();
 
-		}
-	catch (Exception e)
-	{
+	} catch (Exception e) {
 		ErrorManager.getInstance().exceptionOccurred(true, e);
 		logger.error(e.getMessage(), e);
-		
 		n_righe_inserite=0;
 		throw new DAOException(e);
-	}
-	finally
-	{
-		if(cm != null) cm.closeConnection(OracleConnection);
-		if(cm != null) cm.closeConnection(H2Connection);
+	} finally {
+		cm.closeQuietly(OracleConnection);
+		cm.closeQuietly(H2Connection);
 	}
 
 	return n_righe_inserite;

@@ -3,7 +3,6 @@ package lispa.schedulers.action;
 import org.apache.log4j.Logger;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.UtilsDAO;
-import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
@@ -44,11 +43,7 @@ public class DmAlmETL {
 				+ ExecutionManager.getInstance().isExecutionCalipso());
 		
 		logger.info("START KILL_BO_SESSIONS PROCEDURE");
-		try {
-			UtilsDAO.killsBOSessions();
-		} catch (DAOException e1) {
-			logger.info(e1.getMessage());
-		}
+		UtilsDAO.killsBOSessions();
 		logger.info("STOP KILL_BO_SESSIONS PROCEDURE");
 
 		if (ExecutionManager.getInstance().isExecutionSfera()) {

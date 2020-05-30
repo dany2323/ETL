@@ -7,9 +7,8 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitemLinked;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -18,16 +17,12 @@ import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
-import com.mysema.query.types.template.StringTemplate;
 
-public class SissHistoryWorkitemLinkedDAO
-{
+public class SissHistoryWorkitemLinkedDAO {
 
 	private static Logger logger = Logger.getLogger(SissHistoryWorkitemLinkedDAO.class); 	
-	
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems fonteLinkedWorkitems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
-		
-	private static QSissHistoryWorkitemLinked stgLinkedWorkitems = QSissHistoryWorkitemLinked.sissHistoryWorkitemLinked;
+	private static SissHistoryStructWorkitemLinkedworkitems stg_LinkedWorkitems = SissHistoryStructWorkitemLinkedworkitems.structWorkitemLinkedworkitems;
 
 	public static void fillSissHistoryWorkitemLinked() throws Exception {
 		
@@ -59,25 +54,21 @@ public class SissHistoryWorkitemLinkedDAO
 			
 			linkedWorkitems = query.from
 					(fonteLinkedWorkitems)
-					.list(
-							fonteLinkedWorkitems.all()
-							);
+					.list(fonteLinkedWorkitems.all());
 			
-			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgLinkedWorkitems);
+			SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stg_LinkedWorkitems);
 			int batchcounter = 0;
 			
 			for(Tuple row : linkedWorkitems) {
 				insert
 				.columns(
-						stgLinkedWorkitems.cRevision,
-						stgLinkedWorkitems.cRole,
-						stgLinkedWorkitems.fkPWorkitem,
-						stgLinkedWorkitems.fkUriPWorkitem,
-						stgLinkedWorkitems.fkUriWorkitem,
-						stgLinkedWorkitems.fkWorkitem,
-						stgLinkedWorkitems.cSuspect,
-						stgLinkedWorkitems.dataCaricamento,
-						stgLinkedWorkitems.dmalmWorkLinkedPk
+						stg_LinkedWorkitems.cRevision,
+						stg_LinkedWorkitems.cRole,
+						stg_LinkedWorkitems.fkPWorkitem,
+						stg_LinkedWorkitems.fkUriPWorkitem,
+						stg_LinkedWorkitems.fkUriWorkitem,
+						stg_LinkedWorkitems.fkWorkitem,
+						stg_LinkedWorkitems.cSuspect
 						)
 						.values(								
 								row.get(fonteLinkedWorkitems.cRevision),
@@ -86,9 +77,7 @@ public class SissHistoryWorkitemLinkedDAO
 								row.get(fonteLinkedWorkitems.fkUriPWorkitem),
 								row.get(fonteLinkedWorkitems.fkUriWorkitem),
 								row.get(fonteLinkedWorkitems.fkWorkitem),
-								row.get(fonteLinkedWorkitems.cSuspect),
-								DataEsecuzione.getInstance().getDataEsecuzione(),
-								 StringTemplate.create("HISTORY_WORK_LINKED_SEQ.nextval")
+								row.get(fonteLinkedWorkitems.cSuspect)
 								)
 								.addBatch();
 
@@ -96,7 +85,7 @@ public class SissHistoryWorkitemLinkedDAO
 				
 				if(batchcounter % DmAlmConstants.BATCH_SIZE == 0 && ! insert.isEmpty()) {
 					insert.execute();
-					insert = new SQLInsertClause(connOracle, dialect, stgLinkedWorkitems);
+					insert = new SQLInsertClause(connOracle, dialect, stg_LinkedWorkitems);
 				}
 				
 			}
@@ -135,8 +124,7 @@ public class SissHistoryWorkitemLinkedDAO
 			connection = cm.getConnectionOracle();
 	
 			SQLTemplates dialect = new HSQLDBTemplates();
-			QSissHistoryWorkitemLinked stgLinkedWorkitems = QSissHistoryWorkitemLinked.sissHistoryWorkitemLinked;
-			new SQLDeleteClause(connection, dialect, stgLinkedWorkitems).execute();
+			new SQLDeleteClause(connection, dialect, stg_LinkedWorkitems).execute();
 			connection.commit();
 		}
 		catch(Exception e){

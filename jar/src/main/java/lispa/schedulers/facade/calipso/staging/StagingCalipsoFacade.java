@@ -61,6 +61,7 @@ public class StagingCalipsoFacade {
 			
 			logger.debug("STOP StagingCalipsoFacade.fillDmAlmStagingFromExcel");
 		} catch (IOException | DAOException e) {
+			logger.error(e.getMessage(), e);
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 	}

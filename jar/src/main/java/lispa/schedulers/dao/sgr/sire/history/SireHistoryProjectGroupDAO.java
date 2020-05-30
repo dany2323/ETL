@@ -4,14 +4,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryProjectgroup;
 import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -92,41 +89,39 @@ public class SireHistoryProjectGroupDAO {
 			}
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connH2);
+			cm.closeQuietly(connOracle);
 		}
 	}
 
-	public static long getMinRevision() throws Exception {
+	public static long getMinRevision() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracle = null;
 
 		List<Long> max = new ArrayList<Long>();
 		try{
 			
-			QSireHistoryProjectgroup stgProjectGroups = QSireHistoryProjectgroup.sireHistoryProjectgroup;
 			cm = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 			SQLTemplates dialect = new HSQLDBTemplates();
 			SQLQuery query = new SQLQuery(oracle, dialect); 
 
-			max = query.from(stgProjectGroups).list(stgProjectGroups.cRev.max());
+			max = query.from(stg_ProjectGroups).list(stg_ProjectGroups.cRev.max());
 
 			if(max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+			cm.closeQuietly(oracle);
 		}
 
 		return max.get(0).longValue();
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		SQLTemplates dialect = new HSQLDBTemplates();
@@ -137,12 +132,9 @@ public class SireHistoryProjectGroupDAO {
 				.execute();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
+			cm.closeQuietly(OracleConnection);
 		}
 	}
 }

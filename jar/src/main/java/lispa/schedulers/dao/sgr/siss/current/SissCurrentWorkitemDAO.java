@@ -22,7 +22,7 @@ public class SissCurrentWorkitemDAO {
 	private static SissCurrentWorkitem sissCurrentWorkitem = SissCurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem stg_CurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem.workitem; 
  
-	public static long fillSissCurrentWorkitems() throws SQLException,DAOException { 
+	public static long fillSissCurrentWorkitems() throws SQLException, DAOException { 
 		ConnectionManager cm = null; 
 		Connection H2connSiss = null; 
 		Connection connection = null; 
@@ -154,20 +154,13 @@ public class SissCurrentWorkitemDAO {
 			} 
 			 
 			connection.commit(); 
-		} catch (DAOException e) { 
+		} catch (Exception e) { 
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			
 			n_righe_inserite=0;
 			throw new DAOException(e); 
-		} catch(Exception e1) { 
-			ErrorManager.getInstance().exceptionOccurred(true, e1);
-			
-			n_righe_inserite=0;
-			throw new DAOException(e1);
 		} finally { 
-		 
-			if(H2connSiss!= null) cm.closeConnection(H2connSiss); 
-			if(cm != null) cm.closeConnection(connection); 
+			cm.closeQuietly(connection);
+			cm.closeQuietly(H2connSiss);
 		} 
 		
 		return n_righe_inserite;

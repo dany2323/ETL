@@ -11,8 +11,6 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision;
-import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
@@ -29,7 +27,7 @@ public class SireHistoryRevisionDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision fonteRevisions = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRevision.revision;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision stg_Revisions = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRevision.revision;
 
-	public static long getMaxRevision() throws Exception {
+	public static long getMaxRevision() throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connH2 = null;
@@ -43,7 +41,7 @@ public class SireHistoryRevisionDAO {
 
 			Timestamp lastValid = DateUtils.addSecondsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -3600);
 
-			SireHistoryRevision  fonteRevisions  = SireHistoryRevision.revision;
+//			SireHistoryRevision  fonteRevisions  = SireHistoryRevision.revision;
 
 			SQLTemplates dialect 				 = new HSQLDBTemplates(){ {
 				setPrintSchema(true);
@@ -57,15 +55,14 @@ public class SireHistoryRevisionDAO {
 			}
 		} catch (Exception e)	{
 			logger.error(e.getMessage(), e);
-			
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
+			cm.closeQuietly(connH2);
 		}
 		return max.get(0).longValue();
 	}
 
-	public static Timestamp getMinRevision() throws Exception {
+	public static Timestamp getMinRevision() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracle = null;
 
@@ -75,21 +72,19 @@ public class SireHistoryRevisionDAO {
 			cm 	   = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 
-			QSireHistoryRevision   stgRevision  = QSireHistoryRevision.sireHistoryRevision;
 			SQLTemplates dialect 				 = new HSQLDBTemplates();
 			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
-			max = query.from(stgRevision).list(stgRevision.cCreated.max());
+			max = query.from(stg_Revisions).list(stg_Revisions.cCreated.max());
 
 			if(max == null || max.size() == 0 || max.get(0) == null) {
 				return DateUtils.stringToTimestamp("1900-01-01 00:00:00", "yyyy-MM-dd 00:00:00");
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+			cm.closeQuietly(oracle);
 		}
 
 		return max.get(0);
@@ -176,12 +171,12 @@ public class SireHistoryRevisionDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if(cm != null) cm.closeConnection(connOracle);
-			if(cm != null) cm.closeConnection(connH2);
+			cm.closeQuietly(connH2);
+			cm.closeQuietly(connOracle);
 		}
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		SQLTemplates dialect = new HSQLDBTemplates();
@@ -192,12 +187,9 @@ public class SireHistoryRevisionDAO {
 				.execute();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
+			cm.closeQuietly(OracleConnection);
 		}
 	}
 }

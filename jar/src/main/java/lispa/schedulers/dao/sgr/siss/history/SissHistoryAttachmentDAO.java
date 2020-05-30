@@ -10,7 +10,6 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryAttachment;
-import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryAttachment;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -108,26 +107,25 @@ public class SissHistoryAttachmentDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connOracle);
+			cm.closeQuietly(connH2);
 		}
 	}
 
-	public static long getMinRevision() throws Exception {
+	public static long getMinRevision() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracle = null;
 
 		List<Long> max = new ArrayList<Long>();
 		try {
 			
-			QSissHistoryAttachment stgAttachment = QSissHistoryAttachment.dmalmSissHistoryAttachment;
 			cm = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
 
 			SQLTemplates dialect = new HSQLDBTemplates();
 			SQLQuery query = new SQLQuery(oracle, dialect);
 
-			max = query.from(stgAttachment).list(stgAttachment.cRev.max());
+			max = query.from(stg_Attachment).list(stg_Attachment.cRev.max());
 
 			if (max == null || max.size() == 0 || max.get(0) == null) {
 				return 0;
@@ -135,16 +133,15 @@ public class SissHistoryAttachmentDAO {
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+			cm.closeQuietly(oracle);
 		}
 
 		return max.get(0).longValue();
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -158,7 +155,7 @@ public class SissHistoryAttachmentDAO {
 		} catch(Exception e) {
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(connection);
+			cm.closeQuietly(connection);
 		}
 
 	}

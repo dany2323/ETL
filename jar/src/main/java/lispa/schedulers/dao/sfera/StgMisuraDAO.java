@@ -1,7 +1,9 @@
 package lispa.schedulers.dao.sfera;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,7 +11,6 @@ import java.util.HashMap;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sfera.DmAlmMisura;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.MisuraUtils;
@@ -61,8 +62,7 @@ public class StgMisuraDAO {
 		return hm;
 	}
 
-	public static void FillStgMisura() throws PropertiesReaderException,
-			DAOException, SQLException {
+	public static void fillStgMisura() throws PropertiesReaderException, DAOException {
 		if (pathCSV != null) {
 			HashMap<String, Integer> mapping = mappaColonne();
 			ArrayList<String> columns = null;
@@ -524,14 +524,11 @@ public class StgMisuraDAO {
 				if (reader != null) {
 					reader.close();
 				}
-			} catch (Exception e) {
+			} catch (SQLException | IOException | NoSuchAlgorithmException e) {
 				logger.error(e.getMessage(), e);
-				ErrorManager.getInstance().exceptionOccurred(true, e);
 				throw new DAOException(e);
 			} finally {
-				if (cm != null) {
-					cm.closeConnection(connection);
-				}
+				cm.closeQuietly(connection);
 			}
 		}
 	}

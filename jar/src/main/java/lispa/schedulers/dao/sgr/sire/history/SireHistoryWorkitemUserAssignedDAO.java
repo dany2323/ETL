@@ -46,7 +46,7 @@ public class SireHistoryWorkitemUserAssignedDAO {
 			}};
 			
 			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
+				cm.closeQuietly(connH2);
 				connH2 = cm.getConnectionSIREHistory();
 			}
 			
@@ -103,12 +103,12 @@ public class SireHistoryWorkitemUserAssignedDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connOracle);
+			cm.closeQuietly(connH2);
 		}
 	}
 	
-	public static void delete() throws Exception {
+	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -122,8 +122,7 @@ public class SireHistoryWorkitemUserAssignedDAO {
 		} catch(Exception e) {
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(connection);
+			cm.closeQuietly(connection);
 		}
-
 	}
 }
