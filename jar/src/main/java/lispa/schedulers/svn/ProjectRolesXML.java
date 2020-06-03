@@ -202,9 +202,7 @@ public class ProjectRolesXML {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeQuietly(connection);
 		}
 	}
 
@@ -308,9 +306,7 @@ public class ProjectRolesXML {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeQuietly(connection);
 		}
 	}
 
@@ -415,9 +411,7 @@ public class ProjectRolesXML {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeQuietly(connection);
 		}
 	}
 }

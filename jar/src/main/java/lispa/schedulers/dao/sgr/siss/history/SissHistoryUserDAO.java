@@ -91,8 +91,8 @@ public class SissHistoryUserDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connOracle);
+			cm.closeQuietly(connH2);
 		}
 	} 
 
@@ -120,7 +120,7 @@ public class SissHistoryUserDAO {
 			
 			throw new DAOException(e);
 		} finally {
-			if(cm != null) cm.closeConnection(oracle);
+			cm.closeQuietly(oracle);
 		}
 
 		return max.get(0).longValue();
@@ -140,9 +140,7 @@ public class SissHistoryUserDAO {
 
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
+			cm.closeQuietly(OracleConnection);
 		}
 	}
 }

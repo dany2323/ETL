@@ -125,8 +125,8 @@ public class SireCurrentProjectDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			n_righe_inserite=0;
 		} finally {
-			if(cm != null) cm.closeConnection(OracleConnection);
-			if(cm != null) cm.closeConnection(H2Connection);
+			cm.closeQuietly(OracleConnection);
+			cm.closeQuietly(H2Connection);
 		}
 
 		return n_righe_inserite;

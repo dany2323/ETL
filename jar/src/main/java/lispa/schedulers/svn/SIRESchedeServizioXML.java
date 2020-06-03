@@ -126,9 +126,7 @@ public class SIRESchedeServizioXML {
 			logger.error(e.getMessage(), e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeQuietly(connection);
 		}
 	}
 
@@ -147,8 +145,7 @@ public class SIRESchedeServizioXML {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			if (cm != null)
-				cm.closeConnection(connection);
+			cm.closeQuietly(connection);
 		}
 
 		return check;

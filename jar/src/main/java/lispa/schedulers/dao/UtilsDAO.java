@@ -88,4 +88,25 @@ public class UtilsDAO {
 			cm.closeQuietly(conn);
 		}
 	}
+	
+	public static void deleteDatiFonteTabelle() {
+		ConnectionManager cm = null;
+		Connection conn = null;
+		try {
+			cm = ConnectionManager.getInstance();
+			conn = cm.getConnectionOracle();
+			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
+			try(CallableStatement callableStatement=conn.prepareCall(procedure) ){
+				callableStatement.execute();
+			} catch (SQLException e) {
+				logger.debug(e.getMessage());
+			} finally {
+				cm.closeQuietly(conn);
+			}
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} finally {
+			cm.closeQuietly(conn);
+		}
+	}
 }

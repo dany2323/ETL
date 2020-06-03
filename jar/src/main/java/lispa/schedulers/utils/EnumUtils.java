@@ -274,6 +274,8 @@ public class EnumUtils {
 								}
 								return null;
 							}
+		default:
+			break;
 		}
 		return null;
 		

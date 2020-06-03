@@ -193,9 +193,7 @@ public class StatoWorkItemXML {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeQuietly(connection);
 		}
 	}
 

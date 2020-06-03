@@ -553,8 +553,8 @@ public class ConnectionManager{
     public void closeQuietly(Connection conn) {
         try {
             close(conn);
-        } catch (SQLException e) { // NOPMD
-            // quiet
+        } catch (SQLException e) {
+
         }
     }
     

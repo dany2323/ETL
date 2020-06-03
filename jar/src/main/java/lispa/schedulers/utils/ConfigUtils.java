@@ -2,7 +2,6 @@ package lispa.schedulers.utils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -35,7 +34,7 @@ public class ConfigUtils {
 		} catch (SQLException | DAOException e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			DbUtils.closeQuietly(connection);
+			cm.closeQuietly(connection);
 		}
 		
 		return environment;

@@ -159,8 +159,8 @@ public class SireCurrentWorkitemDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			n_righe_inserite=0;
 		} finally { 
-			if(H2connSire!= null) cm.closeConnection(H2connSire); 
-			if(cm != null) cm.closeConnection(connection); 
+			cm.closeQuietly(connection);
+			cm.closeQuietly(H2connSire);
 		} 
 		
 		return n_righe_inserite;

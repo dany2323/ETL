@@ -18,9 +18,9 @@ public class DmAlmETL {
 	private static Logger logger = Logger.getLogger(DmAlmETL.class);
 	
 	public static void main(String[] args) throws PropertiesReaderException {
-		DmAlmConfigReaderProperties.setFileProperties(args[1]);
+		DmAlmConfigReaderProperties.setFileProperties("/Users/lucaporro/LISPA/DataMart/props/dm_alm.properties");
 		Log4JConfiguration.inizialize();
-		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp(args[2], "yyyy-MM-dd HH:mm:00"));
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-06-02 21:00:00 yyyy-MM-dd HH:mm:00"));
 		
 		String ambiente = DmAlmConfigReader.getInstance().getProperty(
 				DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
@@ -58,9 +58,9 @@ public class DmAlmETL {
 		if (ExecutionManager.getInstance().isExecutionCalipso()) {
 			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_CALIPSO, DmAlmConstants.CARICAMENTO_FONTE_INIT);
 		}
-		logger.info("START DELETE_DATI_FONTE_TABELLE");
-		QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
-		logger.info("STOP DELETE_DATI_FONTE_TABELLE");
+//		logger.info("START DELETE_DATI_FONTE_TABELLE");
+//		UtilsDAO.deleteDatiFonteTabelle();
+//		logger.info("STOP DELETE_DATI_FONTE_TABELLE");
 		
 		logger.info("START DmAlmFillFonte.doWork()");
 		DmAlmFillFonte.doWork();

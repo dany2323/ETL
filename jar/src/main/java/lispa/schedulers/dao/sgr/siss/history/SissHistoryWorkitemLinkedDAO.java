@@ -46,7 +46,8 @@ public class SissHistoryWorkitemLinkedDAO {
 			
 				
 			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
+				if(cm != null)
+					cm.closeQuietly(connH2);
 				connH2 = cm.getConnectionSISSHistory();
 			}
 			
@@ -109,8 +110,8 @@ public class SissHistoryWorkitemLinkedDAO {
 			}
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
-			if(cm != null) cm.closeConnection(connOracle);
+			cm.closeQuietly(connOracle);
+			cm.closeQuietly(connH2);
 		}
 		
 	} 
@@ -127,15 +128,13 @@ public class SissHistoryWorkitemLinkedDAO {
 			new SQLDeleteClause(connection, dialect, stg_LinkedWorkitems).execute();
 			connection.commit();
 		}
-		catch(Exception e){
+		catch(Exception e) {
 			logger.error(e.getMessage(), e);
 			
-			
 			throw new DAOException(e);
-		} 
-		finally 
-		{
-			if(cm != null) cm.closeConnection(connection);
+		} finally	{
+			if(cm != null) 
+				cm.closeQuietly(connection);
 		}
 
 	}

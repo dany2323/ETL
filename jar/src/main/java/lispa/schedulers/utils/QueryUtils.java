@@ -58,13 +58,7 @@ public class QueryUtils {
 			logger.error(e.getMessage());
 
 		} finally {
-			try {
-				if (cm != null) {
-					cm.closeConnection(connection);
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-			}
+			cm.closeQuietly(connection);
 		}
 	}
 }

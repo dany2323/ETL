@@ -214,9 +214,7 @@ public class LinkedWorkItemRolesXML {
 			logger.error(e.getMessage(), e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeQuietly(connection);
 		}
 	}
 }

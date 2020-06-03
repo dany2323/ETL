@@ -63,9 +63,7 @@ public class SissHistoryWorkitemDAO {
 
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(oracle);
-			}
+			cm.closeQuietly(oracle);
 		}
 
 		return map;
@@ -101,7 +99,7 @@ public class SissHistoryWorkitemDAO {
 
 			if (!ConnectionManager.getInstance().isAlive(SissHistoryConnection)) {
 				if (cm != null)
-					cm.closeConnection(SissHistoryConnection);
+					cm.closeQuietly(SissHistoryConnection);
 				SissHistoryConnection = cm.getConnectionSISSHistory();
 			}
 
@@ -204,12 +202,8 @@ public class SissHistoryWorkitemDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
-			if (cm != null) {
-				cm.closeConnection(SissHistoryConnection);
-			}
+			cm.closeQuietly(OracleConnection);
+			cm.closeQuietly(SissHistoryConnection);
 		}
 	}
 	
@@ -228,9 +222,7 @@ public class SissHistoryWorkitemDAO {
 
 			throw new DAOException(e);
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(OracleConnection);
-			}
+			cm.closeQuietly(OracleConnection);
 		}
 	}
 }
