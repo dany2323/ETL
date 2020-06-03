@@ -18,7 +18,7 @@ public class TestConnection extends TestCase {
 		try  {
 			String pass_dm_alm = encryptionHelper.decrypt("7MiAQ4dH23xmc6cxwrOejg==");
 			String pass_dm_alm_preprod = encryptionHelper.decrypt("IOe3LleqpwAkIk3UwBbSZQ==");
-			String enc_pass_dm_alm_preprod = encryptionHelper.encrypt("DM_ALM_SV");
+			String enc_pass_dm_alm_preprod = encryptionHelper.encrypt("DM_ALM_FONTE");
 			
 			System.out.println(pass_dm_alm+" - "+pass_dm_alm_preprod+" enc: "+enc_pass_dm_alm_preprod);
 //		cm = ConnectionManager.getInstance();

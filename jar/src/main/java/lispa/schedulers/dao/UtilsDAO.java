@@ -9,7 +9,9 @@ import org.apache.log4j.Logger;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.QueryUtils;
 
 public class UtilsDAO {
@@ -95,11 +97,12 @@ public class UtilsDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
-			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
+			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 1);
 			try(CallableStatement callableStatement=conn.prepareCall(procedure) ){
+				callableStatement.setTimestamp(1, DateUtils.addMonthsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -1));
 				callableStatement.execute();
-			} catch (SQLException e) {
-				logger.debug(e.getMessage());
+			} catch (Exception e) {
+				logger.error(e.getMessage());
 			} finally {
 				cm.closeQuietly(conn);
 			}
@@ -107,6 +110,34 @@ public class UtilsDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
 			cm.closeQuietly(conn);
+		}
+	}
+	
+	public static void setCaricamentoFonte(String fonte, String statoCaricamento) {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement psFonte = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql_fonte = "UPDATE "+DmAlmConstants.DMALM_CARICAMENTO_FONTE+" SET STATO_CARICAMENTO = ? WHERE COD_FONTE = ?";
+			psFonte = connection.prepareStatement(sql_fonte);
+
+			psFonte.setString(1, statoCaricamento);
+			psFonte.setString(2, fonte);
+			
+			psFonte.executeUpdate();
+
+			if (psFonte != null) {
+				psFonte.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+
+		} finally {
+			cm.closeQuietly(connection);
 		}
 	}
 }

@@ -11,7 +11,6 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.ExecutionManager;
 import lispa.schedulers.manager.Log4JConfiguration;
 import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.QueryUtils;
 
 public class DmAlmETL {
 
@@ -47,16 +46,16 @@ public class DmAlmETL {
 		logger.info("STOP KILL_BO_SESSIONS PROCEDURE");
 
 		if (ExecutionManager.getInstance().isExecutionSfera()) {
-			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_SFERA, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+			UtilsDAO.setCaricamentoFonte(DmAlmConstants.FONTE_SFERA, DmAlmConstants.CARICAMENTO_FONTE_INIT);
 		}
 		if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
-			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_SGR, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+			UtilsDAO.setCaricamentoFonte(DmAlmConstants.FONTE_SGR, DmAlmConstants.CARICAMENTO_FONTE_INIT);
 		}
 		if (ExecutionManager.getInstance().isExecutionMps()) {
-			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_MPS, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+			UtilsDAO.setCaricamentoFonte(DmAlmConstants.FONTE_MPS, DmAlmConstants.CARICAMENTO_FONTE_INIT);
 		}
 		if (ExecutionManager.getInstance().isExecutionCalipso()) {
-			QueryUtils.setCaricamentoFonte(DmAlmConstants.FONTE_CALIPSO, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+			UtilsDAO.setCaricamentoFonte(DmAlmConstants.FONTE_CALIPSO, DmAlmConstants.CARICAMENTO_FONTE_INIT);
 		}
 //		logger.info("START DELETE_DATI_FONTE_TABELLE");
 //		UtilsDAO.deleteDatiFonteTabelle();
