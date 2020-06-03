@@ -19,8 +19,8 @@ public class DmAlmETL {
 	public static void main(String[] args) throws PropertiesReaderException {
 		DmAlmConfigReaderProperties.setFileProperties("/Users/lucaporro/LISPA/DataMart/props/dm_alm.properties");
 		Log4JConfiguration.inizialize();
-		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-06-02 21:00:00 yyyy-MM-dd HH:mm:00"));
-		
+		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp("2020-06-03 21:00:00", "yyyy-MM-dd HH:mm:00"));
+																					
 		String ambiente = DmAlmConfigReader.getInstance().getProperty(
 				DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
 
