@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import lispa.schedulers.dao.sgr.sire.history.SireHistoryHyperlinkDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
@@ -47,7 +46,7 @@ public class SireHistoryRevisionRunnable implements Runnable {
 				TimeUnit.MINUTES.sleep(wait);
 				logger.debug("Tentativo " + tentativi_deadlock);
 				ErrorManager.getInstance().resetDeadlock();
-				SireHistoryHyperlinkDAO.delete();
+				SireHistoryRevisionDAO.delete();
 				SireHistoryRevisionDAO.fillSireHistoryRevision(revision_minRevision, polarion_maxRevision);
 				inDeadlock = ErrorManager.getInstance().hasDeadLock();
 			}
