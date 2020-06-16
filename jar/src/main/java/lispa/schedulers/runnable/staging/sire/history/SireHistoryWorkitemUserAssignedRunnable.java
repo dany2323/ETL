@@ -31,7 +31,7 @@ public class SireHistoryWorkitemUserAssignedRunnable implements Runnable {
 			int wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
-				logger.debug("START TYPE: SIRE " + type.toString());
+				logger.debug("START TYPE: SIRE " + type.toString() + " - minRevisionByType: "+minRevisionByType.get(type)+" polarion_maxRevision: "+polarion_maxRevision);
 				int tentativi_deadlock = 0;
 				ErrorManager.getInstance().resetDeadlock();
 				boolean inDeadlock = false;
@@ -46,7 +46,7 @@ public class SireHistoryWorkitemUserAssignedRunnable implements Runnable {
 					TimeUnit.MINUTES.sleep(wait);
 					logger.debug("Tentativo " + tentativi_deadlock);
 					ErrorManager.getInstance().resetDeadlock();
-					SireHistoryWorkitemUserAssignedDAO.delete();
+					SireHistoryWorkitemUserAssignedDAO.delete(type, minRevisionByType, polarion_maxRevision);
 					SireHistoryWorkitemUserAssignedDAO.fillSireHistoryWorkitemUserAssigned(type, minRevisionByType, polarion_maxRevision);
 					inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				}

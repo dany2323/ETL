@@ -66,7 +66,7 @@ public class SISSUserRolesXML {
 
 		String url = "";
 		String name = "";
-		String psw = "";
+		char[] psw = null;
 		String filePath = "";
 
 		List<String> utentiIT = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class SISSUserRolesXML {
 			name = DmAlmConfigReader.getInstance().getProperty(
 					DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 			psw = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SISS_SVN_PSW);
+					DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
 			filePath = DmAlmConfigReader.getInstance().getProperty(
 					DmAlmConfigReaderProperties.SISS_SVN_USER_ROLES_FILE);
 
@@ -154,7 +154,7 @@ public class SISSUserRolesXML {
 			logger.error(e.getMessage(), e);
 
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 
 		return utentiIT;

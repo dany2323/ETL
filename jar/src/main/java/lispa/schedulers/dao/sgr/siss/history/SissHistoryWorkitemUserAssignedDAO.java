@@ -49,7 +49,7 @@ public class SissHistoryWorkitemUserAssignedDAO {
 
 			if (connH2.isClosed()) {
 				if (cm != null)
-					cm.closeQuietly(connH2);
+					cm.closeConnection(connH2);
 				connH2 = cm.getConnectionSISSHistory();
 			}
 
@@ -109,8 +109,8 @@ public class SissHistoryWorkitemUserAssignedDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connOracle);
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connOracle);
+			cm.closeConnection(connH2);
 		}
 	}
 	
@@ -129,7 +129,7 @@ public class SissHistoryWorkitemUserAssignedDAO {
 			throw new DAOException(e);
 		} finally {
 			if(cm != null) 
-				cm.closeQuietly(connection);
+				cm.closeConnection(connection);
 		}
 
 	}

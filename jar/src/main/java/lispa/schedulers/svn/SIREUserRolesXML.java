@@ -3,17 +3,12 @@ package lispa.schedulers.svn;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
@@ -71,7 +66,7 @@ public class SIREUserRolesXML {
 
 		String url = "";
 		String name = "";
-		String psw = "";
+		char[] psw = null;
 		String filePath = "";
 
 		List<String> utentiIT = new ArrayList<String>();
@@ -88,7 +83,7 @@ public class SIREUserRolesXML {
 			name = DmAlmConfigReader.getInstance().getProperty(
 					DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
 			psw = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+					DmAlmConfigReaderProperties.SIRE_SVN_PSW).toCharArray();
 			filePath = DmAlmConfigReader.getInstance().getProperty(
 					DmAlmConfigReaderProperties.SIRE_SVN_USER_ROLES_FILE);
 
@@ -156,7 +151,7 @@ public class SIREUserRolesXML {
 			logger.error(e.getMessage(), e);
 
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 
 		return utentiIT;

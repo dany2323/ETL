@@ -3,7 +3,8 @@ package lispa.schedulers.dao.sgr.siss.current;
 import java.sql.Connection; 
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List; 
+import java.util.List;
+import org.apache.log4j.Logger;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.exception.DAOException; 
@@ -21,7 +22,8 @@ public class SissCurrentWorkitemDAO {
 
 	private static SissCurrentWorkitem sissCurrentWorkitem = SissCurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem stg_CurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem.workitem; 
- 
+	final private static Logger logger = Logger.getLogger(SissCurrentWorkitemDAO.class);
+	
 	public static long fillSissCurrentWorkitems() throws SQLException, DAOException { 
 		ConnectionManager cm = null; 
 		Connection H2connSiss = null; 
@@ -81,6 +83,7 @@ public class SissCurrentWorkitemDAO {
 			while (i.hasNext()) {
 
 				el= ((Tuple)i.next()).toArray();
+				logger.info(el[1] + " - " + el[3] + " - " + el[10] + " - " + el[11] + " - " + el[16] + " - " + el[23]);
 				insert.columns(stg_CurrentWorkitems.cAutosuspect,
 						stg_CurrentWorkitems.cCreated,
 						stg_CurrentWorkitems.cDeleted,
@@ -159,8 +162,8 @@ public class SissCurrentWorkitemDAO {
 			n_righe_inserite=0;
 			throw new DAOException(e); 
 		} finally { 
-			cm.closeQuietly(connection);
-			cm.closeQuietly(H2connSiss);
+			cm.closeConnection(connection);
+			cm.closeConnection(H2connSiss);
 		} 
 		
 		return n_righe_inserite;

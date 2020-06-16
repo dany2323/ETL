@@ -12,7 +12,7 @@ public class DmAlmConfigReaderProperties
 	public static final String DM_ALM_AMBIENTE = "dmalm.ambiente";
 	
 	//ESECUZIONE
-	public static final String DM_ALM_ESECUZIONE_EDMA = "dmalm.esecuzione.edma";
+	public static final String DM_ALM_ESECUZIONE_SGR_ELETTRA = "dmalm.esecuzione.sgrelettra";
 	public static final String DM_ALM_ESECUZIONE_SFERA = "dmalm.esecuzione.sfera";
 	public static final String DM_ALM_ESECUZIONE_MPS = "dmalm.esecuzione.mps";
 	public static final String DM_ALM_ESECUZIONE_CALIPSO = "dmalm.esecuzione.calipso";

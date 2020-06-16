@@ -14,13 +14,12 @@ public class ConfigUtils {
 	
 	private static Logger logger = Logger.getLogger(ConfigUtils.class);
 	
-	private static String getEnvironment() {
+	private static String getEnvironment() throws DAOException {
 		String environment = "";
-		ConnectionManager cm = null;
+		ConnectionManager cm = ConnectionManager.getInstance();
 		Connection connection = null;
 
 		try{
-			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			connection.setAutoCommit(true);
 			
@@ -34,22 +33,22 @@ public class ConfigUtils {
 		} catch (SQLException | DAOException e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 		
 		return environment;
 		
 	}
 	
-	public static boolean isSviluppo() {
+	public static boolean isSviluppo() throws DAOException {
 		return getEnvironment().equals("svi");
 	}
 	
-	public static boolean isPreProd() {
+	public static boolean isPreProd() throws DAOException {
 		return getEnvironment().equals("pre-prod");
 	}
 	
-	public static boolean isProd() {
+	public static boolean isProd() throws DAOException {
 		return getEnvironment().equals("prod");
 	}
 }

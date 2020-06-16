@@ -25,7 +25,7 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 
-    public final DatePath<java.sql.Date> cDuedate = createDate("C_DUEDATE", java.sql.Date.class);
+    public final DateTimePath<java.sql.Timestamp> cDuedate = createDateTime("C_DUEDATE", java.sql.Timestamp.class);
 
     public final StringPath cId = createString("C_ID");
 

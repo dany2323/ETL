@@ -2,10 +2,8 @@ package lispa.schedulers.dao.mps;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -60,13 +58,11 @@ public class StgMpsAttivitaDAO {
 				reader.close();
 			}
 		} catch (FileNotFoundException e) {
-			logger.error(e.getMessage(), e);
 			Exception exc = new Exception("MPS file non trovato " + pathCSV
 					+ ", elaborazione Mps terminata");
 
 			ErrorManager.getInstance().exceptionOccurred(true, exc);
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 
@@ -175,11 +171,10 @@ public class StgMpsAttivitaDAO {
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (IOException | SQLException e) {
-					logger.error(e.getMessage(), e);
-					throw new DAOException();
+				} catch (Exception e) {
+					ErrorManager.getInstance().exceptionOccurred(true, e);
 				} finally {
-					cm.closeQuietly(connection);
+					cm.closeConnection(connection);
 				}
 			}
 		}
@@ -196,23 +191,6 @@ public class StgMpsAttivitaDAO {
 		QDmalmStgMpsAttivita qstgmpsattivita = QDmalmStgMpsAttivita.dmalmStgMpsAttivita;
 		new SQLDeleteClause(connection, dialect, qstgmpsattivita).execute();
 
-		cm.closeQuietly(connection);
-	}
-
-	public static void recoverStgMpsAttivita() throws SQLException, DAOException {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		cm = ConnectionManager.getInstance();
-		connection = cm.getConnectionOracle();
-
-		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-		QDmalmStgMpsAttivita qstgmpsattivita = QDmalmStgMpsAttivita.dmalmStgMpsAttivita;
-
-		new SQLDeleteClause(connection, dialect, qstgmpsattivita).execute();
-
-		connection.commit();
-		cm.closeQuietly(connection);
+		cm.closeConnection(connection);
 	}
 }

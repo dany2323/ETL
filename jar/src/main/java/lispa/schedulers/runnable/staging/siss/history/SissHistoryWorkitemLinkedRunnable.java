@@ -1,26 +1,19 @@
 package lispa.schedulers.runnable.staging.siss.history;
 
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
-
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.apache.log4j.Logger;
 
 public class SissHistoryWorkitemLinkedRunnable implements Runnable{
-	private Map<EnumWorkitemType, Long> minRevisionByType;
-	private long polarion_maxRevision;
 	public Logger logger;
 
 
-	public SissHistoryWorkitemLinkedRunnable(Map<EnumWorkitemType, Long> minRevisionByType ,long polarion_maxRevision,Logger logger) {
-		this.minRevisionByType = minRevisionByType;
-		this.polarion_maxRevision = polarion_maxRevision;
+	public SissHistoryWorkitemLinkedRunnable(Logger logger) {
 		this.logger = logger;
 	}
 

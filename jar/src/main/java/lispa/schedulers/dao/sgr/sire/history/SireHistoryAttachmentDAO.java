@@ -106,17 +106,16 @@ public class SireHistoryAttachmentDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connH2);
-			cm.closeQuietly(connOracle);
+			cm.closeConnection(connH2);
+			cm.closeConnection(connOracle);
 		}
 	}
 
 	public static long getMinRevision() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracle = null;
-
 		List<Long> max = new ArrayList<Long>();
-			
+		
 		cm = ConnectionManager.getInstance();
 		oracle = cm.getConnectionOracle();
 
@@ -129,7 +128,7 @@ public class SireHistoryAttachmentDAO {
 			return 0;
 		}
 
-		cm.closeQuietly(oracle);
+		cm.closeConnection(oracle);
 
 		return max.get(0).longValue();
 	}
@@ -149,7 +148,31 @@ public class SireHistoryAttachmentDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException();
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
+		}
+	}
+	
+	public static void delete(long minRevision, long maxRevision) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLTemplates dialect = new HSQLDBTemplates();
+			
+			new SQLDeleteClause(connection, dialect, stg_Attachment)
+				.where(stg_Attachment.cRev.gt(minRevision))
+				.where(stg_Attachment.cRev.loe(maxRevision))
+				.execute();
+		
+			connection.commit();
+		} catch (SQLException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			throw new DAOException();
+		} finally {
+			cm.closeConnection(connection);
 		}
 	}
 }

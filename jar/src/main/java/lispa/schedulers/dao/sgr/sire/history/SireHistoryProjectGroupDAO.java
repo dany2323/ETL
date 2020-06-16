@@ -89,8 +89,8 @@ public class SireHistoryProjectGroupDAO {
 			}
 		}
 		finally {
-			cm.closeQuietly(connH2);
-			cm.closeQuietly(connOracle);
+			cm.closeConnection(connH2);
+			cm.closeConnection(connOracle);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class SireHistoryProjectGroupDAO {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(oracle);
+			cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
@@ -134,7 +134,7 @@ public class SireHistoryProjectGroupDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(OracleConnection);
+			cm.closeConnection(OracleConnection);
 		}
 	}
 }

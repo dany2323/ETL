@@ -31,7 +31,7 @@ public class ExecutionManager {
 			this.setExecutionElettraSgrcm(DmAlmConfigReader
 					.getInstance()
 					.getProperty(
-							DmAlmConfigReaderProperties.DM_ALM_ESECUZIONE_EDMA)
+							DmAlmConfigReaderProperties.DM_ALM_ESECUZIONE_SGR_ELETTRA)
 					.equalsIgnoreCase(DmAlmConstants.DM_ALM_ESECUZIONE));
 		} catch (NumberFormatException | PropertiesReaderException e1) {
 			logger.error(e1.getMessage());

@@ -33,7 +33,7 @@ public class TestConnection extends TestCase {
 			
 		}
 		finally {
-			cm.closeQuietly(conn);
+			cm.closeConnection(conn);
 		}
 		
 	}

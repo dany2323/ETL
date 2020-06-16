@@ -15,6 +15,7 @@ import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLSubQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
@@ -46,7 +47,7 @@ public class SireHistoryWorkitemUserAssignedDAO {
 			}};
 			
 			if(connH2.isClosed()) {
-				cm.closeQuietly(connH2);
+				cm.closeConnection(connH2);
 				connH2 = cm.getConnectionSIREHistory();
 			}
 			
@@ -103,8 +104,8 @@ public class SireHistoryWorkitemUserAssignedDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connOracle);
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connOracle);
+			cm.closeConnection(connH2);
 		}
 	}
 	
@@ -122,7 +123,33 @@ public class SireHistoryWorkitemUserAssignedDAO {
 		} catch(Exception e) {
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
+		}
+	}
+	
+	public static void delete(EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem stg_HistoryWorkItems = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryWorkitem.workitem;
+			SQLTemplates dialect = new HSQLDBTemplates();
+			new SQLDeleteClause(connection, dialect, stg_WorkitemUserAssignees)
+				.where(stg_WorkitemUserAssignees.fkWorkitem.in(new SQLSubQuery()
+					.from(stg_HistoryWorkItems)
+					.where(stg_HistoryWorkItems.cType.eq(type.toString()))
+					.where(stg_HistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
+					.where(stg_HistoryWorkItems.cRev.loe(maxRevision))
+					.list(stg_HistoryWorkItems.cPk)))
+				.execute();
+				
+			connection.commit();
+		} catch(Exception e) {
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(connection);
 		}
 	}
 }

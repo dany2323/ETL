@@ -96,8 +96,8 @@ public class SireHistoryUserDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connH2);
-			cm.closeQuietly(connOracle);
+			cm.closeConnection(connH2);
+			cm.closeConnection(connOracle);
 		}
 	} 
 
@@ -124,7 +124,7 @@ public class SireHistoryUserDAO {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(oracle);
+			cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
@@ -143,7 +143,26 @@ public class SireHistoryUserDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(OracleConnection);
+			cm.closeConnection(OracleConnection);
+		}
+	}
+	
+	public static void delete(long minRevision, long maxRevision) throws DAOException {
+		ConnectionManager cm = null;
+		Connection OracleConnection = null;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		try {
+			cm = ConnectionManager.getInstance();
+			OracleConnection = cm.getConnectionOracle();
+			new SQLDeleteClause(OracleConnection, dialect, stg_Users)
+				.where(stg_Users.cRev.gt(minRevision))
+				.where(stg_Users.cRev.loe(maxRevision))
+				.execute();
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(OracleConnection);
 		}
 	}
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
+import lispa.schedulers.exception.DAOException;
+
 public class StringUtils {
 	
 	public static String truncate(String value, int length) {
@@ -188,7 +190,7 @@ public class StringUtils {
 		return hashtext.toUpperCase();
 	}
 	
-	public static String getMaskedValue(String input) throws NoSuchAlgorithmException{
+	public static String getMaskedValue(String input) throws NoSuchAlgorithmException, DAOException {
 		if(ConfigUtils.isSviluppo()){
 			return hash(input);
 		} else {

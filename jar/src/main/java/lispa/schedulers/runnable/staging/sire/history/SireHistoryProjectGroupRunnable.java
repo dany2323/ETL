@@ -29,6 +29,7 @@ public class SireHistoryProjectGroupRunnable implements Runnable {
 
 			tentativi_deadlock++;
 			logger.debug("Tentativo " + tentativi_deadlock);
+			SireHistoryProjectGroupDAO.delete();
 			SireHistoryProjectGroupDAO.fillSireHistoryProjectGroup();
 			inDeadlock = ErrorManager.getInstance().hasDeadLock();
 			while(inDeadlock) {

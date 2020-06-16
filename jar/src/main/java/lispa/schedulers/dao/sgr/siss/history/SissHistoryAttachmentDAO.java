@@ -107,15 +107,14 @@ public class SissHistoryAttachmentDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connOracle);
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connOracle);
+			cm.closeConnection(connH2);
 		}
 	}
 
 	public static long getMinRevision() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracle = null;
-
 		List<Long> max = new ArrayList<Long>();
 		try {
 			
@@ -135,7 +134,7 @@ public class SissHistoryAttachmentDAO {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(oracle);
+			cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
@@ -155,7 +154,7 @@ public class SissHistoryAttachmentDAO {
 		} catch(Exception e) {
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 
 	}

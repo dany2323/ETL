@@ -39,7 +39,7 @@ public class UtilsDAO {
 			} catch (Exception e) {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			} finally {
-				cm.closeQuietly(connection);
+				cm.closeConnection(connection);
 			}
 		
 		return seqId;
@@ -65,12 +65,12 @@ public class UtilsDAO {
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 		
 		return maxValue;
 	}
-	public static void killsBOSessions() {
+	public static void killsBOSessions() throws DAOException {
 		ConnectionManager cm = null;
 		Connection conn = null;
 		try {
@@ -82,16 +82,16 @@ public class UtilsDAO {
 			} catch (SQLException e) {
 				logger.debug(e.getMessage());
 			} finally {
-				cm.closeQuietly(conn);
+				cm.closeConnection(conn);
 			}
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
-			cm.closeQuietly(conn);
+			cm.closeConnection(conn);
 		}
 	}
 	
-	public static void deleteDatiFonteTabelle() {
+	public static void deleteDatiFonteTabelle() throws DAOException{
 		ConnectionManager cm = null;
 		Connection conn = null;
 		try {
@@ -102,18 +102,18 @@ public class UtilsDAO {
 				callableStatement.setTimestamp(1, DateUtils.addMonthsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -1));
 				callableStatement.execute();
 			} catch (Exception e) {
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(), e);
 			} finally {
-				cm.closeQuietly(conn);
+				cm.closeConnection(conn);
 			}
 		} catch (DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
-			cm.closeQuietly(conn);
+			cm.closeConnection(conn);
 		}
 	}
 	
-	public static void setCaricamentoFonte(String fonte, String statoCaricamento) {
+	public static void setCaricamentoFonte(String fonte, String statoCaricamento) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement psFonte = null;
@@ -134,10 +134,10 @@ public class UtilsDAO {
 				psFonte.close();
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 	}
 }

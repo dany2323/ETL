@@ -15,7 +15,6 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryUserDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem;
@@ -152,8 +151,6 @@ public class FillSISSHistoryFacade {
 				}
 				logger.debug("Fine tentativo " + tentativi_cf_deadlock + " - CF deadlock "	+ cfDeadlock);
 			}
-
-			ConnectionManager.getInstance().dismiss();
 
 			logger.debug("STOP SISSHistoryFacade.fill()");
 		} catch (DAOException e) {

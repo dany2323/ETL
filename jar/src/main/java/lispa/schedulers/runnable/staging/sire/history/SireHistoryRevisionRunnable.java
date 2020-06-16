@@ -31,7 +31,7 @@ public class SireHistoryRevisionRunnable implements Runnable {
 			int wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			
-			logger.debug("START SireHistoryRevision.fill()");
+			logger.debug("START SireHistoryRevision.fill() - revision_minRevision: "+revision_minRevision+" polarion_maxRevision: "+polarion_maxRevision);
 			int tentativi_deadlock = 0;
 			ErrorManager.getInstance().resetDeadlock();
 			boolean inDeadlock = false;
@@ -46,7 +46,7 @@ public class SireHistoryRevisionRunnable implements Runnable {
 				TimeUnit.MINUTES.sleep(wait);
 				logger.debug("Tentativo " + tentativi_deadlock);
 				ErrorManager.getInstance().resetDeadlock();
-				SireHistoryRevisionDAO.delete();
+				SireHistoryRevisionDAO.delete(revision_minRevision, polarion_maxRevision);
 				SireHistoryRevisionDAO.fillSireHistoryRevision(revision_minRevision, polarion_maxRevision);
 				inDeadlock = ErrorManager.getInstance().hasDeadLock();
 			}
@@ -56,7 +56,6 @@ public class SireHistoryRevisionRunnable implements Runnable {
 		}
 		catch(Exception e) {
 			logger.error(e.getMessage(),e);
-			
 		}
 
 	}

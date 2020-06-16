@@ -44,9 +44,9 @@ public class FillSIRECurrentFacade {
 			logger.debug("START  fillLinkedWorkItemRoles SIRE "+ new Date());
 			LinkedWorkItemRolesXML.fillLinkedWorkItemRoles(DmAlmConstants.REPOSITORY_SIRE);
 			logger.debug("STOP   fillLinkedWorkItemRoles SIRE "+ new Date());
+			
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-			logger.error(e.getMessage(), e);
 		}
 	}
 }

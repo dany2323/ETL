@@ -11,7 +11,7 @@ public class DmAlmSireHistoryWorkitem {
 
     private Boolean cDeleted;
 
-    private java.sql.Date cDuedate;
+    private java.sql.Timestamp cDuedate;
 
     private String cId;
 
@@ -95,11 +95,11 @@ public class DmAlmSireHistoryWorkitem {
         this.cDeleted = cDeleted;
     }
 
-    public java.sql.Date getcDuedate() {
+    public java.sql.Timestamp getcDuedate() {
         return cDuedate;
     }
 
-    public void setcDuedate(java.sql.Date cDuedate) {
+    public void setcDuedate(java.sql.Timestamp cDuedate) {
         this.cDuedate = cDuedate;
     }
 

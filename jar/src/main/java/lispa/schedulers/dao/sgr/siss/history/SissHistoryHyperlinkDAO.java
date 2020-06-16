@@ -1,7 +1,6 @@
 package lispa.schedulers.dao.sgr.siss.history;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,7 @@ public class SissHistoryHyperlinkDAO {
 			};
 
 			if(connH2.isClosed()) {
-				cm.closeQuietly(connH2);
+				cm.closeConnection(connH2);
 				connH2 = cm.getConnectionSISSHistory();
 			}
 		
@@ -107,8 +106,8 @@ public class SissHistoryHyperlinkDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connOracle);
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connOracle);
+			cm.closeConnection(connH2);
 		}
 	}
 	
@@ -126,7 +125,7 @@ public class SissHistoryHyperlinkDAO {
 
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(OracleConnection);
+			cm.closeConnection(OracleConnection);
 		}
 	}
 }

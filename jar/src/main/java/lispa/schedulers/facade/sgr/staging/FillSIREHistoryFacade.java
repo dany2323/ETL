@@ -1,7 +1,6 @@
 package lispa.schedulers.facade.sgr.staging;
 
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -14,11 +13,8 @@ import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryRevisionDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryUserDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem;
 import lispa.schedulers.runnable.staging.sire.history.SireSchedeServizioRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryAttachmentRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryHyperlinkRunnable;
@@ -32,9 +28,6 @@ import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class FillSIREHistoryFacade {
-
-	static SireHistoryWorkitem fonteWorkItems = SireHistoryWorkitem.workitem;
-	private static int wait;
 
 	public static void execute(Logger logger) {
 		try {
@@ -105,7 +98,7 @@ public class FillSIREHistoryFacade {
 			schede_servizio.start();
 			schede_servizio.join();
 
-			wait = Integer.parseInt(DmAlmConfigReader.getInstance()
+			int wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			
 			logger.debug("START SireHistoryWorkitem - numero wi: "
@@ -121,7 +114,7 @@ public class FillSIREHistoryFacade {
 
 				tentativi_wi_deadlock++;
 				logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
-				SireHistoryWorkitemDAO.fillSireHistoryWorkitem(minRevisionsByType, Long.MAX_VALUE, type);
+				SireHistoryWorkitemDAO.fillSireHistoryWorkitem(type, minRevisionsByType, Long.MAX_VALUE);
 				inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				while(inDeadlock) {
 					tentativi_wi_deadlock++;
@@ -129,8 +122,8 @@ public class FillSIREHistoryFacade {
 					TimeUnit.MINUTES.sleep(wait);
 					logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
 					ErrorManager.getInstance().resetDeadlock();
-					SireHistoryWorkitemDAO.delete(type);
-					SireHistoryWorkitemDAO.fillSireHistoryWorkitem(minRevisionsByType, Long.MAX_VALUE, type);
+					SireHistoryWorkitemDAO.delete(type, minRevisionsByType, Long.MAX_VALUE);
+					SireHistoryWorkitemDAO.fillSireHistoryWorkitem(type, minRevisionsByType, Long.MAX_VALUE);
 					inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				}
 				logger.debug("Fine tentativo " + tentativi_wi_deadlock + " - WI deadlock "	+ inDeadlock);
@@ -157,18 +150,9 @@ public class FillSIREHistoryFacade {
 				logger.debug("Fine tentativo " + tentativi_cf_deadlock + " - CF deadlock "	+ cfDeadlock);
 			}
 
-			ConnectionManager.getInstance().dismiss();
-
 			logger.debug("STOP SIREHistoryFacade.fill()");
-		} catch (DAOException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		} catch (SQLException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
 		}
 	}
 }

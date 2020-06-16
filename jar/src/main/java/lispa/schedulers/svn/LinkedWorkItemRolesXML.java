@@ -116,7 +116,7 @@ public class LinkedWorkItemRolesXML {
 
 		String url = "";
 		String name = "";
-		String psw = "";
+		char[] psw = null;
 		String filePath = "";
 
 		try {
@@ -130,7 +130,7 @@ public class LinkedWorkItemRolesXML {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+						DmAlmConfigReaderProperties.SIRE_SVN_PSW).toCharArray();
 				filePath = DmAlmConfigReader.getInstance().getProperty(
 						getTemplateConfigProps(myrepository, template));
 
@@ -141,7 +141,7 @@ public class LinkedWorkItemRolesXML {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_PSW);
+						DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
 				filePath = DmAlmConfigReader.getInstance().getProperty(
 						getTemplateConfigProps(myrepository, template));
 			}
@@ -214,7 +214,7 @@ public class LinkedWorkItemRolesXML {
 			logger.error(e.getMessage(), e);
 
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 	}
 }

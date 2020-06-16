@@ -60,7 +60,7 @@ public class SissHistoryRevisionDAO {
 			
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connH2);
 		}
 
 		return max.get(0).longValue();
@@ -69,7 +69,6 @@ public class SissHistoryRevisionDAO {
 	public static Timestamp getMinRevision() throws Exception {
 		ConnectionManager cm = null;
 		Connection oracle = null;
-
 		List<Timestamp> max = new ArrayList<Timestamp>();
 		try{
 
@@ -90,7 +89,7 @@ public class SissHistoryRevisionDAO {
 			
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(oracle);
+			cm.closeConnection(oracle);
 		}
 
 		return max.get(0);
@@ -177,8 +176,8 @@ public class SissHistoryRevisionDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connOracle);
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connOracle);
+			cm.closeConnection(connH2);
 		}
 
 	}
@@ -198,7 +197,7 @@ public class SissHistoryRevisionDAO {
 			throw new DAOException(e);
 		} finally {
 			if (cm != null) {
-				cm.closeQuietly(OracleConnection);
+				cm.closeConnection(OracleConnection);
 			}
 		}
 	}

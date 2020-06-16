@@ -21,9 +21,10 @@ public class SireSchedeServizioRunnable implements Runnable {
 	public void run() {
 
 		try {
-			logger.debug("START fillSchedeServizio SIRE " + new Date());
+			logger.debug("START fillSchedeServizio.fill() " + new Date());
+			SIRESchedeServizioXML.delete();
 			SIRESchedeServizioXML.fillSIREHistorySchedeServizio();
-			logger.debug("STOP fillSchedeServizio SIRE " + new Date());
+			logger.debug("STOP fillSchedeServizio.fill() " + new Date());
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 

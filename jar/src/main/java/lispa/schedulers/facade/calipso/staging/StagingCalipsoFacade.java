@@ -56,7 +56,6 @@ public class StagingCalipsoFacade {
 			logger.debug("START StagingCalipsoFacade.fillDmAlmStagingFromExcel");
 			putExcelCalipso();
 			List<DmalmStgCalipsoSchedaServizio> listExcelCalipso = getDataExcelCalipso();
-			logger.debug(listExcelCalipso.size());
 			StgCalipsoSchedaServizioDAO.fillDmAlmStagingFromExcel(listExcelCalipso);
 			
 			logger.debug("STOP StagingCalipsoFacade.fillDmAlmStagingFromExcel");

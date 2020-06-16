@@ -88,7 +88,7 @@ public class SissHistoryProjectDAO {
 						stg_Projects.fkProjectgroup, stg_Projects.fkLead,
 						stg_Projects.cLockworkrecordsdate,
 						stg_Projects.cName, stg_Projects.cId,
-						stg_Projects.cDescription)
+						stg_Projects.cRev, stg_Projects.cDescription)
 				.values(row.get(fonteProjects.cTrackerprefix),
 								row.get(fonteProjects.cIsLocal),
 								row.get(fonteProjects.cPk),
@@ -110,7 +110,6 @@ public class SissHistoryProjectDAO {
 			}
 
 			connOracle.commit();
-			ConnectionManager.getInstance().dismiss();
 		} catch (Exception e) {
 			Throwable cause = e;
 			while (cause.getCause() != null)
@@ -122,15 +121,14 @@ public class SissHistoryProjectDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connOracle);
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connOracle);
+			cm.closeConnection(connH2);
 		}
 	}
 
 	public static long getMinRevision() throws Exception {
 		ConnectionManager cm = null;
 		Connection oracle = null;
-
 		List<Long> max = new ArrayList<Long>();
 		try {
 
@@ -151,7 +149,7 @@ public class SissHistoryProjectDAO {
 
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(oracle);
+			cm.closeConnection(oracle);
 		}
 
 		return max.get(0).longValue();
@@ -171,7 +169,7 @@ public class SissHistoryProjectDAO {
 
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(OracleConnection);
+			cm.closeConnection(OracleConnection);
 		}
 	}
 }

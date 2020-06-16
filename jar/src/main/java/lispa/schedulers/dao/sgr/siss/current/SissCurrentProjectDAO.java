@@ -124,8 +124,8 @@ public class SissCurrentProjectDAO {
 		n_righe_inserite=0;
 		throw new DAOException(e);
 	} finally {
-		cm.closeQuietly(OracleConnection);
-		cm.closeQuietly(H2Connection);
+		cm.closeConnection(OracleConnection);
+		cm.closeConnection(H2Connection);
 	}
 
 	return n_righe_inserite;

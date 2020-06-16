@@ -26,15 +26,15 @@ public class ProjectTemplateINI {
 
 	private static Logger logger = Logger.getLogger(ProjectTemplateINI.class);
 
-	static String url = "";
-	static String name = "";
-	static String psw = "";
-
 	static SVNRepository repository;
 	static ISVNAuthenticationManager authManager;
 
 	public ProjectTemplateINI(String myrepository) {
 
+		String url = "";
+		String name = "";
+		char[] psw = null;
+		
 		try {
 			if (myrepository.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SIRE)) {
 				url = DmAlmConfigReader.getInstance().getProperty(
@@ -42,7 +42,7 @@ public class ProjectTemplateINI {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+						DmAlmConfigReaderProperties.SIRE_SVN_PSW).toCharArray();
 			} else if (myrepository
 					.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SISS)) {
 				url = DmAlmConfigReader.getInstance().getProperty(
@@ -50,7 +50,7 @@ public class ProjectTemplateINI {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_PSW);
+						DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
 			}
 
 			repository = SVNRepositoryFactory.create(SVNURL

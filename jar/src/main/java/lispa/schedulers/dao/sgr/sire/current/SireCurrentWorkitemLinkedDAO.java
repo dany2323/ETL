@@ -105,8 +105,8 @@ public class SireCurrentWorkitemLinkedDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			n_righe_inserite=0;
 		} finally {
-			cm.closeQuietly(oracleConnection);
-			cm.closeQuietly(h2Connection);
+			cm.closeConnection(oracleConnection);
+			cm.closeConnection(h2Connection);
 		}
 
 		return n_righe_inserite;

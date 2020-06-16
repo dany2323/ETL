@@ -2,7 +2,6 @@ package lispa.schedulers.dao.mps;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -136,11 +135,10 @@ public class StgMpsRilasciVerbaliDAO {
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (IOException | SQLException e) {
-					logger.error(e.getMessage(), e);
-					throw new DAOException();
+				} catch (Exception e) {
+					ErrorManager.getInstance().exceptionOccurred(true, e);
 				} finally {
-					cm.closeQuietly(connection);
+					cm.closeConnection(connection);
 				}
 			}
 		}
@@ -158,7 +156,7 @@ public class StgMpsRilasciVerbaliDAO {
 		new SQLDeleteClause(connection, dialect, qstgmpsrilasciverbali)
 				.execute();
 
-		cm.closeQuietly(connection);
+		cm.closeConnection(connection);
 	}
 
 	public static void recoverStgMpsRilasciVerbali() throws SQLException, DAOException {
@@ -177,6 +175,6 @@ public class StgMpsRilasciVerbaliDAO {
 				.execute();
 
 		connection.commit();
-		cm.closeQuietly(connection);
+		cm.closeConnection(connection);
 	}
 }

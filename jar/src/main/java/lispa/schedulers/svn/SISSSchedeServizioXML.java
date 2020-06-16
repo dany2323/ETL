@@ -37,17 +37,15 @@ public class SISSSchedeServizioXML {
 
 	private static Logger logger = Logger.getLogger(SISSSchedeServizioXML.class);
 	private static DmAlmSchedeServizio stg_SchedeServizio = DmAlmSchedeServizio.dmalmSchedeServizio;
-	static String url = "";
-	static String name = "";
-	static String psw = "";
-	static SVNRepository repository;
-	static ISVNAuthenticationManager authManager;
 
 	public static void fillSISSHistorySchedeServizio() throws DAOException {
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
 		String filePath = "";
+		String url = "";
+		String name = "";
+		char[] psw = null;
 		
 		try {
 			cm = ConnectionManager.getInstance();
@@ -58,7 +56,7 @@ public class SISSSchedeServizioXML {
 			name = DmAlmConfigReader.getInstance().getProperty(
 					DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 			psw = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SISS_SVN_PSW);
+					DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
 			filePath = DmAlmConfigReader.getInstance().getProperty(
 					DmAlmConfigReaderProperties.SISS_SVN_SCHEDE_SERVIZIO_FILE);
 
@@ -124,7 +122,7 @@ public class SISSSchedeServizioXML {
 			logger.error(e.getMessage(), e);
 
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 	}
 
@@ -144,7 +142,7 @@ public class SISSSchedeServizioXML {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 
 		return check;

@@ -47,7 +47,7 @@ public class SireHistoryWorkitemLinkedDAO {
 			
 				
 			if(connH2.isClosed()) {
-				cm.closeQuietly(connH2);
+				cm.closeConnection(connH2);
 				connH2 = cm.getConnectionSIREHistory();
 			}
 			
@@ -111,8 +111,8 @@ public class SireHistoryWorkitemLinkedDAO {
 			}
 		}
 		finally {
-			cm.closeQuietly(connOracle);
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connOracle);
+			cm.closeConnection(connH2);
 		}
 		
 	}
@@ -133,7 +133,7 @@ public class SireHistoryWorkitemLinkedDAO {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 	}
 }

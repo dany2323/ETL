@@ -57,7 +57,7 @@ public class SireHistoryRevisionDAO {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(connH2);
+			cm.closeConnection(connH2);
 		}
 		return max.get(0).longValue();
 	}
@@ -65,7 +65,6 @@ public class SireHistoryRevisionDAO {
 	public static Timestamp getMinRevision() throws DAOException {
 		ConnectionManager cm = null;
 		Connection oracle = null;
-
 		List<Timestamp> max = new ArrayList<Timestamp>();
 		try{
 
@@ -84,7 +83,7 @@ public class SireHistoryRevisionDAO {
 			logger.error(e.getMessage(), e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(oracle);
+			cm.closeConnection(oracle);
 		}
 
 		return max.get(0);
@@ -171,8 +170,8 @@ public class SireHistoryRevisionDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connH2);
-			cm.closeQuietly(connOracle);
+			cm.closeConnection(connH2);
+			cm.closeConnection(connOracle);
 		}
 	}
 	
@@ -189,7 +188,26 @@ public class SireHistoryRevisionDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		} finally {
-			cm.closeQuietly(OracleConnection);
+			cm.closeConnection(OracleConnection);
+		}
+	}
+	
+	public static void delete(Timestamp minRevision, long maxRevision) throws DAOException {
+		ConnectionManager cm = null;
+		Connection OracleConnection = null;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		try {
+			cm = ConnectionManager.getInstance();
+			OracleConnection = cm.getConnectionOracle();
+			new SQLDeleteClause(OracleConnection, dialect, stg_Revisions)
+			.where(stg_Revisions.cCreated.gt(minRevision))
+			.where(stg_Revisions.cName.castToNum(Long.class).loe(maxRevision))
+				.execute();
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(OracleConnection);
 		}
 	}
 }

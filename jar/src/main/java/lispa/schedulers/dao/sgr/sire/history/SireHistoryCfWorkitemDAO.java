@@ -112,8 +112,8 @@ public class SireHistoryCfWorkitemDAO {
 				insert.execute();
 			}
 
-			cm.closeQuietly(connH2);
-			cm.closeQuietly(connOracle);
+			cm.closeConnection(connH2);
+			cm.closeConnection(connOracle);
 			
 			ErrorManager.getInstance().resetCFDeadlock();
 		} catch (Exception e) {
@@ -127,8 +127,8 @@ public class SireHistoryCfWorkitemDAO {
 				ErrorManager.getInstance().exceptionOccurred(true, e);
 			}
 		} finally {
-			cm.closeQuietly(connH2);
-			cm.closeQuietly(connOracle);
+			cm.closeConnection(connH2);
+			cm.closeConnection(connOracle);
 		}
 	}
 }

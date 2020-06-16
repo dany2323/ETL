@@ -2,14 +2,11 @@ package lispa.schedulers.dao.mps;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -197,11 +194,10 @@ public class StgMpsRespOffertaDAO {
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (IOException | SQLException | NoSuchAlgorithmException e) {
-					logger.error(e.getMessage(), e);
-					throw new DAOException();
+				} catch (Exception e) {
+					ErrorManager.getInstance().exceptionOccurred(true, e);
 				} finally {
-					cm.closeQuietly(connection);
+					cm.closeConnection(connection);
 				}
 			}
 		}
@@ -219,7 +215,7 @@ public class StgMpsRespOffertaDAO {
 		new SQLDeleteClause(connection, dialect, qstgmpsrespofferta)
 				.execute();
 
-		cm.closeQuietly(connection);
+		cm.closeConnection(connection);
 	}
 
 	public static void recoverStgMpsRespOfferta() throws SQLException, DAOException {
@@ -236,6 +232,6 @@ public class StgMpsRespOffertaDAO {
 				.execute();
 
 		connection.commit();
-		cm.closeQuietly(connection);
+		cm.closeConnection(connection);
 	}
 }

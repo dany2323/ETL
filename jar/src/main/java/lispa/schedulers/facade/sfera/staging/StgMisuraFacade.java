@@ -2,7 +2,6 @@ package lispa.schedulers.facade.sfera.staging;
 
 import java.util.Date;
 import lispa.schedulers.dao.sfera.StgMisuraDAO;
-import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ErrorManager;
 import org.apache.log4j.Logger;
@@ -16,8 +15,7 @@ public class StgMisuraFacade {
 			logger.debug("START FillStgMisura "+new Date());
 			StgMisuraDAO.fillStgMisura();
 			logger.debug("STOP FillStgMisura "+new Date());
-		} catch (DAOException e) {
-			logger.error(e.getMessage(), e);
+		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 		

@@ -16,14 +16,13 @@ import org.apache.log4j.Logger;
 public class StgCalipsoSchedaServizioDAO {
 	private static Logger logger = Logger.getLogger(StgCalipsoSchedaServizioDAO.class);
 
-	public static void deleteDmAlmStagingFromExcel() {
+	public static void deleteDmAlmStagingFromExcel() throws DAOException {
 
-		ConnectionManager cm = null;
+		ConnectionManager cm = ConnectionManager.getInstance();
 		Connection connection = null;
 		CallableStatement cs = null;
 		
 		try {
-			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
@@ -31,14 +30,14 @@ public class StgCalipsoSchedaServizioDAO {
 
 			cs = connection.prepareCall(sql);
 			cs.execute();
+			cs.close();
 			
 			connection.commit();
 
 		} catch (SQLException | DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		} finally {
-			cm.closeQuietly(cs);
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 	}
 	
@@ -71,7 +70,7 @@ public class StgCalipsoSchedaServizioDAO {
 			logger.error(e.getMessage(), e);
 			throw new DAOException();
 		} finally {
-			cm.closeQuietly(connection);
+			cm.closeConnection(connection);
 		}
 	}
 }

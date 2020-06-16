@@ -2,13 +2,11 @@ package lispa.schedulers.dao.mps;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -186,11 +184,10 @@ public class StgMpsRilasciDAO {
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (IOException | SQLException e) {
-					logger.error(e.getMessage(), e);
-					throw new DAOException();
+				} catch (Exception e) {
+					ErrorManager.getInstance().exceptionOccurred(true, e);
 				} finally {
-					cm.closeQuietly(connection);
+					cm.closeConnection(connection);
 				}
 			}
 		}
@@ -207,7 +204,7 @@ public class StgMpsRilasciDAO {
 		QDmalmStgMpsRilasci qstgmpsrilasci = QDmalmStgMpsRilasci.dmalmStgMpsRilasci;
 		new SQLDeleteClause(connection, dialect, qstgmpsrilasci).execute();
 
-		cm.closeQuietly(connection);
+		cm.closeConnection(connection);
 	}
 
 	public static void recoverStgMpsRilasci() throws SQLException, DAOException {
@@ -223,6 +220,6 @@ public class StgMpsRilasciDAO {
 		new SQLDeleteClause(connection, dialect, qstgmpsrilasci).execute();
 
 		connection.commit();
-		cm.closeQuietly(connection);
+		cm.closeConnection(connection);
 	}
 }

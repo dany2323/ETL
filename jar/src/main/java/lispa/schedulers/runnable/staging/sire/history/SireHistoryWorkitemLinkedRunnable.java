@@ -3,24 +3,18 @@ package lispa.schedulers.runnable.staging.sire.history;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_DEADLOCK_WAIT;
 
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemLinkedDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.apache.log4j.Logger;
 
 public class SireHistoryWorkitemLinkedRunnable implements Runnable{
-	private Map<EnumWorkitemType, Long> minRevisionByType;
-	private long polarion_maxRevision;
 	public Logger logger;
 
 
-	public SireHistoryWorkitemLinkedRunnable(Map<EnumWorkitemType, Long> minRevisionByType ,long polarion_maxRevision,Logger logger) {
-		this.minRevisionByType = minRevisionByType;
-		this.polarion_maxRevision = polarion_maxRevision;
+	public SireHistoryWorkitemLinkedRunnable(Logger logger) {
 		this.logger = logger;
 	}
 

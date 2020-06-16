@@ -8,7 +8,7 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>fonte</artifactId>
+	<artifactId>etl-fonte</artifactId>
 	<packaging>jar</packaging>
 	<name>jar</name>
 
