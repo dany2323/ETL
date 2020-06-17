@@ -14,7 +14,7 @@ public class DmalmRichiestaSupporto implements SQLData {
 	private String uriRichiestaSupporto;
 	private Integer dmalmRichiestaSupportoPk;
 	private String stgPk;
-	private Integer dmalmProjectFk02;
+	private Long dmalmProjectFk02;
 	private Integer dmalmUserFk06;
 	private String cdRichiestaSupporto;
 	private java.sql.Timestamp dataRisoluzioneRichSupporto;
@@ -138,10 +138,10 @@ public class DmalmRichiestaSupporto implements SQLData {
 	public void setStgPk(String stgPk) {
 		this.stgPk = stgPk;
 	}
-	public Integer getDmalmProjectFk02() {
+	public Long getDmalmProjectFk02() {
 		return dmalmProjectFk02;
 	}
-	public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+	public void setDmalmProjectFk02(Long dmalmProjectFk02) {
 		this.dmalmProjectFk02 = dmalmProjectFk02;
 	}
 	public Integer getDmalmUserFk06() {
@@ -345,7 +345,7 @@ public class DmalmRichiestaSupporto implements SQLData {
 		uriRichiestaSupporto = stream.readString();
 		dmalmRichiestaSupportoPk = stream.readInt();
 		stgPk = stream.readString();
-		dmalmProjectFk02 = stream.readInt();
+		dmalmProjectFk02 = stream.readLong();
 		dmalmUserFk06 = stream.readInt();
 		cdRichiestaSupporto = stream.readString();
 		dataRisoluzioneRichSupporto = stream.readTimestamp();
@@ -373,7 +373,7 @@ public class DmalmRichiestaSupporto implements SQLData {
 	    stream.writeString(uriRichiestaSupporto);
 	    stream.writeInt(dmalmRichiestaSupportoPk);
 		stream.writeString(stgPk);
-		stream.writeInt(dmalmProjectFk02);
+		stream.writeLong(dmalmProjectFk02);
 		stream.writeInt(dmalmUserFk06);
 		stream.writeString(cdRichiestaSupporto);
 		stream.writeTimestamp(dataRisoluzioneRichSupporto);

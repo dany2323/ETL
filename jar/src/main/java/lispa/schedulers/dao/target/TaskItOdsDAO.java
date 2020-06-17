@@ -55,7 +55,7 @@ public class TaskItOdsDAO {
 			Timestamp dataEsecuzione) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		List <Integer> listPk= new ArrayList<Integer>();
+		List <Long> listPk= new ArrayList<>();
 		
 		try {
 			cm = ConnectionManager.getInstance();

@@ -14,9 +14,9 @@ public class DmalmProgramma {
 
     private String descrizioneProgramma;
 
-    private Integer dmalmProgrammaPk;
+    private Long dmalmProgrammaPk;
 
-    private Integer dmalmProjectFk02;
+    private Long dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -183,19 +183,19 @@ public class DmalmProgramma {
     }
  
 
-    public Integer getDmalmProgrammaPk() {
+    public Long getDmalmProgrammaPk() {
         return dmalmProgrammaPk;
     }
 
-    public void setDmalmProgrammaPk(Integer dmalmProgrammaPk) {
+    public void setDmalmProgrammaPk(Long dmalmProgrammaPk) {
         this.dmalmProgrammaPk = dmalmProgrammaPk;
     }
 
-    public Integer getDmalmProjectFk02() {
+    public Long getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

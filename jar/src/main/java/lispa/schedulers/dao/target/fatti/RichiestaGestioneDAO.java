@@ -76,12 +76,12 @@ public class RichiestaGestioneDAO {
 				bean.setDataDisponibilita(rs.getTimestamp("CF_data_disp"));
 				bean.setDescrizioneRichiestaGest(rs
 						.getString("DESCRIZIONE_RICH_GESTIONE"));
-				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 				bean.setDmalmRichiestaGestPk(rs
-						.getInt("DMALM_RICH_GESTIONE_PK"));
+						.getLong("DMALM_RICH_GESTIONE_PK"));
 				bean.setDsAutoreRichiestaGest(rs
 						.getString("NOME_AUTORE_RICH_GESTIONE"));
 				bean.setDtCaricamentoRichiestaGest(dataEsecuzione);
@@ -432,7 +432,7 @@ public class RichiestaGestioneDAO {
 
 	}
 
-	public static DmalmRichiestaGestione getRichiestaGestione(Integer pk)
+	public static DmalmRichiestaGestione getRichiestaGestione(Long pk)
 			throws DAOException {
 
 		ConnectionManager cm = null;
@@ -513,7 +513,7 @@ public class RichiestaGestioneDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> list = new ArrayList<Tuple>();
+		List<Tuple> list = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();

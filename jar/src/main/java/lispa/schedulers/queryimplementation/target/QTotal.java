@@ -24,7 +24,7 @@ public class QTotal extends com.mysema.query.sql.RelationalPathBase<Total> {
 
     public final StringPath codice = createString("CODICE");
 
-    public final NumberPath<Integer> dmalmPk = createNumber("DMALM_PK", Integer.class);
+    public final NumberPath<Long> dmalmPk = createNumber("DMALM_PK", Long.class);
 
     public final DateTimePath<java.sql.Timestamp> dtStoricizzazione = createDateTime("DT_STORICIZZAZIONE", java.sql.Timestamp.class);
 

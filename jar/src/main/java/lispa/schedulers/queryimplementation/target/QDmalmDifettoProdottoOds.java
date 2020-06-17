@@ -25,9 +25,9 @@ public class QDmalmDifettoProdottoOds extends com.mysema.query.sql.RelationalPat
     
     public final StringPath cdDifetto = createString("IDENTIFICATIVO_DIFETTO");
     
-    public final NumberPath<Integer> dmalmDifettoProdottoPk = createNumber("DMALM_DIFETTO_PRODOTTO_PK", Integer.class);
+    public final NumberPath<Long> dmalmDifettoProdottoPk = createNumber("DMALM_DIFETTO_PRODOTTO_PK", Long.class);
     
-    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
+    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
     
     public final NumberPath<Integer> dmalmUserFk06 = createNumber("DMALM_USER_FK_06", Integer.class);
     

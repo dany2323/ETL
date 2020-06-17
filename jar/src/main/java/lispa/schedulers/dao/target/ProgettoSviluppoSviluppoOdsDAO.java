@@ -64,7 +64,7 @@ public class ProgettoSviluppoSviluppoOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-		List <Integer> listPk= new ArrayList<>();
+		List <Long> listPk= new ArrayList<>();
 		
 		try {
 			cm = ConnectionManager.getInstance();

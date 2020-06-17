@@ -120,7 +120,7 @@ public class RfcOdsDAO {
 				bean = new DmalmRfc();
 				bean.setIdRepository(rs.getString("CD_RFC"));
 				bean.setDmalmRfcPk(rs.getInt("DMALM_RFC_PK"));
-				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmTempoFk04(rs.getInt("DMALM_TEMPO_FK_04"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));

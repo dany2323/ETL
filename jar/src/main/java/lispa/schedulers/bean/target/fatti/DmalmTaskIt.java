@@ -16,13 +16,13 @@ public class DmalmTaskIt {
 
     private String descrizioneTaskIt;
 
-    private Integer dmalmProjectFk02;
+    private Long dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
     private Integer dmalmStrutturaOrgFk01;
 
-    private Integer dmalmTaskItPk;
+    private Long dmalmTaskItPk;
 
     private Integer dmalmTempoFk04;
     
@@ -134,11 +134,11 @@ public class DmalmTaskIt {
         this.descrizioneTaskIt = descrizioneTaskIt;
     }
 
-    public Integer getDmalmProjectFk02() {
+    public Long getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 
@@ -158,11 +158,11 @@ public class DmalmTaskIt {
         this.dmalmStrutturaOrgFk01 = dmalmStrutturaOrgFk01;
     }
 
-    public Integer getDmalmTaskItPk() {
+    public Long getDmalmTaskItPk() {
         return dmalmTaskItPk;
     }
 
-    public void setDmalmTaskItPk(Integer dmalmTaskItPk) {
+    public void setDmalmTaskItPk(Long dmalmTaskItPk) {
         this.dmalmTaskItPk = dmalmTaskItPk;
     }
 

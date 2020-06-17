@@ -119,7 +119,7 @@ public class LinkedWorkitemsDAO {
 
 		ConnectionManager cm = null;
 		Connection conn = null;
-		List<Integer> pk = new ArrayList<Integer>();
+		List<Long> pk = new ArrayList<>();
 
 		try {
 

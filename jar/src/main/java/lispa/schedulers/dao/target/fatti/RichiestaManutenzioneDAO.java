@@ -86,12 +86,12 @@ public class RichiestaManutenzioneDAO {
 						.getTimestamp("DATA_INIZIO_PIANIFICATO"));
 				bean.setDescrizioneRichManutenzione(rs
 						.getString("DESCRIZIONE_RICH_MAN"));
-				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 				bean.setDmalmRichManutenzionePk(rs
-						.getInt("DMALM_RICH_MANUTENZIONE_PK"));
+						.getLong("DMALM_RICH_MANUTENZIONE_PK"));
 				bean.setDsAutoreRichManutenzione(rs
 						.getString("NOME_AUTORE_RICH_MAN"));
 				bean.setDtCaricamentoRichManut(dataEsecuzione);
@@ -485,7 +485,7 @@ public class RichiestaManutenzioneDAO {
 
 	}
 
-	public static DmalmRichiestaManutenzione getRichiestaManutenzione(Integer pk)
+	public static DmalmRichiestaManutenzione getRichiestaManutenzione(Long pk)
 			throws DAOException {
 
 		ConnectionManager cm = null;

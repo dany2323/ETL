@@ -18,9 +18,9 @@ public class DmalmRichiestaGestione {
 
     private String descrizioneRichiestaGest;
 
-    private Integer dmalmProjectFk02;
+    private Long dmalmProjectFk02;
 
-    private Integer dmalmRichiestaGestPk;
+    private Long dmalmRichiestaGestPk;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -137,19 +137,19 @@ public class DmalmRichiestaGestione {
         this.descrizioneRichiestaGest = descrizioneRichiestaGest;
     }
 
-    public Integer getDmalmProjectFk02() {
+    public Long getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 
-    public Integer getDmalmRichiestaGestPk() {
+    public Long getDmalmRichiestaGestPk() {
         return dmalmRichiestaGestPk;
     }
 
-    public void setDmalmRichiestaGestPk(Integer dmalmRichiestaGestPk) {
+    public void setDmalmRichiestaGestPk(Long dmalmRichiestaGestPk) {
         this.dmalmRichiestaGestPk = dmalmRichiestaGestPk;
     }
 

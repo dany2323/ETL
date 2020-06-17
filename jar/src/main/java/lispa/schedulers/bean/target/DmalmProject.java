@@ -18,7 +18,7 @@ public class DmalmProject {
     
     private Integer dmalmUnitaOrganizzativaFlatFk;
 
-    private Integer dmalmProjectPk;
+    private Long dmalmProjectPk;
 
     private java.sql.Timestamp dtCaricamento;
 
@@ -86,11 +86,11 @@ public class DmalmProject {
         this.dmalmAreaTematicaFk01 = dmalmAreaTematicaFk01;
     }
 
-    public Integer getDmalmProjectPk() {
+    public Long getDmalmProjectPk() {
         return dmalmProjectPk;
     }
 
-    public void setDmalmProjectPk(Integer dmalmProjectPk) {
+    public void setDmalmProjectPk(Long dmalmProjectPk) {
         this.dmalmProjectPk = dmalmProjectPk;
     }
 

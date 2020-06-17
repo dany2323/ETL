@@ -18,7 +18,7 @@ public class DmalmTestcase {
 
     private Integer dmalmAreaTematicaFk05;
 
-    private Integer dmalmProjectFk02;
+    private Long dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -28,7 +28,7 @@ public class DmalmTestcase {
     
     private Integer dmalmUserFk06;
 
-    private Integer dmalmTestcasePk;
+    private Long dmalmTestcasePk;
 
     private String dsAutoreTestcase;
 
@@ -137,11 +137,11 @@ public class DmalmTestcase {
         this.dmalmAreaTematicaFk05 = dmalmAreaTematicaFk05;
     }
 
-    public Integer getDmalmProjectFk02() {
+    public Long getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 
@@ -169,11 +169,11 @@ public class DmalmTestcase {
         this.dmalmTempoFk04 = dmalmTempoFk04;
     }
 
-    public Integer getDmalmTestcasePk() {
+    public Long getDmalmTestcasePk() {
         return dmalmTestcasePk;
     }
 
-    public void setDmalmTestcasePk(Integer dmalmTestcasePk) {
+    public void setDmalmTestcasePk(Long dmalmTestcasePk) {
         this.dmalmTestcasePk = dmalmTestcasePk;
     }
 

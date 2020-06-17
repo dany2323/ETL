@@ -34,7 +34,7 @@ public class DifettoProdottoOdsDAO {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
-		List <Integer> listDifettoPk= new ArrayList<>();
+		List <Long> listDifettoPk= new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();

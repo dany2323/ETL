@@ -18,8 +18,8 @@ public class QDmalmAsmProjectEl extends com.mysema.query.sql.RelationalPathBase<
 	public static final QDmalmAsmProjectEl dmalmAsmProject = new QDmalmAsmProjectEl(
 			"DMALM_ASM_PROJECT_PRODOTTI_ARC");
 
-	public final NumberPath<Integer> dmalmProjectPk = createNumber(
-			"DMALM_PROJECT_PK", Integer.class);
+	public final NumberPath<Long> dmalmProjectPk = createNumber(
+			"DMALM_PROJECT_PK", Long.class);
 
 	public final NumberPath<Integer> dmalmAsmPk = createNumber(
 			"DMALM_ASM_PK", Integer.class);

@@ -25,9 +25,9 @@ public class DmalmClassificatore {
 	
 	private Integer dmalmAreaTematicaFk05;
 	
-	private Integer dmalmClassificatorePk;
+	private Long dmalmClassificatorePk;
 	
-	private Integer dmalmProjectFk02;
+	private Long dmalmProjectFk02;
 	
 	private Integer dmalmStatoWorkitemFk03;
 	
@@ -202,11 +202,11 @@ public class DmalmClassificatore {
 		this.dmalmAreaTematicaFk05 = dmalmAreaTematicaFk05;
 	}
 
-	public Integer getDmalmClassificatorePk() {
+	public Long getDmalmClassificatorePk() {
 		return dmalmClassificatorePk;
 	}
 
-	public void setDmalmClassificatorePk(Integer dmalmClassificatorePk) {
+	public void setDmalmClassificatorePk(Long dmalmClassificatorePk) {
 		this.dmalmClassificatorePk = dmalmClassificatorePk;
 	}
 
@@ -306,11 +306,11 @@ public class DmalmClassificatore {
 		this.titoloClassificatore = titoloClassificatore;
 	}
 
-	public Integer getDmalmProjectFk02() {
+	public Long getDmalmProjectFk02() {
 		return dmalmProjectFk02;
 	}
 
-	public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+	public void setDmalmProjectFk02(Long dmalmProjectFk02) {
 		this.dmalmProjectFk02 = dmalmProjectFk02;
 	}
 

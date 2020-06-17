@@ -25,8 +25,8 @@ public class QDmalmProjectProdotto extends
 	public static final QDmalmProjectProdotto dmalmProjectProdotto = new QDmalmProjectProdotto(
 			"DMALM_PROJECT_PRODOTTO");
 
-	public final NumberPath<Integer> dmalmProjectPk = createNumber("DMALM_PROJECT_PK",
-			Integer.class);
+	public final NumberPath<Long> dmalmProjectPk = createNumber("DMALM_PROJECT_PK",
+			Long.class);
 
 	public final NumberPath<Integer> dmalmProdottoSeq = createNumber(
 			"DMALM_PRODOTTO_SEQ", Integer.class);

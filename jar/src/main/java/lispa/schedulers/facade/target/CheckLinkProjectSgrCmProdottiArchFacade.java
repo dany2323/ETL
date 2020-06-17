@@ -226,7 +226,7 @@ public class CheckLinkProjectSgrCmProdottiArchFacade {
 			for (Tuple productRow : relList) {
 				if (productRow != null) {
 					DmalmProjectProdottiArchitetture relazione = new DmalmProjectProdottiArchitetture();
-					relazione.setDmalmProjectPk(0);
+					relazione.setDmalmProjectPk(0L);
 					relazione.setDmalmProdottoPk(productRow
 							.get(dmalmProdottiArchitetture.prodottoPk));
 

@@ -16,9 +16,9 @@ public class DmalmPei {
 
     private String descrizionePei;
 
-    private Integer dmalmPeiPk;
+    private Long dmalmPeiPk;
 
-    private Integer dmalmProjectFk02;
+    private Long dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -117,19 +117,19 @@ public class DmalmPei {
         this.descrizionePei = descrizionePei;
     }
 
-    public Integer getDmalmPeiPk() {
+    public Long getDmalmPeiPk() {
         return dmalmPeiPk;
     }
 
-    public void setDmalmPeiPk(Integer dmalmPeiPk) {
+    public void setDmalmPeiPk(Long dmalmPeiPk) {
         this.dmalmPeiPk = dmalmPeiPk;
     }
 
-    public Integer getDmalmProjectFk02() {
+    public Long getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

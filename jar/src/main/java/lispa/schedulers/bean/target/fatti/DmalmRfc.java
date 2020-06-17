@@ -13,7 +13,7 @@ public class DmalmRfc implements SQLData {
 	private String idRepository;
 	private Integer dmalmRfcPk;
 	private String stgPk;
-	private Integer dmalmProjectFk02;
+	private Long dmalmProjectFk02;
 	private Integer dmalmUserFk06;
 	private String cdRfc;
 	private Integer dmalmStatoWorkitemFk03;
@@ -62,10 +62,10 @@ public class DmalmRfc implements SQLData {
 	public void setStgPk(String stgPk) {
 		this.stgPk = stgPk;
 	}
-	public Integer getDmalmProjectFk02() {
+	public Long getDmalmProjectFk02() {
 		return dmalmProjectFk02;
 	}
-	public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+	public void setDmalmProjectFk02(Long dmalmProjectFk02) {
 		this.dmalmProjectFk02 = dmalmProjectFk02;
 	}
 	public Integer getDmalmUserFk06() {
@@ -174,7 +174,7 @@ public class DmalmRfc implements SQLData {
 		idRepository = stream.readString();
 		dmalmRfcPk = stream.readInt();
 		stgPk = stream.readString();
-		dmalmProjectFk02 = stream.readInt();
+		dmalmProjectFk02 = stream.readLong();
 		dmalmUserFk06 = stream.readInt();
 		cdRfc = stream.readString();
 		dmalmStatoWorkitemFk03 = stream.readInt();
@@ -216,7 +216,7 @@ public class DmalmRfc implements SQLData {
 		stream.writeString(idRepository);
 		stream.writeInt(dmalmRfcPk);
 	    stream.writeString(stgPk);
-		stream.writeInt(dmalmProjectFk02);
+		stream.writeLong(dmalmProjectFk02);
 		stream.writeInt(dmalmUserFk06);
 		stream.writeString(cdRfc);
 		stream.writeInt(dmalmStatoWorkitemFk03);

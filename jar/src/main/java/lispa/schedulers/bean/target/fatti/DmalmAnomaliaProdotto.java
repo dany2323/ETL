@@ -14,11 +14,11 @@ public class DmalmAnomaliaProdotto {
 
     private String descrizioneAnomalia;
 
-    private Integer dmalmAnomaliaProdottoPk;
+    private Long dmalmAnomaliaProdottoPk;
 
     private Integer dmalmAreaTematicaFk05;
 
-    private Integer dmalmProjectFk02;
+    private Long dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -150,11 +150,11 @@ public class DmalmAnomaliaProdotto {
         this.descrizioneAnomalia = descrizioneAnomalia;
     }
 
-    public Integer getDmalmAnomaliaProdottoPk() {
+    public Long getDmalmAnomaliaProdottoPk() {
         return dmalmAnomaliaProdottoPk;
     }
 
-    public void setDmalmAnomaliaProdottoPk(Integer dmalmAnomaliaProdottoPk) {
+    public void setDmalmAnomaliaProdottoPk(Long dmalmAnomaliaProdottoPk) {
         this.dmalmAnomaliaProdottoPk = dmalmAnomaliaProdottoPk;
     }
 
@@ -166,11 +166,11 @@ public class DmalmAnomaliaProdotto {
         this.dmalmAreaTematicaFk05 = dmalmAreaTematicaFk05;
     }
 
-    public Integer getDmalmProjectFk02() {
+    public Long getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

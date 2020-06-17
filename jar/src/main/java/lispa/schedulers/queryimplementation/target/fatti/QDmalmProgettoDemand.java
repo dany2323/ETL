@@ -49,9 +49,9 @@ public class QDmalmProgettoDemand extends com.mysema.query.sql.RelationalPathBas
 
     public final StringPath descrizioneProgettoDemand = createString("DESCRIZIONE_PROGETTO_DEMAND");
 
-    public final NumberPath<Integer> dmalmProgettoDemandPk = createNumber("DMALM_PROGETTO_DEMAND_PK", Integer.class);
+    public final NumberPath<Long> dmalmProgettoDemandPk = createNumber("DMALM_PROGETTO_DEMAND_PK", Long.class);
 
-    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
+    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
 
     public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
 

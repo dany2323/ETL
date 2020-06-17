@@ -46,9 +46,9 @@ public class QDmalmProgettoSviluppoSvil extends com.mysema.query.sql.RelationalP
 
     public final NumberPath<Integer> dmalmAreaTematicaFk05 = createNumber("DMALM_AREA_TEMATICA_FK_05", Integer.class);
 
-    public final NumberPath<Integer> dmalmProgSvilSPk = createNumber("DMALM_PROG_SVIL_S_PK", Integer.class);
+    public final NumberPath<Long> dmalmProgSvilSPk = createNumber("DMALM_PROG_SVIL_S_PK", Long.class);
 
-    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
+    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
 
     public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
 

@@ -22,7 +22,7 @@ public class SissHistoryCfWorkitem extends com.mysema.query.sql.RelationalPathBa
 
     public static final SissHistoryCfWorkitem cfWorkitem = new SissHistoryCfWorkitem("DM_ALM_H_SISS_CF_WORKITEM");
 
-    public final NumberPath<Integer> cBooleanValue = createNumber("C_BOOLEAN_VALUE", Integer.class);
+    public final StringPath cBooleanValue = createString("C_BOOLEAN_VALUE");
 
     public final NumberPath<java.math.BigDecimal> cCurrencyValue = createNumber("C_CURRENCY_VALUE", java.math.BigDecimal.class);
 

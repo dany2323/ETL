@@ -5,7 +5,7 @@ import javax.annotation.Generated;
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class SireHistoryCfWorkitem {
 
-	private Boolean cBooleanValue;
+	private String cBooleanValue;
 
 	private java.math.BigDecimal cCurrencyValue;
 
@@ -29,11 +29,11 @@ public class SireHistoryCfWorkitem {
 
 	private String fkWorkitem;
 
-	public Boolean getcBooleanValue() {
+	public String getcBooleanValue() {
 		return cBooleanValue;
 	}
 
-	public void setcBooleanValue(Boolean cBooleanValue) {
+	public void setcBooleanValue(String cBooleanValue) {
 		this.cBooleanValue = cBooleanValue;
 	}
 

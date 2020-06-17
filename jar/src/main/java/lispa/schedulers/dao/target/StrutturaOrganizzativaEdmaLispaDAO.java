@@ -378,7 +378,7 @@ public class StrutturaOrganizzativaEdmaLispaDAO {
 	}
 
 	public static int getIdStrutturaOrganizzativaAnomaliaByCodice(
-			String codice, int anomaliaPk) throws DAOException {
+			String codice, Long anomaliaPk) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 

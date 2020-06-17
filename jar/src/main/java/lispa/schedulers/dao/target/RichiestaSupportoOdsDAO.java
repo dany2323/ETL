@@ -132,7 +132,7 @@ public class RichiestaSupportoOdsDAO {
 				bean.setUriRichiestaSupporto(rs.getString("URI_RICHIESTA_SUPPORTO"));
 				bean.setDmalmRichiestaSupportoPk(rs.getInt("DMALM_RICH_SUPPORTO_PK"));
 				bean.setStgPk(rs.getString("STG_PK"));
-				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 				bean.setCdRichiestaSupporto(rs.getString("CD_RICHIESTA_SUPPORTO"));
 				bean.setDataRisoluzioneRichSupporto(rs.getTimestamp("DATA_RISOLUZIONE_RICH_SUPPORTO"));

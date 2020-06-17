@@ -30,7 +30,7 @@ public class QDmalmProject extends com.mysema.query.sql.RelationalPathBase<Dmalm
     
     public final NumberPath<Integer> dmalmUnitaOrganizzativaFlatFk = createNumber("DMALM_UNITAORG_FLAT_FK_04", Integer.class);
 
-    public final NumberPath<Integer> dmalmProjectPrimaryKey = createNumber("DMALM_PROJECT_PK", Integer.class);
+    public final NumberPath<Long> dmalmProjectPrimaryKey = createNumber("DMALM_PROJECT_PK", Long.class);
 
     public final DateTimePath<java.sql.Timestamp> dtCaricamento = createDateTime("DT_CARICAMENTO", java.sql.Timestamp.class);
 

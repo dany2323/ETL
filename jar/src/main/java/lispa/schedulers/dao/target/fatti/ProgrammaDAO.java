@@ -70,8 +70,8 @@ public class ProgrammaDAO {
 				bean.setCdProgramma(rs.getString("CD_PROGRAMMA"));
 				bean.setDescrizioneProgramma(rs
 						.getString("DESCRIZIONE_PROGRAMMA"));
-				bean.setDmalmProgrammaPk(rs.getInt("DMALM_PROGRAMMA_PK"));
-				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				bean.setDmalmProgrammaPk(rs.getLong("DMALM_PROGRAMMA_PK"));
+				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -425,7 +425,7 @@ public class ProgrammaDAO {
 
 	}
 
-	public static DmalmProgramma getProgramma(Integer pk) throws DAOException {
+	public static DmalmProgramma getProgramma(Long pk) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -506,7 +506,7 @@ public class ProgrammaDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> list = new ArrayList<Tuple>();
+		List<Tuple> list = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();

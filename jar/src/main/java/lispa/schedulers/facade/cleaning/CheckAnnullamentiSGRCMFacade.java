@@ -361,7 +361,7 @@ public class CheckAnnullamentiSGRCMFacade {
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				ConnectionManager cm = null;
 				Connection conn = null;
-				List<Integer> pk = new ArrayList<Integer>();
+				List<Long> pk = new ArrayList<>();
 				for (DmalmProject p : pList) {
 					String idProject = p.getIdProject();
 					String repo = p.getIdRepository();
@@ -386,7 +386,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.eq(new Double(1)))
 											.list(anomalia.dmalmAnomaliaProdottoPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmAnomaliaProdotto a = AnomaliaProdottoDAO
 													.getAnomaliaProdotto(i);
@@ -429,7 +429,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(difetto.dmalmDifettoProdottoPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmDifettoProdotto d = DifettoDAO
 													.getDifetto(i);
@@ -472,7 +472,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(progettoSviluppoSvil.dmalmProgSvilSPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmProgettoSviluppoSvil pss = ProgettoSviluppoSviluppoDAO
 													.getProgettoSviluppoSviluppo(i);
@@ -512,7 +512,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(documento.dmalmDocumentoPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmDocumento d = DocumentoDAO
 													.getDocumento(i);
@@ -550,7 +550,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(manutenzione.dmalmManutenzionePk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmManutenzione m = ManutenzioneDAO
 													.getManutenzione(i);
 											if (m != null) {
@@ -587,7 +587,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(testcase.dmalmTestcasePk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmTestcase t = TestCaseDAO
 													.getTestCase(i);
@@ -625,7 +625,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(task.dmalmTaskPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmTask t = TaskDAO.getTask(i);
 											if (t != null) {
@@ -660,7 +660,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(releaseDiProgetto.dmalmReleasediprogPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmReleaseDiProgetto r = ReleaseDiProgettoDAO
 													.getReleaseDiProgetto(i);
@@ -700,7 +700,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(programma.dmalmProgrammaPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmProgramma d = ProgrammaDAO
 													.getProgramma(i);
@@ -738,7 +738,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(sottoprogramma.dmalmSottoprogrammaPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 
 											DmalmSottoprogramma s = SottoprogrammaDAO
 													.getSottoprogramma(i);
@@ -778,7 +778,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(progettoDemand.dmalmProgettoDemandPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmProgettoDemand d = ProgettoDemandDAO
 													.getProgettoDemand(i);
 											if (d != null) {
@@ -817,7 +817,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(progettoSviluppoDem.dmalmProgSvilDPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmProgettoSviluppoDem d = ProgettoSviluppoDemandDAO
 													.getProgettoSviluppoDemand(i);
 											if (d != null) {
@@ -856,7 +856,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(richiestaManutenzione.dmalmRichManutenzionePk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmRichiestaManutenzione r = RichiestaManutenzioneDAO
 													.getRichiestaManutenzione(i);
 											if (r != null) {
@@ -895,7 +895,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(fase.dmalmFasePk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmFase f = FaseDAO.getFase(i);
 											if (f != null) {
 												if (f.getDtStoricizzazione()
@@ -929,7 +929,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(pei.dmalmPeiPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmPei f = PeiDAO.getPei(i);
 											if (f != null) {
 												if (f.getDtStoricizzazione()
@@ -964,7 +964,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(progettoEse.dmalmProgettoEsePk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmProgettoEse d = ProgettoEseDAO
 													.getProgettoEse(i);
 											if (d != null) {
@@ -1001,7 +1001,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(releaseIT.dmalmReleaseItPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmReleaseIt r = ReleaseItDAO
 													.getReleaseIt(i);
 											if (r != null) {
@@ -1038,7 +1038,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(build.dmalmBuildPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmBuild b = BuildDAO.getBuild(i);
 											if (b != null) {
 												if (b.getDtStoricizzazione()
@@ -1072,7 +1072,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(taskIT.dmalmTaskItPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmTaskIt t = TaskItDAO
 													.getTaskIt(i);
 											if (t != null) {
@@ -1108,7 +1108,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(richiestaGestione.dmalmRichiestaGestPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmRichiestaGestione r = RichiestaGestioneDAO
 													.getRichiestaGestione(i);
 											if (r != null) {
@@ -1147,7 +1147,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(anomaliaAssistenza.dmalmAnomaliaAssPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmAnomaliaAssistenza a = AnomaliaAssistenzaDAO
 													.getAnomaliaAssistenza(i);
 											if (a != null) {
@@ -1186,7 +1186,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(releaseServizi.dmalmRelServiziPk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmReleaseServizi r = ReleaseServiziDAO
 													.getReleaseServizi(i);
 											if (r != null) {
@@ -1226,7 +1226,7 @@ public class CheckAnnullamentiSGRCMFacade {
 													.getDmalmProjectPk()))
 											.list(classificatore.dmalmClassificatorePk);
 									if (pk.size() > 0) {
-										for (Integer i : pk) {
+										for (Long i : pk) {
 											DmalmClassificatore c = ClassificatoreDAO
 													.getClassificatore(i);
 											if (c != null) {
@@ -1344,7 +1344,7 @@ public class CheckAnnullamentiSGRCMFacade {
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 				ConnectionManager cm = null;
 				Connection conn = null;
-				List<Integer> pk = new ArrayList<Integer>();
+				List<Long> pk = new ArrayList<>();
 				if (pNew != null) {
 					for (DmalmProject p : pNew) {
 						String idProject = p.getIdProject();
@@ -1371,7 +1371,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.eq(new Double(1)))
 												.list(anomalia.dmalmAnomaliaProdottoPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmAnomaliaProdotto a = AnomaliaProdottoDAO
 														.getAnomaliaProdotto(i);
@@ -1415,7 +1415,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(difetto.dmalmDifettoProdottoPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmDifettoProdotto d = DifettoDAO
 														.getDifetto(i);
@@ -1459,7 +1459,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(progettoSviluppoSvil.dmalmProgSvilSPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmProgettoSviluppoSvil pss = ProgettoSviluppoSviluppoDAO
 														.getProgettoSviluppoSviluppo(i);
@@ -1501,7 +1501,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(documento.dmalmDocumentoPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmDocumento d = DocumentoDAO
 														.getDocumento(i);
@@ -1543,7 +1543,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(manutenzione.dmalmManutenzionePk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmManutenzione m = ManutenzioneDAO
 														.getManutenzione(i);
 												if (m != null) {
@@ -1584,7 +1584,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(testcase.dmalmTestcasePk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmTestcase t = TestCaseDAO
 														.getTestCase(i);
@@ -1624,7 +1624,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(task.dmalmTaskPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmTask t = TaskDAO
 														.getTask(i);
@@ -1660,7 +1660,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(releaseDiProgetto.dmalmReleasediprogPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmReleaseDiProgetto r = ReleaseDiProgettoDAO
 														.getReleaseDiProgetto(i);
@@ -1702,7 +1702,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(programma.dmalmProgrammaPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmProgramma d = ProgrammaDAO
 														.getProgramma(i);
@@ -1744,7 +1744,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(sottoprogramma.dmalmSottoprogrammaPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 
 												DmalmSottoprogramma s = SottoprogrammaDAO
 														.getSottoprogramma(i);
@@ -1786,7 +1786,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(progettoDemand.dmalmProgettoDemandPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmProgettoDemand d = ProgettoDemandDAO
 														.getProgettoDemand(i);
 												if (d != null) {
@@ -1827,7 +1827,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(progettoSviluppoDem.dmalmProgSvilDPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmProgettoSviluppoDem d = ProgettoSviluppoDemandDAO
 														.getProgettoSviluppoDemand(i);
 												if (d != null) {
@@ -1868,7 +1868,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(richiestaManutenzione.dmalmRichManutenzionePk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmRichiestaManutenzione r = RichiestaManutenzioneDAO
 														.getRichiestaManutenzione(i);
 												if (r != null) {
@@ -1909,7 +1909,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(fase.dmalmFasePk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmFase f = FaseDAO
 														.getFase(i);
 												if (f != null) {
@@ -1944,7 +1944,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(pei.dmalmPeiPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmPei f = PeiDAO.getPei(i);
 												if (f != null) {
 													if (f.getDtStoricizzazione()
@@ -1979,7 +1979,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(progettoEse.dmalmProgettoEsePk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmProgettoEse d = ProgettoEseDAO
 														.getProgettoEse(i);
 												if (d != null) {
@@ -2020,7 +2020,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(releaseIT.dmalmReleaseItPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmReleaseIt r = ReleaseItDAO
 														.getReleaseIt(i);
 												if (r != null) {
@@ -2061,7 +2061,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(build.dmalmBuildPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmBuild b = BuildDAO
 														.getBuild(i);
 												if (b != null) {
@@ -2096,7 +2096,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(taskIT.dmalmTaskItPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmTaskIt t = TaskItDAO
 														.getTaskIt(i);
 												if (t != null) {
@@ -2134,7 +2134,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(richiestaGestione.dmalmRichiestaGestPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmRichiestaGestione r = RichiestaGestioneDAO
 														.getRichiestaGestione(i);
 												if (r != null) {
@@ -2175,7 +2175,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(anomaliaAssistenza.dmalmAnomaliaAssPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmAnomaliaAssistenza a = AnomaliaAssistenzaDAO
 														.getAnomaliaAssistenza(i);
 												if (a != null) {
@@ -2216,7 +2216,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(releaseServizi.dmalmRelServiziPk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmReleaseServizi r = ReleaseServiziDAO
 														.getReleaseServizi(i);
 												if (r != null) {
@@ -2258,7 +2258,7 @@ public class CheckAnnullamentiSGRCMFacade {
 														.getDmalmProjectPk()))
 												.list(classificatore.dmalmClassificatorePk);
 										if (pk.size() > 0) {
-											for (Integer i : pk) {
+											for (Long i : pk) {
 												DmalmClassificatore c = ClassificatoreDAO
 														.getClassificatore(i);
 												if (c != null) {

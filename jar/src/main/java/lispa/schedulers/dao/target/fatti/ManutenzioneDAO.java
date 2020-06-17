@@ -80,8 +80,8 @@ public class ManutenzioneDAO {
 				bean.setDataRilascioInEs(rs
 						.getTimestamp("DATA_RILASCIO_MANUTENZIONE"));
 				bean.setDescrizioneManutenzione(rs.getString("DESCRIPTION"));
-				bean.setDmalmManutenzionePk(rs.getInt("DMALM_MANUTENZIONE_PK"));
-				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
+				bean.setDmalmManutenzionePk(rs.getLong("DMALM_MANUTENZIONE_PK"));
+				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -485,7 +485,7 @@ public class ManutenzioneDAO {
 
 	}
 
-	public static DmalmManutenzione getManutenzione(Integer pk)
+	public static DmalmManutenzione getManutenzione(Long pk)
 			throws DAOException {
 
 		ConnectionManager cm = null;
