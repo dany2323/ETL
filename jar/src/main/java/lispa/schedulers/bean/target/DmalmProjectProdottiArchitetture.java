@@ -1,14 +1,14 @@
 package lispa.schedulers.bean.target;
 
 public class DmalmProjectProdottiArchitetture {
-	private Long dmalmProjectPk;
+	private Integer dmalmProjectPk;
 	private Integer dmalmProdottoPk;
 	private java.sql.Timestamp dataFineValidita;
 	
-	public Long getDmalmProjectPk() {
+	public Integer getDmalmProjectPk() {
 		return dmalmProjectPk;
 	}
-	public void setDmalmProjectPk(Long dmalmProjectPk) {
+	public void setDmalmProjectPk(Integer dmalmProjectPk) {
 		this.dmalmProjectPk = dmalmProjectPk;
 	}
 	public Integer getDmalmProdottoPk() {

@@ -78,11 +78,11 @@ public class ReleaseDiProgettoDAO {
 								.getTimestamp("DATA_PASSAGGIO_IN_ESERC"));
 						bean.setDescrizioneReleasediprog(rs
 								.getString("DESCRIZIONE_REL_DI_PROG"));
-						bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+						bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmStatoWorkitemFk03(rs
 								.getInt("DMALM_STATO_WORKITEM_FK_03"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
-						bean.setDmalmReleasediprogPk(rs.getLong("DMALM_REL_DI_PROG_PK"));
+						bean.setDmalmReleasediprogPk(rs.getInt("DMALM_REL_DI_PROG_PK"));
 						bean.setDsAutoreReleasediprog(rs
 								.getString("NOME_AUTORE_REL_DI_PROG"));
 						bean.setDtCaricamentoReleasediprog(dataEsecuzione);
@@ -482,7 +482,7 @@ public class ReleaseDiProgettoDAO {
 
 	}
 
-	public static DmalmReleaseDiProgetto getReleaseDiProgetto(Long pk)
+	public static DmalmReleaseDiProgetto getReleaseDiProgetto(Integer pk)
 			throws DAOException {
 
 		ConnectionManager cm = null;
@@ -570,7 +570,7 @@ public class ReleaseDiProgettoDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> list = new ArrayList<>();
+		List<Tuple> list = new ArrayList<Tuple>();
 
 		try {
 			cm = ConnectionManager.getInstance();

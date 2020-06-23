@@ -14,9 +14,9 @@ public class DmalmBuild {
 
     private String descrizioneBuild;
 
-    private Long dmalmBuildPk;
+    private Integer dmalmBuildPk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -113,19 +113,19 @@ public class DmalmBuild {
         this.descrizioneBuild = descrizioneBuild;
     }
 
-    public Long getDmalmBuildPk() {
+    public Integer getDmalmBuildPk() {
         return dmalmBuildPk;
     }
 
-    public void setDmalmBuildPk(Long dmalmBuildPk) {
+    public void setDmalmBuildPk(Integer dmalmBuildPk) {
         this.dmalmBuildPk = dmalmBuildPk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

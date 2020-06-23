@@ -40,11 +40,11 @@ public class QDmalmReleaseDiProgetto extends
 
 	public final StringPath descrizioneReleasediprog = createString("DESCRIZIONE_RELEASEDIPROG");
 
-	public final NumberPath<Long> dmalmProjectFk02 = createNumber(
-			"DMALM_PROJECT_FK_02", Long.class);
+	public final NumberPath<Integer> dmalmProjectFk02 = createNumber(
+			"DMALM_PROJECT_FK_02", Integer.class);
 
-	public final NumberPath<Long> dmalmReleasediprogPk = createNumber(
-			"DMALM_RELEASEDIPROG_PK", Long.class);
+	public final NumberPath<Integer> dmalmReleasediprogPk = createNumber(
+			"DMALM_RELEASEDIPROG_PK", Integer.class);
 
 	public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber(
 			"DMALM_STATO_WORKITEM_FK_03", Integer.class);

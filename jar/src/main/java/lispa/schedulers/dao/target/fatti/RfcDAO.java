@@ -54,7 +54,7 @@ public class RfcDAO {
 						
 						bean.setIdRepository(rs.getString("CD_RFC"));
 						bean.setDmalmRfcPk(rs.getInt("DMALM_RFC_PK"));
-						bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+						bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmStatoWorkitemFk03(rs.getInt("DMALM_STATO_WORKITEM_FK_03"));
 						bean.setDmalmTempoFk04(rs.getInt("DMALM_TEMPO_FK_04"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -124,7 +124,7 @@ public class RfcDAO {
 						
 						bean.setIdRepository(rs.getString("CD_RFC"));
 						bean.setDmalmRfcPk(rs.getInt("DMALM_RFC_PK"));
-						bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+						bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmStatoWorkitemFk03(rs.getInt("DMALM_STATO_WORKITEM_FK_03"));
 						bean.setDmalmTempoFk04(rs.getInt("DMALM_TEMPO_FK_04"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -328,7 +328,7 @@ public class RfcDAO {
 						
 						bean.setIdRepository(rs.getString("CD_RFC"));
 						bean.setDmalmRfcPk(rs.getInt("DMALM_RFC_PK"));
-						bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+						bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmStatoWorkitemFk03(rs.getInt("DMALM_STATO_WORKITEM_FK_03"));
 						bean.setDmalmTempoFk04(rs.getInt("DMALM_TEMPO_FK_04"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -367,7 +367,7 @@ public class RfcDAO {
 		return bean;
 	}
 
-	public static List<DmalmRfc> getRfc(Long pk_proj, Integer typeQuery)
+	public static List<DmalmRfc> getRfc(Integer pk_proj, Integer typeQuery)
 			throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
@@ -395,7 +395,7 @@ public class RfcDAO {
 			try (OracleCallableStatement ocs = (OracleCallableStatement) connection
 					.prepareCall(sql);) {
 				ocs.registerOutParameter(1, OracleTypes.CURSOR);
-				ocs.setLong(2, pk_proj);
+				ocs.setInt(2, pk_proj);
 				ocs.execute();
 
 				// return the result set
@@ -407,7 +407,7 @@ public class RfcDAO {
 						
 						bean.setIdRepository(rs.getString("CD_RFC"));
 						bean.setDmalmRfcPk(rs.getInt("DMALM_RFC_PK"));
-						bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+						bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmStatoWorkitemFk03(rs.getInt("DMALM_STATO_WORKITEM_FK_03"));
 						bean.setDmalmTempoFk04(rs.getInt("DMALM_TEMPO_FK_04"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -509,7 +509,7 @@ public class RfcDAO {
 			ocs = (OracleCallableStatement) connection.prepareCall(sql);
 			ocs.registerOutParameter(1, OracleTypes.VARCHAR);
 			ocs.setObject(2, structObj);
-			ocs.setLong(3, p.getDmalmProjectPk());
+			ocs.setInt(3, p.getDmalmProjectPk());
 			ocs.execute();
 
 			flag = ocs.getString(1);

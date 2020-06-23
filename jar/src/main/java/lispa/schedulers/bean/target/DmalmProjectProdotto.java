@@ -7,7 +7,7 @@ import javax.annotation.Generated;
  */
 @Generated("com.mysema.query.codegen.BeanSerializer")
 public class DmalmProjectProdotto {
-	private Long dmalmProjectPk;
+	private Integer dmalmProjectPk;
 
 	private Integer dmalmProdottoSeq;
 
@@ -15,11 +15,11 @@ public class DmalmProjectProdotto {
 
 	private java.sql.Timestamp dataInizioValidita;
 
-	public Long getDmalmProjectPk() {
+	public Integer getDmalmProjectPk() {
 		return dmalmProjectPk;
 	}
 
-	public void setDmalmProjectPk(Long dmalmProjectPk) {
+	public void setDmalmProjectPk(Integer dmalmProjectPk) {
 		this.dmalmProjectPk = dmalmProjectPk;
 	}
 

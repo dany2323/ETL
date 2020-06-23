@@ -70,8 +70,8 @@ public class BuildDAO {
 
 				bean.setCdBuild(rs.getString("CD_BUILD"));
 				bean.setDescrizioneBuild(rs.getString("DESCRIPTION"));
-				bean.setDmalmBuildPk(rs.getLong("DMALM_BUILD_PK"));
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				bean.setDmalmBuildPk(rs.getInt("DMALM_BUILD_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -395,7 +395,7 @@ public class BuildDAO {
 
 	}
 
-	public static DmalmBuild getBuild(Long pk) throws DAOException {
+	public static DmalmBuild getBuild(Integer pk) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;

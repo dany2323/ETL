@@ -30,9 +30,9 @@ public class QDmalmReleaseIt extends com.mysema.query.sql.RelationalPathBase<Dma
 
     public final StringPath descrizioneReleaseIt = createString("DESCRIZIONE_RELEASE_IT");
 
-    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
+    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
 
-    public final NumberPath<Long> dmalmReleaseItPk = createNumber("DMALM_RELEASE_IT_PK", Long.class);
+    public final NumberPath<Integer> dmalmReleaseItPk = createNumber("DMALM_RELEASE_IT_PK", Integer.class);
 
     public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
 

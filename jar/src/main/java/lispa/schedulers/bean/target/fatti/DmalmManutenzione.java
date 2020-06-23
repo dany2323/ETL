@@ -32,9 +32,9 @@ public class DmalmManutenzione {
 
     private Integer dmalmAreaTematicaFk05;
 
-    private Long dmalmManutenzionePk;
+    private Integer dmalmManutenzionePk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -192,19 +192,19 @@ public class DmalmManutenzione {
         this.dmalmAreaTematicaFk05 = dmalmAreaTematicaFk05;
     }
 
-    public Long getDmalmManutenzionePk() {
+    public Integer getDmalmManutenzionePk() {
         return dmalmManutenzionePk;
     }
 
-    public void setDmalmManutenzionePk(Long dmalmManutenzionePk) {
+    public void setDmalmManutenzionePk(Integer dmalmManutenzionePk) {
         this.dmalmManutenzionePk = dmalmManutenzionePk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

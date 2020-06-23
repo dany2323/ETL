@@ -86,8 +86,8 @@ public class FaseDAO {
 				bean.setDataPassaggioInEsecuzione(rs
 						.getTimestamp("DATA_PASSAGGIO_ESECUZIONE_FASE"));
 				bean.setDescrizioneFase(rs.getString("DESCRIZIONE_FASE"));
-				bean.setDmalmFasePk(rs.getLong("DMALM_FASE_PK"));
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				bean.setDmalmFasePk(rs.getInt("DMALM_FASE_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -422,7 +422,7 @@ public class FaseDAO {
 
 	}
 
-	public static DmalmFase getFase(Long pk) throws DAOException {
+	public static DmalmFase getFase(Integer pk) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;

@@ -48,9 +48,9 @@ public class QDmalmFase extends com.mysema.query.sql.RelationalPathBase<DmalmFas
 
     public final StringPath descrizioneFase = createString("DESCRIZIONE_FASE");
 
-    public final NumberPath<Long> dmalmFasePk = createNumber("DMALM_FASE_PK", Long.class);
+    public final NumberPath<Integer> dmalmFasePk = createNumber("DMALM_FASE_PK", Integer.class);
 
-    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
+    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
 
     public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
 

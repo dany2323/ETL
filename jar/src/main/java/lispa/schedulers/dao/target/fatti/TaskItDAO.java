@@ -69,8 +69,8 @@ public class TaskItDAO {
 
 				bean.setCdTaskIt(rs.getString("CD_TASKIT"));
 				bean.setDescrizioneTaskIt(rs.getString("DESCRIPTION"));
-				bean.setDmalmTaskItPk(rs.getLong("DMALM_TASKIT_PK"));
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				bean.setDmalmTaskItPk(rs.getInt("DMALM_TASKIT_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
@@ -408,7 +408,7 @@ public class TaskItDAO {
 		}
 	}
 
-	public static DmalmTaskIt getTaskIt(Long pk) throws DAOException {
+	public static DmalmTaskIt getTaskIt(Integer pk) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -487,7 +487,7 @@ public class TaskItDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> list = new ArrayList<>();
+		List<Tuple> list = new ArrayList<Tuple>();
 
 		try {
 			cm = ConnectionManager.getInstance();

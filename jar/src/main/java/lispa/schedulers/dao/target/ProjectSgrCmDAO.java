@@ -115,7 +115,7 @@ public class ProjectSgrCmDAO {
 			while (rs.next()) {
 				bean = new DmalmProject();
 
-				bean.setDmalmProjectPk(rs.getLong("DMALM_PROJECT_PK"));
+				bean.setDmalmProjectPk(rs.getInt("DMALM_PROJECT_PK"));
 
 				String template = rs.getString("TEMPLATE");
 				bean.setcTemplate(template);
@@ -1469,7 +1469,7 @@ public class ProjectSgrCmDAO {
 						}
 					} else {
 						DmalmProject d = new DmalmProject();
-						d.setDmalmProjectPk(0L);
+						d.setDmalmProjectPk(0);
 						d.setDtInizioValidita(inizio);
 						d.setDtFineValidita(fine);
 						ret.add(d);

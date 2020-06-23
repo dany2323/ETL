@@ -150,10 +150,10 @@ public class CostruzioneFilieraTemplateAssFunzionaleFacade {
 			while (rs.next()) {
 				DmalmAnomaliaAssistenza anomaliaAss = new DmalmAnomaliaAssistenza();
 				anomaliaAss.setCdAnomaliaAss(rs.getString("CD_ANOMALIA_ASS"));
-				anomaliaAss.setDmalmAnomaliaAssPk(rs.getLong("DMALM_ANOMALIA_ASS_PK"));
+				anomaliaAss.setDmalmAnomaliaAssPk(rs.getInt("DMALM_ANOMALIA_ASS_PK"));
 				anomaliaAss.setIdRepository(rs.getString("ID_REPOSITORY"));
 				anomaliaAss.setUri(rs.getString("URI_ANOMALIA_ASSISTENZA"));
-				anomaliaAss.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				anomaliaAss.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListAnomliaAssistenza.add(anomaliaAss);
 			}
 			
@@ -163,10 +163,10 @@ public class CostruzioneFilieraTemplateAssFunzionaleFacade {
 			while (rs.next()) {
 				DmalmRichiestaGestione richiestaGestione = new DmalmRichiestaGestione();
 				richiestaGestione.setCdRichiestaGest(rs.getString("CD_RICHIESTA_GEST"));
-				richiestaGestione.setDmalmRichiestaGestPk(rs.getLong("DMALM_RICHIESTA_GEST_PK"));
+				richiestaGestione.setDmalmRichiestaGestPk(rs.getInt("DMALM_RICHIESTA_GEST_PK"));
 				richiestaGestione.setIdRepository(rs.getString("ID_REPOSITORY"));
 				richiestaGestione.setUri(rs.getString("URI_RICHIESTA_GESTIONE"));
-				richiestaGestione.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				richiestaGestione.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListRichiestaGestione.add(richiestaGestione);
 			}
 			
@@ -369,7 +369,7 @@ public class CostruzioneFilieraTemplateAssFunzionaleFacade {
 				true, lastWorkitem);
 	}
 
-	private static String getDmalmCodiceProgetto(Long dmalmProjectFk02) throws DAOException, SQLException {
+	private static String getDmalmCodiceProgetto(Integer dmalmProjectFk02) throws DAOException, SQLException {
 		String queryMaxFieliera = "select ID_PROJECT from DMALM_PROJECT where DMALM_PROJECT_PK="+dmalmProjectFk02;
 		ConnectionManager cm = ConnectionManager.getInstance();
 		Connection connection = cm.getConnectionOracle();

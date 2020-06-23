@@ -30,9 +30,9 @@ public class DmalmProgettoSviluppoSvil {
 
     private Integer dmalmAreaTematicaFk05;
 
-    private Long dmalmProgSvilSPk;
+    private Integer dmalmProgSvilSPk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -183,19 +183,19 @@ public class DmalmProgettoSviluppoSvil {
         this.dmalmAreaTematicaFk05 = dmalmAreaTematicaFk05;
     }
 
-    public Long getDmalmProgSvilSPk() {
+    public Integer getDmalmProgSvilSPk() {
         return dmalmProgSvilSPk;
     }
 
-    public void setDmalmProgSvilSPk(Long dmalmProgSvilSPk) {
+    public void setDmalmProgSvilSPk(Integer dmalmProgSvilSPk) {
         this.dmalmProgSvilSPk = dmalmProgSvilSPk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

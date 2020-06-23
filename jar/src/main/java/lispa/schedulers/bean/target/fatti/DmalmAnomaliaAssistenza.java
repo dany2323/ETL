@@ -18,9 +18,9 @@ public class DmalmAnomaliaAssistenza {
 
     private String descrizioneAnomaliaAss;
 
-    private Long dmalmAnomaliaAssPk;
+    private Integer dmalmAnomaliaAssPk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -165,19 +165,19 @@ public class DmalmAnomaliaAssistenza {
         this.descrizioneAnomaliaAss = descrizioneAnomaliaAss;
     }
 
-    public Long getDmalmAnomaliaAssPk() {
+    public Integer getDmalmAnomaliaAssPk() {
         return dmalmAnomaliaAssPk;
     }
 
-    public void setDmalmAnomaliaAssPk(Long dmalmAnomaliaAssPk) {
+    public void setDmalmAnomaliaAssPk(Integer dmalmAnomaliaAssPk) {
         this.dmalmAnomaliaAssPk = dmalmAnomaliaAssPk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

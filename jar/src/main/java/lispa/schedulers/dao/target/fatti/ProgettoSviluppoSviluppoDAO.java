@@ -81,8 +81,8 @@ public class ProgettoSviluppoSviluppoDAO {
 				bean.setDataInizioEff(rs.getTimestamp("DATA_INIZIO_EFFETTIVO"));
 				bean.setDescrizioneProgSvilS(rs
 						.getString("DESCRIZIONE_PROG_SVIL_S"));
-				bean.setDmalmProgSvilSPk(rs.getLong("DMALM_PROG_SVIL_S_PK"));
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				bean.setDmalmProgSvilSPk(rs.getInt("DMALM_PROG_SVIL_S_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -513,7 +513,7 @@ public class ProgettoSviluppoSviluppoDAO {
 	}
 
 	public static DmalmProgettoSviluppoSvil getProgettoSviluppoSviluppo(
-			Long pk) throws DAOException {
+			Integer pk) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;

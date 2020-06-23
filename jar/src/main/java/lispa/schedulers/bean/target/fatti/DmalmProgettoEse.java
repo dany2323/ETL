@@ -18,9 +18,9 @@ public class DmalmProgettoEse {
 
     private String descrizioneProgettoEse;
 
-    private Long dmalmProgettoEsePk;
+    private Integer dmalmProgettoEsePk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -148,19 +148,19 @@ public class DmalmProgettoEse {
         this.descrizioneProgettoEse = descrizioneProgettoEse;
     }
 
-    public Long getDmalmProgettoEsePk() {
+    public Integer getDmalmProgettoEsePk() {
         return dmalmProgettoEsePk;
     }
 
-    public void setDmalmProgettoEsePk(Long dmalmProgettoEsePk) {
+    public void setDmalmProgettoEsePk(Integer dmalmProgettoEsePk) {
         this.dmalmProgettoEsePk = dmalmProgettoEsePk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

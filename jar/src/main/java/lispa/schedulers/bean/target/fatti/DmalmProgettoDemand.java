@@ -30,9 +30,9 @@ public class DmalmProgettoDemand {
 
     private String descrizioneProgettoDemand;
 
-    private Long dmalmProgettoDemandPk;
+    private Integer dmalmProgettoDemandPk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -246,19 +246,19 @@ public class DmalmProgettoDemand {
         this.descrizioneProgettoDemand = descrizioneProgettoDemand;
     }
 
-    public Long getDmalmProgettoDemandPk() {
+    public Integer getDmalmProgettoDemandPk() {
         return dmalmProgettoDemandPk;
     }
 
-    public void setDmalmProgettoDemandPk(Long dmalmProgettoDemandPk) {
+    public void setDmalmProgettoDemandPk(Integer dmalmProgettoDemandPk) {
         this.dmalmProgettoDemandPk = dmalmProgettoDemandPk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

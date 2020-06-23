@@ -22,9 +22,9 @@ public class DmalmDocumento {
 
     private Integer dmalmAreaTematicaFk05;
 
-    private Long dmalmDocumentoPk;
+    private Integer dmalmDocumentoPk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -167,19 +167,19 @@ public class DmalmDocumento {
         this.dmalmAreaTematicaFk05 = dmalmAreaTematicaFk05;
     }
 
-    public Long getDmalmDocumentoPk() {
+    public Integer getDmalmDocumentoPk() {
         return dmalmDocumentoPk;
     }
 
-    public void setDmalmDocumentoPk(Long dmalmDocumentoPk) {
+    public void setDmalmDocumentoPk(Integer dmalmDocumentoPk) {
         this.dmalmDocumentoPk = dmalmDocumentoPk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

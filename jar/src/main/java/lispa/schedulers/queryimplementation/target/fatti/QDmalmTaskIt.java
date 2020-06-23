@@ -34,13 +34,13 @@ public class QDmalmTaskIt extends com.mysema.query.sql.RelationalPathBase<DmalmT
 
     public final StringPath descrizioneTaskIt = createString("DESCRIZIONE_TASK_IT");
 
-    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
+    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
 
     public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
 
     public final NumberPath<Integer> dmalmStrutturaOrgFk01 = createNumber("DMALM_STRUTTURA_ORG_FK_01", Integer.class);
 
-    public final NumberPath<Long> dmalmTaskItPk = createNumber("DMALM_TASK_IT_PK", Long.class);
+    public final NumberPath<Integer> dmalmTaskItPk = createNumber("DMALM_TASK_IT_PK", Integer.class);
 
     public final NumberPath<Integer> dmalmTempoFk04 = createNumber("DMALM_TEMPO_FK_04", Integer.class);
 

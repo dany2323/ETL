@@ -28,9 +28,9 @@ public class DmalmRichiestaManutenzione {
 
     private String descrizioneRichManutenzione;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
-    private Long dmalmRichManutenzionePk;
+    private Integer dmalmRichManutenzionePk;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -175,19 +175,19 @@ public class DmalmRichiestaManutenzione {
         this.descrizioneRichManutenzione = descrizioneRichManutenzione;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 
-    public Long getDmalmRichManutenzionePk() {
+    public Integer getDmalmRichManutenzionePk() {
         return dmalmRichManutenzionePk;
     }
 
-    public void setDmalmRichManutenzionePk(Long dmalmRichManutenzionePk) {
+    public void setDmalmRichManutenzionePk(Integer dmalmRichManutenzionePk) {
         this.dmalmRichManutenzionePk = dmalmRichManutenzionePk;
     }
 

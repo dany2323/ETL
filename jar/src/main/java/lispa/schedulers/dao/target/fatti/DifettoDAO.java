@@ -78,8 +78,8 @@ public class DifettoDAO {
 				bean = new DmalmDifettoProdotto();
 
 				bean.setDmalmDifettoProdottoPk(rs
-						.getLong("DMALM_DIFETTO_PRODOTTO_PK"));
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+						.getInt("DMALM_DIFETTO_PRODOTTO_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
@@ -556,7 +556,7 @@ public class DifettoDAO {
 		}
 	}
 
-	public static DmalmDifettoProdotto getDifetto(Long pk)
+	public static DmalmDifettoProdotto getDifetto(Integer pk)
 			throws DAOException {
 
 		ConnectionManager cm = null;

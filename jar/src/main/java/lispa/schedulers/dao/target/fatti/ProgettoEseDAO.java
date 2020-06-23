@@ -92,8 +92,8 @@ public class ProgettoEseDAO {
 						bean.setStgPk(rs.getString("STG_PROGETTO_ESE_PK"));
 						bean.setDescrizioneProgettoEse(rs
 								.getString("DESCRIZIONE_PROGETTO_ESE"));
-						bean.setDmalmProgettoEsePk(rs.getLong("DMALM_PROGETTO_ESE_PK"));
-						bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+						bean.setDmalmProgettoEsePk(rs.getInt("DMALM_PROGETTO_ESE_PK"));
+						bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmStatoWorkitemFk03(rs
 								.getInt("DMALM_STATO_WORKITEM_FK_03"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -437,7 +437,7 @@ public class ProgettoEseDAO {
 
 	}
 
-	public static DmalmProgettoEse getProgettoEse(Long pk)
+	public static DmalmProgettoEse getProgettoEse(Integer pk)
 			throws DAOException {
 
 		ConnectionManager cm = null;

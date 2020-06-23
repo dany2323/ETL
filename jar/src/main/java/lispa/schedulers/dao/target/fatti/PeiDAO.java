@@ -71,9 +71,9 @@ public class PeiDAO {
 				bean.setCdPei(rs.getString("CD_PEI"));
 				bean.setCodice(rs.getString("CODICE"));
 				bean.setDescrizionePei(rs.getString("DESCRIPTION"));
-				bean.setDmalmPeiPk(rs.getLong("DMALM_PEI_PK"));
+				bean.setDmalmPeiPk(rs.getInt("DMALM_PEI_PK"));
 
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -377,7 +377,7 @@ public class PeiDAO {
 
 	}
 
-	public static DmalmPei getPei(Long pk) throws Exception {
+	public static DmalmPei getPei(Integer pk) throws Exception {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -450,7 +450,7 @@ public class PeiDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> list = new ArrayList<>();
+		List<Tuple> list = new ArrayList<Tuple>();
 
 		try {
 			cm = ConnectionManager.getInstance();

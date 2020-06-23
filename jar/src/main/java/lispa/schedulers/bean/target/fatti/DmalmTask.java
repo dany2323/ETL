@@ -26,13 +26,13 @@ public class DmalmTask {
 
     private Integer dmalmAreaTematicaFk05;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
     private Integer dmalmStrutturaOrgFk01;
 
-    private Long dmalmTaskPk;
+    private Integer dmalmTaskPk;
 
     private Integer dmalmTempoFk04;
     
@@ -183,11 +183,11 @@ public class DmalmTask {
         this.dmalmAreaTematicaFk05 = dmalmAreaTematicaFk05;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 
@@ -207,11 +207,11 @@ public class DmalmTask {
         this.dmalmStrutturaOrgFk01 = dmalmStrutturaOrgFk01;
     }
 
-    public Long getDmalmTaskPk() {
+    public Integer getDmalmTaskPk() {
         return dmalmTaskPk;
     }
 
-    public void setDmalmTaskPk(Long dmalmTaskPk) {
+    public void setDmalmTaskPk(Integer dmalmTaskPk) {
         this.dmalmTaskPk = dmalmTaskPk;
     }
 

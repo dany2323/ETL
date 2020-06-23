@@ -32,9 +32,9 @@ public class QDmalmSottoprogramma extends com.mysema.query.sql.RelationalPathBas
 
     public final StringPath descrizioneSottoprogramma = createString("DESCRIZIONE_SOTTOPROGRAMMA");
 
-    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
+    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
 
-    public final NumberPath<Long> dmalmSottoprogrammaPk = createNumber("DMALM_SOTTOPROGRAMMA_PK", Long.class);
+    public final NumberPath<Integer> dmalmSottoprogrammaPk = createNumber("DMALM_SOTTOPROGRAMMA_PK", Integer.class);
 
     public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
 

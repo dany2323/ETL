@@ -68,8 +68,8 @@ public class ReleaseServiziDAO {
 
 				bean.setCdRelServizi(rs.getString("CD_RELEASESER"));
 				bean.setDescrizioneRelServizi(rs.getString("DESCRIPTION"));
-				bean.setDmalmRelServiziPk(rs.getLong("DMALM_RELEASESER_PK"));
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				bean.setDmalmRelServiziPk(rs.getInt("DMALM_RELEASESER_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -431,7 +431,7 @@ public class ReleaseServiziDAO {
 
 	}
 
-	public static DmalmReleaseServizi getReleaseServizi(Long pk)
+	public static DmalmReleaseServizi getReleaseServizi(Integer pk)
 			throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -521,7 +521,7 @@ public class ReleaseServiziDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		List<Tuple> list = new ArrayList<>();
+		List<Tuple> list = new ArrayList<Tuple>();
 
 		try {
 			cm = ConnectionManager.getInstance();

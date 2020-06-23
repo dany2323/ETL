@@ -287,10 +287,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmProgettoSviluppoSvil sqrs = new DmalmProgettoSviluppoSvil();
 				sqrs.setCdProgSvilS(rs.getString("CD_PROG_SVIL_S"));
-				sqrs.setDmalmProgSvilSPk(rs.getLong("DMALM_PROG_SVIL_S_PK"));
+				sqrs.setDmalmProgSvilSPk(rs.getInt("DMALM_PROG_SVIL_S_PK"));
 				sqrs.setIdRepository(rs.getString("ID_REPOSITORY"));
 				sqrs.setUri(rs.getString("URI_PROGETTO_SVILUPPO_SVIL"));
-				sqrs.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				sqrs.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListSrqs.add(sqrs);
 			}
 			
@@ -300,10 +300,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmReleaseDiProgetto release = new DmalmReleaseDiProgetto();
 				release.setCdReleasediprog(rs.getString("CD_RELEASEDIPROG"));
-				release.setDmalmReleasediprogPk(rs.getLong("DMALM_RELEASEDIPROG_PK"));
+				release.setDmalmReleasediprogPk(rs.getInt("DMALM_RELEASEDIPROG_PK"));
 				release.setIdRepository(rs.getString("ID_REPOSITORY"));
 				release.setUri(rs.getString("URI_RELEASE_DI_PROGETTO"));
-				release.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				release.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListRelease.add(release);
 			}
 			
@@ -313,10 +313,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmManutenzione man = new DmalmManutenzione();
 				man.setCdManutenzione(rs.getString("CD_MANUTENZIONE"));
-				man.setDmalmManutenzionePk(rs.getLong("DMALM_MANUTENZIONE_PK"));
+				man.setDmalmManutenzionePk(rs.getInt("DMALM_MANUTENZIONE_PK"));
 				man.setIdRepository(rs.getString("ID_REPOSITORY"));
 				man.setUri(rs.getString("URI_MANUTENZIONE"));
-				man.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				man.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListManutenzione.add(man);
 			}
 			
@@ -326,10 +326,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmAnomaliaProdotto anomalia = new DmalmAnomaliaProdotto();
 				anomalia.setCdAnomalia(rs.getString("CD_ANOMALIA"));
-				anomalia.setDmalmAnomaliaProdottoPk(rs.getLong("DMALM_ANOMALIA_PRODOTTO_PK"));
+				anomalia.setDmalmAnomaliaProdottoPk(rs.getInt("DMALM_ANOMALIA_PRODOTTO_PK"));
 				anomalia.setIdRepository(rs.getString("ID_REPOSITORY"));
 				anomalia.setUri(rs.getString("URI_ANOMALIA_PRODOTTO"));
-				anomalia.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				anomalia.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListAnomalia.add(anomalia);
 			}
 			logger.debug("Eseguto la seguente query: "+anomaliaQueryDummy);
@@ -338,10 +338,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmAnomaliaProdotto anomalia = new DmalmAnomaliaProdotto();
 				anomalia.setCdAnomalia(rs.getString("CD_ANOMALIA"));
-				anomalia.setDmalmAnomaliaProdottoPk(rs.getLong("DMALM_ANM_PROD_DUMMY_PK"));
+				anomalia.setDmalmAnomaliaProdottoPk(rs.getInt("DMALM_ANM_PROD_DUMMY_PK"));
 				anomalia.setIdRepository(rs.getString("ID_REPOSITORY"));
 				anomalia.setUri(rs.getString("URI_ANOMALIA_PRODOTTO"));
-				anomalia.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				anomalia.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListAnomalia.add(anomalia);
 			}
 			
@@ -351,10 +351,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmTask task = new DmalmTask();
 				task.setCdTask(rs.getString("CD_TASK"));
-				task.setDmalmTaskPk(rs.getLong("DMALM_TASK_PK"));
+				task.setDmalmTaskPk(rs.getInt("DMALM_TASK_PK"));
 				task.setIdRepository(rs.getString("ID_REPOSITORY"));
 				task.setUri(rs.getString("URI_TASK"));
-				task.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				task.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListTask.add(task);
 			}
 			
@@ -364,10 +364,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmTestcase test = new DmalmTestcase();
 				test.setCdTestcase(rs.getString("CD_TESTCASE"));
-				test.setDmalmTestcasePk(rs.getLong("DMALM_TESTCASE_PK"));
+				test.setDmalmTestcasePk(rs.getInt("DMALM_TESTCASE_PK"));
 				test.setIdRepository(rs.getString("ID_REPOSITORY"));
 				test.setUri(rs.getString("URI_TESTCASE"));
-				test.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				test.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListTestCase.add(test);
 			}
 			
@@ -377,10 +377,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmDifettoProdotto defect = new DmalmDifettoProdotto();
 				defect.setCdDifetto(rs.getString("CD_DIFETTO"));
-				defect.setDmalmDifettoProdottoPk(rs.getLong("DMALM_DIFETTO_PRODOTTO_PK"));
+				defect.setDmalmDifettoProdottoPk(rs.getInt("DMALM_DIFETTO_PRODOTTO_PK"));
 				defect.setIdRepository(rs.getString("ID_REPOSITORY"));
 				defect.setUri(rs.getString("URI_DIFETTO_PRODOTTO"));
-				defect.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				defect.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListDefect.add(defect);
 			}
 			
@@ -390,10 +390,10 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 			while (rs.next()) {
 				DmalmDifettoProdotto defect = new DmalmDifettoProdotto();
 				defect.setCdDifetto(rs.getString("CD_DIFETTO"));
-				defect.setDmalmDifettoProdottoPk(rs.getLong("DMALM_DIF_PROD_DUMMY_PK"));
+				defect.setDmalmDifettoProdottoPk(rs.getInt("DMALM_DIF_PROD_DUMMY_PK"));
 				defect.setIdRepository(rs.getString("ID_REPOSITORY"));
 				defect.setUri(rs.getString("URI_DIFETTO_PRODOTTO"));
-				defect.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				defect.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				resultListDefect.add(defect);
 			}
 			
@@ -610,7 +610,7 @@ public class CostruzioneFilieraTemplateSviluppoFacade {
 		
 	}
 
-	private static String getDmalmCodiceProgetto(Long dmalmProjectFk02) throws DAOException, SQLException {
+	private static String getDmalmCodiceProgetto(Integer dmalmProjectFk02) throws DAOException, SQLException {
 		String queryMaxFieliera = "select ID_PROJECT from DMALM_PROJECT where DMALM_PROJECT_PK="+dmalmProjectFk02;
 		ConnectionManager cm = ConnectionManager.getInstance();
 		Connection connection = cm.getConnectionOracle();

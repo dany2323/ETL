@@ -32,9 +32,9 @@ public class QDmalmBuild extends com.mysema.query.sql.RelationalPathBase<DmalmBu
 
     public final StringPath descrizioneBuild = createString("DESCRIZIONE_BUILD");
 
-    public final NumberPath<Long> dmalmBuildPk = createNumber("DMALM_BUILD_PK", Long.class);
+    public final NumberPath<Integer> dmalmBuildPk = createNumber("DMALM_BUILD_PK", Integer.class);
 
-    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
+    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
 
     public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
 

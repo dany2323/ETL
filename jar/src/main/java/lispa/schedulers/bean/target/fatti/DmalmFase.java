@@ -32,9 +32,9 @@ public class DmalmFase {
 
     private String descrizioneFase;
 
-    private Long dmalmFasePk;
+    private Integer dmalmFasePk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -195,19 +195,19 @@ public class DmalmFase {
         this.descrizioneFase = descrizioneFase;
     }
 
-    public Long getDmalmFasePk() {
+    public Integer getDmalmFasePk() {
         return dmalmFasePk;
     }
 
-    public void setDmalmFasePk(Long dmalmFasePk) {
+    public void setDmalmFasePk(Integer dmalmFasePk) {
         this.dmalmFasePk = dmalmFasePk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

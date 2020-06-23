@@ -239,7 +239,7 @@ public class AreaTematicaSgrCmDAO {
 		return aree.size() > 0 ? aree.get(0).intValue() : 0;
 	}
 
-	public static int getAreaTematicaPKByProjectPK(Long projectPK)
+	public static int getAreaTematicaPKByProjectPK(int projectPK)
 			throws DAOException
 
 	{

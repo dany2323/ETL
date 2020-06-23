@@ -26,7 +26,7 @@ public class DmalmUserRolesSgr {
     
     private String repository;
     
-    private Long dmalmProjectFk01;
+    private Integer dmalmProjectFk01;
     
     private Timestamp dtModifica;
 
@@ -134,11 +134,11 @@ public class DmalmUserRolesSgr {
 		
 	}
 
-	public Long getDmalmProjectFk01() {
+	public Integer getDmalmProjectFk01() {
 		return dmalmProjectFk01;
 	}
 
-	public void setDmalmProjectFk01(Long dmalmProjectFk01) {
+	public void setDmalmProjectFk01(Integer dmalmProjectFk01) {
 		this.dmalmProjectFk01 = dmalmProjectFk01;
 	}
 

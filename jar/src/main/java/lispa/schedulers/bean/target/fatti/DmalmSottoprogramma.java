@@ -14,9 +14,9 @@ public class DmalmSottoprogramma {
 
     private String descrizioneSottoprogramma;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
-    private Long dmalmSottoprogrammaPk;
+    private Integer dmalmSottoprogrammaPk;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -127,19 +127,19 @@ public class DmalmSottoprogramma {
         this.descrizioneSottoprogramma = descrizioneSottoprogramma;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 
-    public Long getDmalmSottoprogrammaPk() {
+    public Integer getDmalmSottoprogrammaPk() {
         return dmalmSottoprogrammaPk;
     }
 
-    public void setDmalmSottoprogrammaPk(Long dmalmSottoprogrammaPk) {
+    public void setDmalmSottoprogrammaPk(Integer dmalmSottoprogrammaPk) {
         this.dmalmSottoprogrammaPk = dmalmSottoprogrammaPk;
     }
 

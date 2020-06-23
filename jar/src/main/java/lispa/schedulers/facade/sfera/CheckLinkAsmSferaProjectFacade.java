@@ -175,9 +175,9 @@ public class CheckLinkAsmSferaProjectFacade {
 	private static void insertSingleProd(Tuple t) throws DAOException {
 		try {
 			List<Tuple> check = new ArrayList<Tuple>();
-			check = checkRelazione(t.get(p.dmalmProdottoSeq), 0, 0L);
+			check = checkRelazione(t.get(p.dmalmProdottoSeq), 0, 0);
 			if (check.size() == 0) {
-				insert(t.get(p.dmalmProdottoSeq), 0, 0L);
+				insert(t.get(p.dmalmProdottoSeq), 0, 0);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -251,7 +251,7 @@ public class CheckLinkAsmSferaProjectFacade {
 									// se esiste già al tappo proj
 									oldProj = checkRelazione(
 											t.get(p.dmalmProdottoSeq),
-											ta.get(dmalmAsm.dmalmAsmPk), 0L);
+											ta.get(dmalmAsm.dmalmAsmPk), 0);
 									if (oldProj.size() == 0) {
 										// sicuro che non esiste quindi
 										// inserisco
@@ -260,7 +260,7 @@ public class CheckLinkAsmSferaProjectFacade {
 												pFound.getDmalmProjectPk());
 									} else {
 										delete(t.get(p.dmalmProdottoSeq),
-												ta.get(dmalmAsm.dmalmAsmPk), 0L);
+												ta.get(dmalmAsm.dmalmAsmPk), 0);
 										insert(t.get(p.dmalmProdottoSeq),
 												ta.get(dmalmAsm.dmalmAsmPk),
 												pFound.getDmalmProjectPk());
@@ -269,12 +269,12 @@ public class CheckLinkAsmSferaProjectFacade {
 								else {
 									oldProj = checkRelazione(
 											t.get(p.dmalmProdottoSeq),
-											ta.get(dmalmAsm.dmalmAsmPk), 0L);
+											ta.get(dmalmAsm.dmalmAsmPk), 0);
 									if (oldProj.size() == 0) {
 										// sicuro che non esiste quindi
 										// inserisco
 										insert(t.get(p.dmalmProdottoSeq),
-												ta.get(dmalmAsm.dmalmAsmPk), 0L);
+												ta.get(dmalmAsm.dmalmAsmPk), 0);
 									}
 								}
 							}// oldAsm
@@ -303,7 +303,7 @@ public class CheckLinkAsmSferaProjectFacade {
 				if (check.size() == 0) {
 					List<Tuple> parz = new ArrayList<Tuple>();
 					int asm = ta.get(dmalmAsm.dmalmAsmPk);
-					Long proj = pFound.getDmalmProjectPk();
+					int proj = pFound.getDmalmProjectPk();
 					parz = checkRelazioneParz(asm, proj);
 					if (parz.size() == 0) {
 						insert(0, asm, proj);
@@ -345,13 +345,13 @@ public class CheckLinkAsmSferaProjectFacade {
 			if (r.size() > 0 && ta.get(dmalmAsm.dmalmAsmPk) != 0) {
 				toCheck = checkRelazione(r.get(0)
 						.get(p.dmalmProdottoSeq),
-						ta.get(dmalmAsm.dmalmAsmPk), 0L);
+						ta.get(dmalmAsm.dmalmAsmPk), 0);
 				checkProjTappo = checkRelazioneParzProj(
 						r.get(0).get(p.dmalmProdottoSeq),
 						ta.get(dmalmAsm.dmalmAsmPk));
 				if (toCheck.size() > 0 && checkProjTappo.size() > 0) {
 					delete(r.get(0).get(p.dmalmProdottoSeq),
-							ta.get(dmalmAsm.dmalmAsmPk), 0L);
+							ta.get(dmalmAsm.dmalmAsmPk), 0);
 				}
 			}
 
@@ -402,7 +402,7 @@ public class CheckLinkAsmSferaProjectFacade {
 							// se esiste già al tappo proj
 							oldAsm = checkRelazione(
 									t.get(p.dmalmProdottoSeq),
-									Integer.parseInt(found.getDmalmAsmPk()), 0L);
+									Integer.parseInt(found.getDmalmAsmPk()), 0);
 							if (oldAsm.size() == 0) {
 								if (Integer.parseInt(found.getDmalmAsmPk()) != 0) {
 									// se esiste già al tappo asm
@@ -423,7 +423,7 @@ public class CheckLinkAsmSferaProjectFacade {
 											delete(t.get(p.dmalmProdottoSeq),
 													Integer.parseInt(found
 															.getDmalmAsmPk()),
-													0L);
+													0);
 											insert(t.get(p.dmalmProdottoSeq),
 													Integer.parseInt(found
 															.getDmalmAsmPk()),
@@ -483,7 +483,7 @@ public class CheckLinkAsmSferaProjectFacade {
 				if (check.size() == 0) {
 					List<Tuple> parz = new ArrayList<Tuple>();
 					int asm = Integer.parseInt(found.getDmalmAsmPk());
-					Long proj = tp.get(project.dmalmProjectPrimaryKey);
+					int proj = tp.get(project.dmalmProjectPrimaryKey);
 					parz = checkRelazioneParz(asm, proj);
 					if (parz.size() == 0) {
 						insert(0, Integer.parseInt(found.getDmalmAsmPk()),
@@ -527,13 +527,13 @@ public class CheckLinkAsmSferaProjectFacade {
 					&& Integer.parseInt(found.getDmalmAsmPk()) != 0) {
 				toCheck = checkRelazione(
 						r.get(0).get(p.dmalmProdottoSeq),
-						Integer.parseInt(found.getDmalmAsmPk()), 0L);
+						Integer.parseInt(found.getDmalmAsmPk()), 0);
 				checkProjTappo = checkRelazioneParzProj(
 						r.get(0).get(p.dmalmProdottoSeq),
 						Integer.parseInt(found.getDmalmAsmPk()));
 				if (toCheck.size() > 0 && checkProjTappo.size() > 0) {
 					delete(r.get(0).get(p.dmalmProdottoSeq),
-							Integer.parseInt(found.getDmalmAsmPk()), 0L);
+							Integer.parseInt(found.getDmalmAsmPk()), 0);
 				}
 			}
 		} catch (Exception e) {
@@ -541,7 +541,7 @@ public class CheckLinkAsmSferaProjectFacade {
 		}
 	}
 
-	private static List<Tuple> checkRelazione(int prod, int asm, Long proj)
+	private static List<Tuple> checkRelazione(int prod, int asm, int proj)
 			throws DAOException {
 		List<Tuple> check = new ArrayList<Tuple>();
 		ConnectionManager cm = null;
@@ -565,9 +565,9 @@ public class CheckLinkAsmSferaProjectFacade {
 		return check;
 	}
 
-	private static List<Tuple> checkRelazioneParz(int asm, Long proj)
+	private static List<Tuple> checkRelazioneParz(int asm, int proj)
 			throws DAOException {
-		List<Tuple> check = new ArrayList<>();
+		List<Tuple> check = new ArrayList<Tuple>();
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -589,7 +589,7 @@ public class CheckLinkAsmSferaProjectFacade {
 		return check;
 	}
 
-	private static void insert(int prod, int asm, Long proj) throws DAOException {
+	private static void insert(int prod, int asm, int proj) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -629,7 +629,7 @@ public class CheckLinkAsmSferaProjectFacade {
 		}
 	}
 
-	private static void delete(int prod, int asm, Long proj) throws DAOException {
+	private static void delete(int prod, int asm, int proj) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		
@@ -649,9 +649,9 @@ public class CheckLinkAsmSferaProjectFacade {
 		}
 	}
 
-	private static List<Tuple> checkRelazioneParzAsm(int prod, Long proj)
+	private static List<Tuple> checkRelazioneParzAsm(int prod, int proj)
 			throws DAOException {
-		List<Tuple> check = new ArrayList<>();
+		List<Tuple> check = new ArrayList<Tuple>();
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -686,7 +686,7 @@ public class CheckLinkAsmSferaProjectFacade {
 			check = query.from(asmProject)
 					.where(asmProject.dmalmProdottoPk.eq(prod))
 					.where(asmProject.dmalmAsmPk.eq(asm))
-					.where(asmProject.dmalmProjectPk.ne(0L))
+					.where(asmProject.dmalmProjectPk.ne(0))
 					.list(asmProject.all());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

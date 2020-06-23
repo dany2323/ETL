@@ -96,7 +96,7 @@ public class UserRolesSgrDAO {
 	}
 
 	public static void insertUserRolesUpdate(List<DmalmUserRolesSgr> userRoles,
-			Long fkProject, Timestamp c_created) throws DAOException {
+			int fkProject, Timestamp c_created) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -202,7 +202,7 @@ public class UserRolesSgrDAO {
 	}
 
 	public static void insertUserRoles(List<DmalmUserRolesSgr> userRoles,
-			Long fkProject) throws DAOException {
+			int fkProject) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -254,7 +254,7 @@ public class UserRolesSgrDAO {
 	}
 	
 	public static void insertUserRole(DmalmUserRolesSgr userRole,
-			Long fkProject, Timestamp dataEsecuzione) throws DAOException {
+			int fkProject, Timestamp dataEsecuzione) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -375,21 +375,23 @@ public class UserRolesSgrDAO {
 
 	}
 
-	public static Long getFkProject(String projId, String repo,
+	public static int getFkProject(String projId, String repo,
 			Timestamp c_created) throws DAOException {
 
 		if (projId == null || projId.equals(DmAlmConstants.GLOBAL))
-			return 0L;
+			return 0;
 
 		ConnectionManager cm = null;
 		Connection connection = null;
+
+		int res = 0;
 
 		try {
 
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			List<Long> fk = new SQLQuery(connection, dialect)
+			List<Integer> fk = new SQLQuery(connection, dialect)
 					.from(dmalmProject)
 					.where(dmalmProject.idProject.eq(projId))
 					.where(dmalmProject.idRepository.eq(repo))
@@ -398,7 +400,7 @@ public class UserRolesSgrDAO {
 					.list(dmalmProject.dmalmProjectPrimaryKey);
 
 			if (fk == null || fk.size() == 0)
-				return 0L;
+				return 0;
 			else
 				return fk.get(0);
 
@@ -411,7 +413,7 @@ public class UserRolesSgrDAO {
 				cm.closeConnection(connection);
 		}
 
-		return 0L;
+		return res;
 
 	}
 	

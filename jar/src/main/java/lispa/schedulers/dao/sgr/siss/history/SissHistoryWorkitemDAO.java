@@ -77,7 +77,7 @@ public class SissHistoryWorkitemDAO {
 	public static void delete(Timestamp dataEsecuzioneDeleted) throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		List <Long> listPk = new ArrayList<>();
+		List <Integer> listPk = new ArrayList<>();
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -98,7 +98,7 @@ public class SissHistoryWorkitemDAO {
 				try(ResultSet rs = ps2.executeQuery();){
 					while (rs.next()) {
 						
-						listPk.add(rs.getLong(1));
+						listPk.add(rs.getInt(1));
 						
 					}
 					int numberInParameters = listPk.size();
@@ -117,7 +117,7 @@ public class SissHistoryWorkitemDAO {
 						ps.setTimestamp(1, dataEsecuzioneDeleted);
 						//Array array=connection.createArrayOf("NUMBER", listPk.toArray());
 						for (int i=0;i<listPk.size();i++) {
-							ps.setLong(i+2, listPk.get(i));
+							ps.setInt(i+2, listPk.get(i));
 						}
 						ps.setTimestamp(listPk.size()+2, DataEsecuzione.getInstance().getDataEsecuzione());
 						

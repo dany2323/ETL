@@ -29,9 +29,9 @@ public class QDmalmDifettoProdotto extends com.mysema.query.sql.RelationalPathBa
     
     public final NumberPath<Integer> dmalmUserFk06 = createNumber("DMALM_USER_FK_06", Integer.class);
 
-    public final NumberPath<Long> dmalmDifettoProdottoPk = createNumber("DMALM_DIFETTO_PRODOTTO_PK", Long.class);
+    public final NumberPath<Integer> dmalmDifettoProdottoPk = createNumber("DMALM_DIFETTO_PRODOTTO_PK", Integer.class);
 
-    public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
+    public final NumberPath<Integer> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Integer.class);
 
     public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
 

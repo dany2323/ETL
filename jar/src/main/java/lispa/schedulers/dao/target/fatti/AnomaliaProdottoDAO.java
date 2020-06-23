@@ -70,8 +70,8 @@ public class AnomaliaProdottoDAO {
 				// Elabora il risultato
 				bean = new DmalmAnomaliaProdotto();
 				bean.setDmalmAnomaliaProdottoPk(rs
-						.getLong("DMALM_ANOMALIA_PRODOTTO_PK"));
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+						.getInt("DMALM_ANOMALIA_PRODOTTO_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -643,7 +643,7 @@ public class AnomaliaProdottoDAO {
 		}
 	}
 
-	public static DmalmAnomaliaProdotto getAnomaliaProdotto(Long pk)
+	public static DmalmAnomaliaProdotto getAnomaliaProdotto(Integer pk)
 			throws DAOException
 
 	{

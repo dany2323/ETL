@@ -106,7 +106,7 @@ public class UserRolesSgrFacade {
 					DmAlmConstants.GLOBAL, "", 
 					repositorySire);
 			for(DmalmUserRolesSgr projectUserRole: userRolesGlobal){
-				UserRolesSgrDAO.insertUserRole(projectUserRole, 0L, dataEsecuzione);
+				UserRolesSgrDAO.insertUserRole(projectUserRole, 0, dataEsecuzione);
 			}
 			logger.info("Fine gestione SIRE");
 			logger.info("Inizio gestione SISS");
@@ -115,7 +115,7 @@ public class UserRolesSgrFacade {
 					DmAlmConstants.GLOBAL, "", 
 					repositorySiss);
 			for(DmalmUserRolesSgr projectUserRole: userRolesGlobal){
-				UserRolesSgrDAO.insertUserRole(projectUserRole, 0L, dataEsecuzione);
+				UserRolesSgrDAO.insertUserRole(projectUserRole, 0, dataEsecuzione);
 			}
 			logger.info("Fine gestione SISS");
 			
@@ -159,7 +159,7 @@ public class UserRolesSgrFacade {
 					List<DmalmUserRolesSgr> listaVecchi = new ArrayList<DmalmUserRolesSgr>();
 				
 					for(DmalmUserRolesSgr projectUserRole: userRolesGroupedByProjID){											
-						Long fkProject=prj.get(project.dmalmProjectPrimaryKey);
+						int fkProject=prj.get(project.dmalmProjectPrimaryKey);
 						
 							UserRolesSgrDAO.insertUserRole(projectUserRole, fkProject, dataEsecuzione);
 							righeNuove += 1;
@@ -169,7 +169,7 @@ public class UserRolesSgrFacade {
 					
 					// nuovi UserRoles
 					for(DmalmUserRolesSgr projectUserRole: listaNuovi){	
-						Long fkProject=prj.get(project.dmalmProjectPrimaryKey);
+						int fkProject=prj.get(project.dmalmProjectPrimaryKey);
 						UserRolesSgrDAO.insertUserRole(projectUserRole, fkProject, dataEsecuzione);
 						righeNuove += 1;						
 					}

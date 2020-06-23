@@ -70,8 +70,8 @@ public class ReleaseItDAO {
 
 				bean.setCdReleaseIt(rs.getString("CD_RELEASEIT"));
 				bean.setDescrizioneReleaseIt(rs.getString("DESCRIPTION"));
-				bean.setDmalmReleaseItPk(rs.getLong("DMALM_RELEASEIT_PK"));
-				bean.setDmalmProjectFk02(rs.getLong("DMALM_PROJECT_FK_02"));
+				bean.setDmalmReleaseItPk(rs.getInt("DMALM_RELEASEIT_PK"));
+				bean.setDmalmProjectFk02(rs.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rs
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
@@ -466,7 +466,7 @@ public class ReleaseItDAO {
 
 	}
 
-	public static DmalmReleaseIt getReleaseIt(Long pk) throws DAOException {
+	public static DmalmReleaseIt getReleaseIt(Integer pk) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 

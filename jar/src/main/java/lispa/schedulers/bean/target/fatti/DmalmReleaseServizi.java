@@ -12,9 +12,9 @@ public class DmalmReleaseServizi {
 
     private String descrizioneRelServizi;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
-    private Long dmalmRelServiziPk;
+    private Integer dmalmRelServiziPk;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -109,19 +109,19 @@ public class DmalmReleaseServizi {
         this.descrizioneRelServizi = descrizioneRelServizi;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 
-    public Long getDmalmRelServiziPk() {
+    public Integer getDmalmRelServiziPk() {
         return dmalmRelServiziPk;
     }
 
-    public void setDmalmRelServiziPk(Long dmalmRelServiziPk) {
+    public void setDmalmRelServiziPk(Integer dmalmRelServiziPk) {
         this.dmalmRelServiziPk = dmalmRelServiziPk;
     }
 

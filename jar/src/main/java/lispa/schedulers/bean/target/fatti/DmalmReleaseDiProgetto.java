@@ -20,9 +20,9 @@ public class DmalmReleaseDiProgetto {
 
     private String descrizioneReleasediprog;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
-    private Long dmalmReleasediprogPk;
+    private Integer dmalmReleasediprogPk;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -153,19 +153,19 @@ public class DmalmReleaseDiProgetto {
         this.descrizioneReleasediprog = descrizioneReleasediprog;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 
-    public Long getDmalmReleasediprogPk() {
+    public Integer getDmalmReleasediprogPk() {
         return dmalmReleasediprogPk;
     }
 
-    public void setDmalmReleasediprogPk(Long dmalmReleasediprogPk) {
+    public void setDmalmReleasediprogPk(Integer dmalmReleasediprogPk) {
         this.dmalmReleasediprogPk = dmalmReleasediprogPk;
     }
 

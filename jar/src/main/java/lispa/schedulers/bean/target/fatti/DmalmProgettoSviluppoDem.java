@@ -26,9 +26,9 @@ public class DmalmProgettoSviluppoDem {
 
     private String descrizioneProgSvilD;
 
-    private Long dmalmProgSvilDPk;
+    private Integer dmalmProgSvilDPk;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -186,19 +186,19 @@ public class DmalmProgettoSviluppoDem {
         this.descrizioneProgSvilD = descrizioneProgSvilD;
     }
 
-    public Long getDmalmProgSvilDPk() {
+    public Integer getDmalmProgSvilDPk() {
         return dmalmProgSvilDPk;
     }
 
-    public void setDmalmProgSvilDPk(Long dmalmProgSvilDPk) {
+    public void setDmalmProgSvilDPk(Integer dmalmProgSvilDPk) {
         this.dmalmProgSvilDPk = dmalmProgSvilDPk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

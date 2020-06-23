@@ -16,11 +16,11 @@ public class DmalmDifettoProdotto {
 	
     private String cdDifetto;
 
-    private Long dmalmDifettoProdottoPrimaryKey;
+    private Integer dmalmDifettoProdottoPrimaryKey;
     
     private String descrizioneProject;
 
-    private Long dmalmProjectFk02;
+    private Integer dmalmProjectFk02;
 
     private Integer dmalmStatoWorkitemFk03;
 
@@ -168,19 +168,19 @@ public class DmalmDifettoProdotto {
         this.cdDifetto = cdDifetto;
     }
 
-    public Long getDmalmDifettoProdottoPk() {
+    public Integer getDmalmDifettoProdottoPk() {
         return dmalmDifettoProdottoPrimaryKey;
     }
 
-    public void setDmalmDifettoProdottoPk(Long dmalmDifettoProdottoPk) {
+    public void setDmalmDifettoProdottoPk(Integer dmalmDifettoProdottoPk) {
         this.dmalmDifettoProdottoPrimaryKey = dmalmDifettoProdottoPk;
     }
 
-    public Long getDmalmProjectFk02() {
+    public Integer getDmalmProjectFk02() {
         return dmalmProjectFk02;
     }
 
-    public void setDmalmProjectFk02(Long dmalmProjectFk02) {
+    public void setDmalmProjectFk02(Integer dmalmProjectFk02) {
         this.dmalmProjectFk02 = dmalmProjectFk02;
     }
 

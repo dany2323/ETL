@@ -15,8 +15,8 @@ public class QDmalmProjectProdottiArchitetture extends com.mysema.query.sql.Rela
 	public static final QDmalmProjectProdottiArchitetture qDmalmProjectProdottiArchitetture = new QDmalmProjectProdottiArchitetture(
 			"DMALM_PROJECT_PRODOTTI_ARCH");
 
-	public final NumberPath<Long> dmalmProjectPk = createNumber(
-			"DMALM_PROJECT_PK", Long.class);
+	public final NumberPath<Integer> dmalmProjectPk = createNumber(
+			"DMALM_PROJECT_PK", Integer.class);
 
 	public final NumberPath<Integer> dmalmProdottoPk = createNumber(
 			"DMALM_PRODOTTO_PK", Integer.class);

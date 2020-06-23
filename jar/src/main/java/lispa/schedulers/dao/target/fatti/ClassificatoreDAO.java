@@ -76,8 +76,8 @@ public class ClassificatoreDAO {
 
 				bean.setCd_classificatore(rsClassDem.getString("CD_CLASSIFICATORE"));
 				bean.setDmalmClassificatorePk(rsClassDem
-						.getLong("DMALM_CLASSIFICATORE_PK"));
-				bean.setDmalmProjectFk02(rsClassDem.getLong("DMALM_PROJECT_FK_02"));
+						.getInt("DMALM_CLASSIFICATORE_PK"));
+				bean.setDmalmProjectFk02(rsClassDem.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rsClassDem
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rsClassDem.getInt("DMALM_USER_FK_06"));
@@ -175,8 +175,8 @@ public class ClassificatoreDAO {
 
 				bean.setCd_classificatore(rsClass.getString("CD_CLASSIFICATORE"));
 				bean.setDmalmClassificatorePk(rsClass
-						.getLong("DMALM_CLASSIFICATORE_PK"));
-				bean.setDmalmProjectFk02(rsClass.getLong("DMALM_PROJECT_FK_02"));
+						.getInt("DMALM_CLASSIFICATORE_PK"));
+				bean.setDmalmProjectFk02(rsClass.getInt("DMALM_PROJECT_FK_02"));
 				bean.setDmalmStatoWorkitemFk03(rsClass
 						.getInt("DMALM_STATO_WORKITEM_FK_03"));
 				bean.setDmalmUserFk06(rsClass.getInt("DMALM_USER_FK_06"));
@@ -618,7 +618,7 @@ public class ClassificatoreDAO {
 		}
 	}
 
-	public static DmalmClassificatore getClassificatore(Long pk)
+	public static DmalmClassificatore getClassificatore(Integer pk)
 			throws Exception {
 
 		ConnectionManager cm = null;

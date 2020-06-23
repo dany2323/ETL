@@ -59,7 +59,7 @@ public class RichiestaSupportoDAO {
 								rs.getInt("DMALM_RICH_SUPPORTO_PK"));
 						bean.setStgPk(rs.getString("STG_PK"));
 						bean.setDmalmProjectFk02(
-								rs.getLong("DMALM_PROJECT_FK_02"));
+								rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 						bean.setCdRichiestaSupporto(
 								rs.getString("CD_RICHIESTA_SUPPORTO"));
@@ -154,7 +154,7 @@ public class RichiestaSupportoDAO {
 								rs.getInt("DMALM_RICH_SUPPORTO_PK"));
 						bean.setStgPk(rs.getString("STG_PK"));
 						bean.setDmalmProjectFk02(
-								rs.getLong("DMALM_PROJECT_FK_02"));
+								rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 						bean.setCdRichiestaSupporto(
 								rs.getString("CD_RICHIESTA_SUPPORTO"));
@@ -382,7 +382,7 @@ public class RichiestaSupportoDAO {
 								rs.getInt("DMALM_RICH_SUPPORTO_PK"));
 						bean.setStgPk(rs.getString("STG_PK"));
 						bean.setDmalmProjectFk02(
-								rs.getLong("DMALM_PROJECT_FK_02"));
+								rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 						bean.setCdRichiestaSupporto(
 								rs.getString("CD_RICHIESTA_SUPPORTO"));
@@ -446,7 +446,7 @@ public class RichiestaSupportoDAO {
 	}
 
 	public static List<DmalmRichiestaSupporto> getRichiestaSupporto(
-			Long pk_proj, Integer typeQuery)
+			Integer pk_proj, Integer typeQuery)
 			throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
@@ -475,7 +475,7 @@ public class RichiestaSupportoDAO {
 			try (OracleCallableStatement ocs = (OracleCallableStatement) connection
 					.prepareCall(sql);) {
 				ocs.registerOutParameter(1, OracleTypes.CURSOR);
-				ocs.setLong(2, pk_proj);
+				ocs.setInt(2, pk_proj);
 				ocs.execute();
 
 				// return the result set
@@ -491,7 +491,7 @@ public class RichiestaSupportoDAO {
 								rs.getInt("DMALM_RICH_SUPPORTO_PK"));
 						bean.setStgPk(rs.getString("STG_PK"));
 						bean.setDmalmProjectFk02(
-								rs.getLong("DMALM_PROJECT_FK_02"));
+								rs.getInt("DMALM_PROJECT_FK_02"));
 						bean.setDmalmUserFk06(rs.getInt("DMALM_USER_FK_06"));
 						bean.setCdRichiestaSupporto(
 								rs.getString("CD_RICHIESTA_SUPPORTO"));
@@ -626,7 +626,7 @@ public class RichiestaSupportoDAO {
 			ocs = (OracleCallableStatement) connection.prepareCall(sql);
 			ocs.registerOutParameter(1, OracleTypes.VARCHAR);
 			ocs.setObject(2, structObj);
-			ocs.setLong(3, p.getDmalmProjectPk());
+			ocs.setInt(3, p.getDmalmProjectPk());
 			ocs.execute();
 
 			flag = ocs.getString(1);
