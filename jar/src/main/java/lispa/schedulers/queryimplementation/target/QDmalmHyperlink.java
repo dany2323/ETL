@@ -33,11 +33,11 @@ public class QDmalmHyperlink extends com.mysema.query.sql.RelationalPathBase<Dma
     public final StringPath uri = createString("URI");
 
     public QDmalmHyperlink(String variable) {
-        super(DmalmHyperlink.class, forVariable(variable), "DMALM", "DMALM_HYPERLINK");
+        super(DmalmHyperlink.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_HYPERLINK");
     }
 
     public QDmalmHyperlink(Path<? extends DmalmHyperlink> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_HYPERLINK");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_HYPERLINK");
     }
 
     public QDmalmHyperlink(PathMetadata<?> metadata) {

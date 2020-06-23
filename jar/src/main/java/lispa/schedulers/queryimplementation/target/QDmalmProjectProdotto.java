@@ -7,6 +7,7 @@ import javax.annotation.Generated;
 import lispa.schedulers.bean.target.DmalmProdotto;
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectProdotto;
+import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.Path;
 import com.mysema.query.types.PathMetadata;
@@ -47,17 +48,17 @@ public class QDmalmProjectProdotto extends
 			dmalmProdottoSeq, "DMALM_PRODOTTO_SEQ");
 
 	public QDmalmProjectProdotto(String variable) {
-		super(DmalmProjectProdotto.class, forVariable(variable), "DMALM",
+		super(DmalmProjectProdotto.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_PROJECT_PRODOTTO");
 	}
 
 	public QDmalmProjectProdotto(Path<? extends DmalmProjectProdotto> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_PROJECT_PRODOTTO");
 	}
 
 	public QDmalmProjectProdotto(PathMetadata<?> metadata) {
-		super(DmalmProjectProdotto.class, metadata, "DMALM",
+		super(DmalmProjectProdotto.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_PROJECT_PRODOTTO");
 	}
 

@@ -179,8 +179,6 @@ public class RecoverManager {
 			String separatorLine = ";";
 			flag = qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET_WITH_PROCEDURE,
 					separatorTable, separatorLine, dataEsecuzione);
-//			logger.info("LA PREPARE TARGET è DISABILITATA");
-//			flag=true;
 			if(!flag) {
 				setRecovered(true);
 				throw new Exception(DmAlmConstants.ERROR_CARICAMENTO_BACKUP);

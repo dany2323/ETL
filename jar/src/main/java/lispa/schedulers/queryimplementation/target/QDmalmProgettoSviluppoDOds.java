@@ -100,11 +100,11 @@ public class QDmalmProgettoSviluppoDOds extends com.mysema.query.sql.RelationalP
     public final com.mysema.query.sql.PrimaryKey<DmalmProgettoSviluppoDOds> sysC0023552 = createPrimaryKey(dmalmProgSvilDPk);
 
     public QDmalmProgettoSviluppoDOds(String variable) {
-        super(DmalmProgettoSviluppoDOds.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_SVILUPPO_D_ODS");
+        super(DmalmProgettoSviluppoDOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SVILUPPO_D_ODS");
     }
 
     public QDmalmProgettoSviluppoDOds(Path<? extends DmalmProgettoSviluppoDOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PROGETTO_SVILUPPO_D_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SVILUPPO_D_ODS");
     }
 
     public QDmalmProgettoSviluppoDOds(PathMetadata<?> metadata) {

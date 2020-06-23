@@ -109,11 +109,11 @@ public class QDmalmAnomaliaAssistenza extends com.mysema.query.sql.RelationalPat
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmAnomaliaAssistenza(String variable) {
-        super(DmalmAnomaliaAssistenza.class, forVariable(variable), "DMALM", "DMALM_ANOMALIA_ASSISTENZA");
+        super(DmalmAnomaliaAssistenza.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ANOMALIA_ASSISTENZA");
     }
 
     public QDmalmAnomaliaAssistenza(Path<? extends DmalmAnomaliaAssistenza> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_ANOMALIA_ASSISTENZA");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ANOMALIA_ASSISTENZA");
     }
 
     public QDmalmAnomaliaAssistenza(PathMetadata<?> metadata) {

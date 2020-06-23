@@ -105,11 +105,11 @@ public class QDmalmDifettoProdottoOds extends com.mysema.query.sql.RelationalPat
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmDifettoProdottoOds(String variable) {
-        super(DmalmDifettoProdottoOds.class, forVariable(variable), "DMALM", "DMALM_DIFETTO_PRODOTTO_ODS");
+        super(DmalmDifettoProdottoOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_DIFETTO_PRODOTTO_ODS");
     }
 
     public QDmalmDifettoProdottoOds(Path<? extends DmalmDifettoProdottoOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_DIFETTO_PRODOTTO_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_DIFETTO_PRODOTTO_ODS");
     }
 
     public QDmalmDifettoProdottoOds(PathMetadata<?> metadata) {

@@ -2,6 +2,7 @@ package lispa.schedulers.queryimplementation.staging.sfera;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 import lispa.schedulers.bean.staging.sfera.DmalmStgMisura;
+import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.path.*;
 import com.mysema.query.types.PathMetadata;
@@ -432,15 +433,15 @@ public class QDmalmStgMisura extends com.mysema.query.sql.RelationalPathBase<Dma
     public final com.mysema.query.sql.PrimaryKey<DmalmStgMisura> PK_DMALM_STG_MISURA = createPrimaryKey(dmalmStgMisuraPk);
 
     public QDmalmStgMisura(String variable) {
-        super(DmalmStgMisura.class, forVariable(variable), "DMALM", "DMALM_STG_MISURA");
+        super(DmalmStgMisura.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MISURA");
     }
 
     public QDmalmStgMisura(Path<? extends DmalmStgMisura> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_STG_MISURA");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MISURA");
     }
 
     public QDmalmStgMisura(PathMetadata<?> metadata) {
-        super(DmalmStgMisura.class, metadata, "DMALM", "DMALM_STG_MISURA");
+        super(DmalmStgMisura.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_STG_MISURA");
     }
 
 }

@@ -112,11 +112,11 @@ public class QDmalmProgettoDemandOds extends com.mysema.query.sql.RelationalPath
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmProgettoDemandOds(String variable) {
-        super(DmalmProgettoDemandOds.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_DEMAND_ODS");
+        super(DmalmProgettoDemandOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_DEMAND_ODS");
     }
 
     public QDmalmProgettoDemandOds(Path<? extends DmalmProgettoDemandOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PROGETTO_DEMAND_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_DEMAND_ODS");
     }
 
     public QDmalmProgettoDemandOds(PathMetadata<?> metadata) {

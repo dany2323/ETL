@@ -41,12 +41,12 @@ public class QDmalmSchedeServizio extends
 	public final com.mysema.query.sql.PrimaryKey<DmalmSchedeServizio> sysC0022479 = createPrimaryKey(dmalm_schedeServizio_Pk);
 	
 	public QDmalmSchedeServizio(String variable) {
-		super(DmalmSchedeServizio.class, forVariable(variable), "DMALM",
+		super(DmalmSchedeServizio.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_STG_SCHEDE_SERVIZIO");
 	}
 
 	public QDmalmSchedeServizio(Path<? extends DmalmSchedeServizio> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_STG_SCHEDE_SERVIZIO");
 	}
 	

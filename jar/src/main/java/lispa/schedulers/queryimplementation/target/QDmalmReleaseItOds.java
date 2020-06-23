@@ -99,11 +99,11 @@ public class QDmalmReleaseItOds extends com.mysema.query.sql.RelationalPathBase<
     public final com.mysema.query.sql.PrimaryKey<DmalmReleaseItOds> sysC0023776 = createPrimaryKey(dmalmReleaseItPk);
 
     public QDmalmReleaseItOds(String variable) {
-        super(DmalmReleaseItOds.class, forVariable(variable), "DMALM", "DMALM_RELEASE_IT_ODS");
+        super(DmalmReleaseItOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_RELEASE_IT_ODS");
     }
 
     public QDmalmReleaseItOds(Path<? extends DmalmReleaseItOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_RELEASE_IT_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_RELEASE_IT_ODS");
     }
 
     public QDmalmReleaseItOds(PathMetadata<?> metadata) {

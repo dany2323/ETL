@@ -118,11 +118,11 @@ public class QDmalmAnomaliaProdotto extends com.mysema.query.sql.RelationalPathB
     
     
     public QDmalmAnomaliaProdotto(String variable) {
-        super(DmalmAnomaliaProdotto.class, forVariable(variable), "DMALM", "DMALM_ANOMALIA_PRODOTTO");
+        super(DmalmAnomaliaProdotto.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ANOMALIA_PRODOTTO");
     }
 
     public QDmalmAnomaliaProdotto(Path<? extends DmalmAnomaliaProdotto> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_ANOMALIA_PRODOTTO");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ANOMALIA_PRODOTTO");
     }
 
     public QDmalmAnomaliaProdotto(PathMetadata<?> metadata) {

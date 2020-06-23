@@ -84,11 +84,11 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmBuildOds(String variable) {
-        super(DmalmBuildOds.class, forVariable(variable), "DMALM", "DMALM_BUILD_ODS");
+        super(DmalmBuildOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_BUILD_ODS");
     }
 
     public QDmalmBuildOds(Path<? extends DmalmBuildOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_BUILD_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_BUILD_ODS");
     }
 
     public QDmalmBuildOds(PathMetadata<?> metadata) {

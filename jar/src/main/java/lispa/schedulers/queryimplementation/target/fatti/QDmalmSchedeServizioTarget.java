@@ -38,12 +38,12 @@ public class QDmalmSchedeServizioTarget extends com.mysema.query.sql.RelationalP
 	public final com.mysema.query.sql.PrimaryKey<DmalmSchedeServizioTarget> sysC0022479 = createPrimaryKey(dmalm_schedeServizio_Pk);
 	
 	public QDmalmSchedeServizioTarget(String variable) {
-		super(DmalmSchedeServizioTarget.class, forVariable(variable), "DMALM",
+		super(DmalmSchedeServizioTarget.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_SCHEDE_SERVIZIO");
 	}
 
 	public QDmalmSchedeServizioTarget(Path<? extends DmalmSchedeServizioTarget> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_SCHEDE_SERVIZIO");
 	}
 	

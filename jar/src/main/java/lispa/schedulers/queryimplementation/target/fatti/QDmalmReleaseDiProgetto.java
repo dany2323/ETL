@@ -137,12 +137,12 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
 	public QDmalmReleaseDiProgetto(String variable) {
-		super(DmalmReleaseDiProgetto.class, forVariable(variable), "DMALM",
+		super(DmalmReleaseDiProgetto.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_RELEASE_DI_PROGETTO");
 	}
 
 	public QDmalmReleaseDiProgetto(Path<? extends DmalmReleaseDiProgetto> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_RELEASE_DI_PROGETTO");
 	}
 

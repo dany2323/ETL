@@ -104,11 +104,11 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final com.mysema.query.sql.PrimaryKey<DmalmAnomaliaAssistenzaOds> sysC0024517 = createPrimaryKey(dmalmAnomaliaAssPk);
 
     public QDmalmAnomaliaAssistenzaOds(String variable) {
-        super(DmalmAnomaliaAssistenzaOds.class, forVariable(variable), "DMALM", "DMALM_ANOMALIA_ASSISTENZA_ODS");
+        super(DmalmAnomaliaAssistenzaOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ANOMALIA_ASSISTENZA_ODS");
     }
 
     public QDmalmAnomaliaAssistenzaOds(Path<? extends DmalmAnomaliaAssistenzaOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_ANOMALIA_ASSISTENZA_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ANOMALIA_ASSISTENZA_ODS");
     }
 
     public QDmalmAnomaliaAssistenzaOds(PathMetadata<?> metadata) {

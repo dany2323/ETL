@@ -103,11 +103,11 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmTaskIt(String variable) {
-        super(DmalmTaskIt.class, forVariable(variable), "DMALM", "DMALM_TASK_IT");
+        super(DmalmTaskIt.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_TASK_IT");
     }
 
     public QDmalmTaskIt(Path<? extends DmalmTaskIt> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_TASK_IT");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_TASK_IT");
     }
 
     public QDmalmTaskIt(PathMetadata<?> metadata) {

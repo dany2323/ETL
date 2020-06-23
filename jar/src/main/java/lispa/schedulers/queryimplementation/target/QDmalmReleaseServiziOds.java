@@ -89,11 +89,11 @@ public class QDmalmReleaseServiziOds extends com.mysema.query.sql.RelationalPath
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmReleaseServiziOds(String variable) {
-        super(DmalmReleaseServiziOds.class, forVariable(variable), "DMALM", "DMALM_RELEASE_SERVIZI_ODS");
+        super(DmalmReleaseServiziOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_RELEASE_SERVIZI_ODS");
     }
 
     public QDmalmReleaseServiziOds(Path<? extends DmalmReleaseServiziOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_RELEASE_SERVIZI_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_RELEASE_SERVIZI_ODS");
     }
 
     public QDmalmReleaseServiziOds(PathMetadata<?> metadata) {

@@ -91,7 +91,7 @@ public class QDmalmSottoprogrammaOds extends com.mysema.query.sql.RelationalPath
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmSottoprogrammaOds(String variable) {
-        super(DmalmSottoprogrammaOds.class, forVariable(variable), "DMALM", "DMALM_SOTTOPROGRAMMA_ODS");
+        super(DmalmSottoprogrammaOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_SOTTOPROGRAMMA_ODS");
     }
 
     public QDmalmSottoprogrammaOds(Path<? extends DmalmSottoprogrammaOds> path) {

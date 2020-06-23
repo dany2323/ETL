@@ -47,11 +47,11 @@ public class QDmalmAttachment extends com.mysema.query.sql.RelationalPathBase<Dm
     public final StringPath url = createString("URL");
 
     public QDmalmAttachment(String variable) {
-        super(DmalmAttachment.class, forVariable(variable), "DMALM", "DMALM_ATTACHMENT");
+        super(DmalmAttachment.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ATTACHMENT");
     }
 
     public QDmalmAttachment(Path<? extends DmalmAttachment> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_ATTACHMENT");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ATTACHMENT");
     }
 
     public QDmalmAttachment(PathMetadata<?> metadata) {

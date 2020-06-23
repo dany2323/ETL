@@ -92,11 +92,11 @@ public class QDmalmTestcaseOds extends com.mysema.query.sql.RelationalPathBase<D
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmTestcaseOds(String variable) {
-        super(DmalmTestcaseOds.class, forVariable(variable), "DMALM", "DMALM_TESTCASE_ODS");
+        super(DmalmTestcaseOds.class, forVariable(variable),DmAlmConstants.DMALM_TARGET_SCHEMA , "DMALM_TESTCASE_ODS");
     }
 
     public QDmalmTestcaseOds(Path<? extends DmalmTestcaseOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_TESTCASE_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_TESTCASE_ODS");
     }
 
     public QDmalmTestcaseOds(PathMetadata<?> metadata) {

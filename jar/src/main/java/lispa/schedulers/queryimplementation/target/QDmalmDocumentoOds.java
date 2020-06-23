@@ -99,11 +99,11 @@ public class QDmalmDocumentoOds extends com.mysema.query.sql.RelationalPathBase<
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmDocumentoOds(String variable) {
-        super(DmalmDocumentoOds.class, forVariable(variable), "DMALM", "DMALM_DOCUMENTO_ODS");
+        super(DmalmDocumentoOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_DOCUMENTO_ODS");
     }
 
     public QDmalmDocumentoOds(Path<? extends DmalmDocumentoOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_DOCUMENTO_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_DOCUMENTO_ODS");
     }
 
     public QDmalmDocumentoOds(PathMetadata<?> metadata) {

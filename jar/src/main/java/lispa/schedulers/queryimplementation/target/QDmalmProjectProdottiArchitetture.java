@@ -2,6 +2,7 @@ package lispa.schedulers.queryimplementation.target;
 
 import static com.mysema.query.types.PathMetadataFactory.forVariable;
 import lispa.schedulers.bean.target.DmalmProjectProdottiArchitetture;
+import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.Path;
 import com.mysema.query.types.PathMetadata;
@@ -28,17 +29,17 @@ public class QDmalmProjectProdottiArchitetture extends com.mysema.query.sql.Rela
 
 	public QDmalmProjectProdottiArchitetture(String variable) {
 		super(DmalmProjectProdottiArchitetture.class, forVariable(variable),
-				"DMALM", "DMALM_PROJECT_PRODOTTI_ARCH");
+				DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROJECT_PRODOTTI_ARCH");
 	}
 
 	public QDmalmProjectProdottiArchitetture(
 			Path<? extends DmalmProjectProdottiArchitetture> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_PROJECT_PRODOTTI_ARCH");
 	}
 
 	public QDmalmProjectProdottiArchitetture(PathMetadata<?> metadata) {
-		super(DmalmProjectProdottiArchitetture.class, metadata, "DMALM",
+		super(DmalmProjectProdottiArchitetture.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_PROJECT_PRODOTTI_ARCH");
 	}
 }

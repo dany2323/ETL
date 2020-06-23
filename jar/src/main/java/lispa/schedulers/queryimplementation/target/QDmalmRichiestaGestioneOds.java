@@ -91,11 +91,11 @@ public class QDmalmRichiestaGestioneOds extends com.mysema.query.sql.RelationalP
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmRichiestaGestioneOds(String variable) {
-        super(DmalmRichiestaGestioneOds.class, forVariable(variable), "DMALM", "DMALM_RICHIESTA_GESTIONE_ODS");
+        super(DmalmRichiestaGestioneOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_RICHIESTA_GESTIONE_ODS");
     }
 
     public QDmalmRichiestaGestioneOds(Path<? extends DmalmRichiestaGestioneOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_RICHIESTA_GESTIONE_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_RICHIESTA_GESTIONE_ODS");
     }
 
     public QDmalmRichiestaGestioneOds(PathMetadata<?> metadata) {

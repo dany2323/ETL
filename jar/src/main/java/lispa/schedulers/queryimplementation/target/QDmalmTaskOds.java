@@ -106,11 +106,11 @@ public class QDmalmTaskOds extends com.mysema.query.sql.RelationalPathBase<Dmalm
     public final com.mysema.query.sql.PrimaryKey<DmalmTaskOds> sysC0023172 = createPrimaryKey(dmalmTaskPk);
 
     public QDmalmTaskOds(String variable) {
-        super(DmalmTaskOds.class, forVariable(variable), "DMALM", "DMALM_TASK_ODS");
+        super(DmalmTaskOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_TASK_ODS");
     }
 
     public QDmalmTaskOds(Path<? extends DmalmTaskOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_TASK_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_TASK_ODS");
     }
 
     public QDmalmTaskOds(PathMetadata<?> metadata) {

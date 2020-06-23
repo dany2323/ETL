@@ -45,12 +45,12 @@ public class QDmalmLinkedWorkitems extends
 	public final StringPath codiceProjectPadre = createString("CODICE_PROJECT_PADRE");
 
 	public QDmalmLinkedWorkitems(String variable) {
-		super(DmalmLinkedWorkitems.class, forVariable(variable), "DMALM",
+		super(DmalmLinkedWorkitems.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_LINKED_WORKITEMS");
 	}
 
 	public QDmalmLinkedWorkitems(Path<? extends DmalmLinkedWorkitems> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_LINKED_WORKITEMS");
 	}
 

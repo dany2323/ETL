@@ -2,7 +2,7 @@ package lispa.schedulers.queryimplementation.target.sfera;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 import lispa.schedulers.bean.target.sfera.DmalmProgettoSferaOds;
-
+import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.path.*;
 
@@ -120,15 +120,15 @@ public class QDmalmProgettoSferaOds extends com.mysema.query.sql.RelationalPathB
     public final com.mysema.query.sql.PrimaryKey<DmalmProgettoSferaOds> sysC0037837 = createPrimaryKey(dmalmProgettoSferaPk);
 
     public QDmalmProgettoSferaOds(String variable) {
-        super(DmalmProgettoSferaOds.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_SFERA_ODS");
+        super(DmalmProgettoSferaOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SFERA_ODS");
     }
 
     public QDmalmProgettoSferaOds(Path<? extends DmalmProgettoSferaOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PROGETTO_SFERA_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SFERA_ODS");
     }
 
     public QDmalmProgettoSferaOds(PathMetadata<?> metadata) {
-        super(DmalmProgettoSferaOds.class, metadata, "DMALM", "DMALM_PROGETTO_SFERA_ODS");
+        super(DmalmProgettoSferaOds.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SFERA_ODS");
     }
 
 }

@@ -99,11 +99,11 @@ public class QDmalmRichManutenzioneOds extends com.mysema.query.sql.RelationalPa
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmRichManutenzioneOds(String variable) {
-        super(DmalmRichManutenzioneOds.class, forVariable(variable), "DMALM", "DMALM_RICH_MANUTENZIONE_ODS");
+        super(DmalmRichManutenzioneOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_RICH_MANUTENZIONE_ODS");
     }
 
     public QDmalmRichManutenzioneOds(Path<? extends DmalmRichManutenzioneOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_RICH_MANUTENZIONE_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_RICH_MANUTENZIONE_ODS");
     }
 
     public QDmalmRichManutenzioneOds(PathMetadata<?> metadata) {

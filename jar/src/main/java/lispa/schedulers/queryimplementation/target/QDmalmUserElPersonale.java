@@ -29,11 +29,11 @@ public class QDmalmUserElPersonale extends com.mysema.query.sql.RelationalPathBa
     public final DateTimePath<java.sql.Timestamp> dtCaricamento = createDateTime("DT_CARICAMENTO", java.sql.Timestamp.class);
 
     public QDmalmUserElPersonale(String variable) {
-        super(DmalmUserElPersonale.class, forVariable(variable), "DMALM", "DMALM_USER_EL_PERSONALE");
+        super(DmalmUserElPersonale.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_USER_EL_PERSONALE");
     }
 
     public QDmalmUserElPersonale(Path<? extends DmalmUserElPersonale> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_USER_EL_PERSONALE");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_USER_EL_PERSONALE");
     }
 
     public QDmalmUserElPersonale(PathMetadata<?> metadata) {

@@ -105,11 +105,11 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmProgettoSviluppoDem(String variable) {
-        super(DmalmProgettoSviluppoDem.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_SVILUPPO_DEM");
+        super(DmalmProgettoSviluppoDem.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SVILUPPO_DEM");
     }
 
     public QDmalmProgettoSviluppoDem(Path<? extends DmalmProgettoSviluppoDem> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PROGETTO_SVILUPPO_DEM");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SVILUPPO_DEM");
     }
 
     public QDmalmProgettoSviluppoDem(PathMetadata<?> metadata) {

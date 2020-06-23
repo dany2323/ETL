@@ -2,7 +2,7 @@ package lispa.schedulers.queryimplementation.target;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 import lispa.schedulers.bean.target.DmalmGerarchiaUo;
-
+import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.path.*;
 
@@ -36,15 +36,15 @@ public class QDmalmGerarchiaUo extends com.mysema.query.sql.RelationalPathBase<D
     public final StringPath uoPrecessore = createString("UO_PRECESSORE");
 
     public QDmalmGerarchiaUo(String variable) {
-        super(DmalmGerarchiaUo.class, forVariable(variable), "DMALM", "DMALM_GERARCHIA_UO");
+        super(DmalmGerarchiaUo.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_GERARCHIA_UO");
     }
 
     public QDmalmGerarchiaUo(Path<? extends DmalmGerarchiaUo> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_GERARCHIA_UO");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_GERARCHIA_UO");
     }
 
     public QDmalmGerarchiaUo(PathMetadata<?> metadata) {
-        super(DmalmGerarchiaUo.class, metadata, "DMALM", "DMALM_GERARCHIA_UO");
+        super(DmalmGerarchiaUo.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_GERARCHIA_UO");
     }
 
 }

@@ -89,11 +89,11 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmBuild(String variable) {
-        super(DmalmBuild.class, forVariable(variable), "DMALM", "DMALM_BUILD");
+        super(DmalmBuild.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_BUILD");
     }
 
     public QDmalmBuild(Path<? extends DmalmBuild> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_BUILD");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_BUILD");
     }
 
     public QDmalmBuild(PathMetadata<?> metadata) {

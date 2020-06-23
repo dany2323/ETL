@@ -36,7 +36,7 @@ public class QDmalmPei extends com.mysema.query.sql.RelationalPathBase<DmalmPei>
 
     public final NumberPath<Long> dmalmProjectFk02 = createNumber("DMALM_PROJECT_FK_02", Long.class);
 
-    public final NumberPath<Integer> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Integer.class);
+    public final NumberPath<Long> dmalmStatoWorkitemFk03 = createNumber("DMALM_STATO_WORKITEM_FK_03", Long.class);
 
     public final NumberPath<Integer> dmalmStrutturaOrgFk01 = createNumber("DMALM_STRUTTURA_ORG_FK_01", Integer.class);
 
@@ -94,11 +94,11 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmPei(String variable) {
-        super(DmalmPei.class, forVariable(variable), "DMALM", "DMALM_PEI");
+        super(DmalmPei.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PEI");
     }
 
     public QDmalmPei(Path<? extends DmalmPei> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PEI");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PEI");
     }
 
     public QDmalmPei(PathMetadata<?> metadata) {

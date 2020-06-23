@@ -98,11 +98,11 @@ public class QDmalmTaskItOds extends com.mysema.query.sql.RelationalPathBase<Dma
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmTaskItOds(String variable) {
-        super(DmalmTaskItOds.class, forVariable(variable), "DMALM", "DMALM_TASK_IT_ODS");
+        super(DmalmTaskItOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_TASK_IT_ODS");
     }
 
     public QDmalmTaskItOds(Path<? extends DmalmTaskItOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_TASK_IT_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_TASK_IT_ODS");
     }
 
     public QDmalmTaskItOds(PathMetadata<?> metadata) {

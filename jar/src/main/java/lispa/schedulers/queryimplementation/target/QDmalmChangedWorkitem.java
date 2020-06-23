@@ -35,11 +35,11 @@ public class QDmalmChangedWorkitem extends com.mysema.query.sql.RelationalPathBa
     public final StringPath type = createString("TYPE");
 
     public QDmalmChangedWorkitem(String variable) {
-        super(DmalmChangedWorkitem.class, forVariable(variable), "DMALM", "DMALM_CHANGED_WORKITEM");
+        super(DmalmChangedWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_CHANGED_WORKITEM");
     }
 
     public QDmalmChangedWorkitem(Path<? extends DmalmChangedWorkitem> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_CHANGED_WORKITEM");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_CHANGED_WORKITEM");
     }
 
     public QDmalmChangedWorkitem(PathMetadata<?> metadata) {

@@ -41,12 +41,12 @@ public class QDmalmFilieraProduttiva extends
 			"DT_CARICAMENTO", java.sql.Timestamp.class);
 
 	public QDmalmFilieraProduttiva(String variable) {
-		super(DmalmFilieraProduttiva.class, forVariable(variable), "DMALM",
+		super(DmalmFilieraProduttiva.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_FILIERA_PRODUTTIVA");
 	}
 
 	public QDmalmFilieraProduttiva(Path<? extends DmalmFilieraProduttiva> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_FILIERA_PRODUTTIVA");
 	}
 

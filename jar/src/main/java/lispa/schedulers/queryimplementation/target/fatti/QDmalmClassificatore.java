@@ -125,12 +125,12 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
 	public QDmalmClassificatore(String variable) {
-		super(DmalmClassificatore.class, forVariable(variable), "DMALM",
+		super(DmalmClassificatore.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_CLASSIFICATORE");
 	}
 
 	public QDmalmClassificatore(Path<? extends DmalmClassificatore> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_CLASSIFICATORE");
 	}
 

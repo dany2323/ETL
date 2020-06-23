@@ -47,11 +47,11 @@ public class QDmalmUser extends com.mysema.query.sql.RelationalPathBase<DmalmUse
     public final StringPath idRepository = createString("ID_REPOSITORY");
 
     public QDmalmUser(String variable) {
-        super(DmalmUser.class, forVariable(variable), "DMALM", "DMALM_USER");
+        super(DmalmUser.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_USER");
     }
 
     public QDmalmUser(Path<? extends DmalmUser> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_USER");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_USER");
     }
 
     public QDmalmUser(PathMetadata<?> metadata) {

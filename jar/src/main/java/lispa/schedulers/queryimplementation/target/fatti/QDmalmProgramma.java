@@ -105,7 +105,7 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmProgramma(String variable) {
-        super(DmalmProgramma.class, forVariable(variable), "DMALM", "DMALM_PROGRAMMA");
+        super(DmalmProgramma.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGRAMMA");
     }
 
     public QDmalmProgramma(Path<? extends DmalmProgramma> path) {

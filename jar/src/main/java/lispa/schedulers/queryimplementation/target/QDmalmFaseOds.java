@@ -103,11 +103,11 @@ public class QDmalmFaseOds extends com.mysema.query.sql.RelationalPathBase<Dmalm
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmFaseOds(String variable) {
-        super(DmalmFaseOds.class, forVariable(variable), "DMALM", "DMALM_FASE_ODS");
+        super(DmalmFaseOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_FASE_ODS");
     }
 
     public QDmalmFaseOds(Path<? extends DmalmFaseOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_FASE_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_FASE_ODS");
     }
 
     public QDmalmFaseOds(PathMetadata<?> metadata) {

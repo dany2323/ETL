@@ -137,13 +137,13 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
 	public QDmalmAnomaliaProdottoOds(String variable) {
-		super(DmalmAnomaliaProdottoOds.class, forVariable(variable), "DMALM",
+		super(DmalmAnomaliaProdottoOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_ANOMALIA_PRODOTTO_ODS");
 	}
 
 	public QDmalmAnomaliaProdottoOds(
 			Path<? extends DmalmAnomaliaProdottoOds> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_ANOMALIA_PRODOTTO_ODS");
 	}
 

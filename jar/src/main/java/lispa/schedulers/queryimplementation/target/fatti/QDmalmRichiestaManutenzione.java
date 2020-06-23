@@ -127,13 +127,13 @@ public final StringPath tagAlm = createString("TAG_ALM");
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
 	public QDmalmRichiestaManutenzione(String variable) {
-		super(DmalmRichiestaManutenzione.class, forVariable(variable), "DMALM",
+		super(DmalmRichiestaManutenzione.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_RICHIESTA_MANUTENZIONE");
 	}
 
 	public QDmalmRichiestaManutenzione(
 			Path<? extends DmalmRichiestaManutenzione> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_RICHIESTA_MANUTENZIONE");
 	}
 

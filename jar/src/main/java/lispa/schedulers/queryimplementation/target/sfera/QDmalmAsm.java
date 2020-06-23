@@ -2,6 +2,7 @@ package lispa.schedulers.queryimplementation.target.sfera;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
+import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.path.*;
 import com.mysema.query.types.PathMetadata;
@@ -132,15 +133,15 @@ public class QDmalmAsm extends com.mysema.query.sql.RelationalPathBase<DmalmAsm>
     public final com.mysema.query.sql.PrimaryKey<DmalmAsm> sysC0037829 = createPrimaryKey(dmalmAsmPk);
 
     public QDmalmAsm(String variable) {
-        super(DmalmAsm.class, forVariable(variable), "DMALM", "DMALM_ASM");
+        super(DmalmAsm.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM");
     }
 
     public QDmalmAsm(Path<? extends DmalmAsm> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_ASM");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM");
     }
 
     public QDmalmAsm(PathMetadata<?> metadata) {
-        super(DmalmAsm.class, metadata, "DMALM", "DMALM_ASM");
+        super(DmalmAsm.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM");
     }
 
 }

@@ -35,11 +35,11 @@ public class QTotal extends com.mysema.query.sql.RelationalPathBase<Total> {
     public final StringPath type = createString("TYPE");
 
     public QTotal(String variable) {
-        super(Total.class, forVariable(variable), "DMALM", "TOTAL");
+        super(Total.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "TOTAL");
     }
 
     public QTotal(Path<? extends Total> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "TOTAL");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "TOTAL");
     }
 
     public QTotal(PathMetadata<?> metadata) {

@@ -34,12 +34,12 @@ public class QDmalmFilieraAnomalie extends
 			"DT_CARICAMENTO", java.sql.Timestamp.class);
 
 	public QDmalmFilieraAnomalie(String variable) {
-		super(DmalmFilieraAnomalie.class, forVariable(variable), "DMALM",
+		super(DmalmFilieraAnomalie.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_FILIERA_ANOMALIE");
 	}
 
 	public QDmalmFilieraAnomalie(Path<? extends DmalmFilieraAnomalie> path) {
-		super(path.getType(), path.getMetadata(), "DMALM",
+		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
 				"DMALM_FILIERA_ANOMALIE");
 	}
 

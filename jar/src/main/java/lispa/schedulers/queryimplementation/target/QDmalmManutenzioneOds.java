@@ -106,11 +106,11 @@ public class QDmalmManutenzioneOds extends com.mysema.query.sql.RelationalPathBa
     public final com.mysema.query.sql.PrimaryKey<DmalmManutenzioneOds> sysC0023103 = createPrimaryKey(dmalmManutenzionePk);
 
     public QDmalmManutenzioneOds(String variable) {
-        super(DmalmManutenzioneOds.class, forVariable(variable), "DMALM", "DMALM_MANUTENZIONE_ODS");
+        super(DmalmManutenzioneOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_MANUTENZIONE_ODS");
     }
 
     public QDmalmManutenzioneOds(Path<? extends DmalmManutenzioneOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_MANUTENZIONE_ODS");
+        super(path.getType(), path.getMetadata(),DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_MANUTENZIONE_ODS");
     }
 
     public QDmalmManutenzioneOds(PathMetadata<?> metadata) {

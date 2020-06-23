@@ -93,11 +93,11 @@ public class QDmalmProgettoEse extends com.mysema.query.sql.RelationalPathBase<D
 
     
     public QDmalmProgettoEse(String variable) {
-        super(DmalmProgettoEse.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_ESE");
+        super(DmalmProgettoEse.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_ESE");
     }
 
     public QDmalmProgettoEse(Path<? extends DmalmProgettoEse> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PROGETTO_ESE");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_ESE");
     }
 
     public QDmalmProgettoEse(PathMetadata<?> metadata) {

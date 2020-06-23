@@ -100,11 +100,11 @@ public class QDmalmProgrammaOds extends com.mysema.query.sql.RelationalPathBase<
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmProgrammaOds(String variable) {
-        super(DmalmProgrammaOds.class, forVariable(variable), "DMALM", "DMALM_PROGRAMMA_ODS");
+        super(DmalmProgrammaOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGRAMMA_ODS");
     }
 
     public QDmalmProgrammaOds(Path<? extends DmalmProgrammaOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PROGRAMMA_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGRAMMA_ODS");
     }
 
     public QDmalmProgrammaOds(PathMetadata<?> metadata) {

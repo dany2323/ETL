@@ -105,11 +105,11 @@ public class QDmalmProgettoSviluppoSOds extends com.mysema.query.sql.RelationalP
     public final DateTimePath<java.sql.Timestamp> tsTagAlm = createDateTime("TS_TAG_ALM", java.sql.Timestamp.class);
     
     public QDmalmProgettoSviluppoSOds(String variable) {
-        super(DmalmProgettoSviluppoSOds.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_SVILUPPO_S_ODS");
+        super(DmalmProgettoSviluppoSOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SVILUPPO_S_ODS");
     }
 
     public QDmalmProgettoSviluppoSOds(Path<? extends DmalmProgettoSviluppoSOds> path) {
-        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PROGETTO_SVILUPPO_S_ODS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SVILUPPO_S_ODS");
     }
 
     public QDmalmProgettoSviluppoSOds(PathMetadata<?> metadata) {
