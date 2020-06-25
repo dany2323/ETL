@@ -51,11 +51,12 @@ public class TotalDao {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			if (idRepository.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SIRE)) {
-//				sql = "select distinct CODICE, 'SIRE' as ID_REPOSITORY from total where ID_REPOSITORY = 'SIRE' AND CODICE like 'GTA.KGA7AT-297' group by CODICE having count(distinct (TYPE)) >1";
+//				sql = "select distinct CODICE, 'SIRE' as ID_REPOSITORY from total where ID_REPOSITORY = 'SIRE' AND CODICE like 'AGORA-1869' group by CODICE having count(distinct (TYPE)) >1";
 //				sql = "select distinct CODICE, 'SIRE' as ID_REPOSITORY from total where ID_REPOSITORY = 'SIRE' group by CODICE having count(distinct (TYPE)) >1";
 				sql = QueryManager.getInstance().getQuery(
 						DmAlmConstants.GET_CHANGED_WI_SIRE);
 			} else {
+//				sql = "select distinct CODICE, 'SISS' as ID_REPOSITORY from total where ID_REPOSITORY = 'SISS' AND CODICE like 'FAR-1'group by CODICE having count(distinct (TYPE)) >1";
 //				sql = "select distinct CODICE, 'SISS' as ID_REPOSITORY from total where ID_REPOSITORY = 'SISS' group by CODICE having count(distinct (TYPE)) >1";
 				sql = QueryManager.getInstance().getQuery(
 						DmAlmConstants.GET_CHANGED_WI_SISS);
