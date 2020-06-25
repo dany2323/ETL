@@ -6,7 +6,7 @@ import static lispa.schedulers.constant.DmAlmConstants.SCHEMA_CURRENT;
 import static lispa.schedulers.constant.DmAlmConstants.SCHEMA_HISTORY;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.facade.calipso.staging.StagingCalipsoFacade;
-import lispa.schedulers.facade.fonteutils.UtilsFonteFacade;
+import lispa.schedulers.facade.UtilsFonteFacade;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.facade.sfera.staging.StgMisuraFacade;
 import lispa.schedulers.facade.sgr.staging.FillSGRCMFacade;

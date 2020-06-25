@@ -39,7 +39,7 @@ public class FillSISSCurrentFacade {
 				StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SISS, type);
 				logger.debug("STOP  fillStatoWorkItem  SISS " + type.toString() + " " + new Date());
 			}
-			
+			UserSgrRoles
 			logger.debug("START  fillLinkedWorkItemRoles SISS "+ new Date());
 			LinkedWorkItemRolesXML.fillLinkedWorkItemRoles(DmAlmConstants.REPOSITORY_SISS);
 			logger.debug("STOP   fillLinkedWorkItemRoles SISS "+ new Date());
