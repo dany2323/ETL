@@ -8,6 +8,7 @@ import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemLinkedDAO;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
+import lispa.schedulers.svn.SIREUserRolesSgrXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
@@ -40,6 +41,10 @@ public class FillSIRECurrentFacade {
 				StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SIRE, type);
 				logger.debug("STOP  fillStatoWorkItem  SIRE " + type.toString() + " " + new Date());
 			}
+			
+			logger.debug("START  fillUserRolesSgr SIRE "+ new Date());
+			SIREUserRolesSgrXML.fillUserRolesSgr(DmAlmConstants.REPOSITORY_SIRE, projectLocation);
+			logger.debug("STOP   fillUserRolesSgr SIRE "+ new Date());
 			
 			logger.debug("START  fillLinkedWorkItemRoles SIRE "+ new Date());
 			LinkedWorkItemRolesXML.fillLinkedWorkItemRoles(DmAlmConstants.REPOSITORY_SIRE);
