@@ -10,6 +10,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryAttachment;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryAttachment;
 import lispa.schedulers.utils.StringUtils;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -118,7 +119,8 @@ public class SireHistoryAttachmentDAO {
 		
 		cm = ConnectionManager.getInstance();
 		oracle = cm.getConnectionOracle();
-
+		QSireHistoryAttachment stg_Attachment = QSireHistoryAttachment.dmalmSireHistoryAttachment;
+		
 		SQLTemplates dialect = new HSQLDBTemplates();
 		SQLQuery query = new SQLQuery(oracle, dialect);
 

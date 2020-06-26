@@ -11,6 +11,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
@@ -68,7 +69,7 @@ public class SireHistoryRevisionDAO {
 
 			cm 	   = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
-
+			QSireHistoryRevision stg_Revisions = QSireHistoryRevision.sireHistoryRevision;
 			SQLTemplates dialect 				 = new HSQLDBTemplates();
 			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 

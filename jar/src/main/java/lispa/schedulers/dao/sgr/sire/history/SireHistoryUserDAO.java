@@ -8,6 +8,7 @@ import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryUser;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -106,6 +107,7 @@ public class SireHistoryUserDAO {
 		Connection oracle = null;
 
 		List<Long> max = new ArrayList<Long>();
+		QSireHistoryUser stg_Users = QSireHistoryUser.sireHistoryUser;
 		try{
 
 			cm 	   = ConnectionManager.getInstance();

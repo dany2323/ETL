@@ -7,6 +7,7 @@ import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProject;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -134,7 +135,7 @@ public class SissHistoryProjectDAO {
 
 			cm = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
-
+			QSissHistoryProject stg_Projects = QSissHistoryProject.sissHistoryProject;
 			SQLTemplates dialect = new HSQLDBTemplates();
 			SQLQuery query = new SQLQuery(oracle, dialect);
 

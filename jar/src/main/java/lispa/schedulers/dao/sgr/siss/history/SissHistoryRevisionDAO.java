@@ -12,6 +12,7 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryRevision;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryRevision;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
@@ -74,7 +75,7 @@ public class SissHistoryRevisionDAO {
 
 			cm 	   = ConnectionManager.getInstance();
 			oracle = cm.getConnectionOracle();
-
+			QSissHistoryRevision stg_Revisions = QSissHistoryRevision.sissHistoryRevision;
 			SQLTemplates dialect 				 = new HSQLDBTemplates();
 			SQLQuery query 						 = new SQLQuery(oracle, dialect); 
 
