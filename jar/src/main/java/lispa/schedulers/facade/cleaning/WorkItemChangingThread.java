@@ -219,6 +219,8 @@ public class WorkItemChangingThread extends Thread {
 		ResultSet rs = ps.executeQuery();
 		if(rs.next()) 
 			changed = rs.getString("CHANGED");
+		rs.close();
+		ps.close();
 		return changed==null;
 	}
 	
