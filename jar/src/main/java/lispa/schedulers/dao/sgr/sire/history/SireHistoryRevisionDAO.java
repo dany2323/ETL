@@ -41,8 +41,6 @@ public class SireHistoryRevisionDAO {
 
 			Timestamp lastValid = DateUtils.addSecondsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -3600);
 
-//			SireHistoryRevision  fonteRevisions  = SireHistoryRevision.revision;
-
 			SQLTemplates dialect 				 = new HSQLDBTemplates(){ {
 				setPrintSchema(true);
 			}};

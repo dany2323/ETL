@@ -158,6 +158,31 @@ public class SireHistoryProjectDAO {
 		return max.get(0).longValue();
 	}
 	
+	public static List<String> getProjectCLocation() throws Exception {
+		ConnectionManager cm = null;
+		Connection oracle = null;
+		List<String> cLocations = new ArrayList<String>();
+		try {
+
+			cm = ConnectionManager.getInstance();
+			oracle = cm.getConnectionOracle();
+
+			SQLTemplates dialect = new HSQLDBTemplates();
+			SQLQuery query = new SQLQuery(oracle, dialect);
+
+			cLocations = query.from(stg_Projects).distinct().list(stg_Projects.cLocation);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(oracle);
+		}
+
+		return cLocations;
+	}
+	
 	public static void delete() throws DAOException {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;

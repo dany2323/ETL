@@ -19,6 +19,7 @@ import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem;
 import lispa.schedulers.runnable.staging.siss.history.SissSchedeServizioRunnable;
+import lispa.schedulers.runnable.staging.siss.history.SissUserRolesSgrRunnable;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryAttachmentRunnable;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryHyperlinkRunnable;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryProjectGroupRunnable;
@@ -47,7 +48,7 @@ public class FillSISSHistoryFacade {
 
 	public static void fillSissHistory(Logger logger) {
 
-		Thread revision, user, project, projectGroup, workitemUserAssignee, attachment, hyperlink, schede_servizio;
+		Thread revision, user, project, projectGroup, workitemUserAssignee, attachment, hyperlink, schede_servizio, userRolesSgr;
 
 		try {
 			logger.debug("START SISSHistoryFacade.fill()");
@@ -74,6 +75,7 @@ public class FillSISSHistoryFacade {
 			hyperlink = new Thread(new SissHistoryHyperlinkRunnable(
 					minRevisionsByType, polarion_maxRevision, logger));
 			schede_servizio = new Thread(new SissSchedeServizioRunnable(logger));
+			userRolesSgr = new Thread(new SissUserRolesSgrRunnable(logger));
 
 			project.start();
 			project.join();
@@ -99,6 +101,9 @@ public class FillSISSHistoryFacade {
 			schede_servizio.start();
 			schede_servizio.join();
 
+			userRolesSgr.start();
+			userRolesSgr.join();
+			
 			wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			

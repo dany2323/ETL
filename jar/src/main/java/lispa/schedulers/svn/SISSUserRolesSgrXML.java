@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
@@ -44,7 +46,7 @@ public class SISSUserRolesSgrXML {
 	static SVNRepository repository;
 	static ISVNAuthenticationManager authManager;
 
-	public static void fillUserRolesSgr(String myrepo, String projectId, String projectLocation) throws Exception {
+	public static void fillUserRolesSgr(String projectLocation) throws Exception {
 		
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
@@ -148,10 +150,10 @@ public class SISSUserRolesSgrXML {
 												userRolesSgr.ruolo,
 												userRolesSgr.repository,
 												userRolesSgr.dtModifica)
-										.values(projectId,
+										.values(projectLocation,
 												StringUtils.getMaskedValue(eElement.getAttribute("name")),
 												el.getAttribute("name"),
-												myrepo,
+												DmAlmConstants.REPOSITORY_SISS,
 												DateUtils.stringToTimestamp(data,"yyyy-MM-dd HH:mm:ss")
 										).execute();
 							}

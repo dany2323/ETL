@@ -16,6 +16,7 @@ import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.runnable.staging.sire.history.SireSchedeServizioRunnable;
+import lispa.schedulers.runnable.staging.sire.history.SireUserRolesSgrRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryAttachmentRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryHyperlinkRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryProjectGroupRunnable;
@@ -44,7 +45,7 @@ public class FillSIREHistoryFacade {
 
 	public static void fillSireHistory(Logger logger) {
 
-		Thread revision, user, project, projectGroup, workitemUserAssignee, attachment, hyperlink, schede_servizio;
+		Thread revision, user, project, projectGroup, workitemUserAssignee, attachment, hyperlink, schede_servizio, userRolesSgr;
 
 		try {
 			logger.debug("START SIREHistoryFacade.fill()");
@@ -71,8 +72,8 @@ public class FillSIREHistoryFacade {
 					attachment_minRevision, polarion_maxRevision, logger));
 			hyperlink = new Thread(new SireHistoryHyperlinkRunnable(
 					minRevisionsByType, polarion_maxRevision, logger));
-			schede_servizio = new Thread(new SireSchedeServizioRunnable(
-					logger));
+			schede_servizio = new Thread(new SireSchedeServizioRunnable(logger));
+			userRolesSgr = new Thread(new SireUserRolesSgrRunnable(logger));
 
 			project.start();
 			project.join();
@@ -98,6 +99,9 @@ public class FillSIREHistoryFacade {
 			schede_servizio.start();
 			schede_servizio.join();
 
+			userRolesSgr.start();
+			userRolesSgr.join();
+			
 			int wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			

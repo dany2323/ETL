@@ -10,6 +10,7 @@ import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.utils.enums.Workitem_Type;
 import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
@@ -36,7 +37,7 @@ public class SissHistoryWorkitemDAO {
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
-		
+		QSissHistoryWorkitem stg_WorkItems = QSissHistoryWorkitem.sissHistoryWorkitem;
 		try {
 			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
 
