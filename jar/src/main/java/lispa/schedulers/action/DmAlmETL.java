@@ -30,11 +30,11 @@ public class DmAlmETL {
 
 		logger.info("Caricamento dati dalla fonte sull Ambiente: " + ambiente);
 
+		logger.info("Esecuzione SGR_CM/ELETTRA: "
+				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
+		
 		logger.info("Esecuzione SFERA: "
 				+ ExecutionManager.getInstance().isExecutionSfera());
-
-		logger.info("Esecuzione EDMA/SGR_CM: "
-				+ ExecutionManager.getInstance().isExecutionElettraSgrcm());
 
 		logger.info("Esecuzione MPS: "
 				+ ExecutionManager.getInstance().isExecutionMps());

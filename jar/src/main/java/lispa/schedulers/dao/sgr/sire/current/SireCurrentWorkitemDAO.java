@@ -4,8 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
-import org.apache.log4j.Logger;
+import java.util.List; 
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.exception.DAOException; 
@@ -23,8 +22,7 @@ public class SireCurrentWorkitemDAO {
 
 	private static SireCurrentWorkitem sireCurrentWorkitem = SireCurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentWorkitem stg_CurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentWorkitem.workitem; 
-	final private static Logger logger = Logger.getLogger(SireCurrentWorkitemDAO.class);
-	
+ 
 	public static long fillSireCurrentWorkitems() throws DAOException { 
 		ConnectionManager cm = null; 
 		Connection H2connSire = null; 
@@ -44,9 +42,9 @@ public class SireCurrentWorkitemDAO {
 					.where(sireCurrentWorkitem.cId.isNotNull())
 					.list(new QTuple(
 							StringTemplate.create("CASEWHEN ("+sireCurrentWorkitem.cAutosuspect+"= 'true', 1,0 )") ,
-							sireCurrentWorkitem.cCreated,
+							StringTemplate.create("FORMATDATETIME("+sireCurrentWorkitem.cCreated+", {ts 'yyyy-MM-dd 00:00:00'})"),
 							StringTemplate.create("CASEWHEN ("+sireCurrentWorkitem.cDeleted+"= 'true', 1,0 )") ,
-							sireCurrentWorkitem.cDuedate,
+							StringTemplate.create("FORMATDATETIME("+sireCurrentWorkitem.cDuedate+", {ts 'yyyy-MM-dd 00:00:00'})"),
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cId+",0,4000)") ,
 							sireCurrentWorkitem.cInitialestimate,
 							StringTemplate.create("CASEWHEN ("+sireCurrentWorkitem.cIsLocal+"= 'true', 1,0 )") ,
@@ -84,7 +82,6 @@ public class SireCurrentWorkitemDAO {
 			while (i.hasNext()) {
 
 				el= ((Tuple)i.next()).toArray();
-				logger.info(el[1] + " - " + el[3] + " - " + el[10] + " - " + el[11] + " - " + el[16] + " - " + el[23]);
 					insert.columns(stg_CurrentWorkitems.cAutosuspect,
 							stg_CurrentWorkitems.cCreated,
 							stg_CurrentWorkitems.cDeleted,
@@ -162,8 +159,8 @@ public class SireCurrentWorkitemDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			n_righe_inserite=0;
 		} finally { 
-			cm.closeConnection(connection);
-			cm.closeConnection(H2connSire);
+			cm.closeQuietly(connection);
+			cm.closeQuietly(H2connSire);
 		} 
 		
 		return n_righe_inserite;

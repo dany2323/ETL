@@ -4,11 +4,8 @@ import static com.mysema.query.types.PathMetadataFactory.*;
 
 import com.mysema.query.types.path.*;
 import com.mysema.query.types.PathMetadata;
-
 import javax.annotation.Generated;
-
 import lispa.schedulers.constant.DmAlmConstants;
-
 import com.mysema.query.types.Path;
 
 
@@ -21,11 +18,11 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
 
-    public final DateTimePath<java.sql.Timestamp> cCreated = createDateTime("C_CREATED", java.sql.Timestamp.class);
+    public final DatePath<java.sql.Date> cCreated = createDate("C_CREATED", java.sql.Date.class);
 
     public final BooleanPath cDeleted = createBoolean("C_DELETED");
 
-    public final DateTimePath<java.sql.Timestamp> cDuedate = createDateTime("C_DUEDATE", java.sql.Timestamp.class);
+    public final DatePath<java.sql.Date> cDuedate = createDate("C_DUEDATE", java.sql.Date.class);
 
     public final StringPath cId = createString("C_ID");
 
@@ -39,9 +36,9 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final StringPath cPk = createString("C_PK");
 
-    public final DateTimePath<java.sql.Timestamp> cPlannedend = createDateTime("C_PLANNEDEND", java.sql.Timestamp.class);
+    public final DatePath<java.sql.Date> cPlannedend = createDate("C_PLANNEDEND", java.sql.Date.class);
 
-    public final DateTimePath<java.sql.Timestamp> cPlannedstart = createDateTime("C_PLANNEDSTART", java.sql.Timestamp.class);
+    public final DatePath<java.sql.Date> cPlannedstart = createDate("C_PLANNEDSTART", java.sql.Date.class);
 
     public final StringPath cPreviousstatus = createString("C_PREVIOUSSTATUS");
 
@@ -51,7 +48,7 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final StringPath cResolution = createString("C_RESOLUTION");
 
-    public final DateTimePath<java.sql.Timestamp> cResolvedon = createDateTime("C_RESOLVEDON", java.sql.Timestamp.class);
+    public final DatePath<java.sql.Date> cResolvedon = createDate("C_RESOLVEDON", java.sql.Date.class);
 
     public final NumberPath<Long> cRev = createNumber("C_REV", Long.class);
 
@@ -65,7 +62,7 @@ public class SireCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     public final StringPath cType = createString("C_TYPE");
 
-    public final DateTimePath<java.sql.Timestamp> cUpdated = createDateTime("C_UPDATED", java.sql.Timestamp.class);
+    public final DatePath<java.sql.Date> cUpdated = createDate("C_UPDATED", java.sql.Date.class);
 
     public final StringPath cUri = createString("C_URI");
 
