@@ -20,7 +20,7 @@ public class SissCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
 
     private static final long serialVersionUID = -570343663;
 
-    public static final SissCurrentWorkitem workitem = new SissCurrentWorkitem("WORKITEM");
+    public static final SissCurrentWorkitem workitem = new SissCurrentWorkitem("DM_ALM_C_SISS_WORKITEM");
 
     public final BooleanPath cAutosuspect = createBoolean("C_AUTOSUSPECT");
 
@@ -33,8 +33,6 @@ public class SissCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
     public final StringPath cId = createString("C_ID");
 
     public final NumberPath<Float> cInitialestimate = createNumber("C_INITIALESTIMATE", Float.class);
-
-    public final BooleanPath cIsLocal = createBoolean("C_IS_LOCAL");
 
     public final StringPath cLocation = createString("C_LOCATION");
 
@@ -89,15 +87,15 @@ public class SissCurrentWorkitem extends com.mysema.query.sql.RelationalPathBase
     public final StringPath fkUriTimepoint = createString("FK_URI_TIMEPOINT");
 
     public SissCurrentWorkitem(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentWorkitem.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentWorkitem.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DM_ALM_C_SISS_WORKITEM");
     }
 
     public SissCurrentWorkitem(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentWorkitem> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DM_ALM_C_SISS_WORKITEM");
     }
 
     public SissCurrentWorkitem(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentWorkitem.class, metadata, DmAlmConstants.POLARION_SCHEMA, "WORKITEM");
+        super(lispa.schedulers.bean.fonte.sgr.siss.current.SissCurrentWorkitem.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DM_ALM_C_SISS_WORKITEM");
     }
 
 }

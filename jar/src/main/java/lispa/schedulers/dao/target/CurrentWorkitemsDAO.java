@@ -36,13 +36,11 @@ public class CurrentWorkitemsDAO {
 
 	public static void fillSireCurrentWorkitems() throws SQLException,DAOException {
 		ConnectionManager cm = null;
-		Connection H2connSire = null;
 		Connection connection = null;
 		try {
 			cm = ConnectionManager.getInstance();
-			H2connSire = cm.getConnectionSIRECurrent();
 			connection = cm.getConnectionOracle();
-			SQLQuery query = new SQLQuery(H2connSire, dialect);
+			SQLQuery query = new SQLQuery(connection, dialect);
 			List<Tuple> allSireWorkitems = query.distinct()
 					.from(qSireCurrentWorkitem)
 					.where(qSireCurrentWorkitem.cId.isNotNull())
@@ -86,19 +84,16 @@ public class CurrentWorkitemsDAO {
 		}
 		finally {
 		
-			if(H2connSire!= null) cm.closeConnection(H2connSire);
 			if(cm != null) cm.closeConnection(connection);
 		}
 	}
 	public static void fillSissCurrentWorkitems() throws SQLException,DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		Connection H2connSiss = null;
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-			H2connSiss = cm.getConnectionSISSCurrent();
-			SQLQuery query = new SQLQuery(H2connSiss, dialect);
+			SQLQuery query = new SQLQuery(connection, dialect);
 			List<Tuple> allSissWorkitems = query
 					.from(qSissCurrentWorkitem)
 					.where(qSissCurrentWorkitem.cId.isNotNull())
@@ -140,7 +135,6 @@ public class CurrentWorkitemsDAO {
 			}
 			finally {
 				
-				if(H2connSiss!= null) cm.closeConnection(H2connSiss);
 				if(cm != null) cm.closeConnection(connection);
 			}
 		
