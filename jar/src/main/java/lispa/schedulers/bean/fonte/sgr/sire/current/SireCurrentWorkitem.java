@@ -7,7 +7,7 @@ public class SireCurrentWorkitem {
 
     private Boolean cAutosuspect;
 
-    private java.sql.Timestamp cCreated;
+    private java.sql.Date cCreated;
 
     private Boolean cDeleted;
 
@@ -25,9 +25,9 @@ public class SireCurrentWorkitem {
 
     private String cPk;
 
-    private java.sql.Timestamp cPlannedend;
+    private java.sql.Date cPlannedend;
 
-    private java.sql.Timestamp cPlannedstart;
+    private java.sql.Date cPlannedstart;
 
     private String cPreviousstatus;
 
@@ -37,7 +37,7 @@ public class SireCurrentWorkitem {
 
     private String cResolution;
 
-    private java.sql.Timestamp cResolvedon;
+    private java.sql.Date cResolvedon;
 
     private Long cRev;
 
@@ -51,7 +51,7 @@ public class SireCurrentWorkitem {
 
     private String cType;
 
-    private java.sql.Timestamp cUpdated;
+    private java.sql.Date cUpdated;
 
     private String cUri;
 
@@ -79,11 +79,11 @@ public class SireCurrentWorkitem {
         this.cAutosuspect = cAutosuspect;
     }
 
-    public java.sql.Timestamp getcCreated() {
+    public java.sql.Date getcCreated() {
         return cCreated;
     }
 
-    public void setcCreated(java.sql.Timestamp cCreated) {
+    public void setcCreated(java.sql.Date cCreated) {
         this.cCreated = cCreated;
     }
 
@@ -151,19 +151,19 @@ public class SireCurrentWorkitem {
         this.cPk = cPk;
     }
 
-    public java.sql.Timestamp getcPlannedend() {
+    public java.sql.Date getcPlannedend() {
         return cPlannedend;
     }
 
-    public void setcPlannedend(java.sql.Timestamp cPlannedend) {
+    public void setcPlannedend(java.sql.Date cPlannedend) {
         this.cPlannedend = cPlannedend;
     }
 
-    public java.sql.Timestamp getcPlannedstart() {
+    public java.sql.Date getcPlannedstart() {
         return cPlannedstart;
     }
 
-    public void setcPlannedstart(java.sql.Timestamp cPlannedstart) {
+    public void setcPlannedstart(java.sql.Date cPlannedstart) {
         this.cPlannedstart = cPlannedstart;
     }
 
@@ -199,11 +199,11 @@ public class SireCurrentWorkitem {
         this.cResolution = cResolution;
     }
 
-    public java.sql.Timestamp getcResolvedon() {
+    public java.sql.Date getcResolvedon() {
         return cResolvedon;
     }
 
-    public void setcResolvedon(java.sql.Timestamp cResolvedon) {
+    public void setcResolvedon(java.sql.Date cResolvedon) {
         this.cResolvedon = cResolvedon;
     }
 
@@ -255,11 +255,11 @@ public class SireCurrentWorkitem {
         this.cType = cType;
     }
 
-    public java.sql.Timestamp getcUpdated() {
+    public java.sql.Date getcUpdated() {
         return cUpdated;
     }
 
-    public void setcUpdated(java.sql.Timestamp cUpdated) {
+    public void setcUpdated(java.sql.Date cUpdated) {
         this.cUpdated = cUpdated;
     }
 

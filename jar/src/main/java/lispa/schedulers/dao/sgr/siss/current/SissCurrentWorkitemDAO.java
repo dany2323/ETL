@@ -3,8 +3,7 @@ package lispa.schedulers.dao.sgr.siss.current;
 import java.sql.Connection; 
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
-import org.apache.log4j.Logger;
+import java.util.List; 
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.exception.DAOException; 
@@ -22,8 +21,7 @@ public class SissCurrentWorkitemDAO {
 
 	private static SissCurrentWorkitem sissCurrentWorkitem = SissCurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem stg_CurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem.workitem; 
-	final private static Logger logger = Logger.getLogger(SissCurrentWorkitemDAO.class);
-	
+ 
 	public static long fillSissCurrentWorkitems() throws SQLException, DAOException { 
 		ConnectionManager cm = null; 
 		Connection H2connSiss = null; 
@@ -43,29 +41,29 @@ public class SissCurrentWorkitemDAO {
 					.where(sissCurrentWorkitem.cId.isNotNull())
 					.list(new QTuple(
 							StringTemplate.create("CASEWHEN ("+sissCurrentWorkitem.cAutosuspect+"= 'true', 1,0 )") ,
-							StringTemplate.create("FORMATDATETIME("+sissCurrentWorkitem.cCreated+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sissCurrentWorkitem.cCreated,
 							StringTemplate.create("CASEWHEN ("+sissCurrentWorkitem.cDeleted+"= 'true', 1,0 )") ,
-							StringTemplate.create("FORMATDATETIME("+sissCurrentWorkitem.cDuedate+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sissCurrentWorkitem.cDuedate,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cId+",0,4000)") ,
 							sissCurrentWorkitem.cInitialestimate,
 							StringTemplate.create("CASEWHEN ("+sissCurrentWorkitem.cIsLocal+"= 'true', 1,0 )") ,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cLocation+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cOutlinenumber+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cPk+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+sissCurrentWorkitem.cPlannedend+", {ts 'yyyy-MM-dd 00:00:00'})"),
-							StringTemplate.create("FORMATDATETIME("+sissCurrentWorkitem.cPlannedstart+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sissCurrentWorkitem.cPlannedend,
+							sissCurrentWorkitem.cPlannedstart,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cPreviousstatus+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cPriority+",0,4000)") ,
 							sissCurrentWorkitem.cRemainingestimate,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cResolution+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+sissCurrentWorkitem.cResolvedon+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sissCurrentWorkitem.cResolvedon,
 							sissCurrentWorkitem.cRev,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cSeverity+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cStatus+",0,4000)") ,
 							sissCurrentWorkitem.cTimespent,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cTitle+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cType+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+sissCurrentWorkitem.cUpdated+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sissCurrentWorkitem.cUpdated,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.cUri+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.fkAuthor+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sissCurrentWorkitem.fkModule+",0,4000)") ,
@@ -79,12 +77,10 @@ public class SissCurrentWorkitemDAO {
 			);
 			Iterator<Tuple> i = workitems.iterator();
 			Object[] el= null;
-			SQLInsertClause insert = new SQLInsertClause(connection, dialect, stg_CurrentWorkitems); 
 			while (i.hasNext()) {
 
 				el= ((Tuple)i.next()).toArray();
-				logger.info(el[1] + " - " + el[3] + " - " + el[10] + " - " + el[11] + " - " + el[16] + " - " + el[23]);
-				insert.columns(stg_CurrentWorkitems.cAutosuspect,
+				new SQLInsertClause(connection, dialect, stg_CurrentWorkitems).columns(stg_CurrentWorkitems.cAutosuspect,
 						stg_CurrentWorkitems.cCreated,
 						stg_CurrentWorkitems.cDeleted,
 						stg_CurrentWorkitems.cDuedate,
@@ -162,8 +158,8 @@ public class SissCurrentWorkitemDAO {
 			n_righe_inserite=0;
 			throw new DAOException(e); 
 		} finally { 
-			cm.closeConnection(connection);
-			cm.closeConnection(H2connSiss);
+			cm.closeQuietly(connection);
+			cm.closeQuietly(H2connSiss);
 		} 
 		
 		return n_righe_inserite;

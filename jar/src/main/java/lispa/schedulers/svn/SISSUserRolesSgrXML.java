@@ -25,6 +25,7 @@ import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
 import org.tmatesoft.svn.core.io.SVNFileRevision;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -71,6 +72,9 @@ public class SISSUserRolesSgrXML {
 
 			SVNRepository repository = SVNRepositoryFactory.create(SVNURL
 					.parseURIEncoded(url));
+			ISVNAuthenticationManager authManager = SVNWCUtil
+					.createDefaultAuthenticationManager(name, psw);
+			repository.setAuthenticationManager(authManager);
 			SVNURL root = repository.getRepositoryRoot(true);
 
 			String absolutepath = root + projectLocation;

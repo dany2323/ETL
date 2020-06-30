@@ -4,7 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List; 
+import java.util.List;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.exception.DAOException; 
@@ -22,7 +22,7 @@ public class SireCurrentWorkitemDAO {
 
 	private static SireCurrentWorkitem sireCurrentWorkitem = SireCurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentWorkitem stg_CurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.sire.current.SireCurrentWorkitem.workitem; 
- 
+	
 	public static long fillSireCurrentWorkitems() throws DAOException { 
 		ConnectionManager cm = null; 
 		Connection H2connSire = null; 
@@ -42,29 +42,29 @@ public class SireCurrentWorkitemDAO {
 					.where(sireCurrentWorkitem.cId.isNotNull())
 					.list(new QTuple(
 							StringTemplate.create("CASEWHEN ("+sireCurrentWorkitem.cAutosuspect+"= 'true', 1,0 )") ,
-							StringTemplate.create("FORMATDATETIME("+sireCurrentWorkitem.cCreated+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sireCurrentWorkitem.cCreated,
 							StringTemplate.create("CASEWHEN ("+sireCurrentWorkitem.cDeleted+"= 'true', 1,0 )") ,
-							StringTemplate.create("FORMATDATETIME("+sireCurrentWorkitem.cDuedate+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sireCurrentWorkitem.cDuedate,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cId+",0,4000)") ,
 							sireCurrentWorkitem.cInitialestimate,
 							StringTemplate.create("CASEWHEN ("+sireCurrentWorkitem.cIsLocal+"= 'true', 1,0 )") ,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cLocation+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cOutlinenumber+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cPk+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+sireCurrentWorkitem.cPlannedend+", {ts 'yyyy-MM-dd 00:00:00'})"),
-							StringTemplate.create("FORMATDATETIME("+sireCurrentWorkitem.cPlannedstart+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sireCurrentWorkitem.cPlannedend,
+							sireCurrentWorkitem.cPlannedstart,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cPreviousstatus+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cPriority+",0,4000)") ,
 							sireCurrentWorkitem.cRemainingestimate,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cResolution+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+sireCurrentWorkitem.cResolvedon+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sireCurrentWorkitem.cResolvedon,
 							sireCurrentWorkitem.cRev,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cSeverity+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cStatus+",0,4000)") ,
 							sireCurrentWorkitem.cTimespent,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cTitle+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cType+",0,4000)") ,
-							StringTemplate.create("FORMATDATETIME("+sireCurrentWorkitem.cUpdated+", {ts 'yyyy-MM-dd 00:00:00'})"),
+							sireCurrentWorkitem.cUpdated,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.cUri+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.fkAuthor+",0,4000)") ,
 							StringTemplate.create("SUBSTRING("+sireCurrentWorkitem.fkModule+",0,4000)") ,
@@ -78,11 +78,10 @@ public class SireCurrentWorkitemDAO {
 			);
 			Iterator<Tuple> i = workitems.iterator();
 			Object[] el= null;
-			SQLInsertClause insert = new SQLInsertClause(connection, dialect, stg_CurrentWorkitems); 
 			while (i.hasNext()) {
 
 				el= ((Tuple)i.next()).toArray();
-					insert.columns(stg_CurrentWorkitems.cAutosuspect,
+				new SQLInsertClause(connection, dialect, stg_CurrentWorkitems).columns(stg_CurrentWorkitems.cAutosuspect,
 							stg_CurrentWorkitems.cCreated,
 							stg_CurrentWorkitems.cDeleted,
 							stg_CurrentWorkitems.cDuedate,
@@ -159,8 +158,8 @@ public class SireCurrentWorkitemDAO {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			n_righe_inserite=0;
 		} finally { 
-			cm.closeQuietly(connection);
-			cm.closeQuietly(H2connSire);
+			cm.closeConnection(connection);
+			cm.closeConnection(H2connSire);
 		} 
 		
 		return n_righe_inserite;
