@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>it.lispa.staff</groupId>
+		<artifactId>dm_alm</artifactId>
+		<version>5.0.08</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>properties</artifactId>
+	<name>properties</name>
+	<properties>
+		<skipTests>true</skipTests>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+			<plugins>
+			<plugin>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>bundle</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*.*</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		</build>
+<licenses>
+    <license>
+      <name>Lispa License, Version 1.0</name>
+      <url>http://cm-maven.adlispa.local/licenza/license.txt</url>
+      <distribution>repo</distribution>
+      <comments>Licenza di prodotti erogati da Lispa S.p.A per Regione Lombardia</comments>
+    </license>
+  </licenses>
+</project>

@@ -6,6 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.mysema.query.Tuple;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+
 import lispa.schedulers.bean.target.Total;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
@@ -14,11 +22,6 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.QTotal;
 import lispa.schedulers.utils.QueryUtils;
-import org.apache.log4j.Logger;
-import com.mysema.query.Tuple;
-import com.mysema.query.sql.HSQLDBTemplates;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.SQLTemplates;
 
 public class TotalDao {
 	private static Logger logger = Logger.getLogger(TotalDao.class);
@@ -48,9 +51,13 @@ public class TotalDao {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 			if (idRepository.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SIRE)) {
+//				sql = "select distinct CODICE, 'SIRE' as ID_REPOSITORY from total where ID_REPOSITORY = 'SIRE' AND CODICE like 'AGORA-1869' group by CODICE having count(distinct (TYPE)) >1";
+//				sql = "select distinct CODICE, 'SIRE' as ID_REPOSITORY from total where ID_REPOSITORY = 'SIRE' group by CODICE having count(distinct (TYPE)) >1";
 				sql = QueryManager.getInstance().getQuery(
 						DmAlmConstants.GET_CHANGED_WI_SIRE);
 			} else {
+//				sql = "select distinct CODICE, 'SISS' as ID_REPOSITORY from total where ID_REPOSITORY = 'SISS' AND CODICE like 'FAR-1'group by CODICE having count(distinct (TYPE)) >1";
+//				sql = "select distinct CODICE, 'SISS' as ID_REPOSITORY from total where ID_REPOSITORY = 'SISS' group by CODICE having count(distinct (TYPE)) >1";
 				sql = QueryManager.getInstance().getQuery(
 						DmAlmConstants.GET_CHANGED_WI_SISS);
 			}
@@ -78,6 +85,7 @@ public class TotalDao {
 				cm.closeConnection(connection);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(e.getMessage());
 		}
 
@@ -96,7 +104,6 @@ public class TotalDao {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		List<Tuple> cwihistory = null;
-
 		try {
 			
 			cm = ConnectionManager.getInstance();
@@ -127,14 +134,14 @@ public class TotalDao {
 		List<Tuple> filteredcwi = new ArrayList<Tuple>();
 		
 		String c_type = cwiHistory.get(0).get(qTotal.type);
+		filteredcwi.add(cwiHistory.get(0));
 		for (Tuple t : cwiHistory) {
 			if (!c_type.equals(t.get(qTotal.type)))
 				changed = true;
 			if (changed)
 				filteredcwi.add(t);
 		}
-		
-		return filteredcwi;
+		return changed? filteredcwi:new ArrayList<Tuple>();
 	}
 	
 	public static void refreshTable() throws Exception {
