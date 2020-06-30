@@ -21,6 +21,7 @@ public class SireUserRolesSgrRunnable implements Runnable {
 		try {
 			logger.debug("START fillUserRolesSgr SIRE " + new Date());
 			logger.debug("INIZIO Ruoli Globali");
+			SIREUserRolesSgrXML.delete();
 			SIREUserRolesSgrXML.fillUserRolesSgr("");
 			logger.debug("FINE Ruoli Globali");
 			List<String> cLocations = SireHistoryProjectDAO.getProjectCLocation();

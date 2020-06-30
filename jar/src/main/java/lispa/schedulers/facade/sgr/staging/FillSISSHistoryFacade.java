@@ -121,7 +121,7 @@ public class FillSISSHistoryFacade {
 
 				tentativi_wi_deadlock++;
 				logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
-				SissHistoryWorkitemDAO.fillSissHistoryWorkitem(minRevisionsByType, Long.MAX_VALUE, type);
+				SissHistoryWorkitemDAO.fillSissHistoryWorkitem(minRevisionsByType, polarion_maxRevision, type);
 				inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				while(inDeadlock) {
 					tentativi_wi_deadlock++;
@@ -130,7 +130,7 @@ public class FillSISSHistoryFacade {
 					logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
 					ErrorManager.getInstance().resetDeadlock();
 					SissHistoryWorkitemDAO.delete(type);
-					SissHistoryWorkitemDAO.fillSissHistoryWorkitem(minRevisionsByType, Long.MAX_VALUE, type);
+					SissHistoryWorkitemDAO.fillSissHistoryWorkitem(minRevisionsByType, polarion_maxRevision, type);
 					inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				}
 				logger.debug("Fine tentativo " + tentativi_wi_deadlock + " - WI deadlock "	+ inDeadlock);
@@ -140,7 +140,7 @@ public class FillSISSHistoryFacade {
 				List<String> customFields = EnumUtils.getCFEnumerationByType(type);
 				for (String customField : customFields) {
 					SissHistoryCfWorkitemDAO.fillSissHistoryCfWorkitemByWorkitemType(
-							minRevisionsByType.get(type), Long.MAX_VALUE, type, customField);
+							minRevisionsByType.get(type), polarion_maxRevision, type, customField);
 					cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
 					while(cfDeadlock) {
 						tentativi_cf_deadlock++;
@@ -150,7 +150,7 @@ public class FillSISSHistoryFacade {
 						ErrorManager.getInstance().resetCFDeadlock();
 						customFields = EnumUtils.getCFEnumerationByType(type);
 						SissHistoryCfWorkitemDAO.fillSissHistoryCfWorkitemByWorkitemType(
-								minRevisionsByType.get(type), Long.MAX_VALUE, type, customField);
+								minRevisionsByType.get(type), polarion_maxRevision, type, customField);
 						cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
 					}
 				}

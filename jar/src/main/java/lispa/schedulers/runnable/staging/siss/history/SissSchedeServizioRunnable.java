@@ -18,6 +18,7 @@ public class SissSchedeServizioRunnable implements Runnable {
 
 		try {
 			logger.debug("START fillSchedeServizio SISS " + new Date());
+			SISSSchedeServizioXML.delete();
 			SISSSchedeServizioXML.fillSISSHistorySchedeServizio();
 			logger.debug("STOP fillSchedeServizio SISS " + new Date());
 		} catch (Exception e) {

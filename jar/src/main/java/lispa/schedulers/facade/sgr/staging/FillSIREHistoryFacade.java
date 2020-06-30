@@ -118,7 +118,7 @@ public class FillSIREHistoryFacade {
 
 				tentativi_wi_deadlock++;
 				logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
-				SireHistoryWorkitemDAO.fillSireHistoryWorkitem(type, minRevisionsByType, Long.MAX_VALUE);
+				SireHistoryWorkitemDAO.fillSireHistoryWorkitem(type, minRevisionsByType, polarion_maxRevision);
 				inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				while(inDeadlock) {
 					tentativi_wi_deadlock++;
@@ -126,8 +126,8 @@ public class FillSIREHistoryFacade {
 					TimeUnit.MINUTES.sleep(wait);
 					logger.debug("Tentativo Workitem " + tentativi_wi_deadlock);
 					ErrorManager.getInstance().resetDeadlock();
-					SireHistoryWorkitemDAO.delete(type, minRevisionsByType, Long.MAX_VALUE);
-					SireHistoryWorkitemDAO.fillSireHistoryWorkitem(type, minRevisionsByType, Long.MAX_VALUE);
+					SireHistoryWorkitemDAO.delete(type, minRevisionsByType, polarion_maxRevision);
+					SireHistoryWorkitemDAO.fillSireHistoryWorkitem(type, minRevisionsByType, polarion_maxRevision);
 					inDeadlock = ErrorManager.getInstance().hasDeadLock();
 				}
 				logger.debug("Fine tentativo " + tentativi_wi_deadlock + " - WI deadlock "	+ inDeadlock);
@@ -137,7 +137,7 @@ public class FillSIREHistoryFacade {
 				List<String> customFields = EnumUtils.getCFEnumerationByType(type);
 				for (String customField : customFields) {
 					SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemType(
-							minRevisionsByType.get(type), Long.MAX_VALUE, type, customField);
+							minRevisionsByType.get(type), polarion_maxRevision, type, customField);
 					cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
 					while(cfDeadlock) {
 						tentativi_cf_deadlock++;
@@ -147,7 +147,7 @@ public class FillSIREHistoryFacade {
 						ErrorManager.getInstance().resetCFDeadlock();
 						customFields = EnumUtils.getCFEnumerationByType(type);
 						SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemType(
-								minRevisionsByType.get(type), Long.MAX_VALUE, type, customField);
+								minRevisionsByType.get(type), polarion_maxRevision, type, customField);
 						cfDeadlock = ErrorManager.getInstance().hascfDeadLock();
 					}
 				}

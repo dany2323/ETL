@@ -11,6 +11,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
+import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmSchedeServizio;
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
@@ -31,6 +32,7 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class SISSSchedeServizioXML {
@@ -123,6 +125,23 @@ public class SISSSchedeServizioXML {
 
 		} finally {
 			cm.closeConnection(connection);
+		}
+	}
+	
+	public static void delete() throws DAOException {
+		ConnectionManager cm = null;
+		Connection OracleConnection = null;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		try {
+			cm = ConnectionManager.getInstance();
+			OracleConnection = cm.getConnectionOracle();
+			new SQLDeleteClause(OracleConnection, dialect, stg_SchedeServizio)
+				.execute();
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(OracleConnection);
 		}
 	}
 

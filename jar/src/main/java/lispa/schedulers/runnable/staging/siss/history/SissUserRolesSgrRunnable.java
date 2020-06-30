@@ -23,6 +23,7 @@ public class SissUserRolesSgrRunnable implements Runnable {
 		try {
 			logger.debug("START fillUserRolesSgr SISS " + new Date());
 			logger.debug("INIZIO Ruoli Globali");
+			SISSUserRolesSgrXML.delete();
 			SISSUserRolesSgrXML.fillUserRolesSgr("");
 			logger.debug("FINE Ruoli Globali");
 			List<String> cLocations = SissHistoryProjectDAO.getProjectCLocation();

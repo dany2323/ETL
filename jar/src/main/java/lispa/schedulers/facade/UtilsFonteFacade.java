@@ -17,4 +17,14 @@ private static Logger logger = Logger.getLogger(UtilsFonteFacade.class);
 		}
 		logger.info("STOP SET FONTE "+fonte+" - STATO "+stato);
 	}
+	
+	public static void deleteDatiFonteTabelle() {
+		logger.info("START DELETE DATI FONTE");
+		try {
+			UtilsDAO.deleteDatiFonteTabelle();
+		} catch (DAOException e) {
+			logger.error(e.getMessage());
+		}
+		logger.info("STOP DELETE DATI FONTE");
+	}
 }

@@ -26,7 +26,8 @@ public class SissHistoryProjectGroupRunnable implements Runnable {
 			int tentativi_deadlock = 0;
 			ErrorManager.getInstance().resetDeadlock();
 			boolean inDeadlock = false;
-
+			SissHistoryProjectGroupDAO.delete();
+			
 			tentativi_deadlock++;
 			logger.debug("Tentativo " + tentativi_deadlock);
 			SissHistoryProjectGroupDAO.fillSissHistoryProjectGroup();
@@ -37,7 +38,6 @@ public class SissHistoryProjectGroupRunnable implements Runnable {
 				TimeUnit.MINUTES.sleep(wait);
 				logger.debug("Tentativo " + tentativi_deadlock);
 				ErrorManager.getInstance().resetDeadlock();
-				SissHistoryProjectGroupDAO.delete();
 				SissHistoryProjectGroupDAO.fillSissHistoryProjectGroup();
 				inDeadlock = ErrorManager.getInstance().hasDeadLock();
 			}

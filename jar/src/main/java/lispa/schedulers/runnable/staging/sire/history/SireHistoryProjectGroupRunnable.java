@@ -26,10 +26,10 @@ public class SireHistoryProjectGroupRunnable implements Runnable {
 			int tentativi_deadlock = 0;
 			ErrorManager.getInstance().resetDeadlock();
 			boolean inDeadlock = false;
+			SireHistoryProjectGroupDAO.delete();
 
 			tentativi_deadlock++;
 			logger.debug("Tentativo " + tentativi_deadlock);
-			SireHistoryProjectGroupDAO.delete();
 			SireHistoryProjectGroupDAO.fillSireHistoryProjectGroup();
 			inDeadlock = ErrorManager.getInstance().hasDeadLock();
 			while(inDeadlock) {
@@ -38,7 +38,6 @@ public class SireHistoryProjectGroupRunnable implements Runnable {
 				TimeUnit.MINUTES.sleep(wait);
 				logger.debug("Tentativo " + tentativi_deadlock);
 				ErrorManager.getInstance().resetDeadlock();
-				SireHistoryProjectGroupDAO.delete();
 				SireHistoryProjectGroupDAO.fillSireHistoryProjectGroup();
 				inDeadlock = ErrorManager.getInstance().hasDeadLock();
 			}

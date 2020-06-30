@@ -56,9 +56,9 @@ public class DmAlmETL {
 		if (ExecutionManager.getInstance().isExecutionCalipso()) {
 			UtilsFonteFacade.caricamentoFonte(DmAlmConstants.FONTE_CALIPSO, DmAlmConstants.CARICAMENTO_FONTE_INIT);
 		}
-//		logger.info("START DELETE_DATI_FONTE_TABELLE");
-//		UtilsDAO.deleteDatiFonteTabelle();
-//		logger.info("STOP DELETE_DATI_FONTE_TABELLE");
+		logger.info("START DELETE_DATI_FONTE_TABELLE");
+		UtilsFonteFacade.deleteDatiFonteTabelle();
+		logger.info("STOP DELETE_DATI_FONTE_TABELLE");
 		
 		logger.info("START DmAlmFillFonte.doWork()");
 		DmAlmFillFonte.doWork();
