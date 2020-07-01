@@ -26,15 +26,15 @@ public class ProjectTemplateINI {
 
 	private static Logger logger = Logger.getLogger(ProjectTemplateINI.class);
 
+	static String url = "";
+	static String name = "";
+	static char[] psw = null;
+
 	static SVNRepository repository;
 	static ISVNAuthenticationManager authManager;
 
 	public ProjectTemplateINI(String myrepository) {
 
-		String url = "";
-		String name = "";
-		char[] psw = null;
-		
 		try {
 			if (myrepository.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SIRE)) {
 				url = DmAlmConfigReader.getInstance().getProperty(
@@ -50,7 +50,7 @@ public class ProjectTemplateINI {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
+						DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();;
 			}
 
 			repository = SVNRepositoryFactory.create(SVNURL
@@ -69,7 +69,7 @@ public class ProjectTemplateINI {
 		}
 	}
 
-	public static String getTemplateIniFile(String projectLocation,
+	public static String fillTemplateIniFile(String projectLocation,
 			long revision, String myRepository) throws SVNException, Exception {
 
 		String filePath = "";
