@@ -230,7 +230,7 @@ public class WorkItemChangingThread extends Thread {
 		ps.setString(1, codice);
 		ResultSet rs = ps.executeQuery();
 		if(rs.next()) 
-			dt = rs.getDate("dataModifica");
+			dt = rs.getTimestamp("dataModifica");
 		rs.close();
 		ps.close();
 		return dt;

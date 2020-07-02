@@ -164,7 +164,7 @@ public class SissHistoryProjectDAO {
 						+ (row.get(fonteProjects.cRev) != null
 								? row.get(fonteProjects.cRev)
 								: "");
-				String cCreated = row.get(fonteProjects.cRev) != null
+				Timestamp cCreated = row.get(fonteProjects.cRev) != null
 						? (queryConnOracle(connOracle, dialect)
 								.from(fonteRevisions)
 								.where(fonteRevisions.cName.eq(String
@@ -176,17 +176,11 @@ public class SissHistoryProjectDAO {
 														String.valueOf(row.get(
 																fonteProjects.cRev))))
 												.list(fonteRevisions.cCreated)
-												.get(0).toString()
-										: "")
-						: "";
+												.get(0)
+										: null)
+						: null;
 
-				// Applico il cast a timespent solo se esistono dei valori data
-				Date dateValue = null;
-				if (cCreated != "") {
-					
-					dateValue=DateUtils.stringToDate(cCreated, "yyyy-MM-dd hh:mm:ss.SSS");
-				}
-
+			
 				insert.columns(stgProjects.cTrackerprefix, 
 						stgProjects.cIsLocal,
 						stgProjects.cPk, 
@@ -229,11 +223,11 @@ public class SissHistoryProjectDAO {
 								StringTemplate
 										.create("HISTORY_PROJECT_SEQ.nextval"),
 								row.get(fonteProjects.cRev), 
-								dateValue,
+								cCreated,
 								row.get(fonteProjects.cDescription)
 								)
 						.addBatch();
-
+				nRigheInserite++;
 				if (!insert.isEmpty()) {
 					if (nRigheInserite
 							% lispa.schedulers.constant.DmAlmConstants.BATCH_SIZE == 0) {
