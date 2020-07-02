@@ -12,7 +12,9 @@ public class DmAlmTemplateProject {
 
     private String templateId;
 
-    private Integer rev;
+    private Long rev;
+    
+    private String idRepository;
     
 	public String getPathLocation() {
 		return pathLocation;
@@ -30,12 +32,20 @@ public class DmAlmTemplateProject {
 		this.templateId = templateId;
 	}
 
-	public Integer getRev() {
+	public Long getRev() {
 		return rev;
 	}
 
-	public void setRev(Integer rev) {
+	public void setRev(Long rev) {
 		this.rev = rev;
+	}
+
+	public String getIdRepository() {
+		return idRepository;
+	}
+
+	public void setIdRepository(String idRepository) {
+		this.idRepository = idRepository;
 	}
 
 }

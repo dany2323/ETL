@@ -1,13 +1,13 @@
 package lispa.schedulers.dao.sgr.sire.current;
 
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.svn.ProjectTemplateINI;
 import lispa.schedulers.utils.StringUtils;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -114,14 +114,18 @@ public class SireCurrentProjectDAO {
 								el[15]
 								)
 								.execute();
-
+				
+				if(!ProjectTemplateINI.existProjectTemplateIni(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SIRE)) {
+					ProjectTemplateINI.fillProjectTemplateIniFile(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SIRE);
+				}
+				
 				n_righe_inserite++;
 
 			}
 
 			OracleConnection.commit();
 
-		} catch (SQLException | NoSuchAlgorithmException e) {
+		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 			n_righe_inserite=0;
 		} finally {

@@ -23,6 +23,7 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
@@ -73,7 +74,7 @@ public class ProjectTemplateINI {
 		}
 	}
 
-	public static void fillTemplateIniFile(String projectLocation,
+	public static void fillProjectTemplateIniFile(String pathLocation,
 			long revision, String myRepository) throws SVNException, Exception {
 
 		String filePath = "";
@@ -88,6 +89,7 @@ public class ProjectTemplateINI {
 
 		repository.setAuthenticationManager(authManager);
 		SVNURL root = repository.getRepositoryRoot(true);
+		String projectLocation = getProjectTemplateSVNPath(pathLocation);
 		String absolutepath = root + projectLocation;
 		filePath = SVNURLUtil.getRelativeURL(root,
 				SVNURL.parseURIEncoded(absolutepath), false);
@@ -115,8 +117,9 @@ public class ProjectTemplateINI {
 			new SQLInsertClause(connOracle, dialect, dmalmTemplateProject)
 				.columns(dmalmTemplateProject.pathLocation,
 						dmalmTemplateProject.templateId,
-						dmalmTemplateProject.rev)
-				.values(projectLocation, templateId, revision).execute();
+						dmalmTemplateProject.rev,
+						dmalmTemplateProject.idRepository)
+				.values(projectLocation, templateId, revision, myRepository).execute();
 				
 		} else {
 			throw new Exception(
@@ -126,60 +129,34 @@ public class ProjectTemplateINI {
 
 	}
 
-	public static void fillLastRevisionTemplateIniFile(String projectLocation,
-			String myRepository) throws SVNException, Exception {
+	public static boolean existProjectTemplateIni(String projectLocation,
+			long revision, String myRepository) throws SVNException, Exception {
 
-		String filePath = "";
-		String iniContent = "";
+		ConnectionManager cm = ConnectionManager.getInstance();
+		Connection connOracle = cm.getConnectionOracle();
+		DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
+		connOracle.setAutoCommit(false);
 
-		DAVRepositoryFactory.setup();
+		SQLTemplates dialect = new HSQLDBTemplates() {
+			{
+				setPrintSchema(true);
+			}
+		};
+		SQLQuery query = new SQLQuery(connOracle, dialect);
+		long count = query.from(dmalmTemplateProject)
+				.where(dmalmTemplateProject.pathLocation.eq(projectLocation))
+				.where(dmalmTemplateProject.rev.eq(revision))
+				.where(dmalmTemplateProject.idRepository.eq(myRepository))
+				.count();
 
-		SVNProperties fileProperties = new SVNProperties();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-		new ProjectTemplateINI(myRepository);
-
-		repository.setAuthenticationManager(authManager);
-		SVNURL root = repository.getRepositoryRoot(true);
-		String absolutepath = root + projectLocation;
-		filePath = SVNURLUtil.getRelativeURL(root,
-				SVNURL.parseURIEncoded(absolutepath), false);
-
-		repository.getFile(filePath, repository.getLatestRevision(),
-				fileProperties, baos);
-
-		String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
-
-		boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-
-		if (isTextType) {
-			iniContent = baos.toString();
-			String templateId = parsePropertiesString(iniContent);
-
-			ConnectionManager cm = ConnectionManager.getInstance();
-			Connection connOracle = cm.getConnectionOracle();
-			DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
-			connOracle.setAutoCommit(false);
-
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
-			new SQLInsertClause(connOracle, dialect, dmalmTemplateProject)
-				.columns(dmalmTemplateProject.pathLocation,
-						dmalmTemplateProject.templateId,
-						dmalmTemplateProject.rev)
-				.values(projectLocation, templateId, -1).execute();
-				
+		if (count > 0) {
+			return true;
 		} else {
-			throw new Exception(
-					"Impossibile trovare una location per il file INI "
-							+ projectLocation);
+			return false;
 		}
 	}
 
-	public static String getProjectTemplateSVNPath(String clocation) {
+	private static String getProjectTemplateSVNPath(String clocation) {
 
 		if (clocation.startsWith("default:/")) {
 			int start = clocation.lastIndexOf(":/") + 1;

@@ -3,11 +3,14 @@ package lispa.schedulers.dao.sgr.siss.history;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryProject;
+import lispa.schedulers.svn.ProjectTemplateINI;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -108,6 +111,10 @@ public class SissHistoryProjectDAO {
 								row.get(fonteProjects.cId),
 								row.get(fonteProjects.cRev),
 								row.get(fonteProjects.cDescription)).execute();
+				
+				if(!ProjectTemplateINI.existProjectTemplateIni(row.get(fonteProjects.cLocation), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SISS)) {
+					ProjectTemplateINI.fillProjectTemplateIniFile(row.get(fonteProjects.cLocation), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SISS);
+				}
 			}
 
 			connOracle.commit();

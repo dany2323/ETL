@@ -3,9 +3,12 @@ package lispa.schedulers.dao.sgr.siss.current;
 import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
+
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.svn.ProjectTemplateINI;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -112,6 +115,10 @@ public class SissCurrentProjectDAO {
 								el[14] ,
 								el[15]
 							).execute();
+				
+				if(!ProjectTemplateINI.existProjectTemplateIni(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SISS)) {
+					ProjectTemplateINI.fillProjectTemplateIniFile(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SISS);
+				}
 				
 				n_righe_inserite++;
 			}

@@ -113,7 +113,9 @@ public class SireHistoryProjectDAO {
 								row.get(fonteProjects.cRev),
 								row.get(fonteProjects.cDescription)).execute();
 			
-				ProjectTemplateINI.fillTemplateIniFile(ProjectTemplateINI.getProjectTemplateSVNPath(row.get(fonteProjects.cLocation)), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SIRE);
+				if(!ProjectTemplateINI.existProjectTemplateIni(row.get(fonteProjects.cLocation), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SIRE)) {
+					ProjectTemplateINI.fillProjectTemplateIniFile(row.get(fonteProjects.cLocation), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SIRE);
+				}
 			}
 
 			connOracle.commit();
