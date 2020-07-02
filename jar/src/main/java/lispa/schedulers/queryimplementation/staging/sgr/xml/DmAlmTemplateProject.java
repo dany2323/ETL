@@ -21,6 +21,8 @@ public class DmAlmTemplateProject extends com.mysema.query.sql.RelationalPathBas
     public final StringPath pathLocation = createString("PATH_LOCATION");
 
     public final StringPath templateId = createString("TEMPLATE_ID");
+    
+    public final NumberPath<Integer> rev = createNumber("REV", Integer.class);
 
     public DmAlmTemplateProject(String variable) {
         super(lispa.schedulers.bean.staging.sgr.xml.DmAlmTemplateProject.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_TEMPLATE_PROJECT");

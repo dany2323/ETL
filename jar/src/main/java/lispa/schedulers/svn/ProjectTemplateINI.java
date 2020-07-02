@@ -3,13 +3,14 @@ package lispa.schedulers.svn;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.Connection;
 import java.util.Properties;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.PropertiesReaderException;
+import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-
+import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmTemplateProject;
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNProperties;
@@ -21,6 +22,9 @@ import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class ProjectTemplateINI {
 
@@ -69,7 +73,7 @@ public class ProjectTemplateINI {
 		}
 	}
 
-	public static String fillTemplateIniFile(String projectLocation,
+	public static void fillTemplateIniFile(String projectLocation,
 			long revision, String myRepository) throws SVNException, Exception {
 
 		String filePath = "";
@@ -96,16 +100,33 @@ public class ProjectTemplateINI {
 
 		if (isTextType) {
 			iniContent = baos.toString();
+			String templateId = parsePropertiesString(iniContent);
+
+			ConnectionManager cm = ConnectionManager.getInstance();
+			Connection connOracle = cm.getConnectionOracle();
+			DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
+			connOracle.setAutoCommit(false);
+
+			SQLTemplates dialect = new HSQLDBTemplates() {
+				{
+					setPrintSchema(true);
+				}
+			};
+			new SQLInsertClause(connOracle, dialect, dmalmTemplateProject)
+				.columns(dmalmTemplateProject.pathLocation,
+						dmalmTemplateProject.templateId,
+						dmalmTemplateProject.rev)
+				.values(projectLocation, templateId, revision).execute();
+				
 		} else {
 			throw new Exception(
 					"Impossibile trovare una location per il file INI "
 							+ projectLocation);
 		}
 
-		return parsePropertiesString(iniContent);
 	}
 
-	public static String getLastRevisionTemplateIniFile(String projectLocation,
+	public static void fillLastRevisionTemplateIniFile(String projectLocation,
 			String myRepository) throws SVNException, Exception {
 
 		String filePath = "";
@@ -133,16 +154,32 @@ public class ProjectTemplateINI {
 
 		if (isTextType) {
 			iniContent = baos.toString();
+			String templateId = parsePropertiesString(iniContent);
+
+			ConnectionManager cm = ConnectionManager.getInstance();
+			Connection connOracle = cm.getConnectionOracle();
+			DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
+			connOracle.setAutoCommit(false);
+
+			SQLTemplates dialect = new HSQLDBTemplates() {
+				{
+					setPrintSchema(true);
+				}
+			};
+			new SQLInsertClause(connOracle, dialect, dmalmTemplateProject)
+				.columns(dmalmTemplateProject.pathLocation,
+						dmalmTemplateProject.templateId,
+						dmalmTemplateProject.rev)
+				.values(projectLocation, templateId, -1).execute();
+				
 		} else {
 			throw new Exception(
 					"Impossibile trovare una location per il file INI "
 							+ projectLocation);
 		}
-
-		return parsePropertiesString(iniContent);
 	}
 
-	public static String getProjectSVNPath(String clocation) {
+	public static String getProjectTemplateSVNPath(String clocation) {
 
 		if (clocation.startsWith("default:/")) {
 			int start = clocation.lastIndexOf(":/") + 1;
@@ -156,7 +193,7 @@ public class ProjectTemplateINI {
 		}
 	}
 
-	public static String parsePropertiesString(String s) throws IOException {
+	private static String parsePropertiesString(String s) throws IOException {
 
 		final Properties p = new Properties();
 		p.load(new StringReader(s));

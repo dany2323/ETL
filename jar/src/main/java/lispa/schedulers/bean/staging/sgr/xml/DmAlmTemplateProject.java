@@ -12,6 +12,8 @@ public class DmAlmTemplateProject {
 
     private String templateId;
 
+    private Integer rev;
+    
 	public String getPathLocation() {
 		return pathLocation;
 	}
@@ -26,6 +28,14 @@ public class DmAlmTemplateProject {
 
 	public void setTemplateId(String templateId) {
 		this.templateId = templateId;
+	}
+
+	public Integer getRev() {
+		return rev;
+	}
+
+	public void setRev(Integer rev) {
+		this.rev = rev;
 	}
 
 }

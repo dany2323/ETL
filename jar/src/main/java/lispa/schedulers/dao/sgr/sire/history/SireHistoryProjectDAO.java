@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.sire.history.QSireHistoryProject;
+import lispa.schedulers.svn.ProjectTemplateINI;
 import lispa.schedulers.utils.StringUtils;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
@@ -109,6 +112,8 @@ public class SireHistoryProjectDAO {
 								row.get(fonteProjects.cId),
 								row.get(fonteProjects.cRev),
 								row.get(fonteProjects.cDescription)).execute();
+			
+				ProjectTemplateINI.fillTemplateIniFile(ProjectTemplateINI.getProjectTemplateSVNPath(row.get(fonteProjects.cLocation)), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SIRE);
 			}
 
 			connOracle.commit();
