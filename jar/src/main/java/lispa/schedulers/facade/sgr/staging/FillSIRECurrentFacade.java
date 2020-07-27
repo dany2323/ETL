@@ -5,6 +5,7 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentProjectDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemLinkedDAO;
+import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
@@ -27,6 +28,8 @@ public class FillSIRECurrentFacade {
 			SireCurrentProjectDAO.fillSireCurrentProject();
 			logger.debug("STOP  fillSireCurrentProject "+ new Date());
 			
+			ConnectionManager.getInstance().dismiss();
+			
 			logger.debug("START fillSireCurrentWorkitem "+ new Date());
 			SireCurrentWorkitemDAO.fillSireCurrentWorkitems();
 			logger.debug("STOP  fillSireCurrentWorkitem "+ new Date());
@@ -45,6 +48,7 @@ public class FillSIRECurrentFacade {
 			LinkedWorkItemRolesXML.fillLinkedWorkItemRoles(DmAlmConstants.REPOSITORY_SIRE);
 			logger.debug("STOP   fillLinkedWorkItemRoles SIRE "+ new Date());
 			
+			ConnectionManager.getInstance().dismiss();
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}

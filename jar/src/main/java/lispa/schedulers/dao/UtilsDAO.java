@@ -97,9 +97,9 @@ public class UtilsDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
-			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 1);
+			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
 			try(CallableStatement callableStatement=conn.prepareCall(procedure) ){
-				callableStatement.setTimestamp(1, DateUtils.addMonthsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -1));
+//				callableStatement.setTimestamp(1, DateUtils.addMonthsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -1));
 				callableStatement.execute();
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);

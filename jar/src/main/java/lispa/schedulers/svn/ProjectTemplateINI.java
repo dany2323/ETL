@@ -75,7 +75,7 @@ public class ProjectTemplateINI {
 	}
 
 	public static void fillProjectTemplateIniFile(String pathLocation,
-			long revision, String myRepository) throws SVNException, Exception {
+			long revision, String myRepository) {
 
 		String filePath = "";
 		String iniContent = "";
@@ -86,45 +86,48 @@ public class ProjectTemplateINI {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
 		new ProjectTemplateINI(myRepository);
+		try {
+			repository.setAuthenticationManager(authManager);
+			SVNURL root = repository.getRepositoryRoot(true);
+			String projectLocation = getProjectTemplateSVNPath(pathLocation);
+			String absolutepath = root + projectLocation;
+			filePath = SVNURLUtil.getRelativeURL(root,
+					SVNURL.parseURIEncoded(absolutepath), false);
+			
+			repository.getFile(filePath, revision, fileProperties, baos);
+			String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
+			logger.info("mimeType: "+mimeType);
+			boolean isTextType = SVNProperty.isTextMimeType(mimeType);
 
-		repository.setAuthenticationManager(authManager);
-		SVNURL root = repository.getRepositoryRoot(true);
-		String projectLocation = getProjectTemplateSVNPath(pathLocation);
-		String absolutepath = root + projectLocation;
-		filePath = SVNURLUtil.getRelativeURL(root,
-				SVNURL.parseURIEncoded(absolutepath), false);
+			if (isTextType) {
+				iniContent = baos.toString();
+				String templateId = parsePropertiesString(iniContent);
+				logger.info("templateId: "+templateId);
+				ConnectionManager cm = ConnectionManager.getInstance();
+				Connection connOracle = cm.getConnectionOracle();
+				DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
+				connOracle.setAutoCommit(false);
 
-		repository.getFile(filePath, revision, fileProperties, baos);
-
-		String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
-
-		boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-
-		if (isTextType) {
-			iniContent = baos.toString();
-			String templateId = parsePropertiesString(iniContent);
-
-			ConnectionManager cm = ConnectionManager.getInstance();
-			Connection connOracle = cm.getConnectionOracle();
-			DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
-			connOracle.setAutoCommit(false);
-
-			SQLTemplates dialect = new HSQLDBTemplates() {
-				{
-					setPrintSchema(true);
-				}
-			};
-			new SQLInsertClause(connOracle, dialect, dmalmTemplateProject)
-				.columns(dmalmTemplateProject.pathLocation,
-						dmalmTemplateProject.templateId,
-						dmalmTemplateProject.rev,
-						dmalmTemplateProject.idRepository)
-				.values(projectLocation, templateId, revision, myRepository).execute();
+				SQLTemplates dialect = new HSQLDBTemplates() {
+					{
+						setPrintSchema(true);
+					}
+				};
+				new SQLInsertClause(connOracle, dialect, dmalmTemplateProject)
+					.columns(dmalmTemplateProject.pathLocation,
+							dmalmTemplateProject.templateId,
+							dmalmTemplateProject.rev,
+							dmalmTemplateProject.idRepository)
+					.values(projectLocation, templateId, revision, myRepository).execute();
 				
-		} else {
-			throw new Exception(
-					"Impossibile trovare una location per il file INI "
-							+ projectLocation);
+				connOracle.commit();
+				logger.info(projectLocation+" - "+templateId+" - "+revision+" - "+myRepository);
+			} else {
+				logger.error("Impossibile trovare una location per il file INI "
+								+ projectLocation);
+			}
+		} catch (Exception e){
+			logger.error(e.getMessage(), e);
 		}
 
 	}
