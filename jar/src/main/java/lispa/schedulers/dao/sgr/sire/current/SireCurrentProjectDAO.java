@@ -119,6 +119,8 @@ public class SireCurrentProjectDAO {
 					ProjectTemplateINI.fillProjectTemplateIniFile(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SIRE);
 				}
 				
+				ConnectionManager.getInstance().dismiss();
+				
 				n_righe_inserite++;
 
 			}

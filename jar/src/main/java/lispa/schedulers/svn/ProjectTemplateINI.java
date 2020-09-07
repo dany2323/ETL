@@ -96,13 +96,11 @@ public class ProjectTemplateINI {
 			
 			repository.getFile(filePath, revision, fileProperties, baos);
 			String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
-			logger.info("mimeType: "+mimeType);
 			boolean isTextType = SVNProperty.isTextMimeType(mimeType);
 
 			if (isTextType) {
 				iniContent = baos.toString();
 				String templateId = parsePropertiesString(iniContent);
-				logger.info("templateId: "+templateId);
 				ConnectionManager cm = ConnectionManager.getInstance();
 				Connection connOracle = cm.getConnectionOracle();
 				DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 

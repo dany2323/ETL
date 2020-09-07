@@ -28,8 +28,6 @@ public class FillSIRECurrentFacade {
 			SireCurrentProjectDAO.fillSireCurrentProject();
 			logger.debug("STOP  fillSireCurrentProject "+ new Date());
 			
-			ConnectionManager.getInstance().dismiss();
-			
 			logger.debug("START fillSireCurrentWorkitem "+ new Date());
 			SireCurrentWorkitemDAO.fillSireCurrentWorkitems();
 			logger.debug("STOP  fillSireCurrentWorkitem "+ new Date());
