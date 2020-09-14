@@ -9,9 +9,7 @@ import org.apache.log4j.Logger;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.QueryUtils;
 
 public class UtilsDAO {
@@ -91,15 +89,15 @@ public class UtilsDAO {
 		}
 	}
 	
-	public static void deleteDatiFonteTabelle() throws DAOException{
+	public static void deleteDatiFonteTabelle(String fonte) throws DAOException{
 		ConnectionManager cm = null;
 		Connection conn = null;
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
-			try(CallableStatement callableStatement=conn.prepareCall(procedure) ){
-//				callableStatement.setTimestamp(1, DateUtils.addMonthsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -1));
+			try(CallableStatement callableStatement=conn.prepareCall(procedure)){
+				callableStatement.setString(1, fonte);
 				callableStatement.execute();
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);

@@ -16,13 +16,13 @@ private static Logger logger = Logger.getLogger(UtilsFonteFacade.class);
 		}
 	}
 	
-	public static void deleteDatiFonteTabelle() {
-		logger.info("START DELETE DATI FONTE");
+	public static void deleteDatiFonteTabelle(String fonte) {
+		logger.info("START DELETE DATI FONTE "+fonte);
 		try {
-			UtilsDAO.deleteDatiFonteTabelle();
+			UtilsDAO.deleteDatiFonteTabelle(fonte);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
-		logger.info("STOP DELETE DATI FONTE");
+		logger.info("STOP DELETE DATI FONTE "+fonte);
 	}
 }

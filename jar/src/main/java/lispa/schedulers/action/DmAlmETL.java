@@ -49,19 +49,20 @@ public class DmAlmETL {
 
 		if (ExecutionManager.getInstance().isExecutionSfera()) {
 			UtilsFonteFacade.caricamentoFonte(DmAlmConstants.FONTE_SFERA, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+			UtilsFonteFacade.deleteDatiFonteTabelle(DmAlmConstants.FONTE_SFERA);
 		}
 		if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
 			UtilsFonteFacade.caricamentoFonte(DmAlmConstants.FONTE_SGR, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+			UtilsFonteFacade.deleteDatiFonteTabelle(DmAlmConstants.FONTE_SGR);
 		}
 		if (ExecutionManager.getInstance().isExecutionMps()) {
 			UtilsFonteFacade.caricamentoFonte(DmAlmConstants.FONTE_MPS, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+			UtilsFonteFacade.deleteDatiFonteTabelle(DmAlmConstants.FONTE_MPS);
 		}
 		if (ExecutionManager.getInstance().isExecutionCalipso()) {
 			UtilsFonteFacade.caricamentoFonte(DmAlmConstants.FONTE_CALIPSO, DmAlmConstants.CARICAMENTO_FONTE_INIT);
+			UtilsFonteFacade.deleteDatiFonteTabelle(DmAlmConstants.FONTE_CALIPSO);
 		}
-		logger.info("START DELETE_DATI_FONTE_TABELLE");
-		UtilsFonteFacade.deleteDatiFonteTabelle();
-		logger.info("STOP DELETE_DATI_FONTE_TABELLE");
 		
 		logger.info("START DmAlmFillFonte.doWork()");
 		DmAlmFillFonte.doWork();
