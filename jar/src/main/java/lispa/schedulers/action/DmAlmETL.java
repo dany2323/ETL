@@ -20,7 +20,10 @@ public class DmAlmETL {
 	public static void main(String[] args) throws PropertiesReaderException {
 		DmAlmConfigReaderProperties.setFileProperties(args[1]);
 		Log4JConfiguration.inizialize();
-		DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp(args[2], "yyyy-MM-dd HH:mm:00"));
+		if (args.length > 2) {
+		    DataEsecuzione.getInstance().setDataEsecuzione(DateUtils.stringToTimestamp(args[2]));
+		}
+		logger.info("DataEsecuzione: " + DataEsecuzione.getInstance().getDataEsecuzione());
 																					
 		String ambiente = DmAlmConfigReader.getInstance().getProperty(
 				DmAlmConfigReaderProperties.DM_ALM_AMBIENTE);
