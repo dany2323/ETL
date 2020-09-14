@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.util.Properties;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.PropertiesReaderException;
-import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmTemplateProject;
@@ -74,7 +73,7 @@ public class ProjectTemplateINI {
 		}
 	}
 
-	public static void fillProjectTemplateIniFile(String pathLocation,
+	public static void fillProjectTemplateIniFile(Connection connOracle, String pathLocation,
 			long revision, String myRepository) {
 
 		String filePath = "";
@@ -101,8 +100,6 @@ public class ProjectTemplateINI {
 			if (isTextType) {
 				iniContent = baos.toString();
 				String templateId = parsePropertiesString(iniContent);
-				ConnectionManager cm = ConnectionManager.getInstance();
-				Connection connOracle = cm.getConnectionOracle();
 				DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
 				connOracle.setAutoCommit(false);
 
@@ -130,11 +127,9 @@ public class ProjectTemplateINI {
 
 	}
 
-	public static boolean existProjectTemplateIni(String projectLocation,
+	public static boolean existProjectTemplateIni(Connection connOracle, String projectLocation,
 			long revision, String myRepository) throws SVNException, Exception {
 
-		ConnectionManager cm = ConnectionManager.getInstance();
-		Connection connOracle = cm.getConnectionOracle();
 		DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
 		connOracle.setAutoCommit(false);
 

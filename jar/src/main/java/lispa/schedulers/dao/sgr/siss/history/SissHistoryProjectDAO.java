@@ -112,8 +112,8 @@ public class SissHistoryProjectDAO {
 								row.get(fonteProjects.cRev),
 								row.get(fonteProjects.cDescription)).execute();
 				
-				if(!ProjectTemplateINI.existProjectTemplateIni(row.get(fonteProjects.cLocation), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SISS)) {
-					ProjectTemplateINI.fillProjectTemplateIniFile(row.get(fonteProjects.cLocation), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SISS);
+				if(!ProjectTemplateINI.existProjectTemplateIni(connOracle, row.get(fonteProjects.cLocation), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SISS)) {
+					ProjectTemplateINI.fillProjectTemplateIniFile(connOracle, row.get(fonteProjects.cLocation), row.get(fonteProjects.cRev), DmAlmConstants.REPOSITORY_SISS);
 				}
 			}
 

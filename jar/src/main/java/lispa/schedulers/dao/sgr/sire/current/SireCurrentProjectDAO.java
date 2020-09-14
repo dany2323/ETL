@@ -115,11 +115,11 @@ public class SireCurrentProjectDAO {
 								)
 								.execute();
 				
-				if(!ProjectTemplateINI.existProjectTemplateIni(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SIRE)) {
-					ProjectTemplateINI.fillProjectTemplateIniFile(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SIRE);
+				if(!ProjectTemplateINI.existProjectTemplateIni(OracleConnection, el[10].toString(), -1, DmAlmConstants.REPOSITORY_SIRE)) {
+					ProjectTemplateINI.fillProjectTemplateIniFile(OracleConnection, el[10].toString(), -1, DmAlmConstants.REPOSITORY_SIRE);
 				}
 				
-				ConnectionManager.getInstance().dismiss();
+//				ConnectionManager.getInstance().dismiss();
 				
 				n_righe_inserite++;
 

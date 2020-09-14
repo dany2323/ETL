@@ -116,8 +116,8 @@ public class SissCurrentProjectDAO {
 								el[15]
 							).execute();
 				
-				if(!ProjectTemplateINI.existProjectTemplateIni(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SISS)) {
-					ProjectTemplateINI.fillProjectTemplateIniFile(el[10].toString(), -1, DmAlmConstants.REPOSITORY_SISS);
+				if(!ProjectTemplateINI.existProjectTemplateIni(OracleConnection, el[10].toString(), -1, DmAlmConstants.REPOSITORY_SISS)) {
+					ProjectTemplateINI.fillProjectTemplateIniFile(OracleConnection, el[10].toString(), -1, DmAlmConstants.REPOSITORY_SISS);
 				}
 				
 				n_righe_inserite++;
