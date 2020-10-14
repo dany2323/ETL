@@ -10,10 +10,9 @@ import lispa.schedulers.constant.DmalmRegex;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.DmAlmIdWorkitem;
 import lispa.schedulers.queryimplementation.staging.sgr.siss.history.QSissHistoryWorkitem;
 import lispa.schedulers.utils.StringUtils;
-import lispa.schedulers.utils.enums.Workitem_Type;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -28,28 +27,38 @@ public class SissHistoryWorkitemDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryWorkitem stg_WorkItems = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryWorkitem.workitem;
 	
-	public static Map<EnumWorkitemType, Long> getMinRevisionByType()
+	public static Map<String, Long> getMinRevisionByType()
 			throws Exception {
 
-		HashMap<EnumWorkitemType, Long> map = new HashMap<EnumWorkitemType, Long>();
+		HashMap<String, Long> map = new HashMap<String, Long>();
 
 		SQLTemplates dialect = new HSQLDBTemplates();
 
 		ConnectionManager cm = null;
 		Connection oracle = null;
 		QSissHistoryWorkitem stg_WorkItems = QSissHistoryWorkitem.sissHistoryWorkitem;
+		DmAlmIdWorkitem stg_DmAlmIdWorkitem = DmAlmIdWorkitem.dmAlmIdWorkitem;
 		try {
-			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+			cm = ConnectionManager.getInstance();
+			oracle = cm.getConnectionOracle();
+			
+			SQLQuery query = new SQLQuery(oracle, dialect);
+
+			List<String> listIdWorkitem = query.from(stg_DmAlmIdWorkitem)
+					.where(stg_DmAlmIdWorkitem.flagCaricamento.eq("Y"))
+					.list(stg_DmAlmIdWorkitem.idWorkitem);
+			
+			for (String type : listIdWorkitem) {
 
 				List<Long> max = new ArrayList<Long>();
 
 				cm = ConnectionManager.getInstance();
 				oracle = cm.getConnectionOracle();
 
-				SQLQuery query = new SQLQuery(oracle, dialect);
+				query = new SQLQuery(oracle, dialect);
 
 				max = query.from(stg_WorkItems)
-						.where(stg_WorkItems.cType.eq(type.toString()))
+						.where(stg_WorkItems.cType.eq(type))
 						.list(stg_WorkItems.cRev.max());
 
 				if (max == null || max.size() == 0 || max.get(0) == null) {
@@ -72,8 +81,8 @@ public class SissHistoryWorkitemDAO {
 	}
 
 	public static void fillSissHistoryWorkitem(
-			Map<EnumWorkitemType, Long> minRevisionsByType, long maxRevision,
-			EnumWorkitemType type) throws Exception {
+			Map<String, Long> minRevisionsByType, long maxRevision,
+			String type) throws Exception {
 
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
@@ -108,13 +117,13 @@ public class SissHistoryWorkitemDAO {
 
 			historyworkitems = queryHistory
 					.from(fonteHistoryWorkItems)
-					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
+					.where(fonteHistoryWorkItems.cType.eq(type))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevisionsByType
 							.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 					.list(fonteHistoryWorkItems.all());
 
-			logger.debug("TYPE: SISS " + type.toString() + "  SIZE: "
+			logger.debug("TYPE: SISS " + type + "  SIZE: "
 					+ historyworkitems.size());
 
 			SQLInsertClause insert = new SQLInsertClause(OracleConnection,
@@ -188,7 +197,7 @@ public class SissHistoryWorkitemDAO {
 				insert.execute();
 			}
 
-			logger.debug("STOP TYPE: SISS " + type.toString() + "  SIZE: "
+			logger.debug("STOP TYPE: SISS " + type + "  SIZE: "
 					+ historyworkitems.size());
 
 			ErrorManager.getInstance().resetDeadlock();
@@ -208,7 +217,7 @@ public class SissHistoryWorkitemDAO {
 		}
 	}
 	
-	public static void delete(EnumWorkitemType type) throws Exception {
+	public static void delete(String type) throws Exception {
 		ConnectionManager cm = null;
 		Connection OracleConnection = null;
 		SQLTemplates dialect = new HSQLDBTemplates();
@@ -216,7 +225,7 @@ public class SissHistoryWorkitemDAO {
 			cm = ConnectionManager.getInstance();
 			OracleConnection = cm.getConnectionOracle();
 			new SQLDeleteClause(OracleConnection, dialect, stg_WorkItems)
-				.where(stg_WorkItems.cType.eq(type.toString()))
+				.where(stg_WorkItems.cType.eq(type))
 				.execute();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

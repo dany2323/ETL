@@ -11,7 +11,6 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryHyperlink;
 import lispa.schedulers.utils.StringUtils;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -25,7 +24,7 @@ public class SissHistoryHyperlinkDAO {
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryHyperlink stg_Hyperlink = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryHyperlink.structWorkitemHyperlinks;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
 	
-	public static void fillSissHistoryHyperlink(EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws DAOException {
+	public static void fillSissHistoryHyperlink(String type, Map<String, Long> minRevisionByType, long maxRevision) throws DAOException {
 		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
@@ -57,7 +56,7 @@ public class SissHistoryHyperlinkDAO {
 			hyperlinks = query.from(fonteHyperlink)
 					.join(fonteHistoryWorkItems)
 					.on(fonteHistoryWorkItems.cPk.eq(fonteHyperlink.fkPWorkitem))
-					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
+					.where(fonteHistoryWorkItems.cType.eq(type))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 					.list(fonteHyperlink.all());

@@ -3,30 +3,34 @@ package lispa.schedulers.dao.sgr.siss.current;
 import java.sql.Connection; 
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List; 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.current.SissCurrentWorkitem;
 import lispa.schedulers.utils.StringUtils;
 import lispa.schedulers.exception.DAOException; 
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.ErrorManager;
 import com.mysema.query.Tuple; 
 import com.mysema.query.sql.HSQLDBTemplates; 
 import com.mysema.query.sql.SQLQuery; 
-import com.mysema.query.sql.SQLTemplates; 
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.QTuple;
 import com.mysema.query.types.template.StringTemplate;
 
 public class SissCurrentWorkitemDAO {
 
+	private static Logger logger = Logger.getLogger(SissCurrentWorkitemDAO.class);
 	private static SissCurrentWorkitem sissCurrentWorkitem = SissCurrentWorkitem.workitem;
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem stg_CurrentWorkitems = lispa.schedulers.queryimplementation.staging.sgr.siss.current.SissCurrentWorkitem.workitem; 
  
-	public static long fillSissCurrentWorkitems() throws SQLException, DAOException { 
+	public static boolean fillSissCurrentWorkitems() throws SQLException, DAOException { 
 		ConnectionManager cm = null; 
 		Connection H2connSiss = null; 
 		Connection connection = null; 
-		long n_righe_inserite = 0;
+		boolean flag = true;
 		try { 
 			cm = ConnectionManager.getInstance(); 
 			H2connSiss = cm.getConnectionSISSCurrent(); 
@@ -148,20 +152,32 @@ public class SissCurrentWorkitemDAO {
 							el[31],
 							el[32]
 						).execute(); 
-				
-				n_righe_inserite++;
 			} 
-			 
-			connection.commit(); 
+			connection.commit();
+			flag = false;
 		} catch (Exception e) { 
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			n_righe_inserite=0;
+			logger.error(e.getMessage(), e);
 			throw new DAOException(e); 
 		} finally { 
 			cm.closeQuietly(connection);
 			cm.closeQuietly(H2connSiss);
 		} 
 		
-		return n_righe_inserite;
-	} 
+		return flag;
+	}
+	
+	public static void delete() throws DAOException {
+		ConnectionManager cm = null;
+		Connection OracleConnection = null;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		try {
+			cm = ConnectionManager.getInstance();
+			OracleConnection = cm.getConnectionOracle();
+			new SQLDeleteClause(OracleConnection, dialect, stg_CurrentWorkitems).execute();
+		} catch (Exception e) {
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(OracleConnection);
+		}
+	}
 }

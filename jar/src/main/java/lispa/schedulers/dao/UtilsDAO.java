@@ -5,11 +5,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
+
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.staging.sgr.DmAlmCFIdWorkitem;
+import lispa.schedulers.queryimplementation.staging.sgr.DmAlmIdWorkitem;
+import lispa.schedulers.queryimplementation.staging.sgr.DmAlmTemplateWorkitem;
 import lispa.schedulers.utils.QueryUtils;
 
 public class UtilsDAO {
@@ -95,7 +106,7 @@ public class UtilsDAO {
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
-			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
+			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 1);
 			try(CallableStatement callableStatement=conn.prepareCall(procedure)){
 				callableStatement.setString(1, fonte);
 				callableStatement.execute();
@@ -137,5 +148,86 @@ public class UtilsDAO {
 		} finally {
 			cm.closeConnection(connection);
 		}
+	}
+	
+	public static List<String> getIdWorkitem() throws DAOException {
+		SQLTemplates dialect = new HSQLDBTemplates();
+		ConnectionManager cm = null;
+		Connection oracle = null;
+		List<String> listIdWorkitem = new ArrayList<String>();
+		DmAlmIdWorkitem stg_DmAlmIdWorkitem = DmAlmIdWorkitem.dmAlmIdWorkitem;
+		try {
+			cm = ConnectionManager.getInstance();
+			oracle = cm.getConnectionOracle();
+			SQLQuery query = new SQLQuery(oracle, dialect);
+
+			listIdWorkitem = query.from(stg_DmAlmIdWorkitem)
+					.where(stg_DmAlmIdWorkitem.flagCaricamento.eq("Y"))
+					.list(stg_DmAlmIdWorkitem.idWorkitem);
+		
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(oracle);
+		}
+		
+		return listIdWorkitem;
+	}
+	
+	public static List<String> getCfByWorkitem(String type) throws DAOException {
+		SQLTemplates dialect = new HSQLDBTemplates();
+		ConnectionManager cm = null;
+		Connection oracle = null;
+		List<String> listCFIdWorkitem = new ArrayList<String>();
+		DmAlmCFIdWorkitem stg_DmAlmCFIdWorkitem = DmAlmCFIdWorkitem.dmAlmCFIdWorkitem;
+		try {
+			cm = ConnectionManager.getInstance();
+			oracle = cm.getConnectionOracle();
+			SQLQuery query = new SQLQuery(oracle, dialect);
+
+			listCFIdWorkitem = query.from(stg_DmAlmCFIdWorkitem)
+					.where(stg_DmAlmCFIdWorkitem.flagCaricamento.eq("Y"))
+					.where(stg_DmAlmCFIdWorkitem.idWorkitem.equalsIgnoreCase(type))
+					.list(stg_DmAlmCFIdWorkitem.customField);
+		
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(oracle);
+		}
+		
+		return listCFIdWorkitem;
+	}
+	
+	public static String getTemplateByWorkitem(String type) throws DAOException {
+		SQLTemplates dialect = new HSQLDBTemplates();
+		ConnectionManager cm = null;
+		Connection oracle = null;
+		List<String> listTemplateWorkitem = new ArrayList<String>();
+		String templateWorkitem = "";
+		DmAlmTemplateWorkitem stg_DmAlmTemplateWorkitem = DmAlmTemplateWorkitem.dmAlmTemplateWorkitem;
+		try {
+			cm = ConnectionManager.getInstance();
+			oracle = cm.getConnectionOracle();
+			SQLQuery query = new SQLQuery(oracle, dialect);
+
+			listTemplateWorkitem = query.from(stg_DmAlmTemplateWorkitem)
+					.where(stg_DmAlmTemplateWorkitem.flagCaricamento.eq("Y"))
+					.where(stg_DmAlmTemplateWorkitem.idWorkitem.equalsIgnoreCase(type))
+					.list(stg_DmAlmTemplateWorkitem.template);
+		
+			if (listTemplateWorkitem.size() > 0) {
+				templateWorkitem = listTemplateWorkitem.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(oracle);
+		}
+		
+		return templateWorkitem;
 	}
 }

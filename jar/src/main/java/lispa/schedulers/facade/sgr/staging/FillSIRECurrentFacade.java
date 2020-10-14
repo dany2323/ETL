@@ -1,7 +1,10 @@
 package lispa.schedulers.facade.sgr.staging;
 
 import java.util.Date;
+import java.util.List;
+
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentProjectDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.current.SireCurrentWorkitemLinkedDAO;
@@ -10,8 +13,6 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
-import lispa.schedulers.utils.enums.Workitem_Type;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.apache.log4j.Logger;
 
 public class FillSIRECurrentFacade {
@@ -36,7 +37,8 @@ public class FillSIRECurrentFacade {
 			ProjectRolesXML.fillProjectRoles(DmAlmConstants.REPOSITORY_SIRE);
 			logger.debug("STOP  fillProjectRoles SIRE "+ new Date());
 
-			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+			List<String> listIdWorkitem = UtilsDAO.getIdWorkitem();
+			for(String type : listIdWorkitem) {
 				logger.debug("START  fillStatoWorkItem SIRE " + type.toString() + " " + new Date());
 				StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SIRE, type);
 				logger.debug("STOP  fillStatoWorkItem  SIRE " + type.toString() + " " + new Date());

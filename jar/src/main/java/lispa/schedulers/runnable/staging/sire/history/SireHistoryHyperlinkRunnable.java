@@ -7,16 +7,14 @@ import java.util.concurrent.TimeUnit;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryHyperlinkDAO;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.utils.enums.Workitem_Type;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.apache.log4j.Logger;
 
 public class SireHistoryHyperlinkRunnable implements Runnable {
-	private Map<EnumWorkitemType, Long> minRevisionByType;
+	private Map<String, Long> minRevisionByType;
 	private long polarion_maxRevision;
 	public Logger logger; 
 
-	public SireHistoryHyperlinkRunnable(Map<EnumWorkitemType, Long> minRevisionByType, long polarion_maxRevision, Logger logger) {
+	public SireHistoryHyperlinkRunnable(Map<String, Long> minRevisionByType, long polarion_maxRevision, Logger logger) {
 		this.minRevisionByType = minRevisionByType;
 		this.polarion_maxRevision = polarion_maxRevision;
 		this.logger = logger;
@@ -27,7 +25,7 @@ public class SireHistoryHyperlinkRunnable implements Runnable {
 			logger.debug("START SireHistoryHyperlink.fill()");
 			int wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));
-			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+			for (String type : minRevisionByType.keySet()) {
 				logger.debug("START TYPE: SIRE " + type.toString() + " - minRevisionByType: "+minRevisionByType.get(type)+" polarion_maxRevision: "+polarion_maxRevision);
 				int tentativi_deadlock = 0;
 				ErrorManager.getInstance().resetDeadlock();

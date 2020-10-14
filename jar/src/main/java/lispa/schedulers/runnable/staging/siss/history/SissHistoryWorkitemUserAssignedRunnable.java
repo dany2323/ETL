@@ -10,15 +10,13 @@ import org.apache.log4j.Logger;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.utils.enums.Workitem_Type;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class SissHistoryWorkitemUserAssignedRunnable implements Runnable {
-	private Map<EnumWorkitemType, Long> minRevisionByType;
+	private Map<String, Long> minRevisionByType;
 	private long polarion_maxRevision;
 	public Logger logger; 
 
-	public SissHistoryWorkitemUserAssignedRunnable(Map<EnumWorkitemType, Long> minRevisionByType, long polarion_maxRevision, Logger logger) {
+	public SissHistoryWorkitemUserAssignedRunnable(Map<String, Long> minRevisionByType, long polarion_maxRevision, Logger logger) {
 		this.minRevisionByType = minRevisionByType;
 		this.polarion_maxRevision = polarion_maxRevision;
 		this.logger = logger;
@@ -30,7 +28,7 @@ public class SissHistoryWorkitemUserAssignedRunnable implements Runnable {
 			logger.debug("START SissHistoryWorkitemUserAss.fill()");
 			int wait = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_DEADLOCK_WAIT));
-			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+			for (String type : minRevisionByType.keySet()) {
 				logger.debug("START TYPE: SIRE " + type.toString());
 				int tentativi_deadlock = 0;
 				ErrorManager.getInstance().resetDeadlock();

@@ -11,7 +11,6 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.utils.StringUtils;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -26,7 +25,7 @@ public class SireHistoryWorkitemUserAssignedDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee fonteWorkitemAssignees = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.relWorkitemUserAssignee;
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRelWorkitemUserAssignee stg_WorkitemUserAssignees = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryRelWorkitemUserAssignee.relWorkitemUserAssignee;
 
-	public static void fillSireHistoryWorkitemUserAssigned(EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws DAOException, SQLException {
+	public static void fillSireHistoryWorkitemUserAssigned(String type, Map<String, Long> minRevisionByType, long maxRevision) throws DAOException, SQLException {
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
@@ -55,7 +54,7 @@ public class SireHistoryWorkitemUserAssignedDAO {
 			
 			workItemUserAssignees = query.from(fonteHistoryWorkItems)
 					.join(fonteWorkitemAssignees).on(fonteHistoryWorkItems.cPk.eq(fonteWorkitemAssignees.fkWorkitem))
-					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
+					.where(fonteHistoryWorkItems.cType.eq(type))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 					.list(
@@ -127,7 +126,7 @@ public class SireHistoryWorkitemUserAssignedDAO {
 		}
 	}
 	
-	public static void delete(EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws DAOException {
+	public static void delete(String type, Map<String, Long> minRevisionByType, long maxRevision) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -139,7 +138,7 @@ public class SireHistoryWorkitemUserAssignedDAO {
 			new SQLDeleteClause(connection, dialect, stg_WorkitemUserAssignees)
 				.where(stg_WorkitemUserAssignees.fkWorkitem.in(new SQLSubQuery()
 					.from(stg_HistoryWorkItems)
-					.where(stg_HistoryWorkItems.cType.eq(type.toString()))
+					.where(stg_HistoryWorkItems.cType.eq(type))
 					.where(stg_HistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
 					.where(stg_HistoryWorkItems.cRev.loe(maxRevision))
 					.list(stg_HistoryWorkItems.cPk)))

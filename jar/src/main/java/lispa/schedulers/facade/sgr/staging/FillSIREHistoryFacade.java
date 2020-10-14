@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
+
+import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryAttachmentDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryProjectDAO;
@@ -24,9 +26,6 @@ import lispa.schedulers.runnable.staging.sire.history.SireHistoryProjectRunnable
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryRevisionRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryUserRunnable;
 import lispa.schedulers.runnable.staging.sire.history.SireHistoryWorkitemUserAssignedRunnable;
-import lispa.schedulers.utils.EnumUtils;
-import lispa.schedulers.utils.enums.Workitem_Type;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class FillSIREHistoryFacade {
 
@@ -50,7 +49,7 @@ public class FillSIREHistoryFacade {
 		try {
 			logger.debug("START SIREHistoryFacade.fill()");
 
-			Map<EnumWorkitemType, Long> minRevisionsByType = SireHistoryWorkitemDAO.getMinRevisionByType();
+			Map<String, Long> minRevisionsByType = SireHistoryWorkitemDAO.getMinRevisionByType();
 			long polarion_maxRevision = SireHistoryRevisionDAO.getMaxRevision();
 			long user_minRevision = SireHistoryUserDAO.getMinRevision();
 			long project_minRevision = SireHistoryProjectDAO.getMinRevision();
@@ -106,8 +105,8 @@ public class FillSIREHistoryFacade {
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			
 			logger.debug("START SireHistoryWorkitem - numero wi: "
-					+ Workitem_Type.EnumWorkitemType.values().length);
-			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+					+ minRevisionsByType.keySet().size());
+			for (String type : minRevisionsByType.keySet()) {
 				logger.debug("START TYPE: SIRE " + type.toString());
 				int tentativi_wi_deadlock = 0;
 				int tentativi_cf_deadlock = 0;
@@ -134,7 +133,7 @@ public class FillSIREHistoryFacade {
 				
 				tentativi_cf_deadlock++;
 				logger.debug("Tentativo CF " + tentativi_cf_deadlock);
-				List<String> customFields = EnumUtils.getCFEnumerationByType(type);
+				List<String> customFields = UtilsDAO.getCfByWorkitem(type);
 				for (String customField : customFields) {
 					SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemType(
 							minRevisionsByType.get(type), polarion_maxRevision, type, customField);
@@ -145,7 +144,7 @@ public class FillSIREHistoryFacade {
 						TimeUnit.MINUTES.sleep(wait);
 						logger.debug("Tentativo CF " + tentativi_cf_deadlock);
 						ErrorManager.getInstance().resetCFDeadlock();
-						customFields = EnumUtils.getCFEnumerationByType(type);
+						customFields = UtilsDAO.getCfByWorkitem(type);
 						SireHistoryCfWorkitemDAO.fillSireHistoryCfWorkitemByWorkitemType(
 								minRevisionsByType.get(type), polarion_maxRevision, type, customField);
 						cfDeadlock = ErrorManager.getInstance().hascfDeadLock();

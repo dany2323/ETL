@@ -1,7 +1,10 @@
 package lispa.schedulers.facade.sgr.staging;
 
 import java.util.Date;
+import java.util.List;
+
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentProjectDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentWorkitemLinkedDAO;
@@ -9,8 +12,6 @@ import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
-import lispa.schedulers.utils.enums.Workitem_Type;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.apache.log4j.Logger;
 
 public class FillSISSCurrentFacade {
@@ -27,14 +28,22 @@ public class FillSISSCurrentFacade {
 			logger.debug("STOP  fillSissCurrentProject "+ new Date());
 
 			logger.debug("START fillSissCurrentWorkitem "+ new Date());
-			SissCurrentWorkitemDAO.fillSissCurrentWorkitems();
+			int tentativi_wi = 1;
+			boolean flagWI = true;
+			while (flagWI) {
+				logger.debug("Tentativo SissCurrentWorkitemDAO " + tentativi_wi);
+				SissCurrentWorkitemDAO.delete();
+				flagWI = SissCurrentWorkitemDAO.fillSissCurrentWorkitems();
+				tentativi_wi++;
+			}
 			logger.debug("STOP  fillSissCurrentWorkitem "+ new Date());
 			
 			logger.debug("START  fillProjectRoles SISS "+ new Date());
 			ProjectRolesXML.fillProjectRoles(DmAlmConstants.REPOSITORY_SISS);
 			logger.debug("STOP  fillProjectRoles SISS "+ new Date());
 
-			for(EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+			List<String> listIdWorkitem = UtilsDAO.getIdWorkitem();
+			for(String type : listIdWorkitem) {
 				logger.debug("START  fillStatoWorkItem SISS " + type.toString() + " " + new Date());
 				StatoWorkItemXML.fillStatoWorkItem(DmAlmConstants.REPOSITORY_SISS, type);
 				logger.debug("STOP  fillStatoWorkItem  SISS " + type.toString() + " " + new Date());

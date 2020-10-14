@@ -116,7 +116,6 @@ public class ProjectTemplateINI {
 					.values(projectLocation, templateId, revision, myRepository).execute();
 				
 				connOracle.commit();
-				logger.info(projectLocation+" - "+templateId+" - "+revision+" - "+myRepository);
 			} else {
 				logger.error("Impossibile trovare una location per il file INI "
 								+ projectLocation);

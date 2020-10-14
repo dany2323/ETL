@@ -7,14 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.xml.parsers.DocumentBuilderFactory;
 import lispa.schedulers.constant.DmAlmConstants;
+import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmStatoWorkitem;
-import lispa.schedulers.utils.EnumUtils;
-import lispa.schedulers.utils.enums.Workitem_Type;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNProperty;
@@ -38,7 +36,7 @@ public class StatoWorkItemXML {
 	private static DmAlmStatoWorkitem dmAlmStatoWorkitem = DmAlmStatoWorkitem.dmAlmStatoWorkitem;
 	
 	public static void fillStatoWorkItem(String myrepository,
-			EnumWorkitemType workitemType) throws Exception {
+			String workitemType) throws Exception {
 
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
@@ -112,8 +110,8 @@ public class StatoWorkItemXML {
 				doc.getDocumentElement().normalize();
 				Set<String> stati = new HashSet<String>();
 
-				if (workitemType.equals(Workitem_Type.EnumWorkitemType.anomalia_assistenza)
-						|| workitemType.equals(Workitem_Type.EnumWorkitemType.taskit)) {
+				if (workitemType.equals("anomalia_assistenza")
+						|| workitemType.equals("taskit")) {
 
 					NodeList nList = doc.getElementsByTagName("transition");
 
@@ -149,7 +147,7 @@ public class StatoWorkItemXML {
 											null,
 											Expressions.constant(repos),
 											Expressions.constant(workitemType.toString()),
-											EnumUtils.getTemplateByWorkItem(workitemType)
+											UtilsDAO.getTemplateByWorkitem(workitemType)
 									).execute();
 						}
 					}
@@ -181,7 +179,7 @@ public class StatoWorkItemXML {
 											eElement.getAttribute("sortOrder"),
 											Expressions.constant(repos),
 											Expressions.constant(workitemType.toString()),
-											EnumUtils.getTemplateByWorkItem(workitemType)
+											UtilsDAO.getTemplateByWorkitem(workitemType)
 									).execute();
 						}
 					}
@@ -198,7 +196,7 @@ public class StatoWorkItemXML {
 	}
 
 	private static String getWorkitemStatusFilePathByWorkitemType(
-			EnumWorkitemType type) {
+			String type) {
 
 		String path = null;
 

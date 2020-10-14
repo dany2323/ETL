@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
+
+import lispa.schedulers.dao.UtilsDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryAttachmentDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryCfWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryProjectDAO;
@@ -27,9 +29,6 @@ import lispa.schedulers.runnable.staging.siss.history.SissHistoryProjectRunnable
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryRevisionRunnable;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryUserRunnable;
 import lispa.schedulers.runnable.staging.siss.history.SissHistoryWorkitemUserAssignedRunnable;
-import lispa.schedulers.utils.EnumUtils;
-import lispa.schedulers.utils.enums.Workitem_Type;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class FillSISSHistoryFacade {
 
@@ -53,7 +52,7 @@ public class FillSISSHistoryFacade {
 		try {
 			logger.debug("START SISSHistoryFacade.fill()");
 
-			Map<EnumWorkitemType, Long> minRevisionsByType = SissHistoryWorkitemDAO.getMinRevisionByType();
+			Map<String, Long> minRevisionsByType = SissHistoryWorkitemDAO.getMinRevisionByType();
 			long user_minRevision = SissHistoryUserDAO.getMinRevision();
 			long project_minRevision = SissHistoryProjectDAO.getMinRevision();
 			long polarion_maxRevision = SissHistoryRevisionDAO.getMaxRevision();
@@ -108,9 +107,9 @@ public class FillSISSHistoryFacade {
 					.getProperty(DMALM_DEADLOCK_WAIT));
 			
 			logger.debug("START SissHistoryWorkitem - numero wi: "
-					+ Workitem_Type.EnumWorkitemType.values().length);
+					+ minRevisionsByType.size());
 			
-			for (EnumWorkitemType type : Workitem_Type.EnumWorkitemType.values()) {
+			for (String type : minRevisionsByType.keySet()) {
 				logger.debug("START TYPE: SISS " + type.toString());
 				int tentativi_wi_deadlock = 0;
 				int tentativi_cf_deadlock = 0;
@@ -137,7 +136,7 @@ public class FillSISSHistoryFacade {
 				
 				tentativi_cf_deadlock++;
 				logger.debug("Tentativo CF " + tentativi_cf_deadlock);
-				List<String> customFields = EnumUtils.getCFEnumerationByType(type);
+				List<String> customFields = UtilsDAO.getCfByWorkitem(type);
 				for (String customField : customFields) {
 					SissHistoryCfWorkitemDAO.fillSissHistoryCfWorkitemByWorkitemType(
 							minRevisionsByType.get(type), polarion_maxRevision, type, customField);
@@ -148,7 +147,7 @@ public class FillSISSHistoryFacade {
 						TimeUnit.MINUTES.sleep(wait);
 						logger.debug("Tentativo CF " + tentativi_cf_deadlock);
 						ErrorManager.getInstance().resetCFDeadlock();
-						customFields = EnumUtils.getCFEnumerationByType(type);
+						customFields = UtilsDAO.getCfByWorkitem(type);
 						SissHistoryCfWorkitemDAO.fillSissHistoryCfWorkitemByWorkitemType(
 								minRevisionsByType.get(type), polarion_maxRevision, type, customField);
 						cfDeadlock = ErrorManager.getInstance().hascfDeadLock();

@@ -12,7 +12,6 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryHyperlink;
 import lispa.schedulers.utils.StringUtils;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -27,7 +26,7 @@ public class SireHistoryHyperlinkDAO {
 	private static lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryHyperlink stg_Hyperlink = lispa.schedulers.queryimplementation.staging.sgr.sire.history.SireHistoryHyperlink.structWorkitemHyperlinks;
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem  fonteHistoryWorkItems  = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryWorkitem.workitem;
 	
-	public static void fillSireHistoryHyperlink(EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
+	public static void fillSireHistoryHyperlink(String type, Map<String, Long> minRevisionByType, long maxRevision) throws SQLException, DAOException {
 		
 		ConnectionManager cm = null;
 		Connection connOracle = null;
@@ -59,7 +58,7 @@ public class SireHistoryHyperlinkDAO {
 			hyperlinks = query.from(fonteHyperlink)
 					.join(fonteHistoryWorkItems)
 					.on(fonteHistoryWorkItems.cPk.eq(fonteHyperlink.fkPWorkitem))
-					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
+					.where(fonteHistoryWorkItems.cType.eq(type))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 					.list(fonteHyperlink.all());
@@ -130,7 +129,7 @@ public class SireHistoryHyperlinkDAO {
 		}
 	}
 	
-	public static void delete(EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision) throws DAOException {
+	public static void delete(String type, Map<String, Long> minRevisionByType, long maxRevision) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -142,7 +141,7 @@ public class SireHistoryHyperlinkDAO {
 			new SQLDeleteClause(connection, dialect, stg_Hyperlink)
 				.where(stg_Hyperlink.fkPWorkitem.in(new SQLSubQuery()
 					.from(stg_HistoryWorkItems)
-					.where(stg_HistoryWorkItems.cType.eq(type.toString()))
+					.where(stg_HistoryWorkItems.cType.eq(type))
 					.where(stg_HistoryWorkItems.cRev.gt(minRevisionByType.get(type)))
 					.where(stg_HistoryWorkItems.cRev.loe(maxRevision))
 					.list(stg_HistoryWorkItems.cPk)))

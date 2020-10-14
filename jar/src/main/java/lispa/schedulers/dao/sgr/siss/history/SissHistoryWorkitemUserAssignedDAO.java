@@ -16,7 +16,6 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.utils.StringUtils;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 
 public class SissHistoryWorkitemUserAssignedDAO {
 
@@ -25,7 +24,7 @@ public class SissHistoryWorkitemUserAssignedDAO {
 	private static lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryRelWorkitemUserAssignee stg_WorkitemUserAssignees = lispa.schedulers.queryimplementation.staging.sgr.siss.history.SissHistoryRelWorkitemUserAssignee.relWorkitemUserAssignee;
 
 	public static void fillSissHistoryWorkitemUserAssigned(
-			EnumWorkitemType type, Map<EnumWorkitemType, Long> minRevisionByType, long maxRevision)
+			String type, Map<String, Long> minRevisionByType, long maxRevision)
 			throws Exception {
 
 		ConnectionManager cm = null;
@@ -59,7 +58,7 @@ public class SissHistoryWorkitemUserAssignedDAO {
 					.join(fonteWorkitemAssignees)
 					.on(fonteHistoryWorkItems.cPk
 							.eq(fonteWorkitemAssignees.fkWorkitem))
-					.where(fonteHistoryWorkItems.cType.eq(type.toString()))
+					.where(fonteHistoryWorkItems.cType.eq(type))
 					.where(fonteHistoryWorkItems.cRev
 							.gt(minRevisionByType.get(type)))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))

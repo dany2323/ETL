@@ -11,7 +11,6 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryCfWorkitem;
 import lispa.schedulers.utils.StringUtils;
-import lispa.schedulers.utils.enums.Workitem_Type.EnumWorkitemType;
 import org.apache.log4j.Logger;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
@@ -28,7 +27,7 @@ public class SissHistoryCfWorkitemDAO {
 	private static lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem fonteHistoryWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.siss.history.SissHistoryWorkitem.workitem;
 
 	public static void fillSissHistoryCfWorkitemByWorkitemType(
-			long minRevision, long maxRevision, EnumWorkitemType w_type,
+			long minRevision, long maxRevision, String w_type,
 			String CFName) throws SQLException, DAOException {
 
 		ConnectionManager cm = null;
@@ -58,7 +57,7 @@ public class SissHistoryCfWorkitemDAO {
 					.join(fonteCFWorkItems)
 					.on(fonteCFWorkItems.fkWorkitem
 							.eq(fonteHistoryWorkItems.cPk))
-					.where(fonteHistoryWorkItems.cType.eq(w_type.toString()))
+					.where(fonteHistoryWorkItems.cType.eq(w_type))
 					.where(fonteHistoryWorkItems.cRev.gt(minRevision))
 					.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
 					.where(fonteCFWorkItems.cName.eq(CFName))
