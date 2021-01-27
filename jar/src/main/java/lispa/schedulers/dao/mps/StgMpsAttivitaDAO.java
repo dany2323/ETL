@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lispa.schedulers.constant.DmAlmConstants;
@@ -59,22 +58,18 @@ public class StgMpsAttivitaDAO {
 				reader.close();
 			}
 		} catch (FileNotFoundException e) {
-			logger.error(e.getMessage(), e);
 			Exception exc = new Exception("MPS file non trovato " + pathCSV
 					+ ", elaborazione Mps terminata");
 
 			ErrorManager.getInstance().exceptionOccurred(true, exc);
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 		}
 
 		return hm;
 	}
 
-	public static void fillStgMpsAttivita() throws PropertiesReaderException,
-			DAOException, SQLException {
+	public static void fillStgMpsAttivita() throws PropertiesReaderException, DAOException {
 
 		String pathCSV = MpsUtils
 				.currentMpsFile(DmAlmConstants.FILENAME_MPS_ATTIVITA);
@@ -177,13 +172,9 @@ public class StgMpsAttivitaDAO {
 						reader.close();
 					}
 				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
 					ErrorManager.getInstance().exceptionOccurred(true, e);
-					throw new DAOException(e);
 				} finally {
-					if (cm != null) {
-						cm.closeConnection(connection);
-					}
+					cm.closeConnection(connection);
 				}
 			}
 		}
@@ -193,49 +184,13 @@ public class StgMpsAttivitaDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		QDmalmStgMpsAttivita qstgmpsattivita = QDmalmStgMpsAttivita.dmalmStgMpsAttivita;
+		new SQLDeleteClause(connection, dialect, qstgmpsattivita).execute();
 
-			QDmalmStgMpsAttivita qstgmpsattivita = QDmalmStgMpsAttivita.dmalmStgMpsAttivita;
-
-			new SQLDeleteClause(connection, dialect, qstgmpsattivita).execute();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-	}
-
-	public static void recoverStgMpsAttivita() throws DAOException {
-		ConnectionManager cm = null;
-		Connection connection = null;
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-
-			QDmalmStgMpsAttivita qstgmpsattivita = QDmalmStgMpsAttivita.dmalmStgMpsAttivita;
-
-			new SQLDeleteClause(connection, dialect, qstgmpsattivita).execute();
-
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		cm.closeConnection(connection);
 	}
 }

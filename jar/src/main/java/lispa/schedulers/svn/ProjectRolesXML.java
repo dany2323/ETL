@@ -31,7 +31,11 @@ import com.mysema.query.sql.dml.SQLInsertClause;
 public class ProjectRolesXML {
 
 	private static DmAlmProjectRoles dmAlmProjectRoles = DmAlmProjectRoles.dmAlmProjectRoles;
-
+	private static String url = "";
+	private static String name = "";
+	private static char[] psw;
+	private static String filePath = "";
+	
 	public static void fillProjectRoles(String myrepository) throws Exception {
 
 		try {
@@ -108,11 +112,6 @@ public class ProjectRolesXML {
 		Connection connection = null;
 		ConnectionManager cm = null;
 
-		String url = "";
-		String name = "";
-		String psw = "";
-		String filePath = "";
-
 		try {
 			cm = ConnectionManager.getInstance();
 			DAVRepositoryFactory.setup();
@@ -125,7 +124,7 @@ public class ProjectRolesXML {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+						DmAlmConfigReaderProperties.SIRE_SVN_PSW).toCharArray();
 				filePath = DmAlmConfigReader.getInstance().getProperty(
 						getTemplateConfigProps(myrepository, template));
 			} else if (myrepository.equals(DmAlmConstants.REPOSITORY_SISS)) {
@@ -135,7 +134,7 @@ public class ProjectRolesXML {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_PSW);
+						DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
 				filePath = DmAlmConfigReader.getInstance().getProperty(
 						getTemplateConfigProps(myrepository, template));
 			}
@@ -202,9 +201,7 @@ public class ProjectRolesXML {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeConnection(connection);
 		}
 	}
 
@@ -214,11 +211,6 @@ public class ProjectRolesXML {
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
-
-		String url = "";
-		String name = "";
-		String psw = "";
-		String filePath = "";
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -231,7 +223,7 @@ public class ProjectRolesXML {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+						DmAlmConfigReaderProperties.SIRE_SVN_PSW).toCharArray();
 				filePath = DmAlmConfigReader
 						.getInstance()
 						.getProperty(
@@ -242,7 +234,7 @@ public class ProjectRolesXML {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_PSW);
+						DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
 				filePath = DmAlmConfigReader
 						.getInstance()
 						.getProperty(
@@ -308,9 +300,7 @@ public class ProjectRolesXML {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeConnection(connection);
 		}
 	}
 
@@ -319,11 +309,6 @@ public class ProjectRolesXML {
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
-
-		String url = "";
-		String name = "";
-		String psw = "";
-		String filePath = "";
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -336,7 +321,7 @@ public class ProjectRolesXML {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+						DmAlmConfigReaderProperties.SIRE_SVN_PSW).toCharArray();
 				filePath = DmAlmConfigReader
 						.getInstance()
 						.getProperty(
@@ -348,7 +333,7 @@ public class ProjectRolesXML {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_PSW);
+						DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
 				filePath = DmAlmConfigReader
 						.getInstance()
 						.getProperty(
@@ -415,9 +400,7 @@ public class ProjectRolesXML {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeConnection(connection);
 		}
 	}
 }

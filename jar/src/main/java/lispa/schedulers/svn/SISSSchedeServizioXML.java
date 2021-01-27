@@ -11,6 +11,7 @@ import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
+import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmSchedeServizio;
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNNodeKind;
@@ -31,23 +32,22 @@ import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class SISSSchedeServizioXML {
 
 	private static Logger logger = Logger.getLogger(SISSSchedeServizioXML.class);
 	private static DmAlmSchedeServizio stg_SchedeServizio = DmAlmSchedeServizio.dmalmSchedeServizio;
-	static String url = "";
-	static String name = "";
-	static String psw = "";
-	static SVNRepository repository;
-	static ISVNAuthenticationManager authManager;
 
 	public static void fillSISSHistorySchedeServizio() throws DAOException {
 		SQLTemplates dialect = new HSQLDBTemplates();
 		Connection connection = null;
 		ConnectionManager cm = null;
 		String filePath = "";
+		String url = "";
+		String name = "";
+		char[] psw = null;
 		
 		try {
 			cm = ConnectionManager.getInstance();
@@ -58,7 +58,7 @@ public class SISSSchedeServizioXML {
 			name = DmAlmConfigReader.getInstance().getProperty(
 					DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 			psw = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SISS_SVN_PSW);
+					DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();
 			filePath = DmAlmConfigReader.getInstance().getProperty(
 					DmAlmConfigReaderProperties.SISS_SVN_SCHEDE_SERVIZIO_FILE);
 
@@ -124,9 +124,24 @@ public class SISSSchedeServizioXML {
 			logger.error(e.getMessage(), e);
 
 		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
+			cm.closeConnection(connection);
+		}
+	}
+	
+	public static void delete() throws DAOException {
+		ConnectionManager cm = null;
+		Connection OracleConnection = null;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		try {
+			cm = ConnectionManager.getInstance();
+			OracleConnection = cm.getConnectionOracle();
+			new SQLDeleteClause(OracleConnection, dialect, stg_SchedeServizio)
+				.execute();
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			throw new DAOException(e);
+		} finally {
+			cm.closeConnection(OracleConnection);
 		}
 	}
 
@@ -146,8 +161,7 @@ public class SISSSchedeServizioXML {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			if (cm != null)
-				cm.closeConnection(connection);
+			cm.closeConnection(connection);
 		}
 
 		return check;

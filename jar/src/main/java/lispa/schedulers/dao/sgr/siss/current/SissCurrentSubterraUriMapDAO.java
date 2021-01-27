@@ -29,7 +29,7 @@ public class SissCurrentSubterraUriMapDAO {
 		ConnectionManager cm = null;
 		Connection oracleConnection = null;
 		Connection pgConnection = null;
-		long n_righe_inserite = 0;
+		long nRigheInserite = 0;
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -54,23 +54,22 @@ public class SissCurrentSubterraUriMapDAO {
 			logger.debug("fillSissCurrentSubterraUriMap - subterra.size: " + subterra.size());
 			
 			SQLInsertClause insert = new SQLInsertClause(oracleConnection, dialect, stgSubterra);
-			Iterator<Tuple> i = subterra.iterator();
-			Object[] el = null;
 			
-			while (i.hasNext()) {
+			for(Tuple row:subterra) {
 
-				el = ((Tuple) i.next()).toArray();
 
 				insert.columns(stgSubterra.cPk,
-								stgSubterra.cId)
-						.values(	el[0],
-								el[1])
+							   stgSubterra.cId,
+							   stgSubterra.cRepo)
+						.values(row.get(fontesissSubterraUriMap.cPk),
+								row.get(fontesissSubterraUriMap.cId),
+								"SISS")
 						.addBatch();
 
-				n_righe_inserite++;
+				nRigheInserite++;
 
 				if (!insert.isEmpty()) {
-					if (n_righe_inserite % DmAlmConstants.BATCH_SIZE_PG == 0) {
+					if (nRigheInserite % DmAlmConstants.BATCH_SIZE_PG == 0) {
 						insert.execute();
 						oracleConnection.commit();
 						insert = new SQLInsertClause(oracleConnection, dialect, stgSubterra);
@@ -85,7 +84,7 @@ public class SissCurrentSubterraUriMapDAO {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
-			n_righe_inserite = 0;
+			nRigheInserite = 0;
 			if (oracleConnection != null) {
 				oracleConnection.rollback();
 			}
@@ -100,7 +99,7 @@ public class SissCurrentSubterraUriMapDAO {
 			}
 		}
 
-		return n_righe_inserite;
+		return nRigheInserite;
 	}
 
 	public static void delete() throws Exception {

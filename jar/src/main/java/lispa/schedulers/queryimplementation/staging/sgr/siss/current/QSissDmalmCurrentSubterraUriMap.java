@@ -20,7 +20,7 @@ public class QSissDmalmCurrentSubterraUriMap extends com.mysema.query.sql.Relati
 
     private static final long serialVersionUID = 1317911173;
 
-    public static final QSissDmalmCurrentSubterraUriMap currentSubterraUriMap = new QSissDmalmCurrentSubterraUriMap("DM_ALM_C_SISS_SUBTERRA_URI_MAP");
+    public static final QSissDmalmCurrentSubterraUriMap currentSubterraUriMap = new QSissDmalmCurrentSubterraUriMap("DM_ALM_C_SUBTERRA_URI_MAP");
 
     public final StringPath cPk = createString("C_PK");
     
@@ -32,7 +32,7 @@ public class QSissDmalmCurrentSubterraUriMap extends com.mysema.query.sql.Relati
 
 
     public QSissDmalmCurrentSubterraUriMap(String variable) {
-        super(DmalmCurrentSubterraUriMap.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SISS_SUBTERRA_URI_MAP");
+        super(DmalmCurrentSubterraUriMap.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_C_SUBTERRA_URI_MAP");
     }
 
     public QSissDmalmCurrentSubterraUriMap(Path<? extends DmalmCurrentSubterraUriMap> path) {

@@ -3,7 +3,6 @@ package lispa.schedulers.dao.sfera;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lispa.schedulers.exception.DAOException;
@@ -61,8 +60,7 @@ public class StgMisuraDAO {
 		return hm;
 	}
 
-	public static void FillStgMisura() throws PropertiesReaderException,
-			DAOException, SQLException {
+	public static void fillStgMisura() throws PropertiesReaderException, DAOException {
 		if (pathCSV != null) {
 			HashMap<String, Integer> mapping = mappaColonne();
 			ArrayList<String> columns = null;
@@ -525,13 +523,9 @@ public class StgMisuraDAO {
 					reader.close();
 				}
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
 				ErrorManager.getInstance().exceptionOccurred(true, e);
-				throw new DAOException(e);
 			} finally {
-				if (cm != null) {
-					cm.closeConnection(connection);
-				}
+				cm.closeConnection(connection);
 			}
 		}
 	}

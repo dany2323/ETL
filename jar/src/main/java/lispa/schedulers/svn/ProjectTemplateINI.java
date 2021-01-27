@@ -3,13 +3,13 @@ package lispa.schedulers.svn;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.Connection;
 import java.util.Properties;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-
+import lispa.schedulers.queryimplementation.staging.sgr.xml.DmAlmTemplateProject;
 import org.apache.log4j.Logger;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNProperties;
@@ -21,6 +21,10 @@ import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
+import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class ProjectTemplateINI {
 
@@ -28,7 +32,7 @@ public class ProjectTemplateINI {
 
 	static String url = "";
 	static String name = "";
-	static String psw = "";
+	static char[] psw = null;
 
 	static SVNRepository repository;
 	static ISVNAuthenticationManager authManager;
@@ -42,7 +46,7 @@ public class ProjectTemplateINI {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_PSW);
+						DmAlmConfigReaderProperties.SIRE_SVN_PSW).toCharArray();
 			} else if (myrepository
 					.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SISS)) {
 				url = DmAlmConfigReader.getInstance().getProperty(
@@ -50,7 +54,7 @@ public class ProjectTemplateINI {
 				name = DmAlmConfigReader.getInstance().getProperty(
 						DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
 				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_PSW);
+						DmAlmConfigReaderProperties.SISS_SVN_PSW).toCharArray();;
 			}
 
 			repository = SVNRepositoryFactory.create(SVNURL
@@ -69,80 +73,85 @@ public class ProjectTemplateINI {
 		}
 	}
 
-	public static String getTemplateIniFile(String projectLocation,
+	public static void fillProjectTemplateIniFile(Connection connOracle, String pathLocation,
+			long revision, String myRepository) {
+
+		String filePath = "";
+		String iniContent = "";
+
+		DAVRepositoryFactory.setup();
+
+		SVNProperties fileProperties = new SVNProperties();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+		new ProjectTemplateINI(myRepository);
+		try {
+			repository.setAuthenticationManager(authManager);
+			SVNURL root = repository.getRepositoryRoot(true);
+			String projectLocation = getProjectTemplateSVNPath(pathLocation);
+			String absolutepath = root + projectLocation;
+			filePath = SVNURLUtil.getRelativeURL(root,
+					SVNURL.parseURIEncoded(absolutepath), false);
+			
+			repository.getFile(filePath, revision, fileProperties, baos);
+			String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
+			boolean isTextType = SVNProperty.isTextMimeType(mimeType);
+
+			if (isTextType) {
+				iniContent = baos.toString();
+				String templateId = parsePropertiesString(iniContent);
+				DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
+				connOracle.setAutoCommit(false);
+
+				SQLTemplates dialect = new HSQLDBTemplates() {
+					{
+						setPrintSchema(true);
+					}
+				};
+				new SQLInsertClause(connOracle, dialect, dmalmTemplateProject)
+					.columns(dmalmTemplateProject.pathLocation,
+							dmalmTemplateProject.templateId,
+							dmalmTemplateProject.rev,
+							dmalmTemplateProject.idRepository)
+					.values(projectLocation, templateId, revision, myRepository).execute();
+				
+				connOracle.commit();
+			} else {
+				logger.error("Impossibile trovare una location per il file INI "
+								+ projectLocation);
+			}
+		} catch (Exception e){
+			logger.error(e.getMessage(), e);
+		}
+
+	}
+
+	public static boolean existProjectTemplateIni(Connection connOracle, String projectLocation,
 			long revision, String myRepository) throws SVNException, Exception {
 
-		String filePath = "";
-		String iniContent = "";
+		DmAlmTemplateProject dmalmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject; 
+		connOracle.setAutoCommit(false);
 
-		DAVRepositoryFactory.setup();
+		SQLTemplates dialect = new HSQLDBTemplates() {
+			{
+				setPrintSchema(true);
+			}
+		};
+		SQLQuery query = new SQLQuery(connOracle, dialect);
+		long count = query.from(dmalmTemplateProject)
+				.where(dmalmTemplateProject.pathLocation.eq(projectLocation))
+				.where(dmalmTemplateProject.rev.eq(revision))
+				.where(dmalmTemplateProject.idRepository.eq(myRepository))
+				.count();
 
-		SVNProperties fileProperties = new SVNProperties();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-		new ProjectTemplateINI(myRepository);
-
-		repository.setAuthenticationManager(authManager);
-		SVNURL root = repository.getRepositoryRoot(true);
-		String absolutepath = root + projectLocation;
-		filePath = SVNURLUtil.getRelativeURL(root,
-				SVNURL.parseURIEncoded(absolutepath), false);
-
-		repository.getFile(filePath, revision, fileProperties, baos);
-
-		String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
-
-		boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-
-		if (isTextType) {
-			iniContent = baos.toString();
+		if (count > 0) {
+			return true;
 		} else {
-			throw new Exception(
-					"Impossibile trovare una location per il file INI "
-							+ projectLocation);
+			return false;
 		}
-
-		return parsePropertiesString(iniContent);
 	}
 
-	public static String getLastRevisionTemplateIniFile(String projectLocation,
-			String myRepository) throws SVNException, Exception {
-
-		String filePath = "";
-		String iniContent = "";
-
-		DAVRepositoryFactory.setup();
-
-		SVNProperties fileProperties = new SVNProperties();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-		new ProjectTemplateINI(myRepository);
-
-		repository.setAuthenticationManager(authManager);
-		SVNURL root = repository.getRepositoryRoot(true);
-		String absolutepath = root + projectLocation;
-		filePath = SVNURLUtil.getRelativeURL(root,
-				SVNURL.parseURIEncoded(absolutepath), false);
-
-		repository.getFile(filePath, repository.getLatestRevision(),
-				fileProperties, baos);
-
-		String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
-
-		boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-
-		if (isTextType) {
-			iniContent = baos.toString();
-		} else {
-			throw new Exception(
-					"Impossibile trovare una location per il file INI "
-							+ projectLocation);
-		}
-
-		return parsePropertiesString(iniContent);
-	}
-
-	public static String getProjectSVNPath(String clocation) {
+	private static String getProjectTemplateSVNPath(String clocation) {
 
 		if (clocation.startsWith("default:/")) {
 			int start = clocation.lastIndexOf(":/") + 1;
@@ -156,7 +165,7 @@ public class ProjectTemplateINI {
 		}
 	}
 
-	public static String parsePropertiesString(String s) throws IOException {
+	private static String parsePropertiesString(String s) throws IOException {
 
 		final Properties p = new Properties();
 		p.load(new StringReader(s));

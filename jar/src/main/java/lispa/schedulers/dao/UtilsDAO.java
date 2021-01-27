@@ -90,4 +90,55 @@ public class UtilsDAO {
 		}
 		
 	}
+	
+	public static void deleteDatiFonteTabelle(String fonte) throws DAOException{
+		ConnectionManager cm = null;
+		Connection conn = null;
+		try {
+			cm = ConnectionManager.getInstance();
+			conn = cm.getConnectionOracle();
+			String procedure=QueryUtils.getCallProcedure(DmAlmConstants.DELETE_DATI_FONTE_TABELLE, 0);
+			try(CallableStatement callableStatement=conn.prepareCall(procedure)){
+				callableStatement.execute();
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				cm.closeConnection(conn);
+			}
+		} catch (DAOException e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+		} finally {
+			if(cm!=null) {
+				cm.closeConnection(conn);
+			}
+		}
+	}
+	
+	public static void setCaricamentoFonte(String fonte, String statoCaricamento) throws DAOException {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement psFonte = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql_fonte = "UPDATE "+DmAlmConstants.DMALM_CARICAMENTO_FONTE+" SET STATO_CARICAMENTO = ? WHERE COD_FONTE = ?";
+			psFonte = connection.prepareStatement(sql_fonte);
+
+			psFonte.setString(1, statoCaricamento);
+			psFonte.setString(2, fonte);
+			
+			psFonte.executeUpdate();
+
+			if (psFonte != null) {
+				psFonte.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		} finally {
+			cm.closeConnection(connection);
+		}
+	}
 }

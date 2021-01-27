@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -72,8 +71,7 @@ public class StgMpsRilasciDAO {
 		return hm;
 	}
 
-	public static void fillStgMpsRilasci() throws PropertiesReaderException,
-			DAOException, SQLException {
+	public static void fillStgMpsRilasci() throws PropertiesReaderException, DAOException {
 		String pathCSV = MpsUtils.currentMpsFile(
 				DmAlmConstants.FILENAME_MPS_RILASCI,
 				DmAlmConstants.FILENAME_MPS_RILASCI_EXC);
@@ -187,13 +185,9 @@ public class StgMpsRilasciDAO {
 						reader.close();
 					}
 				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
 					ErrorManager.getInstance().exceptionOccurred(true, e);
-					throw new DAOException(e);
 				} finally {
-					if (cm != null) {
-						cm.closeConnection(connection);
-					}
+					cm.closeConnection(connection);
 				}
 			}
 		}
@@ -203,50 +197,29 @@ public class StgMpsRilasciDAO {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		QDmalmStgMpsRilasci qstgmpsrilasci = QDmalmStgMpsRilasci.dmalmStgMpsRilasci;
+		new SQLDeleteClause(connection, dialect, qstgmpsrilasci).execute();
 
-			QDmalmStgMpsRilasci qstgmpsrilasci = QDmalmStgMpsRilasci.dmalmStgMpsRilasci;
-
-			new SQLDeleteClause(connection, dialect, qstgmpsrilasci).execute();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		cm.closeConnection(connection);
 	}
 
-	public static void recoverStgMpsRilasci() throws DAOException {
+	public static void recoverStgMpsRilasci() throws SQLException, DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
 
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
+		cm = ConnectionManager.getInstance();
+		connection = cm.getConnectionOracle();
 
-			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+		QDmalmStgMpsRilasci qstgmpsrilasci = QDmalmStgMpsRilasci.dmalmStgMpsRilasci;
+		new SQLDeleteClause(connection, dialect, qstgmpsrilasci).execute();
 
-			QDmalmStgMpsRilasci qstgmpsrilasci = QDmalmStgMpsRilasci.dmalmStgMpsRilasci;
-
-			new SQLDeleteClause(connection, dialect, qstgmpsrilasci).execute();
-
-			connection.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-
-			throw new DAOException(e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
+		connection.commit();
+		cm.closeConnection(connection);
 	}
 }

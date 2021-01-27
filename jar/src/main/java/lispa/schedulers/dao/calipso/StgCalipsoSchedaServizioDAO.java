@@ -11,22 +11,18 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.utils.QueryUtils;
 import oracle.jdbc.OracleCallableStatement;
-
 import org.apache.log4j.Logger;
-
 
 public class StgCalipsoSchedaServizioDAO {
 	private static Logger logger = Logger.getLogger(StgCalipsoSchedaServizioDAO.class);
 
-	public static void deleteDmAlmStagingFromExcel()
-			throws DAOException, SQLException {
+	public static void deleteDmAlmStagingFromExcel() throws DAOException {
 
-		ConnectionManager cm = null;
+		ConnectionManager cm = ConnectionManager.getInstance();
 		Connection connection = null;
 		CallableStatement cs = null;
 		
 		try {
-			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
 			connection.setAutoCommit(false);
@@ -34,25 +30,18 @@ public class StgCalipsoSchedaServizioDAO {
 
 			cs = connection.prepareCall(sql);
 			cs.execute();
+			cs.close();
 			
 			connection.commit();
 
-		} catch (Exception e) {
+		} catch (SQLException | DAOException e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-			throw new DAOException(e);
 		} finally {
-			if (cs != null) {
-				cs.close();
-			}
-			if (cm != null) 
-				cm.closeConnection(connection);
+			cm.closeConnection(connection);
 		}
-
 	}
 	
-	public static void fillDmAlmStagingFromExcel(List<DmalmStgCalipsoSchedaServizio> listExcelCalipso)
-			throws DAOException {
+	public static void fillDmAlmStagingFromExcel(List<DmalmStgCalipsoSchedaServizio> listExcelCalipso) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -68,8 +57,8 @@ public class StgCalipsoSchedaServizioDAO {
 			for (DmalmStgCalipsoSchedaServizio excelCalipso : listExcelCalipso) {
 				String sql = QueryUtils.getCallProcedure("CALIPSO.FILL_DM_ALM_STAGING", 1);
 				Object [] objRichSupp = excelCalipso.getObject(excelCalipso);
-			    	Struct structObj = connection.createStruct("DM_ALMSTGCALIPSOSCHEDASERVTYPE", objRichSupp);
-			    	ocs = (OracleCallableStatement)connection.prepareCall(sql);
+			    Struct structObj = connection.createStruct("DM_ALMSTGCALIPSOSCHEDASERVTYPE", objRichSupp);
+			    ocs = (OracleCallableStatement)connection.prepareCall(sql);
 				ocs.setObject(1, structObj);
 				ocs.execute();
 				connection.commit();
@@ -78,11 +67,10 @@ public class StgCalipsoSchedaServizioDAO {
 			
 			logger.debug("STOP StgCalipsoSchedaServizioDAO.fillDmAlmStagingFromExcel");
 		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
+			logger.error(e.getMessage(), e);
+			throw new DAOException();
 		} finally {
-			if (cm != null)
-				cm.closeConnection(connection);
+			cm.closeConnection(connection);
 		}
 	}
 }
