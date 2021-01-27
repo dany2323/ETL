@@ -55,10 +55,9 @@ public class SireCurrentSubterraUriMapDAO {
 			for(Tuple row:subterra) {
 
 				insert.columns(stgSubterra.cPk,
-								stgSubterra.cId, stgSubterra.cRepo)
+								stgSubterra.cId)
 						.values(row.get(fonteSireSubterraUriMap.cPk),
-								row.get(fonteSireSubterraUriMap.cId),
-								"SIRE")
+								row.get(fonteSireSubterraUriMap.cId))
 						.addBatch();
 
 				nRigheInserite++;
@@ -107,8 +106,8 @@ public class SireCurrentSubterraUriMapDAO {
 
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QSireDmalmCurrentSubterraUriMap stgSubterra = QSireDmalmCurrentSubterraUriMap.currentSubterraUriMap;
-
-			new SQLDeleteClause(connection, dialect, stgSubterra).where(stgSubterra.cRepo.eq(DmAlmConstants.REPOSITORY_SIRE)).execute();
+	
+			new SQLDeleteClause(connection, dialect, stgSubterra).execute();
 			logger.debug("STOP Eliminazione dati SUBTERRA_URI SIRE");
 
 		} catch (Exception e) {

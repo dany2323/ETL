@@ -59,11 +59,9 @@ public class SissCurrentSubterraUriMapDAO {
 
 
 				insert.columns(stgSubterra.cPk,
-							   stgSubterra.cId,
-							   stgSubterra.cRepo)
+							   stgSubterra.cId)
 						.values(row.get(fontesissSubterraUriMap.cPk),
-								row.get(fontesissSubterraUriMap.cId),
-								"SISS")
+								row.get(fontesissSubterraUriMap.cId))
 						.addBatch();
 
 				nRigheInserite++;
@@ -112,9 +110,9 @@ public class SissCurrentSubterraUriMapDAO {
 			connection = cm.getConnectionOracle();
 
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
-			QSireDmalmCurrentSubterraUriMap stgSubterra = QSireDmalmCurrentSubterraUriMap.currentSubterraUriMap;
+			QSissDmalmCurrentSubterraUriMap stgSubterra = QSissDmalmCurrentSubterraUriMap.currentSubterraUriMap;
 
-			new SQLDeleteClause(connection, dialect, stgSubterra).where(stgSubterra.cRepo.eq(DmAlmConstants.REPOSITORY_SISS)).execute();
+			new SQLDeleteClause(connection, dialect, stgSubterra).where().execute();
 			logger.debug("STOP Eliminazione dati SUBTERRA_URI SISS");
 
 		} catch (Exception e) {
