@@ -31,7 +31,7 @@ public class QDmAlmProjectUnmarked extends com.mysema.query.sql.RelationalPathBa
     public final DateTimePath<Timestamp> dataCaricamento = createDateTime("DATA_CARICAMENTO", Timestamp.class);
 
     public QDmAlmProjectUnmarked(String variable) {
-        super(lispa.schedulers.bean.annullamenti.project.DmAlmProjectUnmarked.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "DMALM_PROJECT_UNMARKED");
+        super(lispa.schedulers.bean.annullamenti.project.DmAlmProjectUnmarked.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "DMALM_PROJECT_UNMARKED");
     }
 
     public QDmAlmProjectUnmarked(Path<? extends lispa.schedulers.bean.annullamenti.project.DmAlmProjectUnmarked> path) {

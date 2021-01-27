@@ -46,7 +46,7 @@ public class SvecchiamentoFacade {
 			logger.info("START SvecchiamentoFacade.execute()");
 			String[] nextLine;
 			String[] rowToDB = null;
-			List<String[]> s = new ArrayList<String[]>();
+			List<String[]> s = new ArrayList<>();
 			int rigaCsv = 1;
 			String riempitivo = " ;";
 			CSVReader reader = null;
@@ -202,7 +202,7 @@ public class SvecchiamentoFacade {
 		try {
 			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
 					.getDataEsecuzione();
-			Timestamp dt1990 = DateUtils.setDtInizioValidita1900();
+			Timestamp dt1990 = DateUtils.getDtInizioValidita1900();
 			ConnectionManager cm = ConnectionManager.getInstance();
 			Connection connection = cm.getConnectionOracle();
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect

@@ -139,7 +139,7 @@ public class DateUtils {
 				format.setLenient(false);
 				dataFineValidita = format.parse(data);
 			} catch (ParseException exception) {
-				exception.printStackTrace();
+
 			}
 		}
 
@@ -355,7 +355,7 @@ public class DateUtils {
 		return dataCaricamento;
 	}
 
-	public static Timestamp setDtFineValidita9999() throws Exception {
+	public static Timestamp getDtFineValidita9999() throws Exception {
 
 		Date today_dt = DateUtils.stringToDate("9999-12-31 00:00:00",
 				"yyyy-MM-dd 00:00:00");
@@ -365,7 +365,7 @@ public class DateUtils {
 		return dataFineValidita;
 	}
 
-	public static Timestamp setDtInizioValidita1900() throws Exception {
+	public static Timestamp getDtInizioValidita1900() throws Exception {
 
 		Date today_dt = DateUtils.stringToDate("1900-01-01 00:00:00",
 				"yyyy-MM-dd 00:00:00");

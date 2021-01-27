@@ -235,11 +235,11 @@ public class ElettraUnitaOrganizzativeFacade {
 			List<DmalmElUnitaOrganizzative> unitaOrganizzativeList,
 			List<DmalmElUnitaOrganizzative> insertedUnitaOrganizzativeList, Timestamp dataEsecuzione) throws Exception {
 
-		String unitaOrganizzativeFlat = "";
-		for (DmalmElUnitaOrganizzative insertedUnitaOrganizzativa : insertedUnitaOrganizzativeList) {
-			unitaOrganizzativeFlat+=insertedUnitaOrganizzativa.getCodiceArea() + ";";
-		}
-		
+//		String unitaOrganizzativeFlat = "";
+//		for (DmalmElUnitaOrganizzative insertedUnitaOrganizzativa : insertedUnitaOrganizzativeList) {
+//			unitaOrganizzativeFlat+=insertedUnitaOrganizzativa.getCodiceArea() + ";";
+//		}
+//		
 //		System.out.println("Flat: " + unitaOrganizzativeFlat);
 		
 		idUnitaOrganizzativaFlat++;
@@ -267,21 +267,21 @@ public class ElettraUnitaOrganizzativeFacade {
 		return idUnitaOrganizzativaFlat;
 	}
 	
-	private static boolean figlioPresente(
-			List<DmalmElUnitaOrganizzative> insertedUnitaOrganizzativeList,
-			DmalmElUnitaOrganizzative unitaOrganizzativa) throws Exception {
-		boolean presente = false;
-
-		for (DmalmElUnitaOrganizzative insertedUnitaOrganizzativa : insertedUnitaOrganizzativeList) {
-			if (unitaOrganizzativa.getUnitaOrganizzativaPk() ==	insertedUnitaOrganizzativa.getUnitaOrganizzativaPk()) {
-
-				presente = true;
-				break;
-			}
-		}
-
-		return presente;
-	}
+//	private static boolean figlioPresente(
+//			List<DmalmElUnitaOrganizzative> insertedUnitaOrganizzativeList,
+//			DmalmElUnitaOrganizzative unitaOrganizzativa) throws Exception {
+//		boolean presente = false;
+//
+//		for (DmalmElUnitaOrganizzative insertedUnitaOrganizzativa : insertedUnitaOrganizzativeList) {
+//			if (unitaOrganizzativa.getUnitaOrganizzativaPk() ==	insertedUnitaOrganizzativa.getUnitaOrganizzativaPk()) {
+//
+//				presente = true;
+//				break;
+//			}
+//		}
+//
+//		return presente;
+//	}
 	
 	private static void inserisciLista(Integer idUnitaOrganizzativaFlat,
 			List<DmalmElUnitaOrganizzative> insertedUnitaOrganizzativeList,

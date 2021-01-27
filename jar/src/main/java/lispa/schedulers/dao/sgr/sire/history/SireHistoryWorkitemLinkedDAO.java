@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -38,29 +39,22 @@ public class SireHistoryWorkitemLinkedDAO
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
 		List<Tuple>       linkedWorkitems = null;
 		
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSIREHistory();
 			linkedWorkitems = new ArrayList<Tuple>();
 			
 			connOracle.setAutoCommit(false);
 			
-			SQLTemplates dialect = new HSQLDBTemplates()
+			SQLTemplates dialect = new OracleTemplates()
 			{ {
 			    setPrintSchema(true);
 			}};
 			
-				
-			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
-				connH2 = cm.getConnectionSIREHistory();
-			}
 			
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+			SQLQuery query 		 = new SQLQuery(connOracle, dialect); 
 			
 			linkedWorkitems =  query.from (fonteLinkedWorkitems)
                 					.list(
@@ -119,7 +113,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 		
@@ -162,7 +155,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 	
 			SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 			QSireHistoryWorkitemLinked stgLinkedWorkitems = QSireHistoryWorkitemLinked.sireHistoryWorkitemLinked;
-//			Timestamp ts = DateUtils.stringToTimestamp("2014-05-08 15:54:00", "yyyy-MM-dd HH:mm:ss");
 			new SQLDeleteClause(connection, dialect, stgLinkedWorkitems).execute();
 			connection.commit();
 		}

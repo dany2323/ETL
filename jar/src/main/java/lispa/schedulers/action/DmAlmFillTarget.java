@@ -2,15 +2,13 @@ package lispa.schedulers.action;
 
 import static lispa.schedulers.constant.DmAlmConstants.SCHEDULAZIONE_BO_ENABLE;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.DMALM_TARGET_LOG_DELETE;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
@@ -38,6 +36,7 @@ import lispa.schedulers.facade.sfera.target.ProgettoSferaFacade;
 import lispa.schedulers.facade.target.AreaTematicaSgrCmFacade;
 import lispa.schedulers.facade.target.AttachmentFacade;
 import lispa.schedulers.facade.target.CheckLinkPersonaleUnitaOrganizzativaFacade;
+import lispa.schedulers.facade.target.ChecklistWorkitemFacade;
 import lispa.schedulers.facade.target.HyperlinkFacade;
 import lispa.schedulers.facade.target.LinkedWorkitemsFacade;
 import lispa.schedulers.facade.target.PersonaleEdmaFacade;
@@ -52,6 +51,7 @@ import lispa.schedulers.facade.target.WorkitemUserAssigneeFacade;
 import lispa.schedulers.facade.target.fatti.AnomaliaAssistenzaFacade;
 import lispa.schedulers.facade.target.fatti.AnomaliaProdottoFacade;
 import lispa.schedulers.facade.target.fatti.BuildFacade;
+import lispa.schedulers.facade.target.fatti.ChecklistFacade;
 import lispa.schedulers.facade.target.fatti.ClassificatoreFacade;
 import lispa.schedulers.facade.target.fatti.DifettoProdottoFacade;
 import lispa.schedulers.facade.target.fatti.DocumentoFacade;
@@ -66,7 +66,6 @@ import lispa.schedulers.facade.target.fatti.ProgrammaFacade;
 import lispa.schedulers.facade.target.fatti.ReleaseDiProgettoFacade;
 import lispa.schedulers.facade.target.fatti.ReleaseItFacade;
 import lispa.schedulers.facade.target.fatti.ReleaseServiziFacade;
-import lispa.schedulers.facade.target.fatti.RfcFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaGestioneFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaManutenzioneFacade;
 import lispa.schedulers.facade.target.fatti.RichiestaSupportoFacade;
@@ -126,7 +125,7 @@ public class DmAlmFillTarget {
 				// preparo il target al Recover in caso di errori bloccanti:
 				// svuoto le tabelle di backup, effettuo il backup del target
 				// allo stato corrente (ultimo stato consistente)
-				flag = RecoverManager.getInstance().prepareTargetForRecover(dataEsecuzione);
+				flag = RecoverManager.getInstance().prepareTargetForRecover(Arrays.asList(DmAlmConstants.FONTE_SFERA, DmAlmConstants.FONTE_SGR_ELETTRA, DmAlmConstants.FONTE_CALIPSO), dataEsecuzione);
 			}
 			
 			if (flag) {
@@ -216,7 +215,7 @@ public class DmAlmFillTarget {
 					
 					// Aggiunto checkpoint di recovery in data 17/07/17
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -235,7 +234,7 @@ public class DmAlmFillTarget {
 					
 					// Aggiunto checkpoint di recovery in data 19/04/17
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -370,7 +369,7 @@ public class DmAlmFillTarget {
 					}
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -473,8 +472,15 @@ public class DmAlmFillTarget {
 //					}
 //					// FINE DM_ALM-504
 	
+					logger.info("START Checklist.execute " + new Date());
+					if (!alreadyExecuted(DmAlmConstants.TARGET_CHECKLIST)) {
+						ChecklistFacade.execute(dataEsecuzione);
+					} else {
+						logger.info("Entità già elaborata per la data di esecuzione ");
+					}
+
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -511,6 +517,10 @@ public class DmAlmFillTarget {
 					TotalDao.refreshTable();
 					// ATTRIBUTI COMPLESSI DEI FATTI
 					
+					// DM_ALM-523
+					logger.info("START ChecklistWorkitemFacade.execute " + new Date());
+					ChecklistWorkitemFacade.execute(dataEsecuzione);
+					
 					
 					logger.info("START LinkedWorkitemsFacade.execute " + new Date());
 					if (!alreadyExecuted(DmAlmConstants.TARGET_LINKEDWORKITEMS)) {
@@ -534,7 +544,7 @@ public class DmAlmFillTarget {
 					}
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -550,63 +560,8 @@ public class DmAlmFillTarget {
 						logger.error(e.getMessage(), e);
 					}
 	
-					// ORESTE
-					/*
-					logger.info("START ClassificatoriFacade.execute " + new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_CLASSIFICATORI)) {
-						ClassificatoriFacade.execute(dataEsecuzione); //Modifica all'interno di un target db Oreste
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
-					
-					logger.info("START ProdottoFacade.execute " + new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_PRODOTTO)) {
-						ProdottoFacade.execute(dataEsecuzione); //Modifica all'interno di un target db Oreste
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
-					
-					logger.info("START SottosistemaFacade.execute " + new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_SOTTOSISTEMA)) {
-						SottosistemaFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
-					
-					logger.info("START ModuloFacade.execute " + new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_MODULO)) {
-						ModuloFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
-					
-					logger.info("START FunzionalitaFacade.execute " + new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_FUNZIONALITA)) {
-						FunzionalitaFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
-					
-					logger.info("START AmbienteTecnologicoFacade.execute "
-							+ new Date());
-					if (!alreadyExecuted(DmAlmConstants.TARGET_ORESTE_AMBIENTETECNOLOGICO)) {
-						AmbienteTecnologicoFacade.execute(dataEsecuzione);
-					} else {
-						logger.info("Entità già elaborata per la data di esecuzione ");
-					}
-					*/
-					// logger.info("START RelClassificatoriOresteFacade.execute "
-					// + new Date());
-					// if
-					// (!alreadyExecuted(DmAlmConstants.TARGET_REL_CLASSIFICATORI))
-					// {
-					// RelClassificatoriOresteFacade.execute(dataEsecuzione);
-					// } else {
-					// logger.info("Entità già elaborata per la data di esecuzione ");
-					// }
-	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -633,13 +588,8 @@ public class DmAlmFillTarget {
 						logger.info("Entità già elaborata per la data di esecuzione ");
 					}
 	
-					//Se eseguito altrimenti si perde la storia delle modifiche, update di tutto e toglie gli zeri alle FK
-	//				logger.info("START updateFKUOonProjects() " + new Date());
-	//				// UPDATE STORICO DEI PROJECT CON UO A 0
-	//				ProjectSgrCmDAO.updateFKUOonProjects();
-	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -654,7 +604,7 @@ public class DmAlmFillTarget {
 					CheckLinkPersonaleUnitaOrganizzativaFacade.execute(dataEsecuzione);
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -682,34 +632,19 @@ public class DmAlmFillTarget {
 				// SFERA
 				if (ExecutionManager.getInstance().isExecutionSfera()) {
 					AsmFacade.execute(dataEsecuzione);
-	
-					// step 1 crea legami Asm/Prodotto
-					// Prodotto Oreste
-					//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
-					// ProdottiArchitetture Elettra
-					//CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, false);
 					
-					// step 2 crea fk Asm/UO (Edma)
+					// step 1 crea fk Asm/UO (Edma)
 					// Struttura Organizzativa Edma
-					CheckLinkAsmSferaStrutturaOrganizzativaFacade
-							.execute(dataEsecuzione);
+					CheckLinkAsmSferaStrutturaOrganizzativaFacade.execute(dataEsecuzione);
 	
-					// step 3 crea i nuovi legami per eventuali asm storicizzate da
-					// CheckLinkAsmSferaStrutturaOrganizzativaFacade
-					// Prodotto Oreste
-					//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, false);
-					// ProdottiArchitetture Elettra
+					// step 2 crea i nuovi legami per eventuali asm storicizzate da
 					CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, false);
 	
-					// step 4 crea fk Asm/UO (Elettra)
+					// step 3 crea fk Asm/UO (Elettra)
 					// Unità Organizzativa Elettra
-					CheckLinkAsmSferaUnitaOrganizzativaFacade
-							.execute(dataEsecuzione);
+					CheckLinkAsmSferaUnitaOrganizzativaFacade.execute(dataEsecuzione);
 	
-					// step 5 crea i nuovi legami per eventuali asm storicizzate da
-					// CheckLinkAsmSferaUnitaOrganizzativaFacade
-					// Prodotto Oreste
-					//CheckLinkAsmSferaProdottoFacade.execute(dataEsecuzione, true);
+					// step 4 crea i nuovi legami per eventuali asm storicizzate da
 					// ProdottiArchitetture Elettra
 					CheckLinkAsmSferaProdottiArchFacade.execute(dataEsecuzione, true);
 					
@@ -718,7 +653,7 @@ public class DmAlmFillTarget {
 					MisuraFacade.execute(dataEsecuzione);
 	
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SFERA + ","+ DmAlmConstants.FONTE_SGR_ELETTRA));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -739,7 +674,7 @@ public class DmAlmFillTarget {
 					}
 					
 					if (ErrorManager.getInstance().hasError()) {
-						RecoverManager.getInstance().startRecoverTargetByProcedure();
+						RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_SFERA + ","+ DmAlmConstants.FONTE_SGR_ELETTRA, DmAlmConstants.FONTE_CALIPSO));
 						RecoverManager.getInstance().startRecoverStaging();
 	
 						// MPS
@@ -763,7 +698,7 @@ public class DmAlmFillTarget {
 	
 							// in caso di errore viene chiamato soltanto il recover
 							// di MPS
-							RecoverManager.getInstance().startRecoverTrgMps();
+							RecoverManager.getInstance().startRecoverTargetByProcedure(Arrays.asList(DmAlmConstants.FONTE_MPS));
 							RecoverManager.getInstance().startRecoverStgMps();
 							ErrorManager.getInstance().resetError();
 						}
@@ -779,11 +714,11 @@ public class DmAlmFillTarget {
 			} else {
 				logger.error(DmAlmConstants.ERROR_CARICAMENTO_BACKUP);
 				if (ExecutionManager.getInstance().isExecutionSfera()
-						|| ExecutionManager.getInstance()
-								.isExecutionElettraSgrcm()) {
+						|| ExecutionManager.getInstance().isExecutionElettraSgrcm()
+						|| ExecutionManager.getInstance().isExecutionCalipso()) {
 					RecoverManager.getInstance().startRecoverStaging();
 				}
-
+				
 				// MPS
 				if (ExecutionManager.getInstance().isExecutionMps()) {
 					RecoverManager.getInstance().startRecoverStgMps();

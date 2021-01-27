@@ -67,13 +67,6 @@ public class SissHistoryWorkitemDAO {
 	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance()
 			.getDataEsecuzione();
 
-	private static String url = "";
-	private static String name = "";
-	private static String psw = "";
-
-	private static SVNRepository repository;
-	private static ISVNAuthenticationManager authManager;
-
 	public static void delete(Timestamp dataEsecuzioneDeleted) throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -629,35 +622,9 @@ public class SissHistoryWorkitemDAO {
 
 			logger.debug("STOP TYPE: SISS " + type.toString() + "  SIZE: "
 					+ historyworkitems.size());
-
-			/*
-			 * Per ogni Workitem inserito nello staging in questa esecuzione
-			 * (quindi da workitem_minRevision a polarion_maxRevision), cercare
-			 * la relativa descrizione presente nel file XML presente al path
-			 * indicato nel campo C_LOCATION.
-			 */
-			if (DmAlmConfigReader
-					.getInstance()
-					.getProperty(
-							DmAlmConfigReaderProperties.UPDATE_DESCRIZIONE_ENABLER)
-					.equals(DmAlmConstants.ENABLER)) {
-				updateDescriptions(minRevisionByType.get(type), maxRevision,
-						type.toString());
-			}
-			ErrorManager.getInstance().resetDeadlock();
-		} catch (PropertiesReaderException e) {
+		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
-		} catch (Exception e) {
-			Throwable cause = e;
-			while (cause.getCause() != null)
-				cause = cause.getCause();
-			String message = cause.getMessage();
-			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK)) {
-				ErrorManager.getInstance().exceptionDeadlock(false, e);
-			} else {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-			}
 		} finally {
 			if (cm != null) {
 				cm.closeConnection(OracleConnection);
@@ -673,143 +640,6 @@ public class SissHistoryWorkitemDAO {
 	 * 
 	 * @throws DAOException
 	 */
-	public static void updateDescriptions(long minRevision, long maxRevision,
-			String type) {
-
-		ConnectionManager cm = null;
-		Connection oracleConnection = null;
-
-		try {
-
-			url = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SISS_SVN_URL);
-			name = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
-			psw = DmAlmConfigReader.getInstance().getProperty(
-					DmAlmConfigReaderProperties.SISS_SVN_PSW);
-
-			repository = SVNRepositoryFactory.create(SVNURL
-					.parseURIEncoded(url));
-			authManager = SVNWCUtil.createDefaultAuthenticationManager(name,
-					psw);
-			repository.setAuthenticationManager(authManager);
-
-			cm = ConnectionManager.getInstance();
-
-			oracleConnection = cm.getConnectionOracle();
-
-			SQLTemplates dialect = new HSQLDBTemplates();
-
-			SQLQuery query = new SQLQuery(oracleConnection, dialect);
-
-			List<Tuple> locations = query.distinct().from(stgWorkItems)
-					.where(stgWorkItems.cRev.gt(minRevision))
-					.where(stgWorkItems.cRev.loe(maxRevision))
-					.where(stgWorkItems.cType.eq(type)).list(
-
-					stgWorkItems.cLocation, stgWorkItems.cRev
-
-					);
-
-			for (Tuple row : locations) {
-
-				getDescription(row.get(stgWorkItems.cLocation),
-						row.get(stgWorkItems.cRev));
-
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			try {
-				if (cm != null) {
-					cm.closeConnection(oracleConnection);
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
-
-	}
-
-	private static void getDescription(String location, long revision)
-			throws DAOException {
-
-		ConnectionManager cm = null;
-		Connection oracleConnection = null;
-
-		try {
-
-			cm = ConnectionManager.getInstance();
-
-			oracleConnection = cm.getConnectionOracle();
-			SQLTemplates dialect = new HSQLDBTemplates();
-
-			// Il path al file XML e' la stringa dopo "default:/"
-			String filePath = location.replaceAll("default:/", "");
-
-			SVNNodeKind nodeKind = repository.checkPath(filePath, revision);
-			SVNProperties fileProperties = new SVNProperties();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-			repository.getFile(filePath, -1, fileProperties, baos);
-			String mimeType = fileProperties
-					.getStringValue(SVNProperty.MIME_TYPE);
-
-			boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-			String xmlContent = "";
-			if (isTextType) {
-				xmlContent = baos.toString();
-			} else {
-				throw new Exception("");
-			}
-
-			if (nodeKind == SVNNodeKind.FILE) {
-
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-						.newInstance();
-				Document doc = dbFactory.newDocumentBuilder().parse(
-						new ByteArrayInputStream(xmlContent.getBytes("UTF-8")));
-				doc.getDocumentElement().normalize();
-
-				// Prendo tutti i tag <field>
-				NodeList nList = doc.getElementsByTagName("field");
-
-				for (int temp = 0; temp < nList.getLength(); temp++) {
-
-					Node nNode = nList.item(temp);
-
-					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-						Element eElement = (Element) nNode;
-
-						// <field id='description'> e' cio' che stiamo cercando
-						if (eElement.getAttribute("id").equals("description")) {
-							String description = eElement.getTextContent();
-							// da utilizzare solo se si vogliono eliminare i tag
-							// HTML
-							// description = description.replaceAll("\\<.*?\\>",
-							// "");
-							new SQLUpdateClause(oracleConnection, dialect,
-									stgWorkItems)
-									.set(stgWorkItems.cDescription, description)
-									.where(stgWorkItems.cLocation.eq(location))
-									.execute();
-						}
-
-					}
-
-				}
-
-			}
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(oracleConnection);
-			}
-		}
-	}
 
 	public static void recoverSissHistoryWorkitem() throws Exception {
 		ConnectionManager cm = null;

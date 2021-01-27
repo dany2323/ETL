@@ -253,7 +253,7 @@ public class AmbienteTecnologicoDAO {
 									.list(dmalmAmbiente.dtInserimentoRecord
 											.max())))
 					.set(dmalmAmbiente.dtFineValidita,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -403,7 +403,7 @@ public class AmbienteTecnologicoDAO {
 					.values(bean.getArchitettura(),
 							bean.getDmalmAmbienteTecnologicoPk(),
 							bean.getDsAmbienteTecnologico(),
-							DateUtils.setDtInizioValidita1900(),
+							DateUtils.getDtInizioValidita1900(),
 							bean.getDtFineValidita(),
 							bean.getIdAmbienteTecnologico(),
 							bean.getDmalmProdottoFk01(),
@@ -467,7 +467,7 @@ public class AmbienteTecnologicoDAO {
 							bean.getDmalmAmbienteTecnologicoPk(),
 							bean.getDsAmbienteTecnologico(),
 							DateUtils.formatDataEsecuzione(dataEsecuzione),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtFineValidita9999(),
 							bean.getIdAmbienteTecnologico(),
 							bean.getDmalmProdottoFk01(),
 							bean.getDmalmModuloFk02(),

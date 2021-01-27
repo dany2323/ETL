@@ -54,9 +54,9 @@ public class DmAlmProjectProdottiArchitettureDAO {
 					.on(projectProdotto.dmalmProdottoPk
 							.eq(dmalmProdottiArchitetture.prodottoPk))
 					.where(dmalmProdottiArchitetture.dataFineValidita
-							.ne(DateUtils.setDtFineValidita9999()))
+							.ne(DateUtils.getDtFineValidita9999()))
 					.where(projectProdotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.list(projectProdotto.dmalmProjectPk,
 							projectProdotto.dmalmProdottoPk,
 							projectProdotto.dtInizioValidita,
@@ -93,9 +93,9 @@ public class DmAlmProjectProdottiArchitettureDAO {
 					.on(projectProdotto.dmalmProjectPk
 							.eq(dmalmProject.dmalmProjectPrimaryKey))
 					.where(dmalmProject.dtFineValidita.ne(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(projectProdotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.list(projectProdotto.dmalmProjectPk,
 							projectProdotto.dmalmProdottoPk,
 							projectProdotto.dtInizioValidita,
@@ -166,9 +166,9 @@ public class DmAlmProjectProdottiArchitettureDAO {
 					.on(projectProdotto.dmalmProjectPk.eq(
 							dmalmProject.dmalmProjectPrimaryKey).and(
 							projectProdotto.dtFineValidita.eq(DateUtils
-									.setDtFineValidita9999())))
+									.getDtFineValidita9999())))
 					.where(dmalmProject.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(dmalmProject.cTemplate.eq("SVILUPPO"))
 					//.where(dmalmProject.siglaProject.isNotNull())
 					.where(projectProdotto.dmalmProdottoPk.isNull().or(
@@ -210,7 +210,7 @@ public class DmAlmProjectProdottiArchitettureDAO {
 							projectProdotto.dtFineValidita)
 					.values(relazione.getDmalmProjectPk(),
 							relazione.getDmalmProdottoPk(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 		} catch (Exception e) {

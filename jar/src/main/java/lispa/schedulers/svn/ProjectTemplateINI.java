@@ -1,145 +1,93 @@
 package lispa.schedulers.svn;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Properties;
-
-import lispa.schedulers.constant.DmAlmConstants;
-import lispa.schedulers.exception.PropertiesReaderException;
-import lispa.schedulers.manager.DmAlmConfigReader;
-import lispa.schedulers.manager.DmAlmConfigReaderProperties;
-
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import lispa.schedulers.manager.ConnectionManager;
+import lispa.schedulers.queryimplementation.fonte.sgr.xml.DmAlmTemplateProject;
 import org.apache.log4j.Logger;
-import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.SVNProperties;
-import org.tmatesoft.svn.core.SVNProperty;
-import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
-import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
-import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
-import org.tmatesoft.svn.core.io.SVNRepository;
-import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.SQLTemplates;
 
 public class ProjectTemplateINI {
 
 	private static Logger logger = Logger.getLogger(ProjectTemplateINI.class);
 
-	static String url = "";
-	static String name = "";
-	static String psw = "";
+	public static String getTemplateIniFile(String projectLocation,
+			long revision, String repository) throws Exception {
 
-	static SVNRepository repository;
-	static ISVNAuthenticationManager authManager;
-
-	public ProjectTemplateINI(String myrepository) {
+		DmAlmTemplateProject dmAlmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		Connection connection = null;
+		ConnectionManager cm = null;
+		String templateId = "";
+		List<String> listTemplateProject = new ArrayList<String>();
 
 		try {
-			if (myrepository.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SIRE)) {
-				url = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_URL);
-				name = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
-				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SIRE_SVN_PSW);
-			} else if (myrepository
-					.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SISS)) {
-				url = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_URL);
-				name = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
-				psw = DmAlmConfigReader.getInstance().getProperty(
-						DmAlmConfigReaderProperties.SISS_SVN_PSW);
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			SQLQuery query = new SQLQuery(connection, dialect);
+
+			listTemplateProject = query
+				.from(dmAlmTemplateProject)
+				.where(dmAlmTemplateProject.pathLocation.equalsIgnoreCase(projectLocation))
+				.where(dmAlmTemplateProject.rev.eq(revision))
+				.where(dmAlmTemplateProject.idRepository.equalsIgnoreCase(repository))
+				.list(dmAlmTemplateProject.templateId);
+			if (listTemplateProject.size() > 0) {
+				if (listTemplateProject.get(0) != null) {
+					templateId = listTemplateProject.get(0);
+				}
 			}
-
-			repository = SVNRepositoryFactory.create(SVNURL
-					.parseURIEncoded(url));
-			authManager = SVNWCUtil.createDefaultAuthenticationManager(name,
-					psw);
-
-			repository.setAuthenticationManager(authManager);
-
-		} catch (PropertiesReaderException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
-		} catch (SVNException e) {
-			logger.error(e.getMessage(), e);
-
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
 		}
-	}
-
-	public static String getTemplateIniFile(String projectLocation,
-			long revision, String myRepository) throws SVNException, Exception {
-
-		String filePath = "";
-		String iniContent = "";
-
-		DAVRepositoryFactory.setup();
-
-		SVNProperties fileProperties = new SVNProperties();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-		new ProjectTemplateINI(myRepository);
-
-		repository.setAuthenticationManager(authManager);
-		SVNURL root = repository.getRepositoryRoot(true);
-		String absolutepath = root + projectLocation;
-		filePath = SVNURLUtil.getRelativeURL(root,
-				SVNURL.parseURIEncoded(absolutepath), false);
-
-		repository.getFile(filePath, revision, fileProperties, baos);
-
-		String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
-
-		boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-
-		if (isTextType) {
-			iniContent = baos.toString();
-		} else {
-			throw new Exception(
-					"Impossibile trovare una location per il file INI "
-							+ projectLocation);
-		}
-
-		return parsePropertiesString(iniContent);
+		return templateId;
 	}
 
 	public static String getLastRevisionTemplateIniFile(String projectLocation,
-			String myRepository) throws SVNException, Exception {
+			String repository) throws Exception {
 
-		String filePath = "";
-		String iniContent = "";
+		DmAlmTemplateProject dmAlmTemplateProject = DmAlmTemplateProject.dmAlmTemplateProject;
+		SQLTemplates dialect = new HSQLDBTemplates();
+		Connection connection = null;
+		ConnectionManager cm = null;
+		String templateId = "";
+		List<String> listTemplateProject = new ArrayList<String>();
 
-		DAVRepositoryFactory.setup();
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
 
-		SVNProperties fileProperties = new SVNProperties();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			SQLQuery query = new SQLQuery(connection, dialect);
 
-		new ProjectTemplateINI(myRepository);
+			listTemplateProject = query
+				.from(dmAlmTemplateProject)
+				.where(dmAlmTemplateProject.pathLocation.equalsIgnoreCase(projectLocation))
+				.where(dmAlmTemplateProject.rev.eq(Long.valueOf(-1)))
+				.where(dmAlmTemplateProject.idRepository.equalsIgnoreCase(repository))
+				.list(dmAlmTemplateProject.templateId);
+			if (listTemplateProject.size() > 0) {
+				if (listTemplateProject.get(0) != null) {
+					templateId = listTemplateProject.get(0);
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 
-		repository.setAuthenticationManager(authManager);
-		SVNURL root = repository.getRepositoryRoot(true);
-		String absolutepath = root + projectLocation;
-		filePath = SVNURLUtil.getRelativeURL(root,
-				SVNURL.parseURIEncoded(absolutepath), false);
-
-		repository.getFile(filePath, repository.getLatestRevision(),
-				fileProperties, baos);
-
-		String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
-
-		boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-
-		if (isTextType) {
-			iniContent = baos.toString();
-		} else {
-			throw new Exception(
-					"Impossibile trovare una location per il file INI "
-							+ projectLocation);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
 		}
-
-		return parsePropertiesString(iniContent);
+		return templateId;
 	}
 
 	public static String getProjectSVNPath(String clocation) {
@@ -154,13 +102,5 @@ public class ProjectTemplateINI {
 		} else {
 			return null;
 		}
-	}
-
-	public static String parsePropertiesString(String s) throws IOException {
-
-		final Properties p = new Properties();
-		p.load(new StringReader(s));
-
-		return p.getProperty("template-id").toUpperCase();
 	}
 }

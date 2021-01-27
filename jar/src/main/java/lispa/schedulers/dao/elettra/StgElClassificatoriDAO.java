@@ -62,7 +62,6 @@ public class StgElClassificatoriDAO {
 	public static void fillStaging() throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		Connection connectionFonteElettra = null;
 		long righeInserite = 0;
 
 		try {
@@ -70,14 +69,12 @@ public class StgElClassificatoriDAO {
 			connection = cm.getConnectionOracle();
 			connection.setAutoCommit(false);
 
-			connectionFonteElettra = cm.getConnectionOracleFonteElettra();
-
 			QElettraClassificatori qElettraClassificatori = QElettraClassificatori.elettraClassificatori;
 			QStgElClassificatori qStgElClassificatori = QStgElClassificatori.stgElClassificatori;
 
 			SQLTemplates dialect = new HSQLDBTemplates();
 
-			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
+			SQLQuery query = new SQLQuery(connection, dialect);
 
 			List<Tuple> classificatori = query.from(qElettraClassificatori)
 					.list(qElettraClassificatori.all());
@@ -110,8 +107,6 @@ public class StgElClassificatoriDAO {
 		} finally {
 			if (cm != null)
 				cm.closeConnection(connection);
-			if (cm != null)
-				cm.closeConnection(connectionFonteElettra);
 		}
 	}
 

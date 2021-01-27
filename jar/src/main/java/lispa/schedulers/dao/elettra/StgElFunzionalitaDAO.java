@@ -59,7 +59,6 @@ public class StgElFunzionalitaDAO {
 	public static void fillStaging() throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		Connection connectionFonteElettra = null;
 		long righeInserite = 0;
 
 		try {
@@ -67,14 +66,12 @@ public class StgElFunzionalitaDAO {
 			connection = cm.getConnectionOracle();
 			connection.setAutoCommit(false);
 
-			connectionFonteElettra = cm.getConnectionOracleFonteElettra();
-
 			QElettraFunzionalita qElettraFunzionalita = QElettraFunzionalita.elettraFunzionalita;
 			QStgElFunzionalita qStgElFunzionalita = QStgElFunzionalita.stgElFunzionalita;
 
 			SQLTemplates dialect = new HSQLDBTemplates();
 
-			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
+			SQLQuery query = new SQLQuery(connection, dialect);
 
 			List<Tuple> moduli = query.from(qElettraFunzionalita).list(
 					qElettraFunzionalita.all());
@@ -133,8 +130,6 @@ public class StgElFunzionalitaDAO {
 		} finally {
 			if (cm != null)
 				cm.closeConnection(connection);
-			if (cm != null)
-				cm.closeConnection(connectionFonteElettra);
 		}
 	}
 

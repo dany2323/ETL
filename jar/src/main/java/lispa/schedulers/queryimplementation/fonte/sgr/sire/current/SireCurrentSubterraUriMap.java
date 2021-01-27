@@ -23,6 +23,8 @@ public class SireCurrentSubterraUriMap extends com.mysema.query.sql.RelationalPa
     public static final SireCurrentSubterraUriMap urimap = new SireCurrentSubterraUriMap("DM_ALM_C_SIRE_SUBTERRA_URI_MAP");
 
     public final StringPath cPk = createString("C_PK");
+    
+    public final StringPath cRepository = createString("C_REPOSITORY");
 
     public final NumberPath<Long> cId = createNumber("C_ID", Long.class);
 

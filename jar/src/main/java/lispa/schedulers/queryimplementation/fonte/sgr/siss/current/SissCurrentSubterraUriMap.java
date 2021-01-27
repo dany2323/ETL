@@ -24,6 +24,8 @@ public class SissCurrentSubterraUriMap extends com.mysema.query.sql.RelationalPa
 
     public final StringPath cPk = createString("C_PK");
 
+    public final StringPath cRepository = createString("C_REPOSITORY");
+
     public final NumberPath<Long> cId = createNumber("C_ID", Long.class);
 
     public SissCurrentSubterraUriMap(String variable) {

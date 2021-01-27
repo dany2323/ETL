@@ -117,7 +117,7 @@ public class UserSgrCmDAO {
 					.where(user.idRepository.equalsIgnoreCase(utente
 							.getIdRepository()))
 					.where(user.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999())).list(user.all());
+							.getDtFineValidita9999())).list(user.all());
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -152,8 +152,8 @@ public class UserSgrCmDAO {
 					.values(utente.getDataCaricamento(),
 							utente.getDeleted(),
 							utente.getDisabledNotification(),
-							DateUtils.setDtInizioValidita1900(), // 01/01/1900
-							DateUtils.setDtFineValidita9999(), // 31/12/9999
+							DateUtils.getDtInizioValidita1900(), // 01/01/1900
+							DateUtils.getDtFineValidita9999(), // 31/12/9999
 							utente.getDmalmUserPk(), utente.getIdRepository(),
 							utente.getIdUser(), utente.getInitialsUser(),
 							utente.getUserAvatarFilename(),
@@ -188,7 +188,7 @@ public class UserSgrCmDAO {
 					.where(user.idUser.eq(utente.getIdUser()))
 					.where(user.idRepository.eq(utente.getIdRepository()))
 					.where(user.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(user.dtFineValidita,
 							DateUtils.addSecondsToTimestamp(DateUtils
 									.formatDataEsecuzione(dataEsecuzione), -1))
@@ -229,7 +229,7 @@ public class UserSgrCmDAO {
 							utente.getDeleted(),
 							utente.getDisabledNotification(),
 							DateUtils.formatDataEsecuzione(dataEsecuzione),
-							DateUtils.setDtFineValidita9999(), // 31/12/9999
+							DateUtils.getDtFineValidita9999(), // 31/12/9999
 							utente.getDmalmUserPk(), utente.getIdRepository(),
 							utente.getIdUser(), utente.getInitialsUser(),
 							utente.getUserAvatarFilename(),
@@ -264,7 +264,7 @@ public class UserSgrCmDAO {
 					.where(user.idUser.eq(utente.getIdUser()))
 					.where(user.idRepository.eq(utente.getIdRepository()))
 					.where(user.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(user.initialsUser, utente.getInitialsUser())
 					.set(user.idRepository, utente.getIdRepository())
 					.set(user.userEmail, utente.getUserEmail())

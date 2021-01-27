@@ -4,8 +4,6 @@ import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.ErroriCaricamentoDAO;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
 import lispa.schedulers.dao.calipso.StgCalipsoSchedaServizioDAO;
-import lispa.schedulers.dao.edma.PersonaleDAO;
-import lispa.schedulers.dao.edma.UnitaOrganizzativaDAO;
 import lispa.schedulers.dao.elettra.StgElAmbienteTecnologicoClassificatoriDAO;
 import lispa.schedulers.dao.elettra.StgElAmbienteTecnologicoDAO;
 import lispa.schedulers.dao.elettra.StgElClassificatoriDAO;
@@ -27,7 +25,6 @@ import lispa.schedulers.dao.sgr.sire.history.SireHistoryUserDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.sire.history.SireHistoryWorkitemUserAssignedDAO;
-import lispa.schedulers.dao.sgr.sire.history.VSireHistoryWorkitemLinkDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentProjectDAO;
 import lispa.schedulers.dao.sgr.siss.current.SissCurrentWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryAttachmentDAO;
@@ -40,16 +37,15 @@ import lispa.schedulers.dao.sgr.siss.history.SissHistoryUserDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemLinkedDAO;
 import lispa.schedulers.dao.sgr.siss.history.SissHistoryWorkitemUserAssignedDAO;
-import lispa.schedulers.dao.sgr.siss.history.VSissHistoryWorkitemLinkDAO;
 import lispa.schedulers.facade.mps.staging.StgMpsFacade;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.svn.LinkedWorkItemRolesXML;
 import lispa.schedulers.svn.ProjectRolesXML;
-import lispa.schedulers.svn.SIRESchedeServizioXML;
-import lispa.schedulers.svn.SISSSchedeServizioXML;
+import lispa.schedulers.svn.SchedeServizioXML;
 import lispa.schedulers.svn.StatoWorkItemXML;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -69,7 +65,7 @@ public class RecoverManager {
 	public synchronized void setRecovered(boolean isRecovered) {
 		RecoverManager.isRecovered = isRecovered;
 	}
-
+	
 	public synchronized boolean isRecoveredStagingMps() {
 		return isRecoveredStagingMps;
 	}
@@ -112,7 +108,6 @@ public class RecoverManager {
 			SireHistoryWorkitemLinkedDAO.recoverSireHistoryWorkItemLinked();
 			SireHistoryWorkitemUserAssignedDAO
 					.recoverSireHistoryWIUserAssigned();
-			VSireHistoryWorkitemLinkDAO.recoverVSireWorkitemLink();
 
 		} catch (Exception e) {
 			logger.debug(e.getMessage(), e);
@@ -140,7 +135,6 @@ public class RecoverManager {
 			SissHistoryWorkitemLinkedDAO.recoverSissHistoryWorkItemLinked();
 			SissHistoryWorkitemUserAssignedDAO
 					.recoverSissHistoryWIUserAssigned();
-			VSissHistoryWorkitemLinkDAO.recoverVSissWorkitemLink();
 
 		} catch (Exception e) {
 			logger.debug(e.getMessage(), e);
@@ -149,40 +143,28 @@ public class RecoverManager {
 
 	}
 	
-	public synchronized boolean prepareTargetForRecover(Timestamp dataEsecuzione) {
+	public synchronized boolean prepareTargetForRecover(List<String> fonteDati, Timestamp dataEsecuzione) {
 
 		logger.info("START PREPARE TARGET FOR RECOVER");
 
-		boolean flag = false;
+		boolean flag = true;
+		int counterFonti = 0;
 		QueryManager qm = null;
 
 		try {
 
 			qm = QueryManager.getInstance();
 
-//			String separator = ";";
-
-			// cancella tutto il contenuto delle tabelle di backup
-//			qm.executeMultipleStatementsFromFile(
-//					DmAlmConstants.TRUNCATE_BACKUP_TABLES, separator);
-
-			// inserisce il contenuto delle tabelle di target nelle tabelle di
-			// backup
-//			qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET,
-//					separator);
+			while(flag && counterFonti < fonteDati.size()) {
+				flag = qm.executeFunctionPrepareBackup(fonteDati.get(counterFonti), dataEsecuzione);
+				counterFonti++;
+			}
 			
-			// DM_ALM-325
-			// cancella tutto il contenuto delle tabelle di backup e
-			// inserisce il contenuto delle tabelle di target nelle tabelle di
-			// backup
-			String separatorTable = ":";
-			String separatorLine = ";";
-			flag = qm.executeMultipleStatementsFromFile(DmAlmConstants.BACKUP_TARGET_WITH_PROCEDURE,
-					separatorTable, separatorLine, dataEsecuzione);
 			if(!flag) {
 				setRecovered(true);
 				throw new Exception(DmAlmConstants.ERROR_CARICAMENTO_BACKUP);
 			}
+			logger.info("ESEGUITA PROCEDURE DI PREPARE BACKUP TARGET");
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -191,40 +173,6 @@ public class RecoverManager {
 		logger.info("STOP PREPARE TARGET FOR RECOVER");
 		
 		return flag;
-	}
-
-	// MPS
-	public synchronized void prepareMpsTargetForRecover() {
-
-		logger.info("START PREPARE TARGET MPS FOR RECOVER");
-
-		QueryManager qm = null;
-
-		try {
-
-			qm = QueryManager.getInstance();
-
-			String separator = ";";
-
-			// cancella tutto il contenuto delle tabelle di backup
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.TRUNCATE_BACKUP_MPS_TABLES, separator);
-
-			// inserisce il contenuto delle tabelle di target nelle tabelle di
-			// backup
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.BACKUP_MPS_TARGET, separator);
-
-			// cancella tutto il contenuto delle tabelle di target in quanto non
-			// c'è storicizzazione
-			qm.executeMultipleStatementsFromFile(
-					DmAlmConstants.TRUNCATE_MPS_TABLES, separator);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		logger.info("STOP PREPARE TARGET MPS FOR RECOVER");
-
 	}
 
 	/**
@@ -243,13 +191,14 @@ public class RecoverManager {
 	 * dell’esecuzione precedente).
 	 */
 
-	public synchronized void startRecoverTargetByProcedure() { 
+	public synchronized void startRecoverTargetByProcedure(List<String> fonti) { 
 		 
 		logger.info("START RECOVER TARGET"); 
 		 
-		try { 
-			 
-			QueryManager.getInstance().executeStoredProcedure(); 
+		try {
+			for (String fonte : fonti) {
+				QueryManager.getInstance().executeProcedureRecoverTarget(fonte);
+			}
 		} catch (Exception e) { 
 			logger.error(e.getMessage(), e); 
 			ErrorManager.getInstance().exceptionOccurred(true, e); 
@@ -301,10 +250,9 @@ public class RecoverManager {
 			logger.debug("START recover Sfera");
 			StgMisuraDAO.recoverStgMisura();
 			
-			// CALIPSO
 			logger.debug("START recover Calipso");
 			StgCalipsoSchedaServizioDAO.recoverStgCalipsoSchedaServizio();
-			
+
 			// SIRE CURRENT
 			logger.debug("START recover SIRE Current");
 			SireCurrentProjectDAO.recoverSireCurrentProject();
@@ -323,7 +271,6 @@ public class RecoverManager {
 			SireHistoryWorkitemLinkedDAO.recoverSireHistoryWorkItemLinked();
 			SireHistoryWorkitemUserAssignedDAO
 					.recoverSireHistoryWIUserAssigned();
-			VSireHistoryWorkitemLinkDAO.recoverVSireWorkitemLink();
 
 			// SISS CURRENT
 			logger.debug("START recover SISS Current");
@@ -343,20 +290,14 @@ public class RecoverManager {
 			SissHistoryWorkitemLinkedDAO.recoverSissHistoryWorkItemLinked();
 			SissHistoryWorkitemUserAssignedDAO
 					.recoverSissHistoryWIUserAssigned();
-			VSissHistoryWorkitemLinkDAO.recoverVSissWorkitemLink();
 
 			// XML
 			logger.debug("START recover XML");
 			LinkedWorkItemRolesXML.recoverLinkedWorkItemRoles();
 			ProjectRolesXML.recoverAllProjectRoles();
 			StatoWorkItemXML.recoverStatoWorkitem();
-			SIRESchedeServizioXML.recoverSIRESchedeServizio();
-			SISSSchedeServizioXML.recoverSISSSchedeServizio();
-
-			// EDMA
-			logger.debug("START recover Edma");
-			PersonaleDAO.recoverPersonale();
-			UnitaOrganizzativaDAO.recoverUO();
+			SchedeServizioXML.recoverSchedeServizio(DmAlmConstants.REPOSITORY_SIRE);
+			SchedeServizioXML.recoverSchedeServizio(DmAlmConstants.REPOSITORY_SISS);
 
 			// ORESTE
 			/*
@@ -402,41 +343,6 @@ public class RecoverManager {
 			setRecoveredStagingMps(true);
 
 			logger.info("[RECOVER MPS] STOP RECOVER STAGING MPS");
-		} catch (Exception e) {
-			logger.error(e.toString(), e);
-		}
-	}
-
-	public void startRecoverTrgMps() {
-		try {
-			logger.info("[RECOVER MPS] START RECOVER TARGET MPS");
-
-			QueryManager qm = null;
-
-			try {
-
-				qm = QueryManager.getInstance();
-
-				String separator = ";";
-
-				// cancella tutto il contenuto delle tabelle target
-				qm.executeMultipleStatementsFromFile(
-						DmAlmConstants.DELETE_TARGET_MPS_TABLES, separator);
-
-				// inserisce il contenuto delle tabelle di backup nelle tabelle
-				// target
-				// ovvero riporta il target allo stato precedente all'inizio
-				// dell'esecuzione dell'ETL
-				qm.executeMultipleStatementsFromFile(
-						DmAlmConstants.RECOVER_MPS_TARGET, separator);
-
-				// flag valido sia per lo staging che per il target
-				setRecoveredStagingMps(true);
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-
-			logger.info("[RECOVER MPS] STOP RECOVER TARGET MPS");
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
 		}

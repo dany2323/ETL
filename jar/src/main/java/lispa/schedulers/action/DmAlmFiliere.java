@@ -37,7 +37,7 @@ public class DmAlmFiliere {
 		CostruzioneFilieraTemplateDemandFacade.execute();
 		
 		// gestione esecuzione effettuata direttamente nel facade
-		CostruzioneFilieraTemplateSviluppoFacade.execute();
+//		CostruzioneFilieraTemplateSviluppoFacade.execute();
 
 		// gestione esecuzione effettuata direttamente nel facade
 		CostruzioneFilieraTemplateServiziFacade.execute();

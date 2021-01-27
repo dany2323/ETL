@@ -250,7 +250,7 @@ public class FunzionalitaDAO {
 									.list(dmalmFunzionalita.dtInserimentoRecord
 											.max())))
 					.set(dmalmFunzionalita.dtFineValidita,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -404,8 +404,8 @@ public class FunzionalitaDAO {
 					.values(bean.getAnnullato(), bean.getCategoria(),
 							bean.getDmalmFunzionalitaPk(),
 							bean.getDsFunzionalita(),
-							DateUtils.setDtFineValidita9999(),
-							DateUtils.setDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999(),
+							DateUtils.getDtInizioValidita1900(),
 							bean.getDmalmModuloFk01(),
 							bean.getIdFunzionalita(), bean.getLinguaggi(),
 							bean.getNome(), bean.getSiglaFunzionalita(),
@@ -466,7 +466,7 @@ public class FunzionalitaDAO {
 					.values(bean.getAnnullato(), bean.getCategoria(),
 							bean.getDmalmFunzionalitaPk(),
 							bean.getDsFunzionalita(),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtFineValidita9999(),
 							DateUtils.formatDataEsecuzione(dataEsecuzione),
 							bean.getDmalmModuloFk01(),
 							bean.getIdFunzionalita(), bean.getLinguaggi(),

@@ -187,8 +187,8 @@ public class ElettraAmbienteTecnologicoDAO {
 							bean.getDataCaricamento(), bean.getAnnullato(),
 							bean.getDataAnnullamento(), bean.getProdottoFk(),
 							bean.getModuloFk(),
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -218,7 +218,7 @@ public class ElettraAmbienteTecnologicoDAO {
 					.where(qDmalmElAmbienteTecnologico.ambienteTecnologicoPk
 							.eq(ambienteTecnologicoPk))
 					.set(qDmalmElAmbienteTecnologico.dataFineValidita,
-							DateUtils.addSecondsToTimestamp(dataFineValidita,
+							DateUtils.addSecondsToTimestamp(DateUtils.formatDataEsecuzione(dataFineValidita),
 									-1)).execute();
 
 			connection.commit();
@@ -279,8 +279,8 @@ public class ElettraAmbienteTecnologicoDAO {
 							bean.getDescrizioneAmbienteTecnologico(),
 							bean.getDataCaricamento(), bean.getAnnullato(),
 							bean.getDataAnnullamento(), bean.getProdottoFk(),
-							bean.getModuloFk(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999()).execute();
+							bean.getModuloFk(), DateUtils.formatDataEsecuzione(dataEsecuzione),
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 

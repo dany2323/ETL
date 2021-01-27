@@ -177,7 +177,7 @@ public class ProdottoDAO {
 									.list(dmalmProdotto.dtInserimentoRecord
 											.max())))
 					.set(dmalmProdotto.dtFineValidita,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -288,8 +288,8 @@ public class ProdottoDAO {
 							bean.getIdProdotto(), bean.getNome(),
 							bean.getDmalm_personale_fk02(), bean.getSigla(),
 							bean.getTipoOggetto(),
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999(), dataesecuzione,
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999(), dataesecuzione,
 							bean.getDtAnnullamento(),
 							bean.getDmalmProdottoSeq()).execute();
 
@@ -351,7 +351,7 @@ public class ProdottoDAO {
 							bean.getDmalm_personale_fk02(), bean.getSigla(),
 							bean.getTipoOggetto(),
 							DateUtils.formatDataEsecuzione(dataEsecuzione), // inizio
-							DateUtils.setDtFineValidita9999(), // fine
+							DateUtils.getDtFineValidita9999(), // fine
 							dataEsecuzione, // inserimento
 							bean.getDtAnnullamento(), // annullamento
 							bean.getDmalmProdottoSeq()).execute();
@@ -425,7 +425,7 @@ public class ProdottoDAO {
 					.from(dmalmProdotto)
 					.where(dmalmProdotto.sigla.eq(asm))
 					.where(dmalmProdotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.list(dmalmProdotto.all());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -460,7 +460,7 @@ public class ProdottoDAO {
 							.eq(dmalmProdotto.dmalmProdottoSeq))
 					.where(dmalmProdotto.dmalmProdottoSeq.ne(new Integer(0)))
 					.where(dmalmProdotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(dmalmProjectProdotto.dmalmProdottoSeq.isNull())
 					.list(dmalmProdotto.all());
 		} catch (Exception e) {
@@ -495,7 +495,7 @@ public class ProdottoDAO {
 							.eq(dmalmProdotto.dmalmProdottoSeq))
 					.where(dmalmProdotto.dmalmProdottoSeq.ne(new Integer(0)))
 					.where(dmalmProdotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(dmalmAsmProdotto.dmalmProdottoSeq.isNull())
 					.list(dmalmProdotto.all());
 		} catch (Exception e) {

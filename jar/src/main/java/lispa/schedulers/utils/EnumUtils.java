@@ -229,7 +229,9 @@ public class EnumUtils {
 		case "rfc":	
 			template = Template_Type.DEMAND2016.toString();
 			break;
-
+		case "checklist":	
+			template=Template_Type.SERDEP.toString();
+			break;
 		default:
 			template= null;
 		}

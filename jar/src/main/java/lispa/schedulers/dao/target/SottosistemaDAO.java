@@ -44,7 +44,7 @@ public class SottosistemaDAO {
 		ResultSet rs = null;
 
 		DmalmSottosistema bean = null;
-		List<DmalmSottosistema> sottosistemi = new ArrayList<DmalmSottosistema>();
+		List<DmalmSottosistema> sottosistemi = new ArrayList<>();
 
 		try {
 			cm = ConnectionManager.getInstance();
@@ -174,7 +174,7 @@ public class SottosistemaDAO {
 	// dmalmSottosistema.siglaProdotto.isNull())
 	// .list(dmalmSottosistema.dtInserimentoRecord.max())
 	// ))
-	// .set(dmalmSottosistema.dtFineValidita, DateUtils.setDtFineValidita9999())
+	// .set(dmalmSottosistema.dtFineValidita, DateUtils.getDtFineValidita9999())
 	// .execute();
 	//
 	// connection.commit();
@@ -292,8 +292,8 @@ public class SottosistemaDAO {
 							bean.getSiglaProdotto(),
 							bean.getSiglaSottosistema(), bean.getNome(),
 							bean.getDsSottosistema(), bean.getAnnullato(),
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999(), bean.getTipo(),
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999(), bean.getTipo(),
 							bean.getBaseDatiEtl(), bean.getBaseDatiLettura(),
 							bean.getBaseDatiScrittura(), dataesecuzione,
 							bean.getDtAnnullamento()).execute();
@@ -351,7 +351,7 @@ public class SottosistemaDAO {
 							bean.getSiglaSottosistema(), bean.getNome(),
 							bean.getDsSottosistema(), bean.getAnnullato(),
 							DateUtils.formatDataEsecuzione(dataEsecuzione),
-							DateUtils.setDtFineValidita9999(), bean.getTipo(),
+							DateUtils.getDtFineValidita9999(), bean.getTipo(),
 							bean.getBaseDatiEtl(), bean.getBaseDatiLettura(),
 							bean.getBaseDatiScrittura(), dataEsecuzione,
 							bean.getDtAnnullamento()).execute();

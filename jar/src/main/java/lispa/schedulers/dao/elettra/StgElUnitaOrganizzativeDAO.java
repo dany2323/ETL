@@ -15,10 +15,7 @@ import lispa.schedulers.queryimplementation.staging.elettra.QStgElUnitaOrganizza
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.NumberUtils;
 import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
-import org.h2.mvstore.DataUtils;
-
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -66,7 +63,6 @@ public class StgElUnitaOrganizzativeDAO {
 	public static void fillStaging() throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		Connection connectionFonteElettra = null;
 		long righeInserite = 0;
 
 		try {
@@ -74,14 +70,12 @@ public class StgElUnitaOrganizzativeDAO {
 			connection = cm.getConnectionOracle();
 			connection.setAutoCommit(false);
 
-			connectionFonteElettra = cm.getConnectionOracleFonteElettra();
-
 			QElettraUnitaOrganizzative qElettraUnitaOrganizzative = QElettraUnitaOrganizzative.elettraUnitaOrganizzative;
 			QStgElUnitaOrganizzative qStgElUnitaOrganizzative = QStgElUnitaOrganizzative.stgElUnitaOrganizzative;
 
 			SQLTemplates dialect = new HSQLDBTemplates();
 
-			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
+			SQLQuery query = new SQLQuery(connection, dialect);
 
 			List<Tuple> unitaOrganizzative = query.from(
 					qElettraUnitaOrganizzative).list(
@@ -158,8 +152,8 @@ public class StgElUnitaOrganizzativeDAO {
 					.values(StringTemplate
 							.create("STG_UNITA_ORGANIZZATIVE_SEQ.nextval"),
 							DmAlmConstants.ROOT_UO, DmAlmConstants.ROOT_UO,
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999(),
 							DmAlmConstants.ROOT_UO_DESC, null, null, null, 1,
 							null, null, 0, 0, 0, DmAlmConstants.ROOT_UO,
 							DmAlmConstants.ROOT_UO_CD_ENTE, null,
@@ -177,8 +171,6 @@ public class StgElUnitaOrganizzativeDAO {
 		} finally {
 			if (cm != null)
 				cm.closeConnection(connection);
-			if (cm != null)
-				cm.closeConnection(connectionFonteElettra);
 		}
 	}
 

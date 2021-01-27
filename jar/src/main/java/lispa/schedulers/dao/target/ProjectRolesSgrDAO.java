@@ -61,8 +61,8 @@ public class ProjectRolesSgrDAO {
 				bean.setTipologiaProject(rs.getString("TIPOLOGIA_PROJECT"));
 				bean.setRuolo(rs.getString("RUOLO"));
 				bean.setDtCaricamento(dataEsecuzione);
-				bean.setDtInizioValidita(DateUtils.setDtInizioValidita1900());
-				bean.setDtFineValidita(DateUtils.setDtFineValidita9999());
+				bean.setDtInizioValidita(DateUtils.getDtInizioValidita1900());
+				bean.setDtFineValidita(DateUtils.getDtFineValidita9999());
 
 				userroles.add(bean);
 			}
@@ -160,7 +160,7 @@ public class ProjectRolesSgrDAO {
 					.where(dmalmProjectRolesSgr.ruolo.equalsIgnoreCase(bean
 							.getRuolo()))
 					.where(dmalmProjectRolesSgr.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 
 					.list(dmalmProjectRolesSgr.all());
 

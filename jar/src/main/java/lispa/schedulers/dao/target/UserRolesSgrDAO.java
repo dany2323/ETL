@@ -28,6 +28,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLSubQuery;
@@ -96,7 +97,7 @@ public class UserRolesSgrDAO {
 	}
 
 	public static void insertUserRolesUpdate(List<DmalmUserRolesSgr> userRoles,
-			int fkProject, Timestamp c_created) throws DAOException {
+			int fkProject, Timestamp cCreated) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -111,7 +112,7 @@ public class UserRolesSgrDAO {
 					dmalmUserRoles);
 			int i = 0;
 			for (DmalmUserRolesSgr bean : userRoles) {
-				bean.setDtInizioValidita(c_created);
+				bean.setDtInizioValidita(cCreated);
 				bean.setDmalmProjectFk01(fkProject);
 				insert.columns(dmalmUserRoles.dmalmUserRolesPk,
 						dmalmUserRoles.origine, dmalmUserRoles.userid,
@@ -176,7 +177,7 @@ public class UserRolesSgrDAO {
 							projectUserRole.getRuolo(),
 							dataEsecuzione,
 							c_created,
-							DateUtils.setDtFineValidita9999(), 
+							DateUtils.getDtFineValidita9999(), 
 							projectUserRole.getRepository(),
 							fkProject).addBatch();
 			i++;
@@ -279,7 +280,7 @@ public class UserRolesSgrDAO {
 							userRole.getUserid(), userRole.getRuolo(),
 							dataEsecuzione,
 							dataEsecuzione,
-							DateUtils.setDtFineValidita9999(), 
+							DateUtils.getDtFineValidita9999(), 
 							userRole.getRepository(),
 							fkProject).addBatch();
 			i++;
@@ -306,7 +307,7 @@ public class UserRolesSgrDAO {
 	}
 
 	public static void updateDataFineValidita(String projID, String repo,
-			Timestamp c_created) throws DAOException {
+			Timestamp cCreated) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -327,7 +328,7 @@ public class UserRolesSgrDAO {
 							.where(dmalmUserRoles.repository.eq(repo))
 							.list(dmalmUserRoles.dtFineValidita.max())))
 					.set(dmalmUserRoles.dtFineValidita,
-							DateUtils.addSecondsToTimestamp(c_created, -1))
+							DateUtils.addSecondsToTimestamp(cCreated, -1))
 					.execute();
 
 			connection.commit();
@@ -343,7 +344,7 @@ public class UserRolesSgrDAO {
 	}
 
 	public static void updateDataFineValiditaUserRole(
-			DmalmUserRolesSgr userRole, Timestamp c_created)
+			DmalmUserRolesSgr userRole, Timestamp cCreated)
 			throws DAOException {
 
 		ConnectionManager cm = null;
@@ -360,7 +361,7 @@ public class UserRolesSgrDAO {
 					.where(dmalmUserRoles.dmalmUserRolesPk.eq(userRole
 							.getDmalmUserRolesPk()))
 					.set(dmalmUserRoles.dtFineValidita,
-							DateUtils.addSecondsToTimestamp(c_created, -1))
+							DateUtils.addSecondsToTimestamp(cCreated, -1))
 					.execute();
 
 			connection.commit();
@@ -376,7 +377,7 @@ public class UserRolesSgrDAO {
 	}
 
 	public static int getFkProject(String projId, String repo,
-			Timestamp c_created) throws DAOException {
+			Timestamp cCreated) throws DAOException {
 
 		if (projId == null || projId.equals(DmAlmConstants.GLOBAL))
 			return 0;
@@ -395,11 +396,11 @@ public class UserRolesSgrDAO {
 					.from(dmalmProject)
 					.where(dmalmProject.idProject.eq(projId))
 					.where(dmalmProject.idRepository.eq(repo))
-					.where(dmalmProject.dtInizioValidita.loe(c_created))
-					.where(dmalmProject.dtFineValidita.goe(c_created))
+					.where(dmalmProject.dtInizioValidita.loe(cCreated))
+					.where(dmalmProject.dtFineValidita.goe(cCreated))
 					.list(dmalmProject.dmalmProjectPrimaryKey);
 
-			if (fk == null || fk.size() == 0)
+			if (fk == null || fk.isEmpty())
 				return 0;
 			else
 				return fk.get(0);
@@ -416,122 +417,6 @@ public class UserRolesSgrDAO {
 		return res;
 
 	}
-	
-	public static List<DmalmUserRolesSgr> getUserRolesForProjectAtRevision(String myrepo,
-			String projectId, String projectLocation, SVNRepository repository) throws Exception {
-		
-		List<DmalmUserRolesSgr> projectUserRoles = new ArrayList<DmalmUserRolesSgr>();
-
-		Connection connection = null;
-		ConnectionManager cm = null;
-
-		String filePath = "";
-
-		try {
-			cm = ConnectionManager.getInstance();
-			connection = cm.getConnectionOracle();
-			DAVRepositoryFactory.setup();
-
-			connection.setAutoCommit(false);
-			SVNURL root = repository.getRepositoryRoot(true);
-			String absolutepath = root + projectLocation;
-			projectLocation = SVNURLUtil.getRelativeURL(root,
-					SVNURL.parseURIEncoded(absolutepath), false);
-			filePath = projectLocation
-					.concat(DmAlmConfigReader
-							.getInstance()
-							.getProperty(
-									DmAlmConfigReaderProperties.SIRE_SVN_USER_ROLES_FILE));
-
-			SVNNodeKind nodeKind = repository.checkPath(filePath, -1);
-			SVNProperties fileProperties = null;
-			ByteArrayOutputStream baos = null;
-			fileProperties = new SVNProperties();
-
-			SVNFileRevision svnfr = new SVNFileRevision(filePath, -1, fileProperties, fileProperties);
-
-			baos = new ByteArrayOutputStream();
-			if(repository.checkPath(svnfr.getPath(), svnfr.getRevision()) == SVNNodeKind.NONE){
-				if(svnfr.getRevision() == -1)
-					logger.info("Il path SVN " + svnfr.getPath() + " non esiste alla revisione HEAD");
-				else	
-					logger.info("Il path SVN " + svnfr.getPath() + " non esiste alla revisione " + svnfr.getRevision());
-				return projectUserRoles;
-			}
-			
-			repository.getFile(svnfr.getPath(), svnfr.getRevision(),
-					fileProperties, baos);
-			String mimeType = fileProperties
-					.getStringValue(SVNProperty.MIME_TYPE);
-
-			boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-			String xmlContent = "";
-			if (isTextType) {
-				xmlContent = baos.toString();
-			} else {
-				throw new Exception("");
-			}
-
-			if (nodeKind == SVNNodeKind.FILE) {
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-						.newInstance();
-				
-				Document doc = dbFactory.newDocumentBuilder()
-						.parse(new ByteArrayInputStream(xmlContent
-								.getBytes()));
-				doc.getDocumentElement().normalize();
-
-				NodeList nList = doc.getElementsByTagName("user");
-
-				String data = svnfr.getRevisionProperties()
-						.getSVNPropertyValue(SVNProperty.COMMITTED_DATE)
-						.getString().toString().replace("T", " ")
-						.replaceFirst(DmalmRegex.REGEXSVNDATE, "");
-
-				for (int temp = 0; temp < nList.getLength(); temp++) {
-					Node nNode = nList.item(temp);
-
-					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-						Element eElement = (Element) nNode;
-
-						NodeList ruoli = eElement.getChildNodes();
-
-						for (int tempruolo = 0; tempruolo < ruoli
-								.getLength(); tempruolo++) {
-
-							Node ruolo = ruoli.item(tempruolo);
-
-							if (ruolo.getNodeType() == Node.ELEMENT_NODE) {
-
-								Element el = (Element) ruolo;
-
-								DmalmUserRolesSgr userRolesSgr = new DmalmUserRolesSgr();
-								userRolesSgr.setOrigine(projectId);
-								userRolesSgr.setUserid(StringUtils.getMaskedValue(eElement.getAttribute("name")));
-								userRolesSgr.setRuolo(el.getAttribute("name"));
-								userRolesSgr.setRepository(myrepo);
-								userRolesSgr.setDtModifica(DateUtils.stringToTimestamp(data,"yyyy-MM-dd HH:mm:ss"));
-
-								projectUserRoles.add(userRolesSgr);
-								
-							}
-						}
-					}
-				}
-			}
-			
-		} catch (Exception e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-
-		} finally {
-			if (cm != null) {
-				cm.closeConnection(connection);
-			}
-		}
-				
-		return projectUserRoles;
-	}
-
 	
 	private static Integer getMaxPk() throws DAOException {
 		ConnectionManager cm = null;
@@ -569,7 +454,43 @@ public class UserRolesSgrDAO {
 		return resUserRolesSgrPk;
 	}
 
+public static List<DmalmUserRolesSgr> getUserRolesForProject(String repository,	String projectId) throws Exception {
+		
+		lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRolesSgr qDmAlmUserRolesSgr =
+				lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRolesSgr.dmAlmUserRolesSgr;
+		List<DmalmUserRolesSgr> projectUserRoles = new ArrayList<DmalmUserRolesSgr>();
 
+		Connection connection = null;
+		ConnectionManager cm = null;
+
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+			connection.setAutoCommit(false);
+
+			List<Tuple> listUserRoles = new SQLQuery(connection, dialect)
+					.from(qDmAlmUserRolesSgr).where(qDmAlmUserRolesSgr.repository.eq(repository)).list(qDmAlmUserRolesSgr.all());
+			for (Tuple userRoles : listUserRoles) {
+				DmalmUserRolesSgr userRolesSgr = new DmalmUserRolesSgr();
+				userRolesSgr.setOrigine(userRoles.get(qDmAlmUserRolesSgr.origine));
+				userRolesSgr.setUserid(userRoles.get(qDmAlmUserRolesSgr.userId));
+				userRolesSgr.setRuolo(userRoles.get(qDmAlmUserRolesSgr.ruolo));
+				userRolesSgr.setRepository(userRoles.get(qDmAlmUserRolesSgr.repository));
+				userRolesSgr.setDtModifica(userRoles.get(qDmAlmUserRolesSgr.dtModifica));
+
+				projectUserRoles.add(userRolesSgr);
+			}
+		} catch (Exception e) {
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
+			}
+		}
+				
+		return projectUserRoles;
+	}
 /**
  * Cancellazione dei record tabella DMALM_USER_ROLES_SGR 
  * che non hanno più alcuna corrispondenza in Polarion
@@ -618,7 +539,7 @@ public class UserRolesSgrDAO {
 			}
 		}
 	}
-	
+
 	/**
 	 * Cancellazione dei dati storici nella tabella DMALM_USER_ROLES_SGR
 	 * DM_ALM-292
@@ -643,7 +564,7 @@ public class UserRolesSgrDAO {
 
 				ps = connection.prepareStatement(query);
 
-				ps.setTimestamp(1, DateUtils.setDtFineValidita9999());
+				ps.setTimestamp(1, DateUtils.getDtFineValidita9999());
 				
 				ps.executeUpdate();
 				

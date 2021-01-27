@@ -572,7 +572,7 @@ public class ProdottiArchitettureDAO {
 							.eq(dmalmAsmProdArch.dmalmProdottoPk))
 					.where(dmalmElProdArc.prodottoPk.ne(new Integer(0)))
 					.where(dmalmElProdArc.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(dmalmAsmProdArch.dmalmProdottoPk.isNull())
 					.list(dmalmElProdArc.all());
 		} catch (Exception e) {

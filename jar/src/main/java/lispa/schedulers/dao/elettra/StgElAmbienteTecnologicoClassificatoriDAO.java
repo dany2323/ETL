@@ -62,7 +62,6 @@ public class StgElAmbienteTecnologicoClassificatoriDAO {
 	public static void fillStaging() throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		Connection connectionFonteElettra = null;
 		long righeInserite = 0;
 
 		try {
@@ -70,14 +69,12 @@ public class StgElAmbienteTecnologicoClassificatoriDAO {
 			connection = cm.getConnectionOracle();
 			connection.setAutoCommit(false);
 
-			connectionFonteElettra = cm.getConnectionOracleFonteElettra();
-
 			QElettraAmbienteTecnologicoClassificatori qElettraAmbienteTecnologicoClassificatori = QElettraAmbienteTecnologicoClassificatori.elettraAmbienteTecnologicoClassificatori;
 			QStgElAmbienteTecnologicoClassificatori qStgElAmbienteTecnologicoClassificatori = QStgElAmbienteTecnologicoClassificatori.stgElAmbienteTecnologicoClassificatori;
 
 			SQLTemplates dialect = new HSQLDBTemplates();
 
-			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
+			SQLQuery query = new SQLQuery(connection, dialect);
 
 			List<Tuple> moduli = query.from(
 					qElettraAmbienteTecnologicoClassificatori).list(
@@ -118,8 +115,6 @@ public class StgElAmbienteTecnologicoClassificatoriDAO {
 		} finally {
 			if (cm != null)
 				cm.closeConnection(connection);
-			if (cm != null)
-				cm.closeConnection(connectionFonteElettra);
 		}
 	}
 

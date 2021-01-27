@@ -2,7 +2,6 @@ package lispa.schedulers.runnable.staging.siss.current;
 
 import java.util.Date;
 
-import lispa.schedulers.svn.SISSUserRolesXML;
 
 import org.apache.log4j.Logger;
 

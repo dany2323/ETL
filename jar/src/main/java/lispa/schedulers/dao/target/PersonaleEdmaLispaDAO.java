@@ -244,7 +244,7 @@ public class PersonaleEdmaLispaDAO {
 							personale.getDtAttivazione(),
 							DataEsecuzione.getInstance().getDataEsecuzione(),
 							personale.getDtDisattivazione(),
-							// DateUtils.setDtFineValidita9999() ,
+							// DateUtils.getDtFineValidita9999() ,
 							// DateUtils.formatDataEsecuzione(DataEsecuzione.getInstance().getDataEsecuzione()),
 							personale.getDtFineValiditaEdma(),
 							personale.getDtInizioValiditaEdma(),
@@ -255,7 +255,7 @@ public class PersonaleEdmaLispaDAO {
 							personale.getInterno(), personale.getMatricola(),
 							personale.getNome(), personale.getNote(),
 							personale.getDtFineValiditaEdma(),
-							DateUtils.setDtInizioValidita1900(),
+							DateUtils.getDtInizioValidita1900(),
 							0,
 							0).execute();
 
@@ -321,7 +321,7 @@ public class PersonaleEdmaLispaDAO {
 							personale.getIndirizzoEmail(),
 							personale.getInterno(), personale.getMatricola(),
 							personale.getNome(), personale.getNote(),
-							DateUtils.setDtFineValidita9999(), dataEsecuzione,
+							DateUtils.getDtFineValidita9999(), dataEsecuzione,
 							personale.getUnitaOrganizzativaFk(),
 							personale.getUnitaOrganizzativaFlatFk())
 					.execute();
@@ -444,8 +444,8 @@ public class PersonaleEdmaLispaDAO {
 					.join(qProdotto)
 					.on(qProdotto.dmalmPersonaleFk02.eq(qPersonale.dmalmPersonalePk))
 					.where(qPersonale.dmalmPersonalePk.ne(0))
-					.where(qPersonale.dtFineValidita.eq(DateUtils.setDtFineValidita9999()))
-					.where(qProdotto.dtFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.where(qPersonale.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
+					.where(qProdotto.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
 					.where(qPersonale.unitaOrganizzativaFk.ne(qProdotto.dmalmUnitaOrganizzativaFk01))
 					.distinct()
 					.list(qPersonale.cdPersonale, qProdotto.dmalmUnitaOrganizzativaFk01);
@@ -478,7 +478,7 @@ public class PersonaleEdmaLispaDAO {
 			new SQLUpdateClause(connection, dialect, qPersonale)
 					.where(qPersonale.cdPersonale.eq(personale.getCdPersonale()))
 					.where(qPersonale.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(qPersonale.unitaOrganizzativaFk,
 							personale.getUnitaOrganizzativaFk())
 					.execute();

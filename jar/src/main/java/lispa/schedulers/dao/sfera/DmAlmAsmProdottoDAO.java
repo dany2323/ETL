@@ -46,7 +46,7 @@ public class DmAlmAsmProdottoDAO {
 							asmProdotto.dtFineValidita)
 					.values(relazione.getDmalmAsmPk(),
 							relazione.getDmalmProdottoSeq(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -114,9 +114,9 @@ public class DmAlmAsmProdottoDAO {
 					.on(asmProdotto.dmalmProdottoSeq
 							.eq(dmalmProdotto.dmalmProdottoSeq))
 					.where(dmalmProdotto.dtFineValidita.ne(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asmProdotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.list(asmProdotto.dmalmAsmPk, asmProdotto.dmalmProdottoSeq,
 							asmProdotto.dtInizioValidita,
 							dmalmProdotto.dtFineValidita);

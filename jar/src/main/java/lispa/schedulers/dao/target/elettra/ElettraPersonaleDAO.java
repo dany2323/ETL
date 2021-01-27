@@ -136,7 +136,7 @@ public class ElettraPersonaleDAO {
 			new SQLUpdateClause(connection, dialect, qDmalmElPersonale)
 					.where(qDmalmElPersonale.personalePk.eq(personalePk))
 					.set(qDmalmElPersonale.dataFineValidita,
-							DateUtils.addSecondsToTimestamp(dataelaborazione,
+							DateUtils.addSecondsToTimestamp(DateUtils.formatDataEsecuzione(dataelaborazione),
 									-1)).execute();
 
 			connection.commit();
@@ -252,9 +252,9 @@ public class ElettraPersonaleDAO {
 							personale.getDataDisattivazione(),
 							(personale.getDataFineValiditaEdma() != null ? personale
 									.getDataFineValiditaEdma() : DateUtils
-									.setDtFineValidita9999()),
+									.getDtFineValidita9999()),
 							personale.getDataFineValiditaEdma(),
-							DateUtils.setDtInizioValidita1900(),
+							DateUtils.getDtInizioValidita1900(),
 							personale.getDataInizioValiditaEdma(),
 							personale.getIdEdma(), personale.getIdGrado(),
 							personale.getIdSede(),
@@ -329,9 +329,9 @@ public class ElettraPersonaleDAO {
 							personale.getDataAttivazione(),
 							personale.getDataCaricamento(),
 							personale.getDataDisattivazione(),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtFineValidita9999(),
 							personale.getDataFineValiditaEdma(),
-							dataEsecuzione,
+							DateUtils.formatDataEsecuzione(dataEsecuzione),
 							personale.getDataInizioValiditaEdma(),
 							personale.getIdEdma(), personale.getIdGrado(),
 							personale.getIdSede(),
@@ -409,7 +409,7 @@ public class ElettraPersonaleDAO {
 
 			strutture = query
 					.from(qDmalmElPersonale)
-					.where(qDmalmElPersonale.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.where(qDmalmElPersonale.dataFineValidita.eq(DateUtils.getDtFineValidita9999()))
 //					.where(qDmalmElPersonale.personalePk.eq(518848))
 					.list(qDmalmElPersonale.all());
 
@@ -558,7 +558,7 @@ public class ElettraPersonaleDAO {
 			new SQLUpdateClause(connection, dialect, qDmalmElPersonale)
 					.where(qDmalmElPersonale.codicePersonale.eq(personale.getCodicePersonale()))
 					.where(qDmalmElPersonale.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(qDmalmElPersonale.unitaOrganizzativaFk,
 							personale.getUnitaOrganizzativaFk())
 					.execute();
@@ -602,7 +602,7 @@ public class ElettraPersonaleDAO {
 									.getCodicePersonale()))
 							.list(qPersonale.dataFineValidita.max())))
 					.set(qPersonale.dataFineValidita,
-							DateUtils.addDaysToTimestamp(dataelaborazione, -1))
+							DateUtils.addDaysToTimestamp(DateUtils.formatDataEsecuzione(dataelaborazione), -1))
 					.execute();
 
 			connection.commit();

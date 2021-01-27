@@ -28,16 +28,16 @@ public class QElettraAmbienteTecnologico extends com.mysema.query.sql.Relational
 	
 	public QElettraAmbienteTecnologico(String variable) {
 		super(ElettraAmbienteTecnologico.class, forVariable(variable),
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_AMB_TECNOLOGICO");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_AMB_TECNOLOGICO");
 	}
 
 	public QElettraAmbienteTecnologico(Path<? extends ElettraAmbienteTecnologico> path) {
 		super(path.getType(), path.getMetadata(),
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_AMB_TECNOLOGICO");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_AMB_TECNOLOGICO");
 	}
 
 	public QElettraAmbienteTecnologico(PathMetadata<?> metadata) {
 		super(ElettraAmbienteTecnologico.class, metadata,
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_AMB_TECNOLOGICO");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_AMB_TECNOLOGICO");
 	}
 }

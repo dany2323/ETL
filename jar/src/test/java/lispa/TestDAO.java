@@ -28,22 +28,4 @@ public class TestDAO extends TestCase {
 		}
 	}
 
-	public void testGetConnectionH2() throws Exception {
-
-		try {
-			ConnectionManager cm = ConnectionManager.getInstance();
-			Connection c = cm.getConnectionSIRECurrent();
-
-			Statement stmt = c.createStatement();
-			String selectquery = "select * from PROJECT";
-
-			ResultSet rs = stmt.executeQuery(selectquery);
-
-			while (rs.next()) {
-
-			}
-		} catch (Throwable e) {
-
-		}
-	}
 }

@@ -63,7 +63,6 @@ public class StgElProdottiDAO {
 	public static void fillStaging() throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		Connection connectionFonteElettra = null;
 		long righeInserite = 0;
 
 		try {
@@ -71,14 +70,12 @@ public class StgElProdottiDAO {
 			connection = cm.getConnectionOracle();
 			connection.setAutoCommit(false);
 
-			connectionFonteElettra = cm.getConnectionOracleFonteElettra();
-
 			QElettraProdottiArchitetture qElettraProdottiArchitetture = QElettraProdottiArchitetture.elettraProdottiArchitetture;
 			QStgElProdotti qStgElProdotti = QStgElProdotti.stgElProdotti;
 
 			SQLTemplates dialect = new HSQLDBTemplates();
 
-			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
+			SQLQuery query = new SQLQuery(connection, dialect);
 
 			List<Tuple> prodotti = query.from(qElettraProdottiArchitetture)
 					.list(qElettraProdottiArchitetture.all());
@@ -155,8 +152,6 @@ public class StgElProdottiDAO {
 		} finally {
 			if (cm != null)
 				cm.closeConnection(connection);
-			if (cm != null)
-				cm.closeConnection(connectionFonteElettra);
 		}
 	}
 

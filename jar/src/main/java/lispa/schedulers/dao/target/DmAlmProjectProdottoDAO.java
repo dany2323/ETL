@@ -53,9 +53,9 @@ public class DmAlmProjectProdottoDAO {
 					.on(projectProdotto.dmalmProdottoSeq
 							.eq(dmalmProdotto.dmalmProdottoSeq))
 					.where(dmalmProdotto.dtFineValidita.ne(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(projectProdotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.list(projectProdotto.dmalmProjectPk,
 							projectProdotto.dmalmProdottoSeq,
 							projectProdotto.dtInizioValidita,
@@ -92,9 +92,9 @@ public class DmAlmProjectProdottoDAO {
 					.on(projectProdotto.dmalmProjectPk
 							.eq(dmalmProject.dmalmProjectPrimaryKey))
 					.where(dmalmProject.dtFineValidita.ne(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(projectProdotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.list(projectProdotto.dmalmProjectPk,
 							projectProdotto.dmalmProdottoSeq,
 							projectProdotto.dtInizioValidita,
@@ -162,7 +162,7 @@ public class DmAlmProjectProdottoDAO {
 							projectProdotto.dtFineValidita)
 					.values(relazione.getDmalmProjectPk(),
 							relazione.getDmalmProdottoSeq(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 		} catch (Exception e) {

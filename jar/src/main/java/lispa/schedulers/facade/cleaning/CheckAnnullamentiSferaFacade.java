@@ -650,7 +650,7 @@ public class CheckAnnullamentiSferaFacade {
 				 QDmalmProgettoSfera progettoSfera = QDmalmProgettoSfera.dmalmProgettoSfera;
 				 int numberOfProjects = query2.from(QDmalmProgettoSfera.dmalmProgettoSfera)
 				 	.where(progettoSfera.dmalmAsmFk.eq(idAsmPk))
-				 	.where(progettoSfera.dataFineValidita.eq(DateUtils.setDtFineValidita9999())).list(progettoSfera.dmalmProgettoSferaPk).size();
+				 	.where(progettoSfera.dataFineValidita.eq(DateUtils.getDtFineValidita9999())).list(progettoSfera.dmalmProgettoSferaPk).size();
 				 
 				 if (numberOfProjects == 0) {
 					 annullatiStoricamente.add(candidate);
@@ -675,7 +675,7 @@ public class CheckAnnullamentiSferaFacade {
 		 QDmalmAsm asm = QDmalmAsm.dmalmAsm;
 		 Integer idAsmPk = query.from(QDmalmAsm.dmalmAsm)
 		 	.where(asm.idAsm.eq(idAsm))
-		 	.where(asm.dataFineValidita.eq(DateUtils.setDtFineValidita9999())).list(asm.dmalmAsmPk).get(0);
+		 	.where(asm.dataFineValidita.eq(DateUtils.getDtFineValidita9999())).list(asm.dmalmAsmPk).get(0);
 		 return idAsmPk;
 	}
 }

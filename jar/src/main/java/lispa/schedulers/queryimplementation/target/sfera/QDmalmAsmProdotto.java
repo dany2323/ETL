@@ -7,7 +7,6 @@ import javax.annotation.Generated;
 import lispa.schedulers.bean.target.DmalmProdotto;
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.bean.target.sfera.DmalmAsmProdotto;
-import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.Path;
 import com.mysema.query.types.PathMetadata;
@@ -39,15 +38,15 @@ public class QDmalmAsmProdotto extends com.mysema.query.sql.RelationalPathBase<D
     public final com.mysema.query.sql.ForeignKey<DmalmProdotto> dmalmAsmProdottoFk02 = createForeignKey(dmalmProdottoSeq, "DMALM_PRODOTTO_SEQ");
 
     public QDmalmAsmProdotto(String variable) {
-        super(DmalmAsmProdotto.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_PRODOTTO");
+        super(DmalmAsmProdotto.class, forVariable(variable), "DMALM", "DMALM_ASM_PRODOTTO");
     }
 
     public QDmalmAsmProdotto(Path<? extends DmalmAsmProdotto> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_PRODOTTO");
+        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_ASM_PRODOTTO");
     }
 
     public QDmalmAsmProdotto(PathMetadata<?> metadata) {
-        super(DmalmAsmProdotto.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_PRODOTTO");
+        super(DmalmAsmProdotto.class, metadata, "DMALM", "DMALM_ASM_PRODOTTO");
     }
 
 }

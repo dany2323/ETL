@@ -17,8 +17,6 @@ import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
 import lispa.schedulers.queryimplementation.target.fatti.QDmalmDifettoProdotto;
-import lispa.schedulers.svn.SIREUserRolesXML;
-import lispa.schedulers.svn.SISSUserRolesXML;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.QueryUtils;
 import lispa.schedulers.utils.StringUtils;
@@ -584,7 +582,7 @@ public class DifettoDAO {
 			}
 		}
 
-		if (list.size() > 0) {
+		if (!list.isEmpty()) {
 			Tuple t = list.get(0);
 
 			DmalmDifettoProdotto d = new DmalmDifettoProdotto();
@@ -671,7 +669,7 @@ public class DifettoDAO {
 			}
 		}
 
-		if (difetti.size() > 0) {
+		if (!difetti.isEmpty()) {
 			return true;
 		} else {
 			return false;

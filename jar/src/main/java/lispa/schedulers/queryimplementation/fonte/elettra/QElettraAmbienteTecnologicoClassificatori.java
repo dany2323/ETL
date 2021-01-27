@@ -22,16 +22,16 @@ public class QElettraAmbienteTecnologicoClassificatori extends com.mysema.query.
 	
 	public QElettraAmbienteTecnologicoClassificatori(String variable) {
 		super(ElettraAmbienteTecnologicoClassificatori.class, forVariable(variable),
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_AMBTECN_CLASSIFIC");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_AMBTECN_CLASSIFIC");
 	}
 
 	public QElettraAmbienteTecnologicoClassificatori(Path<? extends ElettraAmbienteTecnologicoClassificatori> path) {
 		super(path.getType(), path.getMetadata(),
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_AMBTECN_CLASSIFIC");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_AMBTECN_CLASSIFIC");
 	}
 
 	public QElettraAmbienteTecnologicoClassificatori(PathMetadata<?> metadata) {
 		super(ElettraAmbienteTecnologicoClassificatori.class, metadata,
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_AMBTECN_CLASSIFIC");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_AMBTECN_CLASSIFIC");
 	}
 }

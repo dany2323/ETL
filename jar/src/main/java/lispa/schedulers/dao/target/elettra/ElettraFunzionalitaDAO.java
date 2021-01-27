@@ -258,8 +258,8 @@ public class ElettraFunzionalitaDAO {
 							bean.getDtAnnullamento(), bean.getCategoria(),
 							bean.getLinguaggi(), bean.getTipiElaborazione(),
 							dataEsecuzione,
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999(),
 							bean.getDmalmModuloFk01()).execute();
 
 			connection.commit();
@@ -293,7 +293,7 @@ public class ElettraFunzionalitaDAO {
 					.where(dmalmElFunzionalita.funzionalitaPk
 							.eq(funzionalitaPk))
 					.set(dmalmElFunzionalita.dtFineValidita,
-							DateUtils.addSecondsToTimestamp(dataFineValidita,
+							DateUtils.addSecondsToTimestamp(DateUtils.formatDataEsecuzione(dataFineValidita),
 									-1)).execute();
 
 		} catch (Exception e) {
@@ -353,7 +353,7 @@ public class ElettraFunzionalitaDAO {
 							bean.getLinguaggi(), bean.getTipiElaborazione(),
 							dataEsecuzione,
 							DateUtils.formatDataEsecuzione(dataEsecuzione),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtFineValidita9999(),
 							bean.getDmalmModuloFk01()).execute();
 
 			connection.commit();

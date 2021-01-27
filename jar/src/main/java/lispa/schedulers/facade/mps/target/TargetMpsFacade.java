@@ -1,14 +1,12 @@
 package lispa.schedulers.facade.mps.target;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
+import java.util.Arrays;
 import java.util.Date;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.RecoverManager;
 
@@ -23,8 +21,8 @@ public class TargetMpsFacade {
 
 			Timestamp dataEsecuzione = new Timestamp(new Date().getTime());
 
-			RecoverManager.getInstance().prepareMpsTargetForRecover();
-
+			RecoverManager.getInstance().prepareTargetForRecover(Arrays.asList(DmAlmConstants.FONTE_MPS), dataEsecuzione);
+			
 			logger.debug("START MpsAttivitaFacade.execute " + new Date());
 			MpsAttivitaFacade.execute(dataEsecuzione);
 

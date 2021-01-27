@@ -7,13 +7,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import lispa.schedulers.bean.target.sfera.DmalmAsm;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.target.DmAlmSourceElProdEccezDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
-import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
@@ -25,7 +23,6 @@ import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdotto;
 import lispa.schedulers.utils.DateUtils;
-
 import org.apache.log4j.Logger;
 
 import com.mysema.query.Tuple;
@@ -201,7 +198,7 @@ public class DmAlmAsmDAO {
 					.from(asm)
 					.where(asm.idAsm.eq(app.getIdAsm()))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999())).list(asm.all());
+							.getDtFineValidita9999())).list(asm.all());
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -236,7 +233,7 @@ public class DmAlmAsmDAO {
 					.where(asm.annullato
 							.eq(DmAlmConstants.SFERA_ANNULLATO_FISICAMENTE))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999())).list(asm.all());
+							.getDtFineValidita9999())).list(asm.all());
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -337,7 +334,7 @@ public class DmAlmAsmDAO {
 							applicazioni.getUtilizzata(),
 							applicazioni.getVafPredefinito(),
 							dataEsecuzione,
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtFineValidita9999(),
 							applicazioni.getAnnullato(),
 							applicazioni.getStrutturaOrganizzativaFk(),
 							applicazioni.getUnitaOrganizzativaFk(),
@@ -379,7 +376,7 @@ public class DmAlmAsmDAO {
 			new SQLUpdateClause(connection, dialect, asm)
 					.where(asm.idAsm.eq(applicazioni.getIdAsm()))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(asm.dataFineValidita,
 							DateUtils.addSecondsToTimestamp(dataEsecuzione, -1))
 					.execute();
@@ -410,7 +407,7 @@ public class DmAlmAsmDAO {
 			new SQLUpdateClause(connection, dialect, asm)
 					.where(asm.idAsm.eq(applicazione.getIdAsm()))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(asm.noteAsm, applicazione.getNoteAsm())
 					.set(asm.pAppAccAuthLastUpdate,
 							applicazione.getpAppAccAuthLastUpdate())
@@ -584,7 +581,7 @@ public class DmAlmAsmDAO {
 							applicazioni.getProprietaLegale(),
 							applicazioni.getUtilizzata(),
 							applicazioni.getVafPredefinito(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtFineValidita9999(),
 							applicazioni.getUnitaOrganizzativaFk(),
 							applicazioni.getDtPrevistaProssimaMpp(),
 							applicazioni.getFip01InizioEsercizio(),
@@ -626,7 +623,7 @@ public class DmAlmAsmDAO {
 			new SQLUpdateClause(connection, dialect, asm)
 					.where(asm.idAsm.eq(idAsm.shortValue()))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(asm.annullato, "ANNULLATO FISICAMENTE").execute();
 
 			connection.commit();
@@ -688,7 +685,7 @@ public class DmAlmAsmDAO {
 			asmList = query
 					.from(asm)
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asm.annullato.isNull())
 					.list(asm.all());
 		} catch (Exception e) {
@@ -722,9 +719,9 @@ public class DmAlmAsmDAO {
 					.leftJoin(asmprodotto)
 					.on(asmprodotto.dmalmAsmPk.eq(asm.dmalmAsmPk).and(
 							asmprodotto.dtFineValidita.eq(DateUtils
-									.setDtFineValidita9999())))
+									.getDtFineValidita9999())))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asm.dmalmAsmPk.ne(new Integer(0)))
 					.where(asmprodotto.dmalmProdottoSeq.isNull().or(
 							(asmprodotto.dmalmProdottoSeq.eq(0))))
@@ -763,9 +760,9 @@ public class DmAlmAsmDAO {
 					.join(asmprodotto)
 					.on(asmprodotto.dmalmAsmPk.eq(asm.dmalmAsmPk))
 					.where(asm.dataFineValidita.ne(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asmprodotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.list(asmprodotto.dmalmAsmPk, asmprodotto.dmalmProdottoSeq,
 							asmprodotto.dtInizioValidita, asm.dataFineValidita);
 		} catch (Exception e) {
@@ -800,9 +797,9 @@ public class DmAlmAsmDAO {
 					.join(asmProdottiArchitetture)
 					.on(asmProdottiArchitetture.dmalmAsmPk.eq(asm.dmalmAsmPk))
 					.where(asm.dataFineValidita.ne(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asmProdottiArchitetture.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.list(asmProdottiArchitetture.dmalmAsmPk,
 							asmProdottiArchitetture.dmalmProdottoPk,
 							asmProdottiArchitetture.dtInizioValidita,
@@ -839,9 +836,9 @@ public class DmAlmAsmDAO {
 					.leftJoin(asmProdottiArchitetture)
 					.on(asmProdottiArchitetture.dmalmAsmPk.eq(asm.dmalmAsmPk)
 							.and(asmProdottiArchitetture.dtFineValidita
-									.eq(DateUtils.setDtFineValidita9999())))
+									.eq(DateUtils.getDtFineValidita9999())))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asm.dmalmAsmPk.ne(new Integer(0)))
 					.where(asmProdottiArchitetture.dmalmProdottoPk.isNull().or(
 							(asmProdottiArchitetture.dmalmProdottoPk.eq(0))))
@@ -882,10 +879,10 @@ public class DmAlmAsmDAO {
 					.leftJoin(asmProdottiArchitetture)
 					.on(asmProdottiArchitetture.dmalmAsmPk.eq(asm.dmalmAsmPk)
 							.and(asmProdottiArchitetture.dtFineValidita
-									.eq(DateUtils.setDtFineValidita9999())))
+									.eq(DateUtils.getDtFineValidita9999())))
 					.where(asmProdottiArchitetture.dmalmProdottoPk.eq(prodottoPk))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asm.dmalmAsmPk.ne(new Integer(0)))
 					.where(asmProdottiArchitetture.dmalmProdottoPk.isNull().or(
 							(asmProdottiArchitetture.dmalmProdottoPk.eq(0))))
@@ -928,10 +925,10 @@ public class DmAlmAsmDAO {
 					.on(prodotto.dmalmProdottoSeq
 							.eq(asmprodotto.dmalmProdottoSeq))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asm.idAsm.gt(new Short("0")))
 					.where(asmprodotto.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asm.strutturaOrganizzativaFk
 							.ne(prodotto.dmalmUnitaOrganizzativaFk01))
 					.distinct()
@@ -971,10 +968,10 @@ public class DmAlmAsmDAO {
 					.on(elettraProdotto.prodottoPk
 							.eq(asmProdottiArchitetture.dmalmProdottoPk))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asm.idAsm.gt(new Short("0")))
 					.where(asmProdottiArchitetture.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where((asm.unitaOrganizzativaFk.isNull()
 							.or(asm.unitaOrganizzativaFk
 							.ne(elettraProdotto.unitaOrganizzativaFk))
@@ -1009,7 +1006,7 @@ public class DmAlmAsmDAO {
 			new SQLUpdateClause(connection, dialect, asm)
 					.where(asm.idAsm.eq(applicazioni.getIdAsm()))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(asm.strutturaOrganizzativaFk,
 							applicazioni.getStrutturaOrganizzativaFk())
 					.execute();
@@ -1042,7 +1039,7 @@ public class DmAlmAsmDAO {
 			new SQLUpdateClause(connection, dialect, asm)
 					.where(asm.idAsm.eq(applicazioni.getIdAsm()))
 					.where(asm.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(asm.unitaOrganizzativaFk,
 							applicazioni.getUnitaOrganizzativaFk()).execute();
 
@@ -1195,7 +1192,7 @@ public class DmAlmAsmDAO {
 			
 			asmList = query.from(asm)
 					.where(asm.idAsm.eq(row.get(asm.idAsm)))
-					.where(asm.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.where(asm.dataFineValidita.eq(DateUtils.getDtFineValidita9999()))
 					.list(asm.all());
 			for(Tuple tuple:asmList){
 				
@@ -1205,7 +1202,7 @@ public class DmAlmAsmDAO {
 				new SQLUpdateClause(connection, dialect, asm)
 				.where(asm.idAsm.eq(row.get(asm.idAsm)))
 				.where(asm.dataFineValidita.eq(DateUtils
-						.setDtFineValidita9999()))
+						.getDtFineValidita9999()))
 				.set(asm.errori,errors);
 			}
 			

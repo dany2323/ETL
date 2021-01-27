@@ -32,7 +32,8 @@ public class Workitem_Type {
 		classificatore_demand, 
 		classificatore,
 		sup,
-		rfc
+		rfc,
+		checklist
 	}
 	
 	public static EnumMap<EnumWorkitemType, String> getEnumMapWiTypeStoredProcedure() {
@@ -62,6 +63,7 @@ public class Workitem_Type {
 		enumMap.put(EnumWorkitemType.drqs, DmAlmConstants.STORED_PROCEDURE_PROG_SV_DEM);
 		enumMap.put(EnumWorkitemType.classificatore, DmAlmConstants.STORED_PROCEDURE_CLASS);
 		enumMap.put(EnumWorkitemType.rfc, DmAlmConstants.STORED_PROCEDURE_RFC);
+		enumMap.put(EnumWorkitemType.checklist, DmAlmConstants.STORED_PROCEDURE_CHECKLIST);
 		return enumMap;
 	}
 }

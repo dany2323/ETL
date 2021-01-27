@@ -2,7 +2,7 @@ package lispa.schedulers.queryimplementation.target.sfera;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 import lispa.schedulers.bean.target.sfera.DmalmAsmOds;
-import lispa.schedulers.constant.DmAlmConstants;
+
 
 import com.mysema.query.types.path.*;
 
@@ -96,15 +96,15 @@ public class QDmalmAsmOds extends com.mysema.query.sql.RelationalPathBase<DmalmA
     public final com.mysema.query.sql.PrimaryKey<DmalmAsmOds> sysC0037842 = createPrimaryKey(dmalmAsmPk);
 
     public QDmalmAsmOds(String variable) {
-        super(DmalmAsmOds.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_ODS");
+        super(DmalmAsmOds.class, forVariable(variable), "DMALM", "DMALM_ASM_ODS");
     }
 
     public QDmalmAsmOds(Path<? extends DmalmAsmOds> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_ODS");
+        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_ASM_ODS");
     }
 
     public QDmalmAsmOds(PathMetadata<?> metadata) {
-        super(DmalmAsmOds.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_ODS");
+        super(DmalmAsmOds.class, metadata, "DMALM", "DMALM_ASM_ODS");
     }
 
 }

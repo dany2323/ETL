@@ -47,7 +47,7 @@ public class SchedeServizioFacade {
 					if ((BeanUtils.areDifferent(t.get(stg.name), check
 							.get(0).get(target.name)) && (check.get(0).get(
 							target.dtFineValidita).equals(DateUtils
-							.setDtFineValidita9999()))&&(t.get(stg.repository).equals(check
+							.getDtFineValidita9999()))&&(t.get(stg.repository).equals(check
 							.get(0).get(target.repository))))) {
 						//storicizzo
 						Timestamp dtChiusura = dataEsecuzione;

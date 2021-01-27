@@ -3,6 +3,9 @@ package lispa.schedulers.utils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
@@ -61,6 +64,10 @@ public class QueryUtils {
 		}
 
 		return count;
+	}
+	public static SQLQuery queryConnOracle(Connection connOracle,
+			OracleTemplates dialect) {
+		return new SQLQuery(connOracle, dialect);
 	}
 
 	public static int getCountAttachments() {
@@ -232,8 +239,94 @@ public class QueryUtils {
 		return "{call "+ procedure +"(" + parameters.substring(0, parameters.length()-1) + ")}";
 	}
 	
-	public static SQLQuery queryConnOracle(Connection connOracle,
-			OracleTemplates dialect) {
-		return new SQLQuery(connOracle, dialect);
+	public static String getCheckCaricamentoFonte() {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int count = 0;
+		
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = "SELECT STATO_CARICAMENTO FROM DMALM_CARICAMENTO_FONTE";
+			ps = connection.prepareStatement(sql);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				if(rs.getString("STATO_CARICAMENTO").equalsIgnoreCase(DmAlmConstants.CARICAMENTO_FONTE_KO)) {
+					return DmAlmConstants.CARICAMENTO_FONTE_KO;
+				}
+				if(rs.getString("STATO_CARICAMENTO").equalsIgnoreCase(DmAlmConstants.CARICAMENTO_FONTE_OK)) {
+					count++;
+				}
+			}
+			
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+
+		} finally {
+			try {
+				if (cm != null) {
+					cm.closeConnection(connection);
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		}
+		
+		if (count == 4) {
+			return DmAlmConstants.CARICAMENTO_FONTE_OK;
+		} else {
+			return DmAlmConstants.CARICAMENTO_FONTE_PENDING;
+		}
+	}
+	
+	public static Map<String, String> mapCaricamentoFonte() {
+		ConnectionManager cm = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Map<String, String> esitiCaricamento = new HashMap<String, String>();
+		try {
+			cm = ConnectionManager.getInstance();
+			connection = cm.getConnectionOracle();
+
+			String sql = "SELECT COD_FONTE, STATO_CARICAMENTO FROM DMALM_CARICAMENTO_FONTE";
+			ps = connection.prepareStatement(sql);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				esitiCaricamento.put(rs.getString("COD_FONTE"), rs.getString("STATO_CARICAMENTO"));
+			}
+			
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+
+		} finally {
+			try {
+				if (cm != null) {
+					cm.closeConnection(connection);
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		}
+		
+		return esitiCaricamento;
 	}
 }

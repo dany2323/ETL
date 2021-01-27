@@ -2,7 +2,6 @@ package lispa.schedulers.queryimplementation.target.sfera;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 import lispa.schedulers.bean.target.sfera.DmalmMisura;
-import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.path.*;
 import com.mysema.query.types.PathMetadata;
@@ -278,15 +277,15 @@ public class QDmalmMisura extends com.mysema.query.sql.RelationalPathBase<DmalmM
     public final StringPath annullato = createString("ANNULLATO");
 
     public QDmalmMisura(String variable) {
-        super(DmalmMisura.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_MISURA");
+        super(DmalmMisura.class, forVariable(variable), "DMALM", "DMALM_MISURA");
     }
 
     public QDmalmMisura(Path<? extends DmalmMisura> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_MISURA");
+        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_MISURA");
     }
 
     public QDmalmMisura(PathMetadata<?> metadata) {
-        super(DmalmMisura.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_MISURA");
+        super(DmalmMisura.class, metadata, "DMALM", "DMALM_MISURA");
     }
 
 }

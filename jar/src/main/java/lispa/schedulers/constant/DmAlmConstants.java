@@ -1,36 +1,21 @@
 package lispa.schedulers.constant;
 
-/*
- * SonarQube, open source software quality management tool.
- * Copyright (C) 2008-2013 SonarSource
- * mailto:contact AT sonarsource DOT com
- *
- * SonarQube is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
- *
- * SonarQube is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 
 public final class DmAlmConstants {
 
-	public static final String POLARION_SCHEMA = getProperty(DmAlmConfigReaderProperties.DMALM_SCHEMA_POLARION);
 	public static final String DMALM_STAGING_SCHEMA = getProperty(DmAlmConfigReaderProperties.DMALM_SCHEMA_DATAMART_STAGING);
 	public static final String DMALM_TARGET_SCHEMA = getProperty(DmAlmConfigReaderProperties.DMALM_SCHEMA_DATAMART_TARGET);
 	public static final String FONTE_ELETTRA_SCHEMA = getProperty(DmAlmConfigReaderProperties.DMALM_SCHEMA_FONTE_ELETTRA);
 
+	// fonti dati
+	public static final String FONTE_SGR_ELETTRA = "SGR_ELETTRA";
+	public static final String FONTE_CALIPSO = "CALIPSO";
+	public static final String FONTE_SFERA = "SFERA";
+	public static final String FONTE_MPS = "MPS";
+	
 	public static final String GLOBAL = "GLOBAL";
 	public static final String SVILUPPO = "SVILUPPO";
 	public static final String DEMAND = "DEMAND";
@@ -41,7 +26,11 @@ public final class DmAlmConstants {
 	
 	public static final String NON_PRESENTE = "Non presente";	
 	
-
+	// STATI CARICAMENTO FONTE
+	public static final String CARICAMENTO_FONTE_OK = "OK";
+	public static final String CARICAMENTO_FONTE_PENDING = "PENDING";
+	public static final String CARICAMENTO_FONTE_KO = "KO";
+		
 	public static final String CARICAMENTO_IN_ATTESA = "In attesa di caricamento";
 	public static final String CARICAMENTO_TERMINATO_CORRETTAMENTE = "Caricamento terminato correttamente";
 	public static final String CARICAMENTO_TERMINATO_CON_ERRORE = "Caricamento terminato con errore";
@@ -154,6 +143,7 @@ public final class DmAlmConstants {
 	public static final String UPDATE_CF_VERSION_SISS = "update_cf_version_siss.sql";
 
 	//update stato changed 
+	public static final String GET_CHANGED_WI = "get_changed_workitem.sql";
 	public static final String GET_CHANGED_WI_SIRE = "get_changed_SIRE.sql";
 	public static final String GET_CHANGED_WI_SISS = "get_changed_SISS.sql";
 	public static final String DMALM_CHANGED_WORKITEM = "dmalm_changed_workitem.sql";
@@ -184,18 +174,6 @@ public final class DmAlmConstants {
 	// Query relazione Project/Prodotto
 	public static final String SQL_CLOSE_PROJECT_PRODOTTO = "closeprojectprodotto.sql";
 	public static final String SQL_CLOSE_PROJECT_PRODOTTI_ARCHITETTURE = "closeprojectprodottiarchitetture.sql";
-	
-	//Query per procedura di ripristino: attenzione questi file contengono istruzioni sql multiple
-//	public static final String BACKUP_TARGET = "backup_target.sql";
-	public static final String BACKUP_TARGET_WITH_PROCEDURE = "backup_target_with_procedure.sql";
-	public static final String BACKUP_MPS_TARGET = "backup_mps_target.sql";
-	public static final String TRUNCATE_BACKUP_TABLES = "truncate_backup_tables.sql";
-	public static final String TRUNCATE_BACKUP_MPS_TABLES = "truncate_backup_mps_tables.sql";
-	public static final String TRUNCATE_MPS_TABLES = "truncate_mps_tables.sql";
-	public static final String DELETE_TARGET_TABLES = "delete_target_tables.sql";
-	public static final String RECOVER_TARGET = "recover_target.sql";
-	public static final String DELETE_TARGET_MPS_TABLES = "delete_target_mps_tables.sql";
-	public static final String RECOVER_MPS_TARGET = "recover_mps_target.sql";
 	
 	//File .sql con query multiple. vanno eseguiti splittandoli con il separatore ';'
 	public static final String M_UPDATE_RANK_FATTI = "m_updateranksinmonth.sql";
@@ -244,6 +222,11 @@ public final class DmAlmConstants {
 	public static final String FONTE_ELETTRA_UNITAORGANIZZATIVE = "DMALM_STG_EL_UNITA_ORGANIZZ";
 	public static final String FONTE_ELETTRA_PERSONALE = "DMALM_STG_EL_PERSONALE";
 	
+	public static final String STAGING_SGR_CURRENT_WORKITEMS = "DMALM_STG_CURRENT_WORKITEMS";
+	public static final String STAGING_SGR_SIRE_HISTORY_PROJECT = "DMALM_SIRE_HISTORY_PROJECT";
+	public static final String STAGING_SGR_SISS_HISTORY_PROJECT = "DMALM_SISS_HISTORY_PROJECT";
+	public static final String STAGING_SGR_SIRE_CURRENT_PROJECT = "DMALM_SIRE_CURRENT_PROJECT";
+	public static final String STAGING_SGR_SISS_CURRENT_PROJECT = "DMALM_SISS_CURRENT_PROJECT";
 	public static final String FONTE_SGR_SIRE_CURRENT_PROJECT = "DMALM_SIRE_CURRENT_PROJECT";
 	public static final String FONTE_SGR_SISS_CURRENT_PROJECT = "DMALM_SISS_CURRENT_PROJECT";
 	public static final String FONTE_SGR_SIRE_HISTORY_PROJECT = "DMALM_SIRE_HISTORY_PROJECT";
@@ -300,6 +283,8 @@ public final class DmAlmConstants {
 	public static final String TARGET_CLASSIFICATORE = "DMALM_CLASSIFICATORE";
 	public static final String TARGET_RICHIESTA_SUPPORTO = "DMALM_RICHIESTA_SUPPORTO";
 	public static final String TARGET_RFC = "DMALM_RFC";
+	public static final String TARGET_CHECKLIST = "DMALM_CHECKLIST";
+	public static final String TARGET_CHECKLIST_WORKITEM_TRSL = "DMALM_CHECKLIST_WORKITEM_TRSL";
 
 	public static final String TARGET_AREATEMATICA = "DMALM_AREA_TEMATICA";
 	public static final String TARGET_STATOWORKITEM = "DMALM_STATO_WORKITEM";
@@ -488,8 +473,8 @@ public final class DmAlmConstants {
 	public static final String NKEY_SEPARATOR = "0";
 	public static final String MEV = "Manutenzione Evolutiva";
 	public static final String SVI = "Sviluppo";
-	public static final String SFERA_PATH = getProperty(DmAlmConfigReaderProperties.DMALM_SFERA_PATH);
-	public static final String SFERA_CURRENT = getProperty(DmAlmConfigReaderProperties.DMALM_SFERA_CURRENT_PATH);
+//	public static final String SFERA_PATH = getProperty(DmAlmConfigReaderProperties.DMALM_SFERA_PATH);
+//	public static final String SFERA_CURRENT = getProperty(DmAlmConfigReaderProperties.DMALM_SFERA_CURRENT_PATH);
 	public static final String SFERA_CSV = getProperty(DmAlmConfigReaderProperties.DMALM_SFERA_CSV);
 	public static final String AMBIENTE_PREPRODUZIONE = "AMBIENTE_PREPRODUZIONE";
 	public static final String AMBIENTE_SVILUPPO = "AMBIENTE_SVILUPPO";
@@ -506,11 +491,11 @@ public final class DmAlmConstants {
 	public static final String ID_TARGET_PROGETTO_SFERA = "ID_PROGETTO";
 	
 	//MPS
-	public static final String MPS_PATH = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PATH);
-	public static final String MPS_PREFISSO_AMBIENTE = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PREFISSO_AMBIENTE);
-	public static final String MPS_FILENAME_DATE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+//	public static final String MPS_PATH = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PATH);
+//	public static final String MPS_PREFISSO_AMBIENTE = getProperty(DmAlmConfigReaderProperties.DMALM_MPS_PREFISSO_AMBIENTE);
+//	public static final String MPS_FILENAME_DATE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
 	public static final String MPS_CSV_EXTENSION = ".csv" ;
-	public static final char MPS_CSV_SEPARATOR = ',';
+//	public static final char MPS_CSV_SEPARATOR = ',';
 	public static final String FILENAME_MPS_ATTIVITA = "MPS_Tabelle_Attivita_" ;
 	public static final String FILENAME_MPS_CONTRATTI = "MPS_Tabelle_Contratti_" ;
 	public static final String FILENAME_MPS_FIRM_VERBALE = "MPS_Tabelle_Firmatari_Verbale_" ;
@@ -676,12 +661,17 @@ public final class DmAlmConstants {
 	public static final String STORED_PROCEDURE_PROG_SV_DEM = "STOR_PROG_SV_DEM_BY_PROJ";
 	public static final String STORED_PROCEDURE_CLASS = "STOR_CLASS_BY_PROJ";
 	public static final String STORED_PROCEDURE_RFC = "STOR_RFC_BY_PROJ";
+	public static final String STORED_PROCEDURE_CHECKLIST = "STOR_CHECKLIST_BY_PROJ";
 
 	public static final String STORED_PROCEDURE_KILL_BO_SESSIONS="KILL_BO_SESSIONS";
 	
 	public static String FUNCTION_BACKUP_TARGET = "BACKUP_TARGET";
-	public static String RECOVER_TARGET_SGR_ELETTRA = "RECOVER_TARGET_SGR_ELETTRA";
-
+	public static String RECOVER_TARGET = "RECOVER_TARGET";
+	
+	// Template Sviluppo
+	public static String COSTRUZIONE_TEMPLATE_SVILUPPO = "COSTRUZIONE_TEMPLATE_SVILUPPO";
+	public static String  INSERT_WI_SVIL_FUORI_FILIERA = "INSERT_WI_SVIL_FUORI_FILIERA";
+	
 	// Calipso Sheet Name Scheda Servizio
 	public static String CALIPSO_SHEET_NAME_SCHEDA_SERVIZIO = "Portfolio_esteso";
 

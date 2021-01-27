@@ -37,15 +37,15 @@ public class SissHistoryStructWorkitemLinkedworkitems extends com.mysema.query.s
     public final StringPath fkWorkitem = createString("FK_WORKITEM");
 
     public SissHistoryStructWorkitemLinkedworkitems(String variable) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems.class, forVariable(variable), DmAlmConstants.DMALM_STAGING_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
     }
 
     public SissHistoryStructWorkitemLinkedworkitems(Path<? extends lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_STAGING_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
     }
 
     public SissHistoryStructWorkitemLinkedworkitems(PathMetadata<?> metadata) {
-        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems.class, metadata, DmAlmConstants.POLARION_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
+        super(lispa.schedulers.bean.fonte.sgr.siss.history.SissHistoryStructWorkitemLinkedworkitems.class, metadata, DmAlmConstants.DMALM_STAGING_SCHEMA, "STRUCT_WORKITEM_LINKEDWORKITEMS");
     }
 
 }

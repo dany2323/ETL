@@ -2,7 +2,6 @@ package lispa.schedulers.queryimplementation.target.sfera;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 import lispa.schedulers.bean.target.sfera.DmalmProgettoSfera;
-import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.path.*;
 import com.mysema.query.types.PathMetadata;
@@ -131,15 +130,15 @@ public class QDmalmProgettoSfera extends com.mysema.query.sql.RelationalPathBase
 	public final StringPath annullato = createString("ANNULLATO");
 
     public QDmalmProgettoSfera(String variable) {
-        super(DmalmProgettoSfera.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SFERA");
+        super(DmalmProgettoSfera.class, forVariable(variable), "DMALM", "DMALM_PROGETTO_SFERA");
     }
 
     public QDmalmProgettoSfera(Path<? extends DmalmProgettoSfera> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SFERA");
+        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_PROGETTO_SFERA");
     }
 
     public QDmalmProgettoSfera(PathMetadata<?> metadata) {
-        super(DmalmProgettoSfera.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_PROGETTO_SFERA");
+        super(DmalmProgettoSfera.class, metadata, "DMALM", "DMALM_PROGETTO_SFERA");
     }
 
 }

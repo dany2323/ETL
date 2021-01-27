@@ -19,7 +19,6 @@ import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchi
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsm;
 import lispa.schedulers.queryimplementation.target.sfera.QDmalmAsmProdottiArchitetture;
 import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.MisuraUtils;
 
 import org.apache.log4j.Logger;
 

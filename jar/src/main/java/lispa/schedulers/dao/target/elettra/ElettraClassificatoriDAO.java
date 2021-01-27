@@ -102,7 +102,7 @@ public class ElettraClassificatoriDAO {
 			classificatori = query
 					.from(qDmalmElClassificatori)
 					.where(qDmalmElClassificatori.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(qDmalmElClassificatori.idClassificatore.eq(bean
 							.getIdClassificatore()))
 					.list(qDmalmElClassificatori.all());
@@ -143,8 +143,8 @@ public class ElettraClassificatoriDAO {
 							bean.getTipoClassificatore(),
 							bean.getCodiceClassificatore(),
 							bean.getDataCaricamento(),
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -215,7 +215,7 @@ public class ElettraClassificatoriDAO {
 							bean.getCodiceClassificatore(),
 							bean.getDataCaricamento(),
 							bean.getDataCaricamento(),
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 

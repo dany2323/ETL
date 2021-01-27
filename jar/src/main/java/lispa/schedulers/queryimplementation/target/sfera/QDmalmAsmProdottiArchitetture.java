@@ -2,7 +2,6 @@ package lispa.schedulers.queryimplementation.target.sfera;
 
 import static com.mysema.query.types.PathMetadataFactory.forVariable;
 import lispa.schedulers.bean.target.sfera.DmalmAsmProdottiArchitetture;
-import lispa.schedulers.constant.DmAlmConstants;
 
 import com.mysema.query.types.Path;
 import com.mysema.query.types.PathMetadata;
@@ -23,15 +22,15 @@ public class QDmalmAsmProdottiArchitetture extends com.mysema.query.sql.Relation
     public final DateTimePath<java.sql.Timestamp> dtInizioValidita = createDateTime("DT_INIZIO_VALIDITA", java.sql.Timestamp.class);
 
     public QDmalmAsmProdottiArchitetture(String variable) {
-        super(DmalmAsmProdottiArchitetture.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_PRODOTTI_ARCH");
+        super(DmalmAsmProdottiArchitetture.class, forVariable(variable), "DMALM", "DMALM_ASM_PRODOTTI_ARCH");
     }
 
     public QDmalmAsmProdottiArchitetture(Path<? extends DmalmAsmProdottiArchitetture> path) {
-        super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_PRODOTTI_ARCH");
+        super(path.getType(), path.getMetadata(), "DMALM", "DMALM_ASM_PRODOTTI_ARCH");
     }
 
     public QDmalmAsmProdottiArchitetture(PathMetadata<?> metadata) {
-        super(DmalmAsmProdottiArchitetture.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA, "DMALM_ASM_PRODOTTI_ARCH");
+        super(DmalmAsmProdottiArchitetture.class, metadata, "DMALM", "DMALM_ASM_PRODOTTI_ARCH");
     }
 
 }

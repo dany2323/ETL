@@ -14,18 +14,12 @@ public class ErrorManager {
 
 	private static ErrorManager instance;
 	private boolean isError;
-	private boolean inDeadlock;
-	private boolean cfDeadlock;
-	private String customFieldName;
 	private List<Exception> exceptions;
 	private Exception exception;
 
 	private ErrorManager () {
 		this.isError = false;
 		this.exceptions = new ArrayList<Exception>();
-		this.inDeadlock = false;
-		this.cfDeadlock = false;
-		this.customFieldName = null;
 	}
 
 	public synchronized List<Exception> getExceptions() {
@@ -118,18 +112,6 @@ public class ErrorManager {
 		return isError;
 	}
 	
-	public synchronized boolean hasDeadLock() {
-		return inDeadlock;
-	}
-	
-	public synchronized boolean hascfDeadLock() {
-		return cfDeadlock;
-	}
-
-	public synchronized String cfNameDeadLock() {
-		return this.customFieldName;
-	}
-	
 	public synchronized void resetError() {
 		this.isError = false;
 		this.exceptions = new ArrayList<Exception>();
@@ -140,28 +122,6 @@ public class ErrorManager {
 
 		logger.error(e.getMessage(), e);
 		addException(e);
-	}
-
-	public synchronized void exceptionDeadlock(boolean isError, Exception e) {
-
-		logger.error("Deadlock detected");
-		inDeadlock = true;
-	}
-	
-	public synchronized void exceptionCFDeadlock(boolean isError, Exception e, String cfName) {
-
-		logger.error("Deadlock detected on CF: " + cfName);
-		cfDeadlock = true;
-		this.customFieldName = cfName;
-	}
-	
-	public synchronized void resetDeadlock() {
-		this.inDeadlock = false;
-	}
-	
-	public synchronized void resetCFDeadlock() {
-		this.cfDeadlock = false;
-		this.customFieldName = null;
 	}
 
 	public synchronized static ErrorManager getInstance() {

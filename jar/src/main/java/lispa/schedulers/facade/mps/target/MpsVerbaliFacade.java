@@ -5,15 +5,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import lispa.schedulers.bean.target.mps.DmalmMpsVerbali;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
-import lispa.schedulers.dao.mps.DmAlmMpsVerbaliDAO;
+import lispa.schedulers.dao.target.mps.DmAlmMpsVerbaliDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.utils.LogUtils;
-
 import org.apache.log4j.Logger;
 
 public class MpsVerbaliFacade {

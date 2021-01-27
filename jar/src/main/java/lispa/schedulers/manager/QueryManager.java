@@ -125,6 +125,7 @@ public class QueryManager {
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
+			conn.setAutoCommit(false);
 			
 			ps = conn.prepareStatement(query);
 			ps.execute();
@@ -159,23 +160,7 @@ public class QueryManager {
 		}
 	}
 	
-	public synchronized boolean executeMultipleStatementsFromFile(String file,
-			String separatorTable, String separatorLine, Timestamp dataEsecuzione) throws Exception {
-
-		List<String> records = getQueryList(file, separatorLine);
-
-		for (String record : records) {
-			String[] splitRecord = record.split(":");
-			boolean flag = executeProcedure(splitRecord[0], splitRecord[1], dataEsecuzione);
-			if (!flag) {
-				return flag;
-			}
-		}
-		return true;
-	}
-	
-	public synchronized boolean executeProcedure(String backupTable, String targetTable, 
-			Timestamp dataEsecuzione) throws DAOException, SQLException {
+	public synchronized boolean executeFunctionPrepareBackup(String fonteDati, Timestamp dataEsecuzione) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection conn = null;
@@ -185,14 +170,14 @@ public class QueryManager {
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
+			conn.setAutoCommit(false);
 			
-			String sql = QueryUtils.getCallFunction(DmAlmConstants.FUNCTION_BACKUP_TARGET, 4);
+			String sql = QueryUtils.getCallFunction(DmAlmConstants.FUNCTION_BACKUP_TARGET, 3);
 			cstmt = conn.prepareCall(sql);
 			cstmt.registerOutParameter(1, Types.VARCHAR);
 			cstmt.setString(2, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
-			cstmt.setString(3, backupTable.trim());
-			cstmt.setString(4, targetTable.trim());
-			cstmt.setTimestamp(5, dataEsecuzione);
+			cstmt.setString(3, fonteDati);
+			cstmt.setTimestamp(4, dataEsecuzione);
 			cstmt.executeUpdate();
 			
 			String stringFlag = cstmt.getString(1);
@@ -202,7 +187,6 @@ public class QueryManager {
 				flag = false;
 			}
 			conn.commit();
-			logger.info("ESEGUITA PROCEDURE PER LE TABELLE: " + backupTable + " e " + targetTable);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
 			
@@ -220,7 +204,7 @@ public class QueryManager {
 		return flag;
 	}
 	
-	public synchronized void executeStoredProcedure() throws DAOException, SQLException {
+	public synchronized void executeProcedureRecoverTarget(String fonte) throws DAOException, SQLException {
 
 		ConnectionManager cm = null;
 		Connection conn = null;
@@ -229,19 +213,17 @@ public class QueryManager {
 		try {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
-			
-			logger.info("START RECOVER PROCEDURE ");
-			
-			String sql = QueryUtils.getCallProcedure(DmAlmConstants.RECOVER_TARGET_SGR_ELETTRA, 1);
+			conn.setAutoCommit(false);
+			logger.info("START RECOVER PROCEDURE " + fonte);
+			String targetSchema = DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase();
+			String sql = QueryUtils.getCallProcedure(DmAlmConstants.RECOVER_TARGET, 2);
 			cstmt = conn.prepareCall(sql);
-			cstmt.setString(1, DmAlmConstants.DMALM_TARGET_SCHEMA.toUpperCase());
+			cstmt.setString(1, targetSchema);
+			cstmt.setString(2, fonte);
 			cstmt.executeUpdate();
 			
 			conn.commit();
-			logger.info("STOP RECOVER PROCEDURE");
-		} catch (SQLException e) {
-			logger.error(e.getMessage(), e);
-			
+			logger.info("STOP RECOVER PROCEDURE " + fonte);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			

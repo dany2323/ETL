@@ -2,8 +2,9 @@ package lispa.schedulers.runnable.staging.sire.current;
 
 import java.util.Date;
 
+import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.manager.ErrorManager;
-import lispa.schedulers.svn.SIRESchedeServizioXML;
+import lispa.schedulers.svn.SchedeServizioXML;
 
 import org.apache.log4j.Logger;
 
@@ -22,7 +23,7 @@ public class SireSchedeServizioRunnable implements Runnable {
 
 		try {
 			logger.debug("START fillSchedeServizio SIRE " + new Date());
-			SIRESchedeServizioXML.fillSIREHistorySchedeServizio();
+			SchedeServizioXML.fillSchedeServizio(DmAlmConstants.REPOSITORY_SIRE);
 			logger.debug("STOP fillSchedeServizio SIRE " + new Date());
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);

@@ -9,7 +9,7 @@ import java.util.List;
 import lispa.schedulers.bean.target.mps.DmalmMpsResponsabiliContratto;
 import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.dao.EsitiCaricamentoDAO;
-import lispa.schedulers.dao.mps.DmAlmMpsResponsabiliContrattoDAO;
+import lispa.schedulers.dao.target.mps.DmAlmMpsResponsabiliContrattoDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.utils.LogUtils;

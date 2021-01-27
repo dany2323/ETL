@@ -213,7 +213,7 @@ public class ModuloDAO {
 									: dmalmModulo.siglaSottosistema.isNull())
 							.list(dmalmModulo.dtInserimentoRecord.max())))
 					.set(dmalmModulo.dtFineValidita,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -338,8 +338,8 @@ public class ModuloDAO {
 							bean.getSiglaSottosistema(), bean.getSiglaModulo(),
 							bean.getNome(), bean.getDsModulo(),
 							bean.getAnnullato(),
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999(),
 							bean.getDmalmPersonaleFk01(),
 							bean.getSottosistema(), bean.getTecnologie(),
 							bean.getTipoModulo(), dataesecuzione,
@@ -398,7 +398,7 @@ public class ModuloDAO {
 							bean.getNome(), bean.getDsModulo(),
 							bean.getAnnullato(),
 							DateUtils.formatDataEsecuzione(dataEsecuzione),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.getDtFineValidita9999(),
 							bean.getDmalmPersonaleFk01(),
 							bean.getSottosistema(), bean.getTecnologie(),
 							bean.getTipoModulo(), dataEsecuzione,

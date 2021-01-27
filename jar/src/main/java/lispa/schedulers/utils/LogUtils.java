@@ -85,7 +85,7 @@ public class LogUtils {
 		if (row != null) {
 
 			record += "[ ProjectDmAlmPK: "
-					+ row.get(project.sissCurrentProjectPk) + "§ ";
+					+ row.get(project.cPk) + "§ ";
 
 			record += "Id : " + row.get(project.cId) + "§ ";
 

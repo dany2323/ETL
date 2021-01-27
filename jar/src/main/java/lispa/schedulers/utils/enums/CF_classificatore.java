@@ -8,5 +8,8 @@ public enum CF_classificatore {
 	locSorgenti,
 	codiceServizi,
 	tag_alm,
-	ts_tag_alm
+	ts_tag_alm,
+	dt_inizio_deroga,
+	dt_fine_deroga,
+	id_deroga
 }

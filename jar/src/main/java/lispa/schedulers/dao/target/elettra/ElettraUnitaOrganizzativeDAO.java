@@ -205,10 +205,10 @@ public class ElettraUnitaOrganizzativeDAO {
 							unita.getCodiceEnte(),
 							unita.getCodiceVisibilita(),
 							unita.getDataCaricamento(),
-							DataEsecuzione.getInstance().getDataEsecuzione(),
+							DateUtils.formatDataEsecuzione(DataEsecuzione.getInstance().getDataEsecuzione()),
 							(unita.getDataFineValiditaEdma() != null ? unita
 									.getDataFineValiditaEdma() : DateUtils
-									.setDtFineValidita9999()), "NO", null)
+									.getDtFineValidita9999()), "NO", null)
 					.execute();
 
 			connection.commit();
@@ -239,7 +239,7 @@ public class ElettraUnitaOrganizzativeDAO {
 					.where(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk
 							.eq(unitaOrganizzativaPk))
 					.set(qDmalmElUnitaOrganizzative.dataFineValidita,
-							DateUtils.addSecondsToTimestamp(dataelaborazione,
+							DateUtils.addSecondsToTimestamp(DateUtils.formatDataEsecuzione(dataelaborazione),
 									-1)).execute();
 
 			connection.commit();
@@ -303,8 +303,8 @@ public class ElettraUnitaOrganizzativeDAO {
 							unita.getCodiceUOSuperiore(),
 							unita.getDescrizioneUOSuperiore(),
 							unita.getCodiceEnte(), unita.getCodiceVisibilita(),
-							unita.getDataCaricamento(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999(), unita.getAnnullato(), unita.getDataAnnullamento())
+							unita.getDataCaricamento(), DateUtils.formatDataEsecuzione(dataEsecuzione),
+							DateUtils.getDtFineValidita9999(), unita.getAnnullato(), unita.getDataAnnullamento())
 					.execute();
 
 			connection.commit();
@@ -378,7 +378,7 @@ public class ElettraUnitaOrganizzativeDAO {
 					.where(qDmalmElUnitaOrganizzative.codiceArea.eq(codiceArea
 							.trim()))
 					.where(qDmalmElUnitaOrganizzative.dataFineValidita
-							.eq(DateUtils.setDtFineValidita9999()))
+							.eq(DateUtils.getDtFineValidita9999()))
 					.where(qDmalmElUnitaOrganizzative.dataAnnullamento.isNull())
 					.where(qDmalmElUnitaOrganizzative.annullato.ne("SI"))
 					.list(qDmalmElUnitaOrganizzative.unitaOrganizzativaPk,qDmalmElUnitaOrganizzative.dataInizioValidita);

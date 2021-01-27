@@ -124,16 +124,16 @@ public class CheckLinkAsmSferaProjectElFacade {
 			List<Tuple> prod = new ArrayList<Tuple>();
 			
 			prod = query.from(prodotto)
-					.where(prodotto.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
+					.where(prodotto.dataFineValidita.eq(DateUtils.getDtFineValidita9999()))
 					.where(prodotto.prodottoPk.notIn(new SQLSubQuery().from(
 							asmProject)
 							.join(prodotto).on(prodotto.prodottoPk.eq(asmProject.dmalmProdottoPk))
 							.join(dmalmAsm).on(dmalmAsm.dmalmAsmPk.eq(asmProject.dmalmAsmPk))
 							.join(project).on(project.dmalmProjectPrimaryKey.eq(asmProject.dmalmProjectPk))
 							.where(asmProject.dmalmProdottoPk.gt(0))
-							.where(prodotto.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
-							.where(dmalmAsm.dataFineValidita.eq(DateUtils.setDtFineValidita9999()))
-							.where(project.dtFineValidita.eq(DateUtils.setDtFineValidita9999()))
+							.where(prodotto.dataFineValidita.eq(DateUtils.getDtFineValidita9999()))
+							.where(dmalmAsm.dataFineValidita.eq(DateUtils.getDtFineValidita9999()))
+							.where(project.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
 							.list(asmProject.dmalmProdottoPk)))
 					.list(prodotto.all());
 			

@@ -10,6 +10,8 @@ public enum CF_release {
 	registry,
 	tipo_release,
 	tag_alm,
-	ts_tag_alm
-
+	ts_tag_alm,
+	check_checklist,
+	dichiarante_checklist,
+	note_checklist 
 }

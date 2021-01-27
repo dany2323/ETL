@@ -176,7 +176,7 @@ public class StrutturaOrganizzativaEdmaLispaDAO {
 							.where(struttura.idEdma.eq(st.getIdEdma()))
 							.list(struttura.dtFineValidita.max())))
 					.set(struttura.dtFineValidita,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -262,7 +262,7 @@ public class StrutturaOrganizzativaEdmaLispaDAO {
 							struct.getDtCaricamento(),
 							struct.getDtDisattivazione(),
 							struct.getDtFineValiditaEdma(),
-							DateUtils.setDtInizioValidita1900(),
+							DateUtils.getDtInizioValidita1900(),
 							struct.getIdEdma(), struct.getIdGradoUfficio(),
 							struct.getIdSede(), struct.getIdTipologiaUfficio(),
 							struct.getNote(), struct.getEmail(),
@@ -326,7 +326,7 @@ public class StrutturaOrganizzativaEdmaLispaDAO {
 							struct.getIdSede(), struct.getIdTipologiaUfficio(),
 							struct.getNote(), struct.getEmail(),
 							struct.getInterno(),
-							DateUtils.setDtFineValidita9999(), dataEsecuzione)
+							DateUtils.getDtFineValidita9999(), dataEsecuzione)
 					.execute();
 
 			connection.commit();

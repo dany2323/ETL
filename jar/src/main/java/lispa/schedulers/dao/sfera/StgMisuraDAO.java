@@ -1,17 +1,13 @@
 package lispa.schedulers.dao.sfera;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
 import lispa.schedulers.bean.target.sfera.DmalmMisura;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.exception.PropertiesReaderException;
@@ -20,16 +16,11 @@ import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
+import lispa.schedulers.queryimplementation.fonte.sfera.QDmAlmMisura;
 import lispa.schedulers.queryimplementation.staging.sfera.QDmalmStgMisura;
 import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.MisuraUtils;
 import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
-
-import au.com.bytecode.opencsv.CSVReader;
-
-import com.google.common.collect.Lists;
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
 import com.mysema.query.sql.SQLQuery;
@@ -41,522 +32,396 @@ import com.mysema.query.types.template.StringTemplate;
 public class StgMisuraDAO {
 
 	private static Logger logger = Logger.getLogger(StgMisuraDAO.class);
-	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-			.getDataEsecuzione();
+	private static Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 	private static QDmalmStgMisura stgMisura = QDmalmStgMisura.dmalmStgMisura;
-	private static final String pathCSV = MisuraUtils.currentSferaFile();
 	private static ConnectionManager cm = ConnectionManager.getInstance();
 	private static Connection connection;
 	private static SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 
-	public static HashMap<String, Integer> mappaColonne()
-			throws PropertiesReaderException {
-		String[] nextLine;
-		ArrayList<String> fieldsNames = null;
-
-		HashMap<String, Integer> hm = new HashMap<String, Integer>();
-		CSVReader reader = null;
-
-		try {
-			reader = new CSVReader(new InputStreamReader(new FileInputStream(
-					pathCSV), "ISO-8859-1"), '\t');
-
-			if ((nextLine = reader.readNext()) != null) {
-				fieldsNames = Lists.newArrayList(nextLine);
-			}
-
-			int i = 0;
-			for (String field : fieldsNames) {
-				hm.put(field, i);
-				i++;
-			}
-
-			if (reader != null) {
-				reader.close();
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		return hm;
-	}
-
 	public static void FillStgMisura() throws PropertiesReaderException,
 			DAOException, SQLException {
-		if (pathCSV != null) {
-			HashMap<String, Integer> mapping = mappaColonne();
-			ArrayList<String> columns = null;
-			ArrayList<ArrayList<String>> csvTotal = new ArrayList<ArrayList<String>>();
+		
+		connection = cm.getConnectionOracle();
+		QDmAlmMisura stg_Misura = QDmAlmMisura.dmAlmMisura;
+		
+		try {
+			connection.setAutoCommit(false);
 
-			CSVReader reader = null;
-			String meaK;
-			String projK;
-			connection = cm.getConnectionOracle();
+			SQLTemplates dialect = new HSQLDBTemplates();
 
-			try {
-				reader = new CSVReader(new InputStreamReader(
-						new FileInputStream(pathCSV), "UTF-8"), '\t');
+			SQLQuery query = new SQLQuery(connection, dialect);
 
-				SQLTemplates dialect = new HSQLDBTemplates();
-				String[] nextLine;
-				nextLine = reader.readNext();
-				while ((nextLine = reader.readNext()) != null) {
-					columns = Lists.newArrayList(nextLine);
+			List<Tuple> misure = query.from(stg_Misura).list(stg_Misura.all());
 
-					csvTotal.add(columns);
-				}
+			int numRighe = 0;
 
-				int numRighe = 0;
+			for (Tuple row : misure) {
+				numRighe++;
 
-				for (ArrayList<String> row : csvTotal) {
-					numRighe++;
+				new SQLInsertClause(connection, dialect, stgMisura)
+						.columns(stgMisura.a1Num, stgMisura.a1Ufp,
+								stgMisura.a2Num, stgMisura.a2Ufp,
+								stgMisura.adjmax, stgMisura.adjmin,
+								stgMisura.adjufp, stgMisura.ambito,
+								stgMisura.noteAsm,
+								stgMisura.pAppAccAuthLastUpdate,
+								stgMisura.pAppCdAltreAsmCommonServ,
+								stgMisura.pAppCodAsmConfinanti,
+								stgMisura.pAppCodDirezioneDemand,
+								stgMisura.pAppCodFlussiIoAsm,
+								stgMisura.pAppCdAmbitoManAttuale,
+								stgMisura.pAppCodAmbitoManFuturo,
+								stgMisura.pAppDataFineValiditaAsm,
+								stgMisura.pAppDataInizioValiditaAsm,
+								stgMisura.pAppDataUltimoAggiorn,
+								stgMisura.pAppDenomSistTerziConfin,
+								stgMisura.pAppDenomUtentiFinaliAsm,
+								stgMisura.pAppDenominazioneAsm,
+								stgMisura.pAppFlagDamisurarePatrFp,
+								stgMisura.pAppFlagMisurareSvimevFp,
+								stgMisura.pAppFlagInManutenzione,
+								stgMisura.pAppFlagServizioComune,
+								stgMisura.pAppIndicValidazioneAsm,
+								stgMisura.pAppNomeAuthLastUpdate,
+								stgMisura.appCls, stgMisura.applicazione,
+								stgMisura.approccio, stgMisura.b1Num,
+								stgMisura.b1Ufp, stgMisura.b2Num,
+								stgMisura.b2Ufp, stgMisura.b3Num,
+								stgMisura.b3Ufp, stgMisura.b4Num,
+								stgMisura.b4Ufp, stgMisura.b5Num,
+								stgMisura.b5Ufp, stgMisura.bfpNum,
+								stgMisura.bfpUfp, stgMisura.c1Num,
+								stgMisura.c1Ufp, stgMisura.c2Num,
+								stgMisura.c2Ufp, stgMisura.cicloDiVita,
+								stgMisura.confine, stgMisura.costo,
+								stgMisura.crudNum, stgMisura.crudUfp,
+								stgMisura.d1Num, stgMisura.d1Ufp,
+								stgMisura.d2Num, stgMisura.d2Ufp,
+								stgMisura.dataAvvio,
+								stgMisura.dataConsolidamento,
+								stgMisura.dataCreazione,
+								stgMisura.dataDismissione,
+								stgMisura.dataRiferimento,
+								stgMisura.dataFineEffettiva,
+								stgMisura.dataInizioEsercizio,
+								stgMisura.durataEffettiva, stgMisura.eiNum,
+								stgMisura.eiUfp, stgMisura.eifNum,
+								stgMisura.eifUfp, stgMisura.eoNum,
+								stgMisura.eoUfp, stgMisura.eqNum,
+								stgMisura.eqUfp, stgMisura.esperienza,
+								stgMisura.faseCicloDiVita, stgMisura.fonti,
+								stgMisura.fpNonPesatiMax,
+								stgMisura.fpNonPesatiMin,
+								stgMisura.fpNonPesatiUfp,
+								stgMisura.fpPesatiMax,
+								stgMisura.fpPesatiMin,
+								stgMisura.fpPesatiUfp,
+								stgMisura.frequenzaUtilizzo,
+								stgMisura.fuNum, stgMisura.fuUfp,
+								stgMisura.gdgNum, stgMisura.gdgUfp,
+								stgMisura.geiNum, stgMisura.geiUfp,
+								stgMisura.geifNum, stgMisura.geifUfp,
+								stgMisura.geoNum, stgMisura.geoUfp,
+								stgMisura.geqNum, stgMisura.geqUfp,
+								stgMisura.gilfNum, stgMisura.gilfUfp,
+								stgMisura.gpNum, stgMisura.gpUfp,
+								stgMisura.idAsm, stgMisura.idMsr,
+								stgMisura.idProgetto, stgMisura.ifpNum,
+								stgMisura.ifpUfp, stgMisura.ilfNum,
+								stgMisura.ilfUfp,
+								stgMisura.impegnoEffettivo,
+								stgMisura.includeInBenchmarkingDb,
+								stgMisura.includiInDbPatrimonio,
+								stgMisura.ldgNum, stgMisura.ldgUfp,
+								stgMisura.linkDocumentale,
+								stgMisura.noteMsr, stgMisura.metodo,
+								stgMisura.mfNum, stgMisura.mfUfp,
+								stgMisura.nomeMisura, stgMisura.mldgNum,
+								stgMisura.mldgUfp, stgMisura.modello,
+								stgMisura.mpNum, stgMisura.mpUfp,
+								stgMisura.numeroUtenti,
+								stgMisura.permissions, stgMisura.pfNum,
+								stgMisura.pfUfp, stgMisura.postVerAddCfp,
+								stgMisura.postVerChg, stgMisura.postVerDel,
+								stgMisura.postVerFp,
+								stgMisura.preVerAddCfp,
+								stgMisura.preVerChg, stgMisura.preVerDel,
+								stgMisura.preVerFp, stgMisura.notePrj,
+								stgMisura.pPrjADisposizione01,
+								stgMisura.pPrjADisposizione02,
+								stgMisura.pPrjAuditIndexVerify,
+								stgMisura.pPrjAuditMonitore,
+								stgMisura.pPrjCodRdi,
+								stgMisura.pPrjFccFattCorrezTotal,
+								stgMisura.pPrjFlAmbTecnPiatEnterpr,
+								stgMisura.pPrjFlAmbitoTecnFuturo01,
+								stgMisura.pPrjFlAmbitoTecnFuturo02,
+								stgMisura.pPrjFlagAmbTecnGis,
+								stgMisura.pPrjAmbTecnPortali,
+								stgMisura.pPrjFlAmbTecTransBatRep,
+								stgMisura.pPrjFlApplicLgFpDwh,
+								stgMisura.pPrjFlApplicLgFpFuturo01,
+								stgMisura.pPrjFlApplicLgFpFuturo02,
+								stgMisura.pPrjFlApplLgFpWeb,
+								stgMisura.pPrjFlApplLgFpEdma,
+								stgMisura.pPrjFlagApplLgFpGis,
+								stgMisura.pPrjFlagApplLgFpMware,
+								stgMisura.pPrjFornitoreMpp,
+								stgMisura.pPrjFornitoreSviluppoMev,
+								stgMisura.pPrjImportoAConsuntivo,
+								stgMisura.pPrjImportoRdiAPreventivo,
+								stgMisura.pPrjIndexAlmValidProgAsm,
+								stgMisura.pPrjMfcAConsuntivo,
+								stgMisura.pPrjMfcAPreventivo,
+								stgMisura.pPrjMpPercentCicloDiVita,
+								stgMisura.pPrjPunPrezzoUnitNominal,
+								stgMisura.prjCls, stgMisura.nomeProgetto,
+								stgMisura.proprietaLegale,
+								stgMisura.responsabile, stgMisura.scopo,
+								stgMisura.staffMedio,
+								stgMisura.statoMisura,
+								stgMisura.tipoProgetto, stgMisura.tpNum,
+								stgMisura.tpUfp, stgMisura.ugdgNum,
+								stgMisura.ugdgUfp, stgMisura.ugepNum,
+								stgMisura.ugepUfp, stgMisura.ugoNum,
+								stgMisura.ugoUfp, stgMisura.ugpNum,
+								stgMisura.ugpUfp,
+								stgMisura.utenteMisuratore,
+								stgMisura.utilizzata,
+								stgMisura.vafPredefinito,
+								stgMisura.verDelta,
+								stgMisura.verDeltaPercent,
+								stgMisura.verEnd, stgMisura.versioneMsr,
+								stgMisura.versionePrj, stgMisura.verStart,
+								stgMisura.dataCaricamento,
+								stgMisura.dmalmStgMisuraPk,
+								stgMisura.dtPrevistaProssimaMpp,
+								stgMisura.fip01InizioEsercizio,
+								stgMisura.fip02IndiceQualita,
+								stgMisura.fip03ComplessEserc,
+								stgMisura.fip04NrPiattaforma,
+								stgMisura.fip07LingProgPrincipale,
+								stgMisura.fip10GradoAccessibilita,
+								stgMisura.fip11GradoQualitaCod,
+								stgMisura.fip12UtilizzoFramework,
+								stgMisura.fip13ComplessitaAlg,
+								stgMisura.fip15LivelloCura)
+						.values(row.get(stg_Misura.a1Num),
+								row.get(stg_Misura.a1Ufp),
+								row.get(stg_Misura.a2Num),
+								row.get(stg_Misura.a2Ufp),
+								row.get(stg_Misura.adjmax),
+								row.get(stg_Misura.adjmin),
+								row.get(stg_Misura.adjufp),
+								row.get(stg_Misura.ambito),
+								StringUtils.getMaskedValue(row.get(stg_Misura.noteAsm)),
+								StringUtils.getMaskedValue(row.get(stg_Misura.pAppAccAuthLastUpdate)),
+								row.get(stg_Misura.pAppCdAltreAsmCommonServ),
+								row.get(stg_Misura.pAppCodAsmConfinanti),
+								row.get(stg_Misura.pAppCodDirezioneDemand),
+								row.get(stg_Misura.pAppCodFlussiIoAsm),
+								StringUtils.getMaskedValue(row.get(stg_Misura.pAppCdAmbitoManAttuale)),
+								StringUtils.getMaskedValue(row.get(stg_Misura.pAppCodAmbitoManFuturo)),
+								row.get(stg_Misura.pAppDataFineValiditaAsm),
+								row.get(stg_Misura.pAppDataInizioValiditaAsm),
+								row.get(stg_Misura.pAppDataUltimoAggiorn),
+								row.get(stg_Misura.pAppDenomSistTerziConfin),
+								row.get(stg_Misura.pAppDenomUtentiFinaliAsm),
+								row.get(stg_Misura.pAppDenominazioneAsm),
+								row.get(stg_Misura.pAppFlagDamisurarePatrFp),
+								row.get(stg_Misura.pAppFlagMisurareSvimevFp),
+								row.get(stg_Misura.pAppFlagInManutenzione),
+								row.get(stg_Misura.pAppFlagServizioComune),
+								row.get(stg_Misura.pAppIndicValidazioneAsm),
+								StringUtils.getMaskedValue(row.get(stg_Misura.pAppDataUltimoAggiorn)),
+								row.get(stg_Misura.appCls), 
+								row.get(stg_Misura.applicazione),
+								row.get(stg_Misura.approccio), 
+								row.get(stg_Misura.b1Num),
+								row.get(stg_Misura.b1Ufp), 
+								row.get(stg_Misura.b2Num),
+								row.get(stg_Misura.b2Ufp), 
+								row.get(stg_Misura.b3Num),
+								row.get(stg_Misura.b3Ufp), 
+								row.get(stg_Misura.b4Num),
+								row.get(stg_Misura.b4Ufp), 
+								row.get(stg_Misura.b5Num),
+								row.get(stg_Misura.b5Ufp), 
+								row.get(stg_Misura.bfpNum),
+								row.get(stg_Misura.bfpUfp), 
+								row.get(stg_Misura.c1Num),
+								row.get(stg_Misura.c1Ufp), 
+								row.get(stg_Misura.c2Num),
+								row.get(stg_Misura.c2Ufp), 
+								row.get(stg_Misura.cicloDiVita),
+								row.get(stg_Misura.confine), 
+								row.get(stg_Misura.costo),
+								row.get(stg_Misura.crudNum), 
+								row.get(stg_Misura.crudUfp),
+								row.get(stg_Misura.d1Num), 
+								row.get(stg_Misura.d1Ufp),
+								row.get(stg_Misura.d2Num), 
+								row.get(stg_Misura.d2Ufp),
+								row.get(stg_Misura.dataAvvio),
+								row.get(stg_Misura.dataConsolidamento),
+								row.get(stg_Misura.dataCreazione),
+								row.get(stg_Misura.dataDismissione),
+								row.get(stg_Misura.dataRiferimento),
+								row.get(stg_Misura.dataFineEffettiva),
+								row.get(stg_Misura.dataInizioEsercizio),
+								row.get(stg_Misura.durataEffettiva), 
+								row.get(stg_Misura.eiNum),
+								row.get(stg_Misura.eiUfp), 
+								row.get(stg_Misura.eifNum),
+								row.get(stg_Misura.eifUfp), 
+								row.get(stg_Misura.eoNum),
+								row.get(stg_Misura.eoUfp), 
+								row.get(stg_Misura.eqNum),
+								row.get(stg_Misura.eqUfp), 
+								row.get(stg_Misura.esperienza),
+								row.get(stg_Misura.faseCicloDiVita), 
+								row.get(stg_Misura.fonti),
+								row.get(stg_Misura.fpNonPesatiMax),
+								row.get(stg_Misura.fpNonPesatiMin),
+								row.get(stg_Misura.fpNonPesatiUfp),
+								row.get(stg_Misura.fpPesatiMax),
+								row.get(stg_Misura.fpPesatiMin),
+								row.get(stg_Misura.fpPesatiUfp),
+								row.get(stg_Misura.frequenzaUtilizzo),
+								row.get(stg_Misura.fuNum), 
+								row.get(stg_Misura.fuUfp),
+								row.get(stg_Misura.gdgNum), 
+								row.get(stg_Misura.gdgUfp),
+								row.get(stg_Misura.geiNum), 
+								row.get(stg_Misura.geiUfp),
+								row.get(stg_Misura.geifNum), 
+								row.get(stg_Misura.geifUfp),
+								row.get(stg_Misura.geoNum), 
+								row.get(stg_Misura.geoUfp),
+								row.get(stg_Misura.geqNum), 
+								row.get(stg_Misura.geqUfp),
+								row.get(stg_Misura.gilfNum), 
+								row.get(stg_Misura.gilfUfp),
+								row.get(stg_Misura.gpNum), 
+								row.get(stg_Misura.gpUfp),
+								row.get(stg_Misura.idAsm), 
+								row.get(stg_Misura.idMsr),
+								row.get(stg_Misura.idProgetto), 
+								row.get(stg_Misura.ifpNum),
+								row.get(stg_Misura.ifpUfp), 
+								row.get(stg_Misura.ilfNum),
+								row.get(stg_Misura.ilfUfp),
+								row.get(stg_Misura.impegnoEffettivo),
+								row.get(stg_Misura.includeInBenchmarkingDb),
+								row.get(stg_Misura.includiInDbPatrimonio),
+								row.get(stg_Misura.ldgNum), 
+								row.get(stg_Misura.ldgUfp),
+								row.get(stg_Misura.linkDocumentale),
+								StringUtils.getMaskedValue(row.get(stg_Misura.noteMsr)),
+								row.get(stg_Misura.metodo),
+								row.get(stg_Misura.mfNum), 
+								row.get(stg_Misura.mfUfp),
+								row.get(stg_Misura.nomeMisura), 
+								row.get(stg_Misura.mldgNum),
+								row.get(stg_Misura.mldgUfp), 
+								row.get(stg_Misura.modello),
+								row.get(stg_Misura.mpNum), 
+								row.get(stg_Misura.mpUfp),
+								row.get(stg_Misura.numeroUtenti),
+								StringUtils.getMaskedValue(row.get(stg_Misura.permissions)),
+								row.get(stg_Misura.pfNum),
+								row.get(stg_Misura.pfUfp), 
+								row.get(stg_Misura.postVerAddCfp),
+								row.get(stg_Misura.postVerChg), 
+								row.get(stg_Misura.postVerDel),
+								row.get(stg_Misura.postVerFp),
+								row.get(stg_Misura.preVerAddCfp),
+								row.get(stg_Misura.preVerChg), 
+								row.get(stg_Misura.preVerDel),
+								row.get(stg_Misura.preVerFp), 
+								StringUtils.getMaskedValue(row.get(stg_Misura.notePrj)),
+								row.get(stg_Misura.pPrjADisposizione01),
+								row.get(stg_Misura.pPrjADisposizione02),
+								row.get(stg_Misura.pPrjAuditIndexVerify),
+								StringUtils.getMaskedValue(row.get(stg_Misura.pPrjAuditMonitore)),
+								row.get(stg_Misura.pPrjCodRdi),
+								row.get(stg_Misura.pPrjFccFattCorrezTotal),
+								row.get(stg_Misura.pPrjFlAmbTecnPiatEnterpr),
+								row.get(stg_Misura.pPrjFlAmbitoTecnFuturo01),
+								row.get(stg_Misura.pPrjFlAmbitoTecnFuturo02),
+								row.get(stg_Misura.pPrjFlagAmbTecnGis),
+								row.get(stg_Misura.pPrjAmbTecnPortali),
+								row.get(stg_Misura.pPrjFlAmbTecTransBatRep),
+								row.get(stg_Misura.pPrjFlApplicLgFpDwh),
+								row.get(stg_Misura.pPrjFlApplicLgFpFuturo01),
+								row.get(stg_Misura.pPrjFlApplicLgFpFuturo02),
+								row.get(stg_Misura.pPrjFlApplLgFpWeb),
+								row.get(stg_Misura.pPrjFlApplLgFpEdma),
+								row.get(stg_Misura.pPrjFlagApplLgFpGis),
+								row.get(stg_Misura.pPrjFlagApplLgFpMware),
+								StringUtils.getMaskedValue(row.get(stg_Misura.pPrjFornitoreMpp)),
+								StringUtils.getMaskedValue(row.get(stg_Misura.pPrjFornitoreSviluppoMev)),
+								row.get(stg_Misura.pPrjImportoAConsuntivo),
+								row.get(stg_Misura.pPrjImportoRdiAPreventivo),
+								row.get(stg_Misura.pPrjIndexAlmValidProgAsm),
+								row.get(stg_Misura.pPrjMfcAConsuntivo),
+								row.get(stg_Misura.pPrjMfcAPreventivo),
+								row.get(stg_Misura.pPrjMpPercentCicloDiVita),
+								row.get(stg_Misura.pPrjPunPrezzoUnitNominal),
+								row.get(stg_Misura.prjCls), 
+								row.get(stg_Misura.nomeProgetto),
+								row.get(stg_Misura.proprietaLegale),
+								StringUtils.getMaskedValue(row.get(stg_Misura.responsabile)),
+								row.get(stg_Misura.scopo),
+								row.get(stg_Misura.staffMedio),
+								row.get(stg_Misura.statoMisura),
+								row.get(stg_Misura.tipoProgetto), 
+								row.get(stg_Misura.tpNum),
+								row.get(stg_Misura.tpUfp), 
+								row.get(stg_Misura.ugdgNum),
+								row.get(stg_Misura.ugdgUfp), 
+								row.get(stg_Misura.ugepNum),
+								row.get(stg_Misura.ugepUfp), 
+								row.get(stg_Misura.ugoNum),
+								row.get(stg_Misura.ugoUfp), 
+								row.get(stg_Misura.ugpNum),
+								row.get(stg_Misura.ugpUfp),
+								StringUtils.getMaskedValue(row.get(stg_Misura.utenteMisuratore)),
+								row.get(stg_Misura.utilizzata),
+								row.get(stg_Misura.vafPredefinito),
+								row.get(stg_Misura.verDelta),
+								row.get(stg_Misura.verDeltaPercent),
+								row.get(stg_Misura.verEnd), 
+								row.get(stg_Misura.versioneMsr),
+								row.get(stg_Misura.versionePrj), 
+								row.get(stg_Misura.verStart),
+								dataEsecuzione,
+								StringTemplate.create("DM_ALM_STG_MISURA_SEQ.nextval"),
+								row.get(stg_Misura.dtPrevistaProssimaMpp),
+								row.get(stg_Misura.fip01InizioEsercizio),
+								row.get(stg_Misura.fip02IndiceQualita),
+								row.get(stg_Misura.fip03ComplessEserc),
+								row.get(stg_Misura.fip04NrPiattaforma),
+								row.get(stg_Misura.fip07LingProgPrincipale),
+								row.get(stg_Misura.fip10GradoAccessibilita),
+								row.get(stg_Misura.fip11GradoQualitaCod),
+								row.get(stg_Misura.fip12UtilizzoFramework),
+								row.get(stg_Misura.fip13ComplessitaAlg),
+								row.get(stg_Misura.fip15LivelloCura))
+						.execute();
+			}
 
-					meaK = row.get(mapping.get("IdMea"));
-					projK = row.get(mapping.get("IdPrj"));
-					if (meaK.equals(""))
-						row.set(mapping.get("IdMea"), "0");
-					if (projK.equals(""))
-						row.set(mapping.get("IdPrj"), "0");
+			connection.commit();
 
-					new SQLInsertClause(connection, dialect, stgMisura)
-							.columns(stgMisura.a1Num, stgMisura.a1Ufp,
-									stgMisura.a2Num, stgMisura.a2Ufp,
-									stgMisura.adjmax, stgMisura.adjmin,
-									stgMisura.adjufp, stgMisura.ambito,
-									stgMisura.noteAsm,
-									stgMisura.pAppAccAuthLastUpdate,
-									stgMisura.pAppCdAltreAsmCommonServ,
-									stgMisura.pAppCodAsmConfinanti,
-									stgMisura.pAppCodDirezioneDemand,
-									stgMisura.pAppCodFlussiIoAsm,
-									stgMisura.pAppCdAmbitoManAttuale,
-									stgMisura.pAppCodAmbitoManFuturo,
-									stgMisura.pAppDataFineValiditaAsm,
-									stgMisura.pAppDataInizioValiditaAsm,
-									stgMisura.pAppDataUltimoAggiorn,
-									stgMisura.pAppDenomSistTerziConfin,
-									stgMisura.pAppDenomUtentiFinaliAsm,
-									stgMisura.pAppDenominazioneAsm,
-									stgMisura.pAppFlagDamisurarePatrFp,
-									stgMisura.pAppFlagMisurareSvimevFp,
-									stgMisura.pAppFlagInManutenzione,
-									stgMisura.pAppFlagServizioComune,
-									stgMisura.pAppIndicValidazioneAsm,
-									stgMisura.pAppNomeAuthLastUpdate,
-									stgMisura.appCls, stgMisura.applicazione,
-									stgMisura.approccio, stgMisura.b1Num,
-									stgMisura.b1Ufp, stgMisura.b2Num,
-									stgMisura.b2Ufp, stgMisura.b3Num,
-									stgMisura.b3Ufp, stgMisura.b4Num,
-									stgMisura.b4Ufp, stgMisura.b5Num,
-									stgMisura.b5Ufp, stgMisura.bfpNum,
-									stgMisura.bfpUfp, stgMisura.c1Num,
-									stgMisura.c1Ufp, stgMisura.c2Num,
-									stgMisura.c2Ufp, stgMisura.cicloDiVita,
-									stgMisura.confine, stgMisura.costo,
-									stgMisura.crudNum, stgMisura.crudUfp,
-									stgMisura.d1Num, stgMisura.d1Ufp,
-									stgMisura.d2Num, stgMisura.d2Ufp,
-									stgMisura.dataAvvio,
-									stgMisura.dataConsolidamento,
-									stgMisura.dataCreazione,
-									stgMisura.dataDismissione,
-									stgMisura.dataRiferimento,
-									stgMisura.dataFineEffettiva,
-									stgMisura.dataInizioEsercizio,
-									stgMisura.durataEffettiva, stgMisura.eiNum,
-									stgMisura.eiUfp, stgMisura.eifNum,
-									stgMisura.eifUfp, stgMisura.eoNum,
-									stgMisura.eoUfp, stgMisura.eqNum,
-									stgMisura.eqUfp, stgMisura.esperienza,
-									stgMisura.faseCicloDiVita, stgMisura.fonti,
-									stgMisura.fpNonPesatiMax,
-									stgMisura.fpNonPesatiMin,
-									stgMisura.fpNonPesatiUfp,
-									stgMisura.fpPesatiMax,
-									stgMisura.fpPesatiMin,
-									stgMisura.fpPesatiUfp,
-									stgMisura.frequenzaUtilizzo,
-									stgMisura.fuNum, stgMisura.fuUfp,
-									stgMisura.gdgNum, stgMisura.gdgUfp,
-									stgMisura.geiNum, stgMisura.geiUfp,
-									stgMisura.geifNum, stgMisura.geifUfp,
-									stgMisura.geoNum, stgMisura.geoUfp,
-									stgMisura.geqNum, stgMisura.geqUfp,
-									stgMisura.gilfNum, stgMisura.gilfUfp,
-									stgMisura.gpNum, stgMisura.gpUfp,
-									stgMisura.idAsm, stgMisura.idMsr,
-									stgMisura.idProgetto, stgMisura.ifpNum,
-									stgMisura.ifpUfp, stgMisura.ilfNum,
-									stgMisura.ilfUfp,
-									stgMisura.impegnoEffettivo,
-									stgMisura.includeInBenchmarkingDb,
-									stgMisura.includiInDbPatrimonio,
-									stgMisura.ldgNum, stgMisura.ldgUfp,
-									stgMisura.linkDocumentale,
-									stgMisura.noteMsr, stgMisura.metodo,
-									stgMisura.mfNum, stgMisura.mfUfp,
-									stgMisura.nomeMisura, stgMisura.mldgNum,
-									stgMisura.mldgUfp, stgMisura.modello,
-									stgMisura.mpNum, stgMisura.mpUfp,
-									stgMisura.numeroUtenti,
-									stgMisura.permissions, stgMisura.pfNum,
-									stgMisura.pfUfp, stgMisura.postVerAddCfp,
-									stgMisura.postVerChg, stgMisura.postVerDel,
-									stgMisura.postVerFp,
-									stgMisura.preVerAddCfp,
-									stgMisura.preVerChg, stgMisura.preVerDel,
-									stgMisura.preVerFp, stgMisura.notePrj,
-									stgMisura.pPrjADisposizione01,
-									stgMisura.pPrjADisposizione02,
-									stgMisura.pPrjAuditIndexVerify,
-									stgMisura.pPrjAuditMonitore,
-									stgMisura.pPrjCodRdi,
-									stgMisura.pPrjFccFattCorrezTotal,
-									stgMisura.pPrjFlAmbTecnPiatEnterpr,
-									stgMisura.pPrjFlAmbitoTecnFuturo01,
-									stgMisura.pPrjFlAmbitoTecnFuturo02,
-									stgMisura.pPrjFlagAmbTecnGis,
-									stgMisura.pPrjAmbTecnPortali,
-									stgMisura.pPrjFlAmbTecTransBatRep,
-									stgMisura.pPrjFlApplicLgFpDwh,
-									stgMisura.pPrjFlApplicLgFpFuturo01,
-									stgMisura.pPrjFlApplicLgFpFuturo02,
-									stgMisura.pPrjFlApplLgFpWeb,
-									stgMisura.pPrjFlApplLgFpEdma,
-									stgMisura.pPrjFlagApplLgFpGis,
-									stgMisura.pPrjFlagApplLgFpMware,
-									stgMisura.pPrjFornitoreMpp,
-									stgMisura.pPrjFornitoreSviluppoMev,
-									stgMisura.pPrjImportoAConsuntivo,
-									stgMisura.pPrjImportoRdiAPreventivo,
-									stgMisura.pPrjIndexAlmValidProgAsm,
-									stgMisura.pPrjMfcAConsuntivo,
-									stgMisura.pPrjMfcAPreventivo,
-									stgMisura.pPrjMpPercentCicloDiVita,
-									stgMisura.pPrjPunPrezzoUnitNominal,
-									stgMisura.prjCls, stgMisura.nomeProgetto,
-									stgMisura.proprietaLegale,
-									stgMisura.responsabile, stgMisura.scopo,
-									stgMisura.staffMedio,
-									stgMisura.statoMisura,
-									stgMisura.tipoProgetto, stgMisura.tpNum,
-									stgMisura.tpUfp, stgMisura.ugdgNum,
-									stgMisura.ugdgUfp, stgMisura.ugepNum,
-									stgMisura.ugepUfp, stgMisura.ugoNum,
-									stgMisura.ugoUfp, stgMisura.ugpNum,
-									stgMisura.ugpUfp,
-									stgMisura.utenteMisuratore,
-									stgMisura.utilizzata,
-									stgMisura.vafPredefinito,
-									stgMisura.verDelta,
-									stgMisura.verDeltaPercent,
-									stgMisura.verEnd, stgMisura.versioneMsr,
-									stgMisura.versionePrj, stgMisura.verStart,
-									stgMisura.dataCaricamento,
-									stgMisura.dmalmStgMisuraPk,
-									stgMisura.dtPrevistaProssimaMpp,
-									stgMisura.fip01InizioEsercizio,
-									stgMisura.fip02IndiceQualita,
-									stgMisura.fip03ComplessEserc,
-									stgMisura.fip04NrPiattaforma,
-									stgMisura.fip07LingProgPrincipale,
-									stgMisura.fip10GradoAccessibilita,
-									stgMisura.fip11GradoQualitaCod,
-									stgMisura.fip12UtilizzoFramework,
-									stgMisura.fip13ComplessitaAlg,
-									stgMisura.fip15LivelloCura)
-							.values(row.get(mapping.get("A.1_NUM")),
-									row.get(mapping.get("A.1_UFP")),
-									row.get(mapping.get("A.2_NUM")),
-									row.get(mapping.get("A.2_UFP")),
-									row.get(mapping.get("Adj-Max")),
-									row.get(mapping.get("Adj-Min")),
-									row.get(mapping.get("Adj-Ufp")),
-									row.get(mapping.get("Ambito")),
-									StringUtils.getMaskedValue(row.get(mapping.get("APP_Note"))),
-									StringUtils.getMaskedValue(row.get(mapping
-											.get("APP-ATT:ACCOUNT_AUTORE_ULTIMO_AGGIORN"))),
-									row.get(mapping
-											.get("APP-ATT:COD_ALTRE_ASM_UTILIZZ_COME_SERV_COMUNI")),
-									row.get(mapping
-											.get("APP-ATT:COD_ASM_CONFINANTI")),
-									row.get(mapping
-											.get("APP-ATT:COD_DIREZIONE_DEMAND")),
-									row.get(mapping
-											.get("APP-ATT:COD_FLUSSI_IO_ASM")),
-									StringUtils.getMaskedValue(row.get(mapping
-											.get("APP-ATT:CODICE_AMBITO_MANUTENZIONE_2012_ASM"))),
-									StringUtils.getMaskedValue(row.get(mapping
-											.get("APP-ATT:CODICE_AMBITO_MANUTENZIONE_2014_2015_ASM"))),
-									row.get(mapping
-											.get("APP-ATT:DATA_FINE_VALIDITA_ASM")),
-									row.get(mapping
-											.get("APP-ATT:DATA_INIZIO_VALIDITA_ASM")),
-									row.get(mapping
-											.get("APP-ATT:DATA_ULTIMO_AGGIORN")),
-									row.get(mapping
-											.get("APP-ATT:DENOM_SIST_TERZEPARTI_CONFINANTI")),
-									row.get(mapping
-											.get("APP-ATT:DENOM_UTENTI_ FINALI_ASM")),
-									row.get(mapping
-											.get("APP-ATT:DENOMINAZIONE_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FLAG_ASM_DA_MISURARE_PATRIMONIALE_IN_FP")),
-									row.get(mapping
-											.get("APP-ATT:FLAG_ASM_DA_MISURARE_SVILUPPOMEV_IN_FP")),
-									row.get(mapping
-											.get("APP-ATT:FLAG_ASM_IN_MANUTENZIONE")),
-									row.get(mapping
-											.get("APP-ATT:FLAG_ASM_SERVIZIO_COMUNE")),
-									row.get(mapping
-											.get("APP-ATT:INDICATORE_ALM_PER_VALIDAZIONE_ASM")),
-									StringUtils.getMaskedValue(row.get(mapping
-											.get("APP-ATT:NOME_AUTORE_ULTIMO_AGGIORN"))),
-									row.get(mapping.get("APP-CLS:")),
-									row.get(mapping.get("Applicazione")),
-									row.get(mapping.get("Approccio")),
-									row.get(mapping.get("B.1_NUM")),
-									row.get(mapping.get("B.1_UFP")),
-									row.get(mapping.get("B.2_NUM")),
-									row.get(mapping.get("B.2_UFP")),
-									row.get(mapping.get("B.3_NUM")),
-									row.get(mapping.get("B.3_UFP")),
-									row.get(mapping.get("B.4_NUM")),
-									row.get(mapping.get("B.4_UFP")),
-									row.get(mapping.get("B.5_NUM")),
-									row.get(mapping.get("B.5_UFP")),
-									row.get(mapping.get("BFP_NUM")),
-									row.get(mapping.get("BFP_UFP")),
-									row.get(mapping.get("C.1_NUM")),
-									row.get(mapping.get("C.1_UFP")),
-									row.get(mapping.get("C.2_NUM")),
-									row.get(mapping.get("C.2_UFP")),
-									row.get(mapping.get("Ciclo di vita")),
-									row.get(mapping.get("Confine")),
-									row.get(mapping.get("Costo")),
-									row.get(mapping.get("CRUD_NUM")),
-									row.get(mapping.get("CRUD_UFP")),
-									row.get(mapping.get("D.1_NUM")),
-									row.get(mapping.get("D.1_UFP")),
-									row.get(mapping.get("D.2_NUM")),
-									row.get(mapping.get("D.2_UFP")),
-									row.get(mapping.get("Data di avvio")),
-									row.get(mapping
-											.get("Data di consolidamento")),
-									row.get(mapping.get("Data di creazione")),
-									row.get(mapping.get("Data di dismissione")),
-									row.get(mapping.get("Data di riferimento")),
-									row.get(mapping.get("Data fine effettiva")),
-									row.get(mapping
-											.get("Data inizio esercizio")),
-									row.get(mapping.get("Durata effettiva")),
-									row.get(mapping.get("EI_NUM")),
-									row.get(mapping.get("EI_UFP")),
-									row.get(mapping.get("EIF_NUM")),
-									row.get(mapping.get("EIF_UFP")),
-									row.get(mapping.get("EO_NUM")),
-									row.get(mapping.get("EO_UFP")),
-									row.get(mapping.get("EQ_NUM")),
-									row.get(mapping.get("EQ_UFP")),
-									row.get(mapping.get("Esperienza")),
-									row.get(mapping
-											.get("Fase del ciclo di vita")),
-									row.get(mapping.get("Fonti")),
-									row.get(mapping.get("FP non pesati (MAX)")),
-									row.get(mapping.get("FP non pesati (MIN)")),
-									row.get(mapping.get("FP non pesati (UFP)")),
-									row.get(mapping.get("FP pesati (MAX)")),
-									row.get(mapping.get("FP pesati (MIN)")),
-									row.get(mapping.get("FP pesati (UFP)")),
-									row.get(mapping
-											.get("Frequenza di utilizzo")),
-									row.get(mapping.get("FU_NUM")),
-									row.get(mapping.get("FU_UFP")),
-									row.get(mapping.get("GDG_NUM")),
-									row.get(mapping.get("GDG_UFP")),
-									row.get(mapping.get("GEI_NUM")),
-									row.get(mapping.get("GEI_UFP")),
-									row.get(mapping.get("GEIF_NUM")),
-									row.get(mapping.get("GEIF_UFP")),
-									row.get(mapping.get("GEO_NUM")),
-									row.get(mapping.get("GEO_UFP")),
-									row.get(mapping.get("GEQ_NUM")),
-									row.get(mapping.get("GEQ_UFP")),
-									row.get(mapping.get("GILF_NUM")),
-									row.get(mapping.get("GILF_UFP")),
-									row.get(mapping.get("GP_NUM")),
-									row.get(mapping.get("GP_UFP")),
-									row.get(mapping.get("IdApp")),
-									row.get(mapping.get("IdMea")),
-									row.get(mapping.get("IdPrj")),
-									row.get(mapping.get("IFP_NUM")),
-									row.get(mapping.get("IFP_UFP")),
-									row.get(mapping.get("ILF_NUM")),
-									row.get(mapping.get("ILF_UFP")),
-									row.get(mapping.get("Impegno effettivo")),
-									row.get(mapping
-											.get("Includi nel database di benchmarking")),
-									row.get(mapping
-											.get("Includi nel database di patrimonio")),
-									row.get(mapping.get("LDG_NUM")),
-									row.get(mapping.get("LDG_UFP")),
-									row.get(mapping.get("Link documentale")),
-									StringUtils.getMaskedValue(row.get(mapping.get("MEA_Note"))),
-									row.get(mapping.get("Metodo")),
-									row.get(mapping.get("MF_NUM")),
-									row.get(mapping.get("MF_UFP")),
-									row.get(mapping.get("Misura")),
-									row.get(mapping.get("MLDG_NUM")),
-									row.get(mapping.get("MLDG_UFP")),
-									row.get(mapping.get("Modello")),
-									row.get(mapping.get("MP_NUM")),
-									row.get(mapping.get("MP_UFP")),
-									row.get(mapping.get("Numero utenti")),
-									StringUtils.getMaskedValue(row.get(mapping.get("Permissions"))),
-									row.get(mapping.get("PF_NUM")),
-									row.get(mapping.get("PF_UFP")),
-									row.get(mapping.get("POST.VER.ADD/CFP")),
-									row.get(mapping.get("POST.VER.CHG")),
-									row.get(mapping.get("POST.VER.DEL")),
-									row.get(mapping.get("POST.VER.FP")),
-									row.get(mapping.get("PRE.VER.ADD/CFP")),
-									row.get(mapping.get("PRE.VER.CHG")),
-									row.get(mapping.get("PRE.VER.DEL")),
-									row.get(mapping.get("PRE.VER.FP")),
-									StringUtils.getMaskedValue(row.get(mapping.get("PRJ_Note"))),
-									row.get(mapping
-											.get("PRJ-ATT:A_DISPOSIZIONE_01")),
-									row.get(mapping
-											.get("PRJ-ATT:A_DISPOSIZIONE-02")),
-									row.get(mapping
-											.get("PRJ-ATT:AUDIT_INDICE_VERIFICABILITA")),
-									StringUtils.getMaskedValue(row.get(mapping
-											.get("PRJ-ATT:AUDIT_MONITORE"))),
-									row.get(mapping.get("PRJ-ATT:COD_ RDI")),
-									row.get(mapping
-											.get("PRJ-ATT:FCC_FATT_CORREZ_COMPLESSIVO")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_ AMBITO_TECNOLOGICO_ PIATTAF_ SPECIAL_ ENTERPRISE")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-01")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ futuro-02")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_ GIS")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_PORTALI")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_AMBITO_TECNOLOGICO_TRANS_BATCH_REP")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_- DWH")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_futuro-01")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_futuro-02")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_ FP_SITIWEB")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_FP_EDMA")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_FP_GIS")),
-									row.get(mapping
-											.get("PRJ-ATT:FLAG_APPLICABILITA_LG_FP_MWARE")),
-									StringUtils.getMaskedValue(row.get(mapping
-											.get("PRJ-ATT:FORNITORE_MPP"))),
-									StringUtils.getMaskedValue(row.get(mapping
-											.get("PRJ-ATT:FORNITORE_SVILUPPO_MEV "))),
-									row.get(mapping
-											.get("PRJ-ATT:IMPORTO_A_CONSUNTIVO")),
-									row.get(mapping
-											.get("PRJ-ATT:IMPORTO_RDI_A_PREVENTIVO")),
-									row.get(mapping
-											.get("PRJ-ATT:INDICATORE_ALM_PER_VALIDAZ_PROGETTO_ASM")),
-									row.get(mapping
-											.get("PRJ-ATT:MFC_A_CONSUNTIVO")),
-									row.get(mapping
-											.get("PRJ-ATT:MFC_A_PREVENTIVO")),
-									row.get(mapping
-											.get("PRJ-ATT:MP_PERCENT_CICLO_DI_VITA")),
-									row.get(mapping
-											.get("PRJ-ATT:PUN_PREZZO_UNITARIO_NOMINALE")),
-									row.get(mapping.get("PRJ-CLS:")),
-									row.get(mapping.get("Progetto")),
-									row.get(mapping.get("Proprietà legale")),
-									StringUtils.getMaskedValue(row.get(mapping.get("Responsabile"))),
-									row.get(mapping.get("Scopo")),
-									row.get(mapping.get("Staff medio")),
-									row.get(mapping.get("Stato misura (*)")),
-									row.get(mapping.get("Tipo progetto")),
-									row.get(mapping.get("TP_NUM")),
-									row.get(mapping.get("TP_UFP")),
-									row.get(mapping.get("UGDG_NUM")),
-									row.get(mapping.get("UGDG_UFP")),
-									row.get(mapping.get("UGEP_NUM")),
-									row.get(mapping.get("UGEP_UFP")),
-									row.get(mapping.get("UGO_NUM")),
-									row.get(mapping.get("UGO_UFP")),
-									row.get(mapping.get("UGP_NUM")),
-									row.get(mapping.get("UGP_UFP")),
-									StringUtils.getMaskedValue(row.get(mapping.get("Utente misuratore"))),
-									row.get(mapping.get("Utilizzata")),
-									row.get(mapping.get("VAF predefinito")),
-									row.get(mapping.get("VER.DELTA")),
-									row.get(mapping.get("VER.DELTA%")),
-									row.get(mapping.get("VER-End")),
-									row.get(mapping.get("VersioneMea")),
-									row.get(mapping.get("VersionePrj")),
-									row.get(mapping.get("VER-Start")),
-									dataEsecuzione,
-									StringTemplate
-											.create("DM_ALM_STG_MISURA_SEQ.nextval"),
-									(StringUtils.hasText(row.get(mapping
-											.get("APP-ATT:DATA_PREVISTA_CONSEGNA_PROSSIMA_MPP_ASM"))) ? DateUtils.stringToTimestamp(row.get(mapping
-											.get("APP-ATT:DATA_PREVISTA_CONSEGNA_PROSSIMA_MPP_ASM")),"dd/MM/yyyy")
-											: null),
-									(StringUtils.hasText(row.get(mapping
-											.get("APP-ATT:FIP01_ANNO_INIZIO_ESERCIZIO_ASM"))) ? DateUtils.stringToTimestamp(
-											row.get(mapping
-													.get("APP-ATT:FIP01_ANNO_INIZIO_ESERCIZIO_ASM")),
-											"dd/MM/yyyy")
-											: null),
-									row.get(mapping
-											.get("APP-ATT:FIP02_INDICE_QUALITA_DOCUMENTAZ_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FIP03_COMPLESS_PIATTAF_SVIL_ESERC_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FIP04_NR-PIATTAF-TGT_ESERC_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FIP07_LING_PROG_PRINCIPALE_REALIZZ_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FIP10_GRADO_ACCESSIBILITA_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FIP11_GRADO_QUALITA_CODICE_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FIP12_UTILIZZO_FRAMEWORK_AZIENDALI_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FIP13_COMPLESS_ALGORITMICA_SW_ASM")),
-									row.get(mapping
-											.get("APP-ATT:FIP15_LIVELLO_CURA_GRAF_INTERF_UTENTE_ASM")))
-							.execute();
-				}
+			logger.info("StgMisuraDAO.FillStgMisura - righe inserite: " + numRighe);
 
-				connection.commit();
-
-				logger.info("StgMisuraDAO.FillStgMisura - pathCSV: " + pathCSV
-						+ ", righe inserite: " + numRighe);
-
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-				throw new DAOException(e);
-			} finally {
-				if (cm != null) {
-					cm.closeConnection(connection);
-				}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
 			}
 		}
 	}

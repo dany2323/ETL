@@ -3,8 +3,6 @@ package lispa.schedulers.dao.target;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SQL_PROJECT;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -18,30 +16,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.log4j.Logger;
-import org.tmatesoft.svn.core.SVNNodeKind;
-import org.tmatesoft.svn.core.SVNProperties;
-import org.tmatesoft.svn.core.SVNProperty;
-import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
-import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
-import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
-import org.tmatesoft.svn.core.io.SVNFileRevision;
-import org.tmatesoft.svn.core.io.SVNRepository;
-import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
 import com.mysema.query.Tuple;
 import com.mysema.query.sql.OracleTemplates;
 import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.sql.dml.SQLUpdateClause;
 import com.mysema.query.types.template.StringTemplate;
+
 import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectUnitaOrganizzativaEccezioni;
 import lispa.schedulers.bean.target.DmalmStrutturaOrganizzativa;
@@ -52,7 +35,6 @@ import lispa.schedulers.dao.target.elettra.ElettraUnitaOrganizzativeDAO;
 import lispa.schedulers.exception.DAOException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.DataEsecuzione;
-import lispa.schedulers.manager.DmAlmConfigReader;
 import lispa.schedulers.manager.DmAlmConfigReaderProperties;
 import lispa.schedulers.manager.ErrorManager;
 import lispa.schedulers.manager.QueryManager;
@@ -64,7 +46,6 @@ import lispa.schedulers.queryimplementation.target.QDmalmProject;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
 import lispa.schedulers.queryimplementation.target.elettra.QDmAlmSourceElProdEccez;
 import lispa.schedulers.queryimplementation.target.elettra.QDmalmElProdottiArchitetture;
-import lispa.schedulers.svn.SIREUserRolesXML;
 import lispa.schedulers.utils.DateUtils;
 import lispa.schedulers.utils.StringUtils;
 
@@ -80,10 +61,9 @@ public class ProjectSgrCmDAO {
 	private static QDmalmProdotto dmalmProdotto = QDmalmProdotto.dmalmProdotto;
 	private static QDmalmProjectProdotto projectProdotto = QDmalmProjectProdotto.dmalmProjectProdotto;
 	private static QDmalmElProdottiArchitetture qDmalmElProdottiArchitetture = QDmalmElProdottiArchitetture.qDmalmElProdottiArchitetture;
-	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez= QDmAlmSourceElProdEccez.dmAlmSourceElProd;
+	private static QDmAlmSourceElProdEccez dmAlmSourceElProdEccez = QDmAlmSourceElProdEccez.dmAlmSourceElProd;
 
-	public static List<DmalmProject> getAllProject(Timestamp dataEsecuzione)
-			throws Exception {
+	public static List<DmalmProject> getAllProject(Timestamp dataEsecuzione) throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -92,12 +72,10 @@ public class ProjectSgrCmDAO {
 		DmalmProject bean = null;
 		List<DmalmProject> project = new LinkedList<DmalmProject>();
 		List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO = new LinkedList<DmalmProjectUnitaOrganizzativaEccezioni>();
-		
 
 		try {
 			// lista delle eccezioni Project/Unita organizzativa
-			eccezioniProjectUO = ProjectUnitaOrganizzativaEccezioniDAO
-					.getAllProjectUOException();
+			eccezioniProjectUO = ProjectUnitaOrganizzativaEccezioniDAO.getAllProjectUOException();
 
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
@@ -122,61 +100,52 @@ public class ProjectSgrCmDAO {
 
 				// FK AREA TEMATICA SOLO PER TEMPLATE SVILUPPO
 				if (DmAlmConstants.SVILUPPO.equals(template)) {
-					bean.setDmalmAreaTematicaFk01(AreaTematicaSgrCmDAO
-							.getIdAreaTematicabyCodice(rs
-									.getString("ID_PROJECT")));
+					bean.setDmalmAreaTematicaFk01(
+							AreaTematicaSgrCmDAO.getIdAreaTematicabyCodice(rs.getString("ID_PROJECT")));
 				} else {
 					bean.setDmalmAreaTematicaFk01(0);
 				}
-				
+
 				String codiceAreaUOEdma = "";
-				//Edma
+				// Edma
 				// FK Struttura Organizzativa
-				Map<String, Timestamp> mapUOedma = gestioneCodiceAreaUO(eccezioniProjectUO,
-						rs.getString("ID_PROJECT"),
-						rs.getString("ID_REPOSITORY"),
-						rs.getString("NOME_COMPLETO_PROJECT"),
-						rs.getString("TEMPLATE"),
+				Map<String, Timestamp> mapUOedma = gestioneCodiceAreaUO(eccezioniProjectUO, rs.getString("ID_PROJECT"),
+						rs.getString("ID_REPOSITORY"), rs.getString("NOME_COMPLETO_PROJECT"), rs.getString("TEMPLATE"),
 						rs.getString("FK_PROJECTGROUP"), dataEsecuzione, false);
-				
+
 				for (Map.Entry<String, Timestamp> entry : mapUOedma.entrySet()) {
 					codiceAreaUOEdma = entry.getKey();
-				 }
+				}
 				if (codiceAreaUOEdma.equals(DmAlmConstants.NON_PRESENTE)) {
 					bean.setDmalmStrutturaOrgFk02(0);
 				} else {
 					bean.setDmalmStrutturaOrgFk02(StrutturaOrganizzativaEdmaLispaDAO
-							.getIdStrutturaOrganizzativaByCodiceUpdate(
-									codiceAreaUOEdma, rs.getTimestamp("C_CREATED")));
+							.getIdStrutturaOrganizzativaByCodiceUpdate(codiceAreaUOEdma, rs.getTimestamp("C_CREATED")));
 				}
-				
+
 				String codiceAreaUOElettra = "";
-				//Elettra
+				// Elettra
 				// FK Unità Organizzativa
-				 Map<String, Timestamp> mapUO = gestioneCodiceAreaUO(eccezioniProjectUO,
-						rs.getString("ID_PROJECT"),
-						rs.getString("ID_REPOSITORY"),
-						rs.getString("NOME_COMPLETO_PROJECT"),
-						rs.getString("TEMPLATE"),
+				Map<String, Timestamp> mapUO = gestioneCodiceAreaUO(eccezioniProjectUO, rs.getString("ID_PROJECT"),
+						rs.getString("ID_REPOSITORY"), rs.getString("NOME_COMPLETO_PROJECT"), rs.getString("TEMPLATE"),
 						rs.getString("FK_PROJECTGROUP"), dataEsecuzione, true);
-				
-				 for (Map.Entry<String, Timestamp> entry : mapUO.entrySet()) {
-					 codiceAreaUOElettra = entry.getKey();
-				 }
-				 
+
+				for (Map.Entry<String, Timestamp> entry : mapUO.entrySet()) {
+					codiceAreaUOElettra = entry.getKey();
+				}
+
 				if (codiceAreaUOElettra.equals(DmAlmConstants.NON_PRESENTE)) {
 					bean.setDmalmUnitaOrganizzativaFk(0);
 				} else {
 					// UO Elettra
 					Map<Timestamp, Integer> map = ElettraUnitaOrganizzativeDAO
-					.getUnitaOrganizzativaByCodiceArea(codiceAreaUOElettra);
-					for(Timestamp i: map.keySet())
-					{
+							.getUnitaOrganizzativaByCodiceArea(codiceAreaUOElettra);
+					for (Timestamp i : map.keySet()) {
 						bean.setDmalmUnitaOrganizzativaFk(map.get(i));
 					}
-					
+
 				}
-				
+
 				bean.setDmalmUnitaOrganizzativaFlatFk(null);
 				bean.setFlAttivo(rs.getBoolean("FL_ATTIVO"));
 				bean.setIdProject(rs.getString("ID_PROJECT"));
@@ -184,43 +153,15 @@ public class ProjectSgrCmDAO {
 				bean.setPathProject(rs.getString("PATH_PROJECT"));
 
 				bean.setcCreated(rs.getTimestamp("C_CREATED"));
-				
+
 				String servMan = "";
 				if (rs.getString("ID_REPOSITORY").equals(DmAlmConstants.REPOSITORY_SIRE)) {
-					String urlSire = DmAlmConfigReader.getInstance().getProperty(
-							DmAlmConfigReaderProperties.SIRE_SVN_URL);
-					String nameSire = DmAlmConfigReader.getInstance().getProperty(
-							DmAlmConfigReaderProperties.SIRE_SVN_USERNAME);
-					String pswSire = DmAlmConfigReader.getInstance().getProperty(
-							DmAlmConfigReaderProperties.SIRE_SVN_PSW);
-
-					SVNRepository repository = SVNRepositoryFactory.create(SVNURL
-							.parseURIEncoded(urlSire));
-					ISVNAuthenticationManager authManagerSire = SVNWCUtil.createDefaultAuthenticationManager(nameSire,
-							pswSire);
-					repository.setAuthenticationManager(authManagerSire);
-					
-					servMan = getServiceManager(rs.getString("ID_REPOSITORY"), rs.getString("ID_PROJECT"), 
-							SIREUserRolesXML.getProjectSVNPath(rs.getString("PATH_PROJECT")), -1, repository);
+					servMan = getServiceManager(rs.getString("ID_REPOSITORY"), rs.getString("ID_PROJECT"));
 				}
 				if (rs.getString("ID_REPOSITORY").equals(DmAlmConstants.REPOSITORY_SISS)) {
-					String urlSiss = DmAlmConfigReader.getInstance().getProperty(
-							DmAlmConfigReaderProperties.SISS_SVN_URL);
-					String nameSiss = DmAlmConfigReader.getInstance().getProperty(
-							DmAlmConfigReaderProperties.SISS_SVN_USERNAME);
-					String pswSiss = DmAlmConfigReader.getInstance().getProperty(
-							DmAlmConfigReaderProperties.SISS_SVN_PSW);
-					
-					SVNRepository repository = SVNRepositoryFactory.create(SVNURL
-							.parseURIEncoded(urlSiss));
-					ISVNAuthenticationManager authManagerSiss = SVNWCUtil.createDefaultAuthenticationManager(nameSiss,
-							pswSiss);
-					repository.setAuthenticationManager(authManagerSiss);
-					
-					servMan = getServiceManager(rs.getString("ID_REPOSITORY"), rs.getString("ID_PROJECT"), 
-							SIREUserRolesXML.getProjectSVNPath(rs.getString("PATH_PROJECT")), -1, repository);
+					servMan = getServiceManager(rs.getString("ID_REPOSITORY"), rs.getString("ID_PROJECT"));
 				}
-				 
+
 				bean.setServiceManagers(servMan);
 
 				bean.setcTrackerprefix(rs.getString("C_TRACKERPREFIX"));
@@ -247,8 +188,7 @@ public class ProjectSgrCmDAO {
 
 				bean.setFkLead(rs.getString("FK_LEAD"));
 
-				bean.setcLockworkrecordsdate(rs
-						.getTimestamp("C_LOCKWORKRECORDSDATE"));
+				bean.setcLockworkrecordsdate(rs.getTimestamp("C_LOCKWORKRECORDSDATE"));
 
 				bean.setcRev(rs.getLong("N_REVISION"));
 
@@ -256,16 +196,14 @@ public class ProjectSgrCmDAO {
 
 				bean.setSiglaProject(rs.getString("SIGLA_PROJECT"));
 
-				bean.setNomeCompletoProject(rs
-						.getString("NOME_COMPLETO_PROJECT"));
+				bean.setNomeCompletoProject(rs.getString("NOME_COMPLETO_PROJECT"));
 
 				bean.setDtCaricamento(rs.getTimestamp("DT_CARICAMENTO"));
 
 				project.add(bean);
 			}
 
-			logger.debug("ProjectSgrCmDAO. getAllProject - project.size: "
-					+ project.size());
+			logger.debug("ProjectSgrCmDAO. getAllProject - project.size: " + project.size());
 
 			if (rs != null) {
 				rs.close();
@@ -289,212 +227,192 @@ public class ProjectSgrCmDAO {
 	}
 
 	public static Map<String, Timestamp> gestioneCodiceAreaUO(
-			List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO,
-			String idProject, String idRepository, String nomeProject,
-			String template, String projectGroup, Timestamp dataEsecuzione, boolean isElettra
-			) throws Exception {
+			List<DmalmProjectUnitaOrganizzativaEccezioni> eccezioniProjectUO, String idProject, String idRepository,
+			String nomeProject, String template, String projectGroup, Timestamp dataEsecuzione, boolean isElettra)
+			throws Exception {
 		// Se trova l'eccezione riporta il codice area dell'eccezione altrimenti
 		// esegue l'algoritmo di calcolo della UO
-		
+
 		Map<String, Timestamp> map = new HashMap<String, Timestamp>();
 		String codiceAreaUO = "";
-		
+
 		ConnectionManager cm = ConnectionManager.getInstance();
 		Connection con = null;
-		try {	
-			
+		try {
+
 			con = cm.getConnectionOracle();
-			
+
 			for (DmalmProjectUnitaOrganizzativaEccezioni eccezione : eccezioniProjectUO) {
 				if (eccezione.getIdRepository().equals(idRepository)
 						&& eccezione.getNomeCompletoProject().equals(nomeProject)
-						&& ((eccezione.getTemplate() == null && template == null) || (eccezione
-								.getTemplate() != null && eccezione.getTemplate()
-								.equals(template)))) {
-	
+						&& ((eccezione.getTemplate() == null && template == null)
+								|| (eccezione.getTemplate() != null && eccezione.getTemplate().equals(template)))) {
+
 					codiceAreaUO = eccezione.getCodiceArea();
 					break;
 				}
 			}
-		
 
 			// Se il project non ha una eccezione
-			if (codiceAreaUO.equalsIgnoreCase("") && template !=null) {
+			if (codiceAreaUO.equalsIgnoreCase("") && template != null) {
 				switch (template) {
-					case DmAlmConstants.SVILUPPO:
-						// Template SVILUPPO
-						if (nomeProject == null) {
-							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-						} else if (nomeProject.startsWith("SW-")) {
-							try {
-								if (nomeProject.indexOf("{", 1) != -1
-										&& nomeProject.indexOf("}", 1) != -1) {
-									String siglaProject = nomeProject.substring(
-											nomeProject.indexOf("{", 1) + 1,
-											nomeProject.indexOf("}", 1));
-									String[] multiSiglaProject = null;
-									multiSiglaProject = siglaProject
-											.split("\\.\\.");
-									String codiceProdotto = multiSiglaProject[0];
-									
-									List<Tuple> dmAlmSourceElProdEccezzRow=DmAlmSourceElProdEccezDAO.getRow(codiceProdotto);
-									
-									if(!(dmAlmSourceElProdEccezzRow!=null && dmAlmSourceElProdEccezzRow.size()==1 && dmAlmSourceElProdEccezzRow.get(0).get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))){
-										if (codiceProdotto.contains(".")) {
-											codiceProdotto = codiceProdotto.substring(
-													0, codiceProdotto.indexOf("."));
-										}
+				case DmAlmConstants.SVILUPPO:
+					// Template SVILUPPO
+					if (nomeProject == null) {
+						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+					} else if (nomeProject.startsWith("SW-")) {
+						try {
+							if (nomeProject.indexOf("{", 1) != -1 && nomeProject.indexOf("}", 1) != -1) {
+								String siglaProject = nomeProject.substring(nomeProject.indexOf("{", 1) + 1,
+										nomeProject.indexOf("}", 1));
+								String[] multiSiglaProject = null;
+								multiSiglaProject = siglaProject.split("\\.\\.");
+								String codiceProdotto = multiSiglaProject[0];
+
+								List<Tuple> dmAlmSourceElProdEccezzRow = DmAlmSourceElProdEccezDAO
+										.getRow(codiceProdotto);
+
+								if (!(dmAlmSourceElProdEccezzRow != null && dmAlmSourceElProdEccezzRow.size() == 1
+										&& dmAlmSourceElProdEccezzRow.get(0)
+												.get(dmAlmSourceElProdEccez.tipoElProdEccezione).equals(1))) {
+									if (codiceProdotto.contains(".")) {
+										codiceProdotto = codiceProdotto.substring(0, codiceProdotto.indexOf("."));
 									}
-									if(isElettra) {
-										// Elettra
-										 List<Tuple> productList = ElettraProdottiArchitettureDAO.getProductByAcronym(codiceProdotto);
-										 if (productList.size() == 0) {
-											 codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-										 } else {
-											 if (productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto) != null) {
-												 codiceAreaUO =	 productList.get(0).get(qDmalmElProdottiArchitetture.codiceAreaProdotto);
-												 dataEsecuzione = productList.get(0).get(qDmalmElProdottiArchitetture.dataInizioValidita);
-											} else {
-												codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-											}
-										 }
-									} else {
-										// Edma
-											List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
-											if (productList.size() == 0) {
-												codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-											} else {
-												List<DmalmStrutturaOrganizzativa> structureList = StrutturaOrganizzativaEdmaLispaDAO
-														.getStrutturaOrganizzativaByPrimaryKey(productList
-																.get(0)
-																.get(dmalmProdotto.dmalmUnitaOrganizzativaFk01));
-												if (structureList.size() == 0) {
-													codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-												} else {
-													codiceAreaUO = structureList.get(0)
-															.getCdArea();
-												}
-											}
-										}
-									} else {
+								}
+								if (isElettra) {
+									// Elettra
+									List<Tuple> productList = ElettraProdottiArchitettureDAO
+											.getProductByAcronym(codiceProdotto);
+									if (productList.size() == 0) {
 										codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+									} else {
+										if (productList.get(0)
+												.get(qDmalmElProdottiArchitetture.codiceAreaProdotto) != null) {
+											codiceAreaUO = productList.get(0)
+													.get(qDmalmElProdottiArchitetture.codiceAreaProdotto);
+											dataEsecuzione = productList.get(0)
+													.get(qDmalmElProdottiArchitetture.dataInizioValidita);
+										} else {
+											codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+										}
 									}
-								} catch (Exception e) {
-									logger.error(e.getMessage(), e);
-									codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-								}
-							} else if (nomeProject.contains("RichiesteSupporto")) {
-								try {
-									codiceAreaUO = "SRM"
-											+ nomeProject.substring(nomeProject.indexOf(".")+1,
-													nomeProject.length());
-								} catch (Exception e) {
-									logger.error(e.getMessage(), e);
-									codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-								}
-							} else {
-								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-							}
-							break;
-		
-						case DmAlmConstants.DEMAND:
-							// Template DEMAND e DEMAND2016
-							if (nomeProject.indexOf(".", 1) != -1) {
-								codiceAreaUO = "SRM"
-										+ nomeProject.substring(0,
-												nomeProject.indexOf(".", 1));
-							} else {
-								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-							}
-							break;
-							
-						case DmAlmConstants.DEMAND2016:
-							if(isElettra)
-							{							
-								codiceAreaUO = "SRMF800";
-							}
-							else
-							{
-								// Template DEMAND e DEMAND2016
-								if (nomeProject.indexOf(".", 1) != -1) {
-									codiceAreaUO = "SRM"
-											+ nomeProject.substring(0,
-													nomeProject.indexOf(".", 1));
 								} else {
-									codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+									// Edma
+									List<Tuple> productList = ProdottoDAO.getProductByAcronym(codiceProdotto);
+									if (productList.size() == 0) {
+										codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+									} else {
+										List<DmalmStrutturaOrganizzativa> structureList = StrutturaOrganizzativaEdmaLispaDAO
+												.getStrutturaOrganizzativaByPrimaryKey(productList.get(0)
+														.get(dmalmProdotto.dmalmUnitaOrganizzativaFk01));
+										if (structureList.size() == 0) {
+											codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+										} else {
+											codiceAreaUO = structureList.get(0).getCdArea();
+										}
+									}
 								}
-							}
-							break;
-		
-						case DmAlmConstants.ASSISTENZA:
-							// Template ASSISTENZA
-							if (nomeProject.startsWith("Assistenza.")) {
-								codiceAreaUO = "SRM"
-										+ nomeProject.substring("Assistenza.".length(),
-												nomeProject.length());
 							} else {
 								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 							}
-							break;
-		
-						case DmAlmConstants.IT:
-							if(isElettra)
-							{
-								codiceAreaUO = "SRMW8B6";
-							}
-							else
-							{
-								codiceAreaUO = "SRMA352";
-							}
-							
-							
-							break;
-		
-						case DmAlmConstants.SERDEP:
-							// Template SERDEP
-							if (nomeProject.indexOf(".", 1) != -1) {
-								codiceAreaUO = "SRM"
-										+ nomeProject.substring(0,
-												nomeProject.indexOf(".", 1));
-							} else {
-								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-							}
-							break;
-		
-						default:
-							if(codiceAreaUO.equals(""))
-								codiceAreaUO = DmAlmConstants.NON_PRESENTE;
-							break;
+						} catch (Exception e) {
+							logger.error(e.getMessage(), e);
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 						}
-				}
-	
-				if (codiceAreaUO.equals(DmAlmConstants.NON_PRESENTE)) {
-					try {
-						String tabellaFonte = "";
-						if (idRepository.equals(DmAlmConstants.REPOSITORY_SIRE)) {
-							tabellaFonte = DmAlmConstants.FONTE_SGR_SIRE_HISTORY_PROJECT;
-						} else {
-							tabellaFonte = DmAlmConstants.FONTE_SGR_SISS_HISTORY_PROJECT;
+					} else if (nomeProject.contains("RichiesteSupporto")) {
+						try {
+							codiceAreaUO = "SRM"
+									+ nomeProject.substring(nomeProject.indexOf(".") + 1, nomeProject.length());
+						} catch (Exception e) {
+							logger.error(e.getMessage(), e);
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 						}
-		
-						String record = "";
-						record = "[ Id : " + idProject + "§ ";
-						record += "Name : " + nomeProject + "§ ";
-						record += "Template : " + template + "§ ";
-						record += "IdRepository : " + idRepository + "§ ";
-						record += "ProjectGroup : " + projectGroup + " ] ";
-		
-						ErroriCaricamentoDAO.insert(tabellaFonte,
-								DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT, record,
-								DmAlmConstants.WRONG_LINK_PROJECT_UNITAORGANIZZATIVA,
-								DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE,
-								dataEsecuzione);
-					} catch (Exception e) {
-						logger.error("Exception: " + e.getMessage());
+					} else {
+						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
 					}
+					break;
+
+				case DmAlmConstants.DEMAND:
+					// Template DEMAND e DEMAND2016
+					if (nomeProject.indexOf(".", 1) != -1) {
+						codiceAreaUO = "SRM" + nomeProject.substring(0, nomeProject.indexOf(".", 1));
+					} else {
+						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+					}
+					break;
+
+				case DmAlmConstants.DEMAND2016:
+					if (isElettra) {
+						codiceAreaUO = "SRMF800";
+					} else {
+						// Template DEMAND e DEMAND2016
+						if (nomeProject.indexOf(".", 1) != -1) {
+							codiceAreaUO = "SRM" + nomeProject.substring(0, nomeProject.indexOf(".", 1));
+						} else {
+							codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+						}
+					}
+					break;
+
+				case DmAlmConstants.ASSISTENZA:
+					// Template ASSISTENZA
+					if (nomeProject.startsWith("Assistenza.")) {
+						codiceAreaUO = "SRM" + nomeProject.substring("Assistenza.".length(), nomeProject.length());
+					} else {
+						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+					}
+					break;
+
+				case DmAlmConstants.IT:
+					if (isElettra) {
+						codiceAreaUO = "SRMW8B6";
+					} else {
+						codiceAreaUO = "SRMA352";
+					}
+
+					break;
+
+				case DmAlmConstants.SERDEP:
+					// Template SERDEP
+					if (nomeProject.indexOf(".", 1) != -1) {
+						codiceAreaUO = "SRM" + nomeProject.substring(0, nomeProject.indexOf(".", 1));
+					} else {
+						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+					}
+					break;
+
+				default:
+					if (codiceAreaUO.equals(""))
+						codiceAreaUO = DmAlmConstants.NON_PRESENTE;
+					break;
 				}
+			}
+
+			if (codiceAreaUO.equals(DmAlmConstants.NON_PRESENTE)) {
+				try {
+					String tabellaFonte = "";
+					if (idRepository.equals(DmAlmConstants.REPOSITORY_SIRE)) {
+						tabellaFonte = DmAlmConstants.FONTE_SGR_SIRE_HISTORY_PROJECT;
+					} else {
+						tabellaFonte = DmAlmConstants.FONTE_SGR_SISS_HISTORY_PROJECT;
+					}
+
+					String record = "";
+					record = "[ Id : " + idProject + "§ ";
+					record += "Name : " + nomeProject + "§ ";
+					record += "Template : " + template + "§ ";
+					record += "IdRepository : " + idRepository + "§ ";
+					record += "ProjectGroup : " + projectGroup + " ] ";
+
+					ErroriCaricamentoDAO.insert(tabellaFonte, DmAlmConstants.TARGET_SGR_SIRE_CURRENT_PROJECT, record,
+							DmAlmConstants.WRONG_LINK_PROJECT_UNITAORGANIZZATIVA,
+							DmAlmConstants.FLAG_ERRORE_NON_BLOCCANTE, dataEsecuzione);
+				} catch (Exception e) {
+					logger.error("Exception: " + e.getMessage());
+				}
+			}
 		} finally {
-			if(con != null)
+			if (con != null)
 				try {
 					cm.closeConnection(con);
 				} catch (DAOException e) {
@@ -502,12 +420,11 @@ public class ProjectSgrCmDAO {
 				}
 		}
 		map.put(codiceAreaUO, dataEsecuzione);
-		
+
 		return map;
 	}
 
-	public static void updateDataFineValidita(Timestamp dataFineValidita,
-			DmalmProject project) throws DAOException {
+	public static void updateDataFineValidita(Timestamp dataFineValidita, DmalmProject project) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -518,15 +435,11 @@ public class ProjectSgrCmDAO {
 			connection.setAutoCommit(false);
 
 			//
-			new SQLUpdateClause(connection, dialect, proj)
-					.where(proj.idProject.eq(project.getIdProject()))
+			new SQLUpdateClause(connection, dialect, proj).where(proj.idProject.eq(project.getIdProject()))
 					.where(proj.idRepository.eq(project.getIdRepository()))
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
-					.set(proj.dtFineValidita,
-							DateUtils.addSecondsToTimestamp(
-									dataFineValidita, -1)).execute();
-			
+					.where(proj.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
+					.set(proj.dtFineValidita, DateUtils.addSecondsToTimestamp(dataFineValidita, -1)).execute();
+
 			connection.commit();
 
 		} catch (Exception e) {
@@ -538,8 +451,7 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static void updateDataFineValiditaAnnullamento(
-			Timestamp dataFineValidita, DmalmProject project)
+	public static void updateDataFineValiditaAnnullamento(Timestamp dataFineValidita, DmalmProject project)
 			throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -551,14 +463,11 @@ public class ProjectSgrCmDAO {
 			connection.setAutoCommit(false);
 
 			//
-			new SQLUpdateClause(connection, dialect, proj)
-					.where(proj.idProject.eq(project.getIdProject()))
+			new SQLUpdateClause(connection, dialect, proj).where(proj.idProject.eq(project.getIdProject()))
 					.where(proj.idRepository.eq(project.getIdRepository()))
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+					.where(proj.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
 					.set(proj.dtFineValidita,
-							DateUtils.addSecondsToTimestamp(DataEsecuzione
-									.getInstance().getDataEsecuzione(), -1))
+							DateUtils.addSecondsToTimestamp(DataEsecuzione.getInstance().getDataEsecuzione(), -1))
 					.execute();
 			connection.commit();
 
@@ -571,8 +480,7 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static void updateDmalmProject(DmalmProject project)
-			throws DAOException
+	public static void updateDmalmProject(DmalmProject project) throws DAOException
 
 	{
 
@@ -586,41 +494,25 @@ public class ProjectSgrCmDAO {
 
 			connection.setAutoCommit(false);
 
-			new SQLUpdateClause(connection, dialect, proj)
-					.where(proj.idProject.eq(project.getIdProject()))
+			new SQLUpdateClause(connection, dialect, proj).where(proj.idProject.eq(project.getIdProject()))
 					.where(proj.idRepository.eq(project.getIdRepository()))
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
-					.set(proj.dmalmAreaTematicaFk01,
-							project.getDmalmAreaTematicaFk01())
-					.set(proj.flAttivo, project.getFlAttivo())
-					.set(proj.idRepository, project.getIdRepository())
-					.set(proj.nomeCompletoProject,
-							project.getNomeCompletoProject())
+					.where(proj.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
+					.set(proj.dmalmAreaTematicaFk01, project.getDmalmAreaTematicaFk01())
+					.set(proj.flAttivo, project.getFlAttivo()).set(proj.idRepository, project.getIdRepository())
+					.set(proj.nomeCompletoProject, project.getNomeCompletoProject())
 					.set(proj.pathProject, project.getPathProject())
 					.set(proj.serviceManagers, project.getServiceManagers())
 					.set(proj.siglaProject, project.getSiglaProject())
-					.set(proj.dmalmStrutturaOrgFk02,
-							project.getDmalmStrutturaOrgFk02())
-					.set(proj.dmalmUnitaOrganizzativaFk,
-							project.getDmalmUnitaOrganizzativaFk())
-					.set(proj.cTrackerprefix, project.getcTrackerprefix())
-					.set(proj.cIsLocal, project.getcIsLocal())
-					.set(proj.cPk, project.getcPk())
-					.set(proj.fkUriLead, project.getFkUriLead())
-					.set(proj.cDeleted, project.getcDeleted())
-					.set(proj.cFinish, project.getcFinish())
-					.set(proj.cUri, project.getcUri())
-					.set(proj.cStart, project.getcStart())
-					.set(proj.fkUriProjectgroup, project.getFkUriProjectgroup())
-					.set(proj.cActive, project.getcActive())
-					.set(proj.fkProjectgroup, project.getFkProjectgroup())
-					.set(proj.fkLead, project.getFkLead())
-					.set(proj.cLockworkrecordsdate,
-							project.getcLockworkrecordsdate())
-					.set(proj.cRev, project.getcRev())
-					.set(proj.cDescription, project.getcDescription())
-					.set(proj.annullato, project.getAnnullato())
+					.set(proj.dmalmStrutturaOrgFk02, project.getDmalmStrutturaOrgFk02())
+					.set(proj.dmalmUnitaOrganizzativaFk, project.getDmalmUnitaOrganizzativaFk())
+					.set(proj.cTrackerprefix, project.getcTrackerprefix()).set(proj.cIsLocal, project.getcIsLocal())
+					.set(proj.cPk, project.getcPk()).set(proj.fkUriLead, project.getFkUriLead())
+					.set(proj.cDeleted, project.getcDeleted()).set(proj.cFinish, project.getcFinish())
+					.set(proj.cUri, project.getcUri()).set(proj.cStart, project.getcStart())
+					.set(proj.fkUriProjectgroup, project.getFkUriProjectgroup()).set(proj.cActive, project.getcActive())
+					.set(proj.fkProjectgroup, project.getFkProjectgroup()).set(proj.fkLead, project.getFkLead())
+					.set(proj.cLockworkrecordsdate, project.getcLockworkrecordsdate()).set(proj.cRev, project.getcRev())
+					.set(proj.cDescription, project.getcDescription()).set(proj.annullato, project.getAnnullato())
 					.set(proj.dtAnnullamento, project.getDtAnnullamento()).execute();
 
 			connection.commit();
@@ -645,48 +537,27 @@ public class ProjectSgrCmDAO {
 			connection.setAutoCommit(false);
 
 			new SQLInsertClause(connection, dialect, proj)
-					.columns(proj.dmalmProjectPrimaryKey,
-							proj.dmalmAreaTematicaFk01, proj.dtCaricamento,
-							proj.dtInizioValidita, proj.dtFineValidita,
-							proj.flAttivo, proj.idProject, proj.idRepository,
-							proj.nomeCompletoProject, proj.pathProject,
-							proj.serviceManagers, proj.siglaProject,
-							proj.dmalmStrutturaOrgFk02,
-							proj.dmalmUnitaOrganizzativaFk,
-							proj.dmalmUnitaOrganizzativaFlatFk,
-							proj.cTemplate,
-							proj.cCreated, proj.cTrackerprefix, proj.cIsLocal,
-							proj.cPk, proj.fkUriLead, proj.cDeleted,
-							proj.cFinish, proj.cUri, proj.cStart,
-							proj.fkUriProjectgroup, proj.cActive,
-							proj.fkProjectgroup, proj.fkLead,
-							proj.cLockworkrecordsdate, proj.cRev,
-							proj.cDescription, proj.dtAnnullamento)
-					.values(project.getDmalmProjectPk(),
-							project.getDmalmAreaTematicaFk01(),
-							project.getDtCaricamento(),
-							project.getcCreated(),
-							DateUtils.setDtFineValidita9999(), // 31/12/9999
-							project.getFlAttivo(), project.getIdProject(),
-							project.getIdRepository(),
-							project.getNomeCompletoProject(),
-							project.getPathProject(),
-							project.getServiceManagers(),
-							project.getSiglaProject(),
-							project.getDmalmStrutturaOrgFk02(),
-							project.getDmalmUnitaOrganizzativaFk(),
-							project.getDmalmUnitaOrganizzativaFlatFk(),
-							project.getcTemplate(), project.getcCreated(),
-							project.getcTrackerprefix(), project.getcIsLocal(),
-							project.getcPk(), project.getFkUriLead(),
-							project.getcDeleted(), project.getcFinish(),
-							project.getcUri(), project.getcStart(),
-							project.getFkUriProjectgroup(),
-							project.getcActive(), project.getFkProjectgroup(),
-							project.getFkLead(),
-							project.getcLockworkrecordsdate(),
-							project.getcRev(), project.getcDescription(),
-							project.getDtAnnullamento()).execute();
+					.columns(proj.dmalmProjectPrimaryKey, proj.dmalmAreaTematicaFk01, proj.dtCaricamento,
+							proj.dtInizioValidita, proj.dtFineValidita, proj.flAttivo, proj.idProject,
+							proj.idRepository, proj.nomeCompletoProject, proj.pathProject, proj.serviceManagers,
+							proj.siglaProject, proj.dmalmStrutturaOrgFk02, proj.dmalmUnitaOrganizzativaFk,
+							proj.dmalmUnitaOrganizzativaFlatFk, proj.cTemplate, proj.cCreated, proj.cTrackerprefix,
+							proj.cIsLocal, proj.cPk, proj.fkUriLead, proj.cDeleted, proj.cFinish, proj.cUri,
+							proj.cStart, proj.fkUriProjectgroup, proj.cActive, proj.fkProjectgroup, proj.fkLead,
+							proj.cLockworkrecordsdate, proj.cRev, proj.cDescription, proj.dtAnnullamento)
+					.values(project.getDmalmProjectPk(), project.getDmalmAreaTematicaFk01(), project.getDtCaricamento(),
+							project.getcCreated(), DateUtils.getDtFineValidita9999(), // 31/12/9999
+							project.getFlAttivo(), project.getIdProject(), project.getIdRepository(),
+							project.getNomeCompletoProject(), project.getPathProject(), project.getServiceManagers(),
+							project.getSiglaProject(), project.getDmalmStrutturaOrgFk02(),
+							project.getDmalmUnitaOrganizzativaFk(), project.getDmalmUnitaOrganizzativaFlatFk(),
+							project.getcTemplate(), project.getcCreated(), project.getcTrackerprefix(),
+							project.getcIsLocal(), project.getcPk(), project.getFkUriLead(), project.getcDeleted(),
+							project.getcFinish(), project.getcUri(), project.getcStart(),
+							project.getFkUriProjectgroup(), project.getcActive(), project.getFkProjectgroup(),
+							project.getFkLead(), project.getcLockworkrecordsdate(), project.getcRev(),
+							project.getcDescription(), project.getDtAnnullamento())
+					.execute();
 
 			connection.commit();
 
@@ -699,8 +570,8 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static void insertProjectUpdate(Timestamp dataEsecuzione,
-			DmalmProject project, boolean pkValue) throws DAOException {
+	public static void insertProjectUpdate(Timestamp dataEsecuzione, DmalmProject project, boolean pkValue)
+			throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -710,53 +581,29 @@ public class ProjectSgrCmDAO {
 
 			connection.setAutoCommit(false);
 
-			new SQLInsertClause(connection, dialect, proj)
-					.columns(proj.dmalmProjectPrimaryKey,
-							proj.dmalmAreaTematicaFk01, proj.dtCaricamento,
-							proj.dtInizioValidita, proj.dtFineValidita,
-							proj.flAttivo, proj.idProject, proj.idRepository,
-							proj.nomeCompletoProject, proj.pathProject,
-							proj.serviceManagers, proj.siglaProject,
-							proj.dmalmStrutturaOrgFk02,
-							proj.dmalmUnitaOrganizzativaFk,
-							proj.dmalmUnitaOrganizzativaFlatFk,
-							proj.cTemplate,
-							proj.cCreated, proj.cTrackerprefix, proj.cIsLocal,
-							proj.cPk, proj.fkUriLead, proj.cDeleted,
-							proj.cFinish, proj.cUri, proj.cStart,
-							proj.fkUriProjectgroup, proj.cActive,
-							proj.fkProjectgroup, proj.fkLead,
-							proj.cLockworkrecordsdate, proj.cRev,
-							proj.cDescription, proj.dtAnnullamento,
-							proj.annullato)
+			new SQLInsertClause(connection, dialect, proj).columns(proj.dmalmProjectPrimaryKey,
+					proj.dmalmAreaTematicaFk01, proj.dtCaricamento, proj.dtInizioValidita, proj.dtFineValidita,
+					proj.flAttivo, proj.idProject, proj.idRepository, proj.nomeCompletoProject, proj.pathProject,
+					proj.serviceManagers, proj.siglaProject, proj.dmalmStrutturaOrgFk02, proj.dmalmUnitaOrganizzativaFk,
+					proj.dmalmUnitaOrganizzativaFlatFk, proj.cTemplate, proj.cCreated, proj.cTrackerprefix,
+					proj.cIsLocal, proj.cPk, proj.fkUriLead, proj.cDeleted, proj.cFinish, proj.cUri, proj.cStart,
+					proj.fkUriProjectgroup, proj.cActive, proj.fkProjectgroup, proj.fkLead, proj.cLockworkrecordsdate,
+					proj.cRev, proj.cDescription, proj.dtAnnullamento, proj.annullato)
 					.values(pkValue == true ? project.getDmalmProjectPk()
-							: StringTemplate
-									.create("HISTORY_PROJECT_SEQ.nextval"),
-							project.getDmalmAreaTematicaFk01(),
+							: StringTemplate.create("HISTORY_PROJECT_SEQ.nextval"), project.getDmalmAreaTematicaFk01(),
 							project.getDtCaricamento(),
-							pkValue == true ? project.getcCreated() : project
-									.getDtInizioValidita(),
-							DateUtils.setDtFineValidita9999(), // 31/12/9999
-							project.getFlAttivo(), project.getIdProject(),
-							project.getIdRepository(),
-							project.getNomeCompletoProject(),
-							project.getPathProject(),
-							project.getServiceManagers(),
-							project.getSiglaProject(),
-							project.getDmalmStrutturaOrgFk02(),
-							project.getDmalmUnitaOrganizzativaFk(),
-							project.getDmalmUnitaOrganizzativaFlatFk(),
-							project.getcTemplate(), project.getcCreated(),
-							project.getcTrackerprefix(), project.getcIsLocal(),
-							project.getcPk(), project.getFkUriLead(),
-							project.getcDeleted(), project.getcFinish(),
-							project.getcUri(), project.getcStart(),
-							project.getFkUriProjectgroup(),
-							project.getcActive(), project.getFkProjectgroup(),
-							project.getFkLead(),
-							project.getcLockworkrecordsdate(),
-							project.getcRev(), project.getcDescription(),
-							project.getDtAnnullamento(), project.getAnnullato())
+							pkValue == true ? project.getcCreated() : project.getDtInizioValidita(),
+							DateUtils.getDtFineValidita9999(), // 31/12/9999
+							project.getFlAttivo(), project.getIdProject(), project.getIdRepository(),
+							project.getNomeCompletoProject(), project.getPathProject(), project.getServiceManagers(),
+							project.getSiglaProject(), project.getDmalmStrutturaOrgFk02(),
+							project.getDmalmUnitaOrganizzativaFk(), project.getDmalmUnitaOrganizzativaFlatFk(),
+							project.getcTemplate(), project.getcCreated(), project.getcTrackerprefix(),
+							project.getcIsLocal(), project.getcPk(), project.getFkUriLead(), project.getcDeleted(),
+							project.getcFinish(), project.getcUri(), project.getcStart(),
+							project.getFkUriProjectgroup(), project.getcActive(), project.getFkProjectgroup(),
+							project.getFkLead(), project.getcLockworkrecordsdate(), project.getcRev(),
+							project.getcDescription(), project.getDtAnnullamento(), project.getAnnullato())
 					.execute();
 
 			connection.commit();
@@ -772,8 +619,7 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static List<Tuple> getProject(DmalmProject project)
-			throws DAOException
+	public static List<Tuple> getProject(DmalmProject project) throws DAOException
 
 	{
 
@@ -790,14 +636,9 @@ public class ProjectSgrCmDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			projects = query
-					.from(proj)
-					.where(proj.idProject.equalsIgnoreCase(project
-							.getIdProject()))
-					.where(proj.idRepository.equalsIgnoreCase(project
-							.getIdRepository()))
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999())).list(proj.all());
+			projects = query.from(proj).where(proj.idProject.equalsIgnoreCase(project.getIdProject()))
+					.where(proj.idRepository.equalsIgnoreCase(project.getIdRepository()))
+					.where(proj.dtFineValidita.eq(DateUtils.getDtFineValidita9999())).list(proj.all());
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -810,8 +651,7 @@ public class ProjectSgrCmDAO {
 		return projects;
 	}
 
-	public static int setAnnullato(String chiave, String tipoAnnullamento,
-			String idRepo) throws DAOException {
+	public static int setAnnullato(String chiave, String tipoAnnullamento, String idRepo) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection conn = null;
@@ -820,16 +660,14 @@ public class ProjectSgrCmDAO {
 		String sql = null;
 
 		try {
-			Timestamp dataEsecuzione = DataEsecuzione.getInstance()
-					.getDataEsecuzione();
+			Timestamp dataEsecuzione = DataEsecuzione.getInstance().getDataEsecuzione();
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 			conn.setAutoCommit(true);
 			/* IMPOSTO IL FLAG ANNULLATO SUL PROJECT E LE SUE STORICIZZAZIONI */
 			switch (tipoAnnullamento) {
 			case "UNMARKED":
-				sql = QueryManager.getInstance().getQuery(
-						DmAlmConstants.SET_ANNULLATO_LOGICAMENTE);
+				sql = QueryManager.getInstance().getQuery(DmAlmConstants.SET_ANNULLATO_LOGICAMENTE);
 				ps = conn.prepareStatement(sql);
 
 				ps.setString(1, tipoAnnullamento);
@@ -839,8 +677,8 @@ public class ProjectSgrCmDAO {
 
 				numero_di_annullati = ps.executeUpdate();
 				if (numero_di_annullati != 0) {
-					logger.info(tipoAnnullamento + " " + numero_di_annullati
-							+ " RECORDs " + idRepo + " CON PATH: " + chiave);
+					logger.info(tipoAnnullamento + " " + numero_di_annullati + " RECORDs " + idRepo + " CON PATH: "
+							+ chiave);
 				}
 
 				if (ps != null) {
@@ -849,8 +687,7 @@ public class ProjectSgrCmDAO {
 
 				break;
 			case "ANNULLATO FISICAMENTE":
-				sql = QueryManager.getInstance().getQuery(
-						DmAlmConstants.SET_ANNULLATO_FISICAMENTE);
+				sql = QueryManager.getInstance().getQuery(DmAlmConstants.SET_ANNULLATO_FISICAMENTE);
 				ps = conn.prepareStatement(sql);
 				ps.setString(1, tipoAnnullamento);
 				ps.setTimestamp(2, dataEsecuzione);
@@ -858,8 +695,8 @@ public class ProjectSgrCmDAO {
 				ps.setString(4, chiave);
 				numero_di_annullati = ps.executeUpdate();
 				if (numero_di_annullati != 0) {
-					logger.info(tipoAnnullamento + " " + numero_di_annullati
-							+ " RECORDs " + idRepo + " CON ID: " + chiave);
+					logger.info(
+							tipoAnnullamento + " " + numero_di_annullati + " RECORDs " + idRepo + " CON ID: " + chiave);
 				}
 
 				if (ps != null) {
@@ -880,8 +717,7 @@ public class ProjectSgrCmDAO {
 		return numero_di_annullati;
 	}
 
-	public static void setRiattivato(String cId, String repo)
-			throws DAOException {
+	public static void setRiattivato(String cId, String repo) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection conn = null;
@@ -894,10 +730,8 @@ public class ProjectSgrCmDAO {
 			conn.setAutoCommit(false);
 
 			/* IMPOSTO IL FLAG UNMARKED SUL PROJECT E LE SUE STORICIZZAZIONI */
-			new SQLUpdateClause(conn, dialect, proj)
-					.where(proj.idProject.eq(cId))
-					.where(proj.idRepository.eq(repo)).setNull(proj.annullato)
-					.execute();
+			new SQLUpdateClause(conn, dialect, proj).where(proj.idProject.eq(cId)).where(proj.idRepository.eq(repo))
+					.setNull(proj.annullato).execute();
 
 			conn.commit();
 
@@ -912,8 +746,7 @@ public class ProjectSgrCmDAO {
 
 	}
 
-	public static List<String> getDeletedProjectsPaths(String idRepo)
-			throws DAOException {
+	public static List<String> getDeletedProjectsPaths(String idRepo) throws DAOException {
 		ConnectionManager cm = null;
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -925,16 +758,14 @@ public class ProjectSgrCmDAO {
 			conn = cm.getConnectionOracle();
 			switch (idRepo) {
 			case DmAlmConstants.REPOSITORY_SIRE:
-				sql = QueryManager.getInstance().getQuery(
-						DmAlmConfigReaderProperties.SQL_DELETED_SIRE_PROJECTS);
+				sql = QueryManager.getInstance().getQuery(DmAlmConfigReaderProperties.SQL_DELETED_SIRE_PROJECTS);
 				break;
 			case DmAlmConstants.REPOSITORY_SISS:
-				sql = QueryManager.getInstance().getQuery(
-						DmAlmConfigReaderProperties.SQL_DELETED_SISS_PROJECTS);
+				sql = QueryManager.getInstance().getQuery(DmAlmConfigReaderProperties.SQL_DELETED_SISS_PROJECTS);
 				break;
 			}
 			ps = conn.prepareStatement(sql);
-			ps.setTimestamp(1, DateUtils.setDtFineValidita9999());
+			ps.setTimestamp(1, DateUtils.getDtFineValidita9999());
 			ps.setTimestamp(2, DataEsecuzione.getInstance().getDataEsecuzione());
 			rs = ps.executeQuery();
 
@@ -961,22 +792,20 @@ public class ProjectSgrCmDAO {
 	}
 
 	/**
-	 * Un Project “unmarked” non sarà più ricercabile e visualizzabile in
-	 * Polarion dagli utilizzatori del sistema, i suoi file rimarranno comunque
-	 * visibili all’interno del repository Subversion del sistema. Per
-	 * individuare i Project “unmarked”, sarà necessario interpretare il
-	 * contenuto di due file di testo, uno per il repository SIRE, l’altro per
-	 * il repository SISS
+	 * Un Project “unmarked” non sarà più ricercabile e visualizzabile in Polarion
+	 * dagli utilizzatori del sistema, i suoi file rimarranno comunque visibili
+	 * all’interno del repository Subversion del sistema. Per individuare i Project
+	 * “unmarked”, sarà necessario interpretare il contenuto di due file di testo,
+	 * uno per il repository SIRE, l’altro per il repository SISS
 	 * 
-	 * @param link
-	 *            path al file
+	 * @param link path al file
 	 * @param repo
 	 * @return
 	 * @throws IOException
 	 * @throws DAOException
 	 */
-	public static List<String> getUnmarkedProjectsPathsFromFile(String link,
-			String repo) throws IOException, DAOException {
+	public static List<String> getUnmarkedProjectsPathsFromFile(String link, String repo)
+			throws IOException, DAOException {
 
 		BufferedReader in = null;
 
@@ -1012,16 +841,12 @@ public class ProjectSgrCmDAO {
 					projectLocations.add("default:/" + projectLocation);
 
 					/* e inserisco path e trackerPrefix nella tabella */
-					new SQLInsertClause(connectionOracle, dialect,
-							projectsUnmarked)
-							.columns(projectsUnmarked.cTrackerprefix,
-									projectsUnmarked.dataCaricamento,
-									projectsUnmarked.path,
-									projectsUnmarked.repository)
-							.values(trackerPrefix,
-									DataEsecuzione.getInstance()
-											.getDataEsecuzione(),
-									projectLocation, repo).execute();
+					new SQLInsertClause(connectionOracle, dialect, projectsUnmarked)
+							.columns(projectsUnmarked.cTrackerprefix, projectsUnmarked.dataCaricamento,
+									projectsUnmarked.path, projectsUnmarked.repository)
+							.values(trackerPrefix, DataEsecuzione.getInstance().getDataEsecuzione(), projectLocation,
+									repo)
+							.execute();
 
 					break;
 
@@ -1047,8 +872,7 @@ public class ProjectSgrCmDAO {
 
 	}
 
-	public static List<String> getAlreadyUnmarkedProjects(String id_repo)
-			throws DAOException {
+	public static List<String> getAlreadyUnmarkedProjects(String id_repo) throws DAOException {
 		ConnectionManager cm = null;
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -1061,11 +885,10 @@ public class ProjectSgrCmDAO {
 			cm = ConnectionManager.getInstance();
 			conn = cm.getConnectionOracle();
 
-			String sql = QueryManager.getInstance().getQuery(
-					DmAlmConfigReaderProperties.SQL_UNMARKED_PROJECTS);
+			String sql = QueryManager.getInstance().getQuery(DmAlmConfigReaderProperties.SQL_UNMARKED_PROJECTS);
 			ps = conn.prepareStatement(sql);
 
-			ps.setTimestamp(1, DateUtils.setDtFineValidita9999());
+			ps.setTimestamp(1, DateUtils.getDtFineValidita9999());
 			ps.setString(2, id_repo);
 
 			rs = ps.executeQuery();
@@ -1092,8 +915,8 @@ public class ProjectSgrCmDAO {
 		return paths;
 	}
 
-	public static void setReactivated(List<Tuple> current,
-			List<String> reactivated, String id_repo) throws DAOException {
+	public static void setReactivated(List<Tuple> current, List<String> reactivated, String id_repo)
+			throws DAOException {
 		ConnectionManager cm = null;
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -1103,58 +926,43 @@ public class ProjectSgrCmDAO {
 			try {
 				cm = ConnectionManager.getInstance();
 				conn = cm.getConnectionOracle();
-				
+
 				logger.debug("Riattiva project " + riattivato);
-				
+
 				switch (id_repo) {
 				case DmAlmConstants.REPOSITORY_SIRE:
-					id_proj_riattivato = new SQLQuery(conn, dialect)
-							.distinct()
-							.from(proj)
-							.where(proj.pathProject.eq(riattivato
-									+ DmAlmConstants.PROJECT_PATH_SUFFIX))
+					id_proj_riattivato = new SQLQuery(conn, dialect).distinct().from(proj)
+							.where(proj.pathProject.eq(riattivato + DmAlmConstants.PROJECT_PATH_SUFFIX))
 							.list(proj.idProject);
 					if (id_proj_riattivato.size() > 0) {
 						for (Tuple t : current) {
-							if (t.get(currProjSire.cId).equalsIgnoreCase(
-									id_proj_riattivato.get(0))) {
-								logger.info("[RIATTIVATO-ID] "
-										+ id_proj_riattivato.get(0));
+							if (t.get(currProjSire.cId).equalsIgnoreCase(id_proj_riattivato.get(0))) {
+								logger.info("[RIATTIVATO-ID] " + id_proj_riattivato.get(0));
 
-								DmalmProject p = getProjectByID(
-										id_proj_riattivato.get(0),
+								DmalmProject p = getProjectByID(id_proj_riattivato.get(0),
 										DmAlmConstants.REPOSITORY_SIRE);
 								if (p != null) {
-									if (!p.getDtCaricamento().equals(
-											DataEsecuzione.getInstance()
-													.getDataEsecuzione())) {
+									if (!p.getDtCaricamento()
+											.equals(DataEsecuzione.getInstance().getDataEsecuzione())) {
 										// se non è stato storicizzato oggi storicizzo e inserisco il nuovo "attivo"
-										logger.info("[RIATTIVATO-STORICIZZATO] "
-												+ p.getDmalmProjectPk());
-										updateDataFineValidita(DataEsecuzione
-												.getInstance().getDataEsecuzione(),
-												p);
+										logger.info("[RIATTIVATO-STORICIZZATO] " + p.getDmalmProjectPk());
+										updateDataFineValidita(DataEsecuzione.getInstance().getDataEsecuzione(), p);
 										p.setAnnullato(null);
 										p.setDtAnnullamento(null);
-										insertProjectUpdate(DataEsecuzione
-												.getInstance().getDataEsecuzione(),
-												p, false);
+										insertProjectUpdate(DataEsecuzione.getInstance().getDataEsecuzione(), p, false);
 									} else {
 										// se storicizzato oggi lo "attivo"
 										logger.info("[RIATTIVATO-31/12/9999]");
-										String sql = QueryManager
-												.getInstance()
-												.getQuery(
-														DmAlmConfigReaderProperties.SQL_REACTIVATED_PROJECTS);
+										String sql = QueryManager.getInstance()
+												.getQuery(DmAlmConfigReaderProperties.SQL_REACTIVATED_PROJECTS);
 										ps = conn.prepareStatement(sql);
 										ps.setString(1, id_proj_riattivato.get(0));
 										ps.setString(2, id_repo);
-										ps.setTimestamp(3,
-												DateUtils.setDtFineValidita9999());
+										ps.setTimestamp(3, DateUtils.getDtFineValidita9999());
 										ps.executeUpdate();
 									}
 								}
-								
+
 								if (ps != null) {
 									ps.close();
 								}
@@ -1163,54 +971,39 @@ public class ProjectSgrCmDAO {
 					} else {
 						logger.info("[NON RIATTIVATO] - Project " + riattivato + " non trovato");
 					}
-					
+
 					break;
 				case DmAlmConstants.REPOSITORY_SISS:
-					id_proj_riattivato = new SQLQuery(conn, dialect)
-							.distinct()
-							.from(proj)
-							.where(proj.pathProject.eq(riattivato
-									+ DmAlmConstants.PROJECT_PATH_SUFFIX))
+					id_proj_riattivato = new SQLQuery(conn, dialect).distinct().from(proj)
+							.where(proj.pathProject.eq(riattivato + DmAlmConstants.PROJECT_PATH_SUFFIX))
 							.list(proj.idProject);
 					if (id_proj_riattivato.size() > 0) {
 						for (Tuple t : current) {
-							if (t.get(currProjSiss.cId).equalsIgnoreCase(
-									id_proj_riattivato.get(0))) {
-								logger.info("[RIATTIVATO_ID] "
-										+ id_proj_riattivato.get(0));
-								DmalmProject p = getProjectByID(
-										id_proj_riattivato.get(0),
+							if (t.get(currProjSiss.cId).equalsIgnoreCase(id_proj_riattivato.get(0))) {
+								logger.info("[RIATTIVATO_ID] " + id_proj_riattivato.get(0));
+								DmalmProject p = getProjectByID(id_proj_riattivato.get(0),
 										DmAlmConstants.REPOSITORY_SISS);
 								if (p != null) {
-									if (!p.getDtCaricamento().equals(
-											DataEsecuzione.getInstance()
-													.getDataEsecuzione())) {
+									if (!p.getDtCaricamento()
+											.equals(DataEsecuzione.getInstance().getDataEsecuzione())) {
 										// se non è stato storicizzato oggi storicizzo e inserisco il nuovo "attivo"
-										logger.info("[RIATTIVATO-STORICIZZATO] "
-												+ p.getDmalmProjectPk());
-										updateDataFineValidita(DataEsecuzione
-												.getInstance().getDataEsecuzione(),
-												p);
+										logger.info("[RIATTIVATO-STORICIZZATO] " + p.getDmalmProjectPk());
+										updateDataFineValidita(DataEsecuzione.getInstance().getDataEsecuzione(), p);
 										p.setAnnullato(null);
 										p.setDtAnnullamento(null);
-										insertProjectUpdate(DataEsecuzione
-												.getInstance().getDataEsecuzione(),
-												p, false);
+										insertProjectUpdate(DataEsecuzione.getInstance().getDataEsecuzione(), p, false);
 									} else {
 										// se storicizzato oggi lo "attivo"
-										String sql = QueryManager
-												.getInstance()
-												.getQuery(
-														DmAlmConfigReaderProperties.SQL_REACTIVATED_PROJECTS);
+										String sql = QueryManager.getInstance()
+												.getQuery(DmAlmConfigReaderProperties.SQL_REACTIVATED_PROJECTS);
 										ps = conn.prepareStatement(sql);
 										ps.setString(1, id_proj_riattivato.get(0));
 										ps.setString(2, id_repo);
-										ps.setTimestamp(3,
-												DateUtils.setDtFineValidita9999());
+										ps.setTimestamp(3, DateUtils.getDtFineValidita9999());
 										ps.executeUpdate();
 									}
 								}
-								
+
 								if (ps != null) {
 									ps.close();
 								}
@@ -1219,7 +1012,7 @@ public class ProjectSgrCmDAO {
 					} else {
 						logger.info("[NON RIATTIVATO] - Project " + riattivato + " non trovato");
 					}
-					
+
 					break;
 				}
 			} catch (Exception e) {
@@ -1243,18 +1036,14 @@ public class ProjectSgrCmDAO {
 			conn = cm.getConnectionOracle();
 			switch (repository) {
 			case DmAlmConstants.REPOSITORY_SIRE:
-				currentprojects = new SQLQuery(conn, dialect)
-						.from(currProjSire)
-						.where(currProjSire.dataCaricamento.eq(DataEsecuzione
-								.getInstance().getDataEsecuzione()))
+				currentprojects = new SQLQuery(conn, dialect).from(currProjSire)
+						.where(currProjSire.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione()))
 						.list(currProjSire.cId, currProjSire.cLocation);
 
 				break;
 			case DmAlmConstants.REPOSITORY_SISS:
-				currentprojects = new SQLQuery(conn, dialect)
-						.from(currProjSiss)
-						.where(currProjSiss.dataCaricamento.eq(DataEsecuzione
-								.getInstance().getDataEsecuzione()))
+				currentprojects = new SQLQuery(conn, dialect).from(currProjSiss)
+						.where(currProjSiss.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione()))
 						.list(currProjSiss.cId, currProjSiss.cLocation);
 				break;
 			}
@@ -1267,8 +1056,7 @@ public class ProjectSgrCmDAO {
 		return currentprojects;
 	}
 
-	public static List<Tuple> getAllProjectToLinkWithProduct()
-			throws DAOException {
+	public static List<Tuple> getAllProjectToLinkWithProduct() throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -1282,25 +1070,16 @@ public class ProjectSgrCmDAO {
 
 			// tutti i Project di tipo Sviluppo con Sigla NOT NULL non associati
 			// a Prodotto o associati al record Tappo
-			relList = query
-					.from(proj)
-					.leftJoin(projectProdotto)
-					.on(projectProdotto.dmalmProjectPk.eq(
-							proj.dmalmProjectPrimaryKey).and(
-							projectProdotto.dtFineValidita.eq(DateUtils
-									.setDtFineValidita9999())))
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+			relList = query.from(proj).leftJoin(projectProdotto)
+					.on(projectProdotto.dmalmProjectPk.eq(proj.dmalmProjectPrimaryKey)
+							.and(projectProdotto.dtFineValidita.eq(DateUtils.getDtFineValidita9999())))
+					.where(proj.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
 					.where(proj.cTemplate.eq("SVILUPPO"))
 					// .where(proj.siglaProject.isNotNull())
-					.where(projectProdotto.dmalmProdottoSeq.isNull().or(
-							(projectProdotto.dmalmProdottoSeq.eq(0))))
-					.list(proj.dmalmProjectPrimaryKey, proj.siglaProject,
-							proj.nomeCompletoProject,
-							projectProdotto.dmalmProjectPk,
-							projectProdotto.dmalmProdottoSeq,
-							projectProdotto.dtInizioValidita,
-							projectProdotto.dtFineValidita);
+					.where(projectProdotto.dmalmProdottoSeq.isNull().or((projectProdotto.dmalmProdottoSeq.eq(0))))
+					.list(proj.dmalmProjectPrimaryKey, proj.siglaProject, proj.nomeCompletoProject,
+							projectProdotto.dmalmProjectPk, projectProdotto.dmalmProdottoSeq,
+							projectProdotto.dtInizioValidita, projectProdotto.dtFineValidita);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			throw new DAOException(e);
@@ -1312,8 +1091,7 @@ public class ProjectSgrCmDAO {
 		return relList;
 	}
 
-	public static List<Tuple> getAllProjectNotInHistory(Timestamp dataEsecuzione)
-			throws DAOException {
+	public static List<Tuple> getAllProjectNotInHistory(Timestamp dataEsecuzione) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -1325,14 +1103,11 @@ public class ProjectSgrCmDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 			connection.setAutoCommit(false);
-			
+
 			// tutti i Project non movimentati in History Sire
-			relList = query
-					.from(proj)
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+			relList = query.from(proj).where(proj.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
 					.list(proj.all());
-			
+
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			throw new DAOException(e);
@@ -1344,8 +1119,7 @@ public class ProjectSgrCmDAO {
 		return relList;
 	}
 
-	public static List<DmalmProject> getProjectToLinkAndSplit(
-			String applicazione, Timestamp inizio, Timestamp fine)
+	public static List<DmalmProject> getProjectToLinkAndSplit(String applicazione, Timestamp inizio, Timestamp fine)
 			throws DAOException {
 
 		ConnectionManager cm = null;
@@ -1354,9 +1128,6 @@ public class ProjectSgrCmDAO {
 		List<Tuple> projects = new ArrayList<Tuple>();
 		List<DmalmProject> ret = new ArrayList<DmalmProject>();
 
-		
-		
-		
 		try {
 			// caso x.y.z (prodotto.modulo.funzionalita)
 			cm = ConnectionManager.getInstance();
@@ -1364,20 +1135,12 @@ public class ProjectSgrCmDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			projects = query
-					.from(proj)
-					.where(proj.annullato.isNull())
-					.where(proj.siglaProject
-							.eq(applicazione)
-							.or(proj.siglaProject.like(applicazione + "..%"))
-							.or(proj.siglaProject.like("%.." + applicazione
-									+ "..%"))
+			projects = query.from(proj).where(proj.annullato.isNull())
+					.where(proj.siglaProject.eq(applicazione).or(proj.siglaProject.like(applicazione + "..%"))
+							.or(proj.siglaProject.like("%.." + applicazione + "..%"))
 							.or(proj.siglaProject.like("%.." + applicazione)))
-					.where(proj.dtInizioValidita
-							.between(inizio, fine)
-							.or(proj.dtFineValidita.between(inizio, fine))
-							.or(proj.dtInizioValidita.before(inizio).and(
-									proj.dtFineValidita.after(fine))))
+					.where(proj.dtInizioValidita.between(inizio, fine).or(proj.dtFineValidita.between(inizio, fine))
+							.or(proj.dtInizioValidita.before(inizio).and(proj.dtFineValidita.after(fine))))
 					.list(proj.all());
 
 			if (projects.size() > 0) {
@@ -1398,22 +1161,12 @@ public class ProjectSgrCmDAO {
 
 				query = new SQLQuery(connection, dialect);
 
-				projects = query
-						.from(proj)
-						.where(proj.annullato.isNull())
-						.where(proj.siglaProject
-								.eq(applicazione)
-								.or(proj.siglaProject
-										.like(applicazione + "..%"))
-								.or(proj.siglaProject.like("%.." + applicazione
-										+ "..%"))
-								.or(proj.siglaProject
-										.like("%.." + applicazione)))
-						.where(proj.dtInizioValidita
-								.between(inizio, fine)
-								.or(proj.dtFineValidita.between(inizio, fine))
-								.or(proj.dtInizioValidita.before(inizio).and(
-										proj.dtFineValidita.after(fine))))
+				projects = query.from(proj).where(proj.annullato.isNull())
+						.where(proj.siglaProject.eq(applicazione).or(proj.siglaProject.like(applicazione + "..%"))
+								.or(proj.siglaProject.like("%.." + applicazione + "..%"))
+								.or(proj.siglaProject.like("%.." + applicazione)))
+						.where(proj.dtInizioValidita.between(inizio, fine).or(proj.dtFineValidita.between(inizio, fine))
+								.or(proj.dtInizioValidita.before(inizio).and(proj.dtFineValidita.after(fine))))
 						.list(proj.all());
 
 				if (projects.size() > 0) {
@@ -1433,36 +1186,22 @@ public class ProjectSgrCmDAO {
 
 					query = new SQLQuery(connection, dialect);
 
-					projects = query
-							.from(proj)
-							.where(proj.annullato.isNull())
-							.where(proj.siglaProject
-									.eq(applicazione)
-									.or(proj.siglaProject.like(applicazione
-											+ "..%"))
-									.or(proj.siglaProject.like("%.."
-											+ applicazione + "..%"))
-									.or(proj.siglaProject.like("%.."
-											+ applicazione))
-									.or(proj.siglaProject.like(applicazione
-											+ ".%"))
-									.or(proj.siglaProject.like("%.."
-											+ applicazione + ".%")))
-							.where(proj.dtInizioValidita
-									.between(inizio, fine)
-									.or(proj.dtFineValidita.between(inizio,
-											fine))
-									.or(proj.dtInizioValidita.before(inizio)
-											.and(proj.dtFineValidita
-													.after(fine))))
+					projects = query.from(proj).where(proj.annullato.isNull())
+							.where(proj.siglaProject.eq(applicazione).or(proj.siglaProject.like(applicazione + "..%"))
+									.or(proj.siglaProject.like("%.." + applicazione + "..%"))
+									.or(proj.siglaProject.like("%.." + applicazione))
+									.or(proj.siglaProject.like(applicazione + ".%"))
+									.or(proj.siglaProject.like("%.." + applicazione + ".%")))
+							.where(proj.dtInizioValidita.between(inizio, fine)
+									.or(proj.dtFineValidita.between(inizio, fine))
+									.or(proj.dtInizioValidita.before(inizio).and(proj.dtFineValidita.after(fine))))
 							.list(proj.all());
-				
+
 					if (projects.size() > 0) {
 						for (Tuple t : projects) {
 							DmalmProject d = new DmalmProject();
 							d.setSiglaProject(t.get(proj.siglaProject));
-							d.setDmalmProjectPk(t
-									.get(proj.dmalmProjectPrimaryKey));
+							d.setDmalmProjectPk(t.get(proj.dmalmProjectPrimaryKey));
 							d.setDtInizioValidita(t.get(proj.dtInizioValidita));
 							d.setDtFineValidita(t.get(proj.dtFineValidita));
 							ret.add(d);
@@ -1487,8 +1226,7 @@ public class ProjectSgrCmDAO {
 		return ret;
 	}
 
-	public static DmalmProject getProjectByPath(String path, String repo)
-			throws DAOException {
+	public static DmalmProject getProjectByPath(String path, String repo) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -1502,12 +1240,9 @@ public class ProjectSgrCmDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			projects = query
-					.from(proj)
-					.where(proj.pathProject.like(path))
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
-					.where(proj.idRepository.eq(repo)).list(proj.all());
+			projects = query.from(proj).where(proj.pathProject.like(path))
+					.where(proj.dtFineValidita.eq(DateUtils.getDtFineValidita9999())).where(proj.idRepository.eq(repo))
+					.list(proj.all());
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -1560,8 +1295,7 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static DmalmProject getProjectByID(String id, String repo)
-			throws DAOException {
+	public static DmalmProject getProjectByID(String id, String repo) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -1574,11 +1308,8 @@ public class ProjectSgrCmDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			projects = query.from(proj)
-					.where(proj.idProject.eq(id))
-					.where(proj.idRepository.eq(repo))
-					.orderBy(proj.dtFineValidita.desc())
-					.list(proj.all());
+			projects = query.from(proj).where(proj.idProject.eq(id)).where(proj.idRepository.eq(repo))
+					.orderBy(proj.dtFineValidita.desc()).list(proj.all());
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -1631,8 +1362,7 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static List<DmalmProject> getProjectToLinkWi(String annullato,
-			Timestamp dt_esecuzione) throws DAOException {
+	public static List<DmalmProject> getProjectToLinkWi(String annullato, Timestamp dt_esecuzione) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -1645,13 +1375,9 @@ public class ProjectSgrCmDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			projects = query
-					.from(proj)
-					.where(proj.annullato.eq(annullato))
-					.where(proj.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
-					.where(proj.dtAnnullamento.eq(dt_esecuzione))
-					.list(proj.all());
+			projects = query.from(proj).where(proj.annullato.eq(annullato))
+					.where(proj.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
+					.where(proj.dtAnnullamento.eq(dt_esecuzione)).list(proj.all());
 
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
@@ -1708,8 +1434,7 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static DmalmProject getProjectByHistory(String id,
-			Timestamp dt_storicizzazione) throws DAOException {
+	public static DmalmProject getProjectByHistory(String id, Timestamp dt_storicizzazione) throws DAOException {
 
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -1722,8 +1447,7 @@ public class ProjectSgrCmDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			projects = query.from(proj).where(proj.idProject.eq(id))
-					.where(proj.dtFineValidita.eq(dt_storicizzazione))
+			projects = query.from(proj).where(proj.idProject.eq(id)).where(proj.dtFineValidita.eq(dt_storicizzazione))
 					.list(proj.all());
 
 		} catch (Exception e) {
@@ -1777,8 +1501,8 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static List<DmalmProject> getHistoryProject(String idProject,
-			String repo, Timestamp dataChiusura) throws DAOException {
+	public static List<DmalmProject> getHistoryProject(String idProject, String repo, Timestamp dataChiusura)
+			throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
 		List<Tuple> projects = new ArrayList<Tuple>();
@@ -1790,7 +1514,7 @@ public class ProjectSgrCmDAO {
 			SQLQuery query = new SQLQuery(connection, dialect);
 
 			projects = query.from(proj).where(proj.idProject.eq(idProject))
-					//.where(proj.dtFineValidita.eq(dataChiusura))
+					// .where(proj.dtFineValidita.eq(dataChiusura))
 					.where(proj.idRepository.eq(repo)).list(proj.all());
 
 		} catch (Exception e) {
@@ -1848,8 +1572,8 @@ public class ProjectSgrCmDAO {
 		}
 	}
 
-	public static List<DmalmProject> getReactivated(List<Tuple> current,
-			List<String> reactivated, String id_repo) throws DAOException {
+	public static List<DmalmProject> getReactivated(List<Tuple> current, List<String> reactivated, String id_repo)
+			throws DAOException {
 		ConnectionManager cm = null;
 		Connection conn = null;
 		List<String> id_proj_riattivato = null;
@@ -1860,18 +1584,14 @@ public class ProjectSgrCmDAO {
 				cm = ConnectionManager.getInstance();
 				conn = cm.getConnectionOracle();
 
-				id_proj_riattivato = new SQLQuery(conn, dialect)
-						.distinct()
-						.from(proj)
-						.where(proj.pathProject.eq(riattivato
-								+ DmAlmConstants.PROJECT_PATH_SUFFIX))
+				id_proj_riattivato = new SQLQuery(conn, dialect).distinct().from(proj)
+						.where(proj.pathProject.eq(riattivato + DmAlmConstants.PROJECT_PATH_SUFFIX))
 						.list(proj.idProject);
-				if(id_proj_riattivato.size() > 0) {
+				if (id_proj_riattivato.size() > 0) {
 					for (Tuple t : current) {
 						if (id_repo.equalsIgnoreCase(DmAlmConstants.REPOSITORY_SIRE)) {
 							if (t.get(currProjSire.cId).equalsIgnoreCase(id_proj_riattivato.get(0))) {
-								DmalmProject p = getProjectByID(
-										id_proj_riattivato.get(0),
+								DmalmProject p = getProjectByID(id_proj_riattivato.get(0),
 										DmAlmConstants.REPOSITORY_SIRE);
 
 								if (p != null) {
@@ -1880,8 +1600,7 @@ public class ProjectSgrCmDAO {
 							}
 						} else {
 							if (t.get(currProjSiss.cId).equalsIgnoreCase(id_proj_riattivato.get(0))) {
-								DmalmProject p = getProjectByID(
-										id_proj_riattivato.get(0),
+								DmalmProject p = getProjectByID(id_proj_riattivato.get(0),
 										DmAlmConstants.REPOSITORY_SISS);
 								if (p != null) {
 									ret.add(p);
@@ -1903,8 +1622,7 @@ public class ProjectSgrCmDAO {
 		return ret;
 	}
 
-	public static List<DmalmProject> getProjectNuovi(Timestamp dataEsecuzione)
-			throws DAOException {
+	public static List<DmalmProject> getProjectNuovi(Timestamp dataEsecuzione) throws DAOException {
 		List<DmalmProject> ret = new ArrayList<DmalmProject>();
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -1916,9 +1634,8 @@ public class ProjectSgrCmDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			projects = query.from(proj)
-					.where(proj.dtCaricamento.eq(dataEsecuzione))
-					.orderBy(proj.idRepository.asc(), proj.idProject.asc(),proj.dtInizioValidita.asc())
+			projects = query.from(proj).where(proj.dtCaricamento.eq(dataEsecuzione))
+					.orderBy(proj.idRepository.asc(), proj.idProject.asc(), proj.dtInizioValidita.asc())
 					.list(proj.all());
 
 		} catch (Exception e) {
@@ -1975,107 +1692,22 @@ public class ProjectSgrCmDAO {
 			return null;
 		}
 	}
-	
-	public static String getServiceManager(String myrepo,
-			String projectId, String projectLocation, long c_rev, SVNRepository repository) throws Exception {
-		
-		List<String> serviceManagers = new ArrayList<String>();
-		
+
+	public static String getServiceManager(String repository, String origine) throws Exception {
+
+		lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRolesSgr qDmAlmUserRolesSgr = lispa.schedulers.queryimplementation.staging.sgr.xml.QDmAlmUserRolesSgr.dmAlmUserRolesSgr;
+		List<String> serviceManagers = new ArrayList<>();
+
 		Connection connection = null;
 		ConnectionManager cm = null;
-
-		String filePath = "";
 
 		try {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
-			DAVRepositoryFactory.setup();
+			serviceManagers = new SQLQuery(connection, dialect).from(qDmAlmUserRolesSgr)
+					.where(qDmAlmUserRolesSgr.origine.eq(origine)).where(qDmAlmUserRolesSgr.repository.eq(repository))
+					.where(qDmAlmUserRolesSgr.ruolo.eq("SM")).list(qDmAlmUserRolesSgr.userId);
 
-			connection.setAutoCommit(false);
-			SVNURL root = repository.getRepositoryRoot(true);
-			String absolutepath = root + projectLocation;
-			projectLocation = SVNURLUtil.getRelativeURL(root,
-					SVNURL.parseURIEncoded(absolutepath), false);
-			if(myrepo.equals(DmAlmConstants.REPOSITORY_SIRE)) {
-				filePath = projectLocation
-					.concat(DmAlmConfigReader
-							.getInstance()
-							.getProperty(
-									DmAlmConfigReaderProperties.SIRE_SVN_USER_ROLES_FILE));
-			}
-			if (myrepo.equals(DmAlmConstants.REPOSITORY_SISS)) {
-				filePath = projectLocation
-						.concat(DmAlmConfigReader
-								.getInstance()
-								.getProperty(
-										DmAlmConfigReaderProperties.SISS_SVN_USER_ROLES_FILE));
-
-			}
-			SVNNodeKind nodeKind = repository.checkPath(filePath, c_rev);
-			SVNProperties fileProperties = null;
-			ByteArrayOutputStream baos = null;
-			fileProperties = new SVNProperties();
-
-			SVNFileRevision svnfr = new SVNFileRevision(filePath, c_rev, fileProperties, fileProperties);
-
-			baos = new ByteArrayOutputStream();
-			if(repository.checkPath(svnfr.getPath(), svnfr.getRevision()) == SVNNodeKind.NONE){
-				if(svnfr.getRevision() == -1)
-					logger.info("Il path SVN " + svnfr.getPath() + " non esiste alla revisione HEAD");
-				else	
-					logger.info("Il path SVN " + svnfr.getPath() + " non esiste alla revisione " + svnfr.getRevision());
-				return "";
-			}
-			
-			repository.getFile(svnfr.getPath(), svnfr.getRevision(),
-					fileProperties, baos);
-			String mimeType = fileProperties
-					.getStringValue(SVNProperty.MIME_TYPE);
-
-			boolean isTextType = SVNProperty.isTextMimeType(mimeType);
-			String xmlContent = "";
-			if (isTextType) {
-				xmlContent = baos.toString();
-			} else {
-				throw new Exception("");
-			}
-
-			if (nodeKind == SVNNodeKind.FILE) {
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-						.newInstance();
-				Document doc = dbFactory.newDocumentBuilder()
-						.parse(new ByteArrayInputStream(xmlContent
-								.getBytes()));
-				doc.getDocumentElement().normalize();
-
-				NodeList nList = doc.getElementsByTagName("user");
-
-				for (int temp = 0; temp < nList.getLength(); temp++) {
-					Node nNode = nList.item(temp);
-
-					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-						Element eElement = (Element) nNode;
-
-						NodeList ruoli = eElement.getChildNodes();
-
-						for (int tempruolo = 0; tempruolo < ruoli
-								.getLength(); tempruolo++) {
-
-							Node ruolo = ruoli.item(tempruolo);
-
-							if (ruolo.getNodeType() == Node.ELEMENT_NODE) {
-
-								Element el = (Element) ruolo;
-
-								if (el.getAttribute("name").equals("SM")) {
-									serviceManagers.add(StringUtils.getMaskedValue(eElement.getAttribute("name")));
-								}
-							}
-						}
-					}
-				}
-			}
-			
 		} catch (Exception e) {
 			ErrorManager.getInstance().exceptionOccurred(true, e);
 
@@ -2084,7 +1716,7 @@ public class ProjectSgrCmDAO {
 				cm.closeConnection(connection);
 			}
 		}
-				
+
 		return StringUtils.ListToString(serviceManagers);
 	}
 

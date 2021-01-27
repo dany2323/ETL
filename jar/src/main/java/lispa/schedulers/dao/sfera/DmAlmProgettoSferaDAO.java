@@ -389,7 +389,7 @@ public class DmAlmProgettoSferaDAO {
 			new SQLUpdateClause(connection, dialect, prog)
 					.where(prog.idProgetto.eq(project.getIdProgetto()))
 					.where(prog.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(prog.dataFineValidita,
 							DateUtils.addDaysToTimestamp(DataEsecuzione
 									.getInstance().getDataEsecuzione(), -1))
@@ -425,7 +425,7 @@ public class DmAlmProgettoSferaDAO {
 					.where(prog.idAsm.eq(project.getIdAsm()))
 					.where(prog.idProgetto.eq(project.getIdProgetto()))
 					.where(prog.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(prog.dataFineEffettiva, project.getDataFineEffettiva())
 					.set(prog.dataAvvio, project.getDataAvvio())
 					.set(prog.idProgetto, project.getIdProgetto())
@@ -602,7 +602,7 @@ public class DmAlmProgettoSferaDAO {
 								project.getDurataEffettiva(),
 								project.getStaffMedio(),
 								project.getDataCaricamento(),
-								DateUtils.setDtFineValidita9999(),
+								DateUtils.getDtFineValidita9999(),
 								project.getDataCaricamento(),
 								project.getpPrjFornitoreMpp(),
 								project.getCicloDiVita(), project.getIdAsm(),
@@ -644,7 +644,7 @@ public class DmAlmProgettoSferaDAO {
 					.where(prog.idAsm.eq(progetto.getIdAsm()))
 					.where(prog.idProgetto.eq(progetto.getIdProgetto()))
 					.where(prog.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999())).list(prog.all());
+							.getDtFineValidita9999())).list(prog.all());
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -680,7 +680,7 @@ public class DmAlmProgettoSferaDAO {
 							prog.tipoProgetto
 									.equalsIgnoreCase(DmAlmConstants.MEV)))
 					.where(prog.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(prog.nomeProgetto.notLike("%NOWI%")).where(prog.annullato.isNull())
 					.orderBy(prog.nomeProgetto.asc(),
 							prog.dmalmProgettoSferaPk.asc()).list(prog.all());
@@ -734,7 +734,7 @@ public class DmAlmProgettoSferaDAO {
 	// prog.tipoProgetto
 	// .equalsIgnoreCase(DmAlmConstants.MEV)))
 	// .where(prog.dataFineValidita.eq(DateUtils
-	// .setDtFineValidita9999()))
+	// .getDtFineValidita9999()))
 	// .orderBy(prog.nomeProgetto.asc(),
 	// prog.dmalmProgettoSferaPk.asc()).list(prog.all());
 	// for (Tuple progetto : projects) {
@@ -1207,7 +1207,7 @@ public class DmAlmProgettoSferaDAO {
 					.where(prog.annullato
 							.eq(DmAlmConstants.SFERA_ANNULLATO_FISICAMENTE))
 					.where(prog.dataFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(asm.applicazione.eq(applicazione)).list(prog.all());
 
 		} catch (Exception e) {

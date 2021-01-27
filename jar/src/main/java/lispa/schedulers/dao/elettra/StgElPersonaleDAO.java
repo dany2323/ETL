@@ -61,7 +61,6 @@ public class StgElPersonaleDAO {
 	public static void fillStaging() throws DAOException, SQLException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		Connection connectionFonteElettra = null;
 		long righeInserite = 0;
 
 		try {
@@ -69,14 +68,12 @@ public class StgElPersonaleDAO {
 			connection = cm.getConnectionOracle();
 			connection.setAutoCommit(false);
 
-			connectionFonteElettra = cm.getConnectionOracleFonteElettra();
-
 			QElettraPersonale qElettraPersonale = QElettraPersonale.elettraPersonale;
 			QStgElPersonale qStgElPersonale = QStgElPersonale.stgElPersonale;
 
 			SQLTemplates dialect = new HSQLDBTemplates();
 
-			SQLQuery query = new SQLQuery(connectionFonteElettra, dialect);
+			SQLQuery query = new SQLQuery(connection, dialect);
 
 			List<Tuple> personale = query.from(qElettraPersonale).list(
 					qElettraPersonale.all());
@@ -141,8 +138,6 @@ public class StgElPersonaleDAO {
 		} finally {
 			if (cm != null)
 				cm.closeConnection(connection);
-			if (cm != null)
-				cm.closeConnection(connectionFonteElettra);
 		}
 	}
 

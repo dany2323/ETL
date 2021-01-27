@@ -1,10 +1,7 @@
 package lispa.schedulers.action;
 
-import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.cleaning.CheckChangingWorkitemFacade;
 import lispa.schedulers.manager.ExecutionManager;
-
 import org.apache.log4j.Logger;
 
 public class DmAlmCheckChangedWorkitem {
@@ -17,16 +14,16 @@ public class DmAlmCheckChangedWorkitem {
 	 * perdere la lavorazione dell'intero ETL. Il caricamento della tabella
 	 * ChangedWorkitems verrà recuperato successivamente
 	 */
-	protected static void doWork() throws PropertiesReaderException {
+	protected static void doWork() {
 		try {
 			// ELETTRA/SGRCM
 			if (ExecutionManager.getInstance().isExecutionElettraSgrcm()) {
 
-				logger.debug("START CheckChangedWorkitemFacade");
+				logger.debug("START CheckChangingWorkitemFacade");
 				CheckChangingWorkitemFacade.execute();
-				logger.debug("STOP CheckChangedWorkitemFacade");
+				logger.debug("STOP CheckChangingWorkitemFacade");
 			}
-		} catch (DAOException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 

@@ -14,7 +14,6 @@ import lispa.schedulers.bean.target.DmalmProject;
 import lispa.schedulers.bean.target.DmalmProjectProdotto;
 import lispa.schedulers.bean.target.elettra.DmAlmSourceElProdEccez;
 import lispa.schedulers.bean.target.elettra.DmalmElUnitaOrganizzativeFlat;
-import lispa.schedulers.constant.DmAlmConstants;
 import lispa.schedulers.queryimplementation.target.QDmalmProjectProdotto;
 
 public class QDmAlmSourceElProdEccez extends
@@ -31,17 +30,17 @@ public class QDmAlmSourceElProdEccez extends
 	public final PrimaryKey<DmAlmSourceElProdEccez> siglaOggettoElettraPk = createPrimaryKey(siglaOggettoElettra);
 
 	public QDmAlmSourceElProdEccez(String variable) {
-		super(DmAlmSourceElProdEccez.class, forVariable(variable), DmAlmConstants.DMALM_TARGET_SCHEMA,
+		super(DmAlmSourceElProdEccez.class, forVariable(variable), "DMALM",
 				"DMALM_SOURCE_EL_PROD_ECCEZ");
 	}
 
 	public QDmAlmSourceElProdEccez(Path<? extends DmAlmSourceElProdEccez> path) {
-		super(path.getType(), path.getMetadata(), DmAlmConstants.DMALM_TARGET_SCHEMA,
+		super(path.getType(), path.getMetadata(), "DMALM",
 				"DMALM_SOURCE_EL_PROD_ECCEZ");
 	}
 
 	public QDmAlmSourceElProdEccez(PathMetadata<?> metadata) {
-		super(DmAlmSourceElProdEccez.class, metadata, DmAlmConstants.DMALM_TARGET_SCHEMA,
+		super(DmAlmSourceElProdEccez.class, metadata, "DMALM",
 				"DMALM_SOURCE_EL_PROD_ECCEZ");
 	}
 

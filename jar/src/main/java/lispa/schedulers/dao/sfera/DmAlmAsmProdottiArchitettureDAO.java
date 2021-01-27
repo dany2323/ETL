@@ -49,7 +49,7 @@ public class DmAlmAsmProdottiArchitettureDAO {
 							qDmalmAsmProdottiArchitetture.dtFineValidita)
 					.values(relazione.getDmalmAsmPk(),
 							relazione.getDmalmProdottoPk(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -119,9 +119,9 @@ public class DmAlmAsmProdottiArchitettureDAO {
 					.on(qDmalmAsmProdottiArchitetture.dmalmProdottoPk
 							.eq(qDmalmElProdottiArchitetture.prodottoPk))
 					.where(qDmalmElProdottiArchitetture.dataFineValidita
-							.ne(DateUtils.setDtFineValidita9999()))
+							.ne(DateUtils.getDtFineValidita9999()))
 					.where(qDmalmAsmProdottiArchitetture.dtFineValidita
-							.eq(DateUtils.setDtFineValidita9999()))
+							.eq(DateUtils.getDtFineValidita9999()))
 					.list(qDmalmAsmProdottiArchitetture.dmalmAsmPk,
 							qDmalmAsmProdottiArchitetture.dmalmProdottoPk,
 							qDmalmAsmProdottiArchitetture.dtInizioValidita,

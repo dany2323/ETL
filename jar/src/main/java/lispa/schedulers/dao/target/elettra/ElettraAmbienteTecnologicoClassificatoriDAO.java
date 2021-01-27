@@ -189,8 +189,8 @@ public class ElettraAmbienteTecnologicoClassificatoriDAO {
 							bean.getDescrizioneClassificatore(),
 							bean.getAnnullato(), bean.getDataAnnullamento(),
 							dataEsecuzione,
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -276,7 +276,7 @@ public class ElettraAmbienteTecnologicoClassificatoriDAO {
 							bean.getAnnullato(), bean.getDataAnnullamento(),
 							dataEsecuzione,
 							DateUtils.formatDataEsecuzione(dataEsecuzione),
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 

@@ -1,30 +1,18 @@
 package lispa.schedulers.dao.mps;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import lispa.schedulers.constant.DmAlmConstants;
+import java.util.List;
 import lispa.schedulers.exception.DAOException;
-import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.manager.ConnectionManager;
 import lispa.schedulers.manager.ErrorManager;
+import lispa.schedulers.queryimplementation.fonte.mps.DmAlmMpsContratti;
 import lispa.schedulers.queryimplementation.staging.mps.QDmalmStgMpsContratti;
-import lispa.schedulers.utils.DateUtils;
-import lispa.schedulers.utils.MpsUtils;
-import lispa.schedulers.utils.NumberUtils;
-import lispa.schedulers.utils.StringUtils;
-
 import org.apache.log4j.Logger;
-
-import au.com.bytecode.opencsv.CSVReader;
-
-import com.google.common.collect.Lists;
+import com.mysema.query.Tuple;
 import com.mysema.query.sql.HSQLDBTemplates;
+import com.mysema.query.sql.SQLQuery;
 import com.mysema.query.sql.SQLTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
@@ -33,219 +21,117 @@ public class StgMpsContrattiDAO {
 
 	private static Logger logger = Logger.getLogger(StgMpsContrattiDAO.class);
 	private static QDmalmStgMpsContratti stgMpsContratti = QDmalmStgMpsContratti.dmalmStgMpsContratti;
-
 	private static ConnectionManager cm = ConnectionManager.getInstance();
 	private static Connection connection;
 
-	public static HashMap<String, Integer> mappaColonne(String pathCSV)
-			throws PropertiesReaderException {
-		String[] nextLine;
-		ArrayList<String> fieldsNames = null;
+	public static void fillStgMpsContratti() throws DAOException, SQLException {
 
-		boolean doppiaColonnaDirezione = false;
-
-		HashMap<String, Integer> hm = new HashMap<String, Integer>();
-		CSVReader reader = null;
+		DmAlmMpsContratti dmAlmMpsContratti = DmAlmMpsContratti.dmalmMpsContratti;
+		List<Tuple> listMpsContratti = new ArrayList<Tuple>();
+		
 		try {
-			reader = new CSVReader(new InputStreamReader(new FileInputStream(
-					pathCSV), "ISO-8859-1"), DmAlmConstants.MPS_CSV_SEPARATOR);
+			connection = cm.getConnectionOracle();
+			SQLTemplates dialect = new HSQLDBTemplates();
+			SQLQuery query = new SQLQuery(connection, dialect);
+			listMpsContratti = query
+				.from(dmAlmMpsContratti)
+				.list(dmAlmMpsContratti.all());
+			
+			int numRighe = 0;
+			for (Tuple mpsContratti : listMpsContratti) {
+				numRighe++;
 
-			if ((nextLine = reader.readNext()) != null)
-				fieldsNames = Lists.newArrayList(nextLine);
-
-			int i = 0;
-
-			for (String field : fieldsNames) {
-				if (field.equalsIgnoreCase("Direzione")) {
-					if (!doppiaColonnaDirezione) {
-						doppiaColonnaDirezione = true;
-					} else {
-						field = "REPOSITORY";
-					}
-				}
-
-				hm.put(field, i);
-				i++;
+				new SQLInsertClause(connection, dialect, stgMpsContratti)
+						.columns(stgMpsContratti.idContratto,
+								stgMpsContratti.codContratto,
+								stgMpsContratti.titoloContratto,
+								stgMpsContratti.annoRiferimento,
+								stgMpsContratti.dataInizio,
+								stgMpsContratti.dataFine,
+								stgMpsContratti.tipo,
+								stgMpsContratti.stato,
+								stgMpsContratti.firmaDigitale,
+								stgMpsContratti.variato,
+								stgMpsContratti.numVariazioni,
+								stgMpsContratti.codDirezione,
+								stgMpsContratti.desDirezione,
+								stgMpsContratti.codUo,
+								stgMpsContratti.desUo,
+								stgMpsContratti.codStruttura,
+								stgMpsContratti.desStruttura,
+								stgMpsContratti.totaleContratto,
+								stgMpsContratti.totaleImpegnato,
+								stgMpsContratti.totaleSpalmato,
+								stgMpsContratti.totaleVerbalizzato,
+								stgMpsContratti.totaleRichiesto,
+								stgMpsContratti.totaleFatturato,
+								stgMpsContratti.totaleFatturabile,
+								stgMpsContratti.prossimoFirmatario,
+								stgMpsContratti.inCorsoIl,
+								stgMpsContratti.numeroRilasci,
+								stgMpsContratti.numeroRilasciForfait,
+								stgMpsContratti.numeroRilasciCanone,
+								stgMpsContratti.numeroRilasciConsumo,
+								stgMpsContratti.numeroVerbali,
+								stgMpsContratti.numeroVerbaliForfait,
+								stgMpsContratti.numeroVerbaliConsumo,
+								stgMpsContratti.desMotivoVariazione,
+								stgMpsContratti.repository,
+								stgMpsContratti.priorita,
+								stgMpsContratti.idSm,
+								stgMpsContratti.serviceManager)
+						.values(mpsContratti.get(dmAlmMpsContratti.idContratto),
+								mpsContratti.get(dmAlmMpsContratti.codContratto),
+								mpsContratti.get(dmAlmMpsContratti.titoloContratto),
+								mpsContratti.get(dmAlmMpsContratti.annoRiferimento),
+								mpsContratti.get(dmAlmMpsContratti.dataInizio),
+								mpsContratti.get(dmAlmMpsContratti.dataFine),
+								mpsContratti.get(dmAlmMpsContratti.tipo),
+								mpsContratti.get(dmAlmMpsContratti.stato),
+								mpsContratti.get(dmAlmMpsContratti.firmaDigitale),
+								mpsContratti.get(dmAlmMpsContratti.variato),
+								mpsContratti.get(dmAlmMpsContratti.numVariazioni),
+								mpsContratti.get(dmAlmMpsContratti.codDirezione),
+								mpsContratti.get(dmAlmMpsContratti.desDirezione),
+								mpsContratti.get(dmAlmMpsContratti.codUo),
+								mpsContratti.get(dmAlmMpsContratti.desUo),
+								mpsContratti.get(dmAlmMpsContratti.codStruttura),
+								mpsContratti.get(dmAlmMpsContratti.desStruttura),
+								mpsContratti.get(dmAlmMpsContratti.totaleContratto),
+								mpsContratti.get(dmAlmMpsContratti.totaleImpegnato),
+								mpsContratti.get(dmAlmMpsContratti.totaleSpalmato),
+								mpsContratti.get(dmAlmMpsContratti.totaleVerbalizzato),
+								mpsContratti.get(dmAlmMpsContratti.totaleRichiesto),
+								mpsContratti.get(dmAlmMpsContratti.totaleFatturato),
+								mpsContratti.get(dmAlmMpsContratti.totaleFatturabile),
+								mpsContratti.get(dmAlmMpsContratti.prossimoFirmatario),
+								mpsContratti.get(dmAlmMpsContratti.inCorsoIl),
+								mpsContratti.get(dmAlmMpsContratti.numeroRilasci),
+								mpsContratti.get(dmAlmMpsContratti.numeroRilasciForfait),
+								mpsContratti.get(dmAlmMpsContratti.numeroRilasciCanone),
+								mpsContratti.get(dmAlmMpsContratti.numeroRilasciConsumo),
+								mpsContratti.get(dmAlmMpsContratti.numeroVerbali),
+								mpsContratti.get(dmAlmMpsContratti.numeroVerbaliForfait),
+								mpsContratti.get(dmAlmMpsContratti.numeroVerbaliConsumo),
+								mpsContratti.get(dmAlmMpsContratti.desMotivoVariazione),
+								mpsContratti.get(dmAlmMpsContratti.repository),
+								mpsContratti.get(dmAlmMpsContratti.priorita),
+								mpsContratti.get(dmAlmMpsContratti.idSm),
+								mpsContratti.get(dmAlmMpsContratti.serviceManager))
+						.execute();
 			}
 
-			if (reader != null) {
-				reader.close();
-			}
-		} catch (FileNotFoundException e) {
-			logger.error(e.getMessage(), e);
-			Exception exc = new Exception("MPS file non trovato " + pathCSV
-					+ ", elaborazione Mps terminata");
-
-			ErrorManager.getInstance().exceptionOccurred(true, exc);
+			connection.commit();
+			
+			logger.info("StgMpsContrattiDAO.fillStgMpsContratti - righe inserite: " + numRighe);
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-
 			ErrorManager.getInstance().exceptionOccurred(true, e);
-		}
-
-		return hm;
-	}
-
-	public static void fillStgMpsContratti() throws PropertiesReaderException,
-			DAOException, SQLException {
-		String pathCSV = MpsUtils
-				.currentMpsFile(DmAlmConstants.FILENAME_MPS_CONTRATTI);
-
-		if (pathCSV == null) {
-			Exception exc = new Exception("MPS file non trovato "
-					+ DmAlmConstants.FILENAME_MPS_CONTRATTI
-					+ ", elaborazione Mps terminata");
-			logger.error("StgMpsAttivitaDAO - exception: " + exc);
-
-			ErrorManager.getInstance().exceptionOccurred(true, exc);
-		} else {
-			HashMap<String, Integer> mapping = mappaColonne(pathCSV);
-
-			if (!mapping.isEmpty()) {
-				ArrayList<String> columns = null;
-				ArrayList<ArrayList<String>> csvTotal = new ArrayList<ArrayList<String>>();
-
-				CSVReader reader = null;
-
-				try {
-					reader = new CSVReader(new InputStreamReader(
-							new FileInputStream(pathCSV), "UTF-8"),
-							DmAlmConstants.MPS_CSV_SEPARATOR);
-
-					connection = cm.getConnectionOracle();
-
-					SQLTemplates dialect = new HSQLDBTemplates();
-					String[] nextLine;
-					nextLine = reader.readNext(); // riga intestazione da
-													// scartare
-					while ((nextLine = reader.readNext()) != null) {
-						columns = Lists.newArrayList(nextLine);
-
-						csvTotal.add(columns);
-					}
-
-					int numRighe = 0;
-					for (ArrayList<String> row : csvTotal) {
-						numRighe++;
-
-						new SQLInsertClause(connection, dialect,
-								stgMpsContratti)
-								.columns(stgMpsContratti.idContratto,
-										stgMpsContratti.codContratto,
-										stgMpsContratti.titoloContratto,
-										stgMpsContratti.annoRiferimento,
-										stgMpsContratti.dataInizio,
-										stgMpsContratti.dataFine,
-										stgMpsContratti.tipo,
-										stgMpsContratti.stato,
-										stgMpsContratti.firmaDigitale,
-										stgMpsContratti.variato,
-										stgMpsContratti.numVariazioni,
-										stgMpsContratti.codDirezione,
-										stgMpsContratti.desDirezione,
-										stgMpsContratti.codUo,
-										stgMpsContratti.desUo,
-										stgMpsContratti.codStruttura,
-										stgMpsContratti.desStruttura,
-										stgMpsContratti.totaleContratto,
-										stgMpsContratti.totaleImpegnato,
-										stgMpsContratti.totaleSpalmato,
-										stgMpsContratti.totaleVerbalizzato,
-										stgMpsContratti.totaleRichiesto,
-										stgMpsContratti.totaleFatturato,
-										stgMpsContratti.totaleFatturabile,
-										stgMpsContratti.prossimoFirmatario,
-										stgMpsContratti.inCorsoIl,
-										stgMpsContratti.numeroRilasci,
-										stgMpsContratti.numeroRilasciForfait,
-										stgMpsContratti.numeroRilasciCanone,
-										stgMpsContratti.numeroRilasciConsumo,
-										stgMpsContratti.numeroVerbali,
-										stgMpsContratti.numeroVerbaliForfait,
-										stgMpsContratti.numeroVerbaliConsumo,
-										stgMpsContratti.desMotivoVariazione,
-										stgMpsContratti.repository,
-										stgMpsContratti.priorita,
-										stgMpsContratti.idSm,
-										stgMpsContratti.serviceManager)
-								.values(row
-										.get(mapping.get("ID del Contratto")),
-										row.get(mapping.get("Codice Contratto")),
-										StringUtils.getMaskedValue(row.get(mapping.get("Titolo Contratto"))),
-										row.get(mapping.get("Anno Contratto")),
-										DateUtils.stringToTimestamp(row
-												.get(mapping.get("Data Inizio"))),
-										DateUtils.stringToTimestamp(row
-												.get(mapping.get("Data Fine"))),
-										row.get(mapping.get("Tipo")),
-										row.get(mapping
-												.get("Stato del Contratto")),
-										row.get(mapping.get("Firma Digitale")),
-										row.get(mapping.get("Variato")),
-										row.get(mapping
-												.get("Numero Variazioni")),
-										
-										StringUtils.getMaskedValue(row.get(mapping.get("Codice Direzione"))),
-										StringUtils.getMaskedValue(row.get(mapping.get("Direzione"))),
-										StringUtils.getMaskedValue(row.get(mapping.get("Codice U.O."))),
-										StringUtils.getMaskedValue(row.get(mapping.get("U.O."))),
-										StringUtils.getMaskedValue(row.get(mapping.get("Codice Struttura"))),
-										StringUtils.getMaskedValue(row.get(mapping.get("Struttura"))),
-										NumberUtils.fromStringToDouble(row.get(mapping
-												.get("Totale Contratto (assoluto)"))),
-										NumberUtils.fromStringToDouble(row.get(mapping
-												.get("Totale Impegnato (assoluto)"))),
-										NumberUtils.fromStringToDouble(row.get(mapping
-												.get("Totale Spalmato (assoluto)"))),
-										NumberUtils.fromStringToDouble(row.get(mapping
-												.get("Totale Verbalizzato (assoluto)"))),
-										NumberUtils.fromStringToDouble(row.get(mapping
-												.get("Totale Richiesto (assoluto)"))),
-										NumberUtils.fromStringToDouble(row.get(mapping
-												.get("Totale Fatturato (assoluto)"))),
-										NumberUtils.fromStringToDouble(row.get(mapping
-												.get("Totale Fatturabile (assoluto)"))),
-										StringUtils.getMaskedValue(row.get(mapping.get("Prossimo Firmatario"))),
-										DateUtils.stringToTimestamp(row
-												.get(mapping.get("In Corso il"))),
-										row.get(mapping.get("Numero Rilasci")),
-										row.get(mapping
-												.get("Numero Rilasci Forfait")),
-										row.get(mapping
-												.get("Numero Rilasci Canone")),
-										row.get(mapping
-												.get("Numero Rilasci Consumo")),
-										row.get(mapping.get("Numero Verbali")),
-										row.get(mapping
-												.get("Numero Verbali Forfait")),
-										row.get(mapping
-												.get("Numero Verbali Consumo")),
-										row.get(mapping
-												.get("Motivo Variazione")),
-										row.get(mapping.get("REPOSITORY")),
-										row.get(mapping.get("Priorita")),
-										row.get(mapping.get("BO_CONTRATTI.ID_SM")),
-										StringUtils.getMaskedValue(row.get(mapping.get("Service Manager"))) )
-								.execute();
-					}
-
-					connection.commit();
-					
-					logger.info("StgMpsContrattiDAO.fillStgMpsContratti - pathCSV: "
-							+ pathCSV + ", righe inserite: " + numRighe);
-					
-					if (reader != null) {
-						reader.close();
-					}
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-					ErrorManager.getInstance().exceptionOccurred(true, e);
-					throw new DAOException(e);
-				} finally {
-					if (cm != null) {
-						cm.closeConnection(connection);
-					}
-				}
+			throw new DAOException(e);
+		} finally {
+			if (cm != null) {
+				cm.closeConnection(connection);
 			}
 		}
 	}

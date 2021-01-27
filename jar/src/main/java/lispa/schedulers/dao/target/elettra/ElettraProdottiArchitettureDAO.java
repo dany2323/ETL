@@ -363,8 +363,8 @@ public class ElettraProdottiArchitettureDAO {
 							bean.getDataCaricamento(),
 							bean.getUnitaOrganizzativaFk(),
 							bean.getPersonaleFk(),
-							DataEsecuzione.getInstance().getDataEsecuzione(),
-							DateUtils.setDtFineValidita9999(),
+							DateUtils.formatDataEsecuzione(DataEsecuzione.getInstance().getDataEsecuzione()),
+							DateUtils.getDtFineValidita9999(),
 							bean.getAmbitoTecnologico(),
 							bean.getAmbitoManutenzioneDenom(),
 							bean.getAmbitoManutenzioneCodice(),
@@ -397,7 +397,7 @@ public class ElettraProdottiArchitettureDAO {
 					.where(qDmalmElProdottiArchitetture.prodottoPk
 							.eq(prodottoPk))
 					.set(qDmalmElProdottiArchitetture.dataFineValidita,
-							DateUtils.addSecondsToTimestamp(dataFineValidita,
+							DateUtils.addSecondsToTimestamp(DateUtils.formatDataEsecuzione(dataFineValidita),
 									-1)).execute();
 
 			connection.commit();
@@ -497,8 +497,8 @@ public class ElettraProdottiArchitettureDAO {
 							bean.getCodiceAreaProdotto(),
 							bean.getDataCaricamento(),
 							bean.getUnitaOrganizzativaFk(),
-							bean.getPersonaleFk(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999(),
+							bean.getPersonaleFk(), DateUtils.formatDataEsecuzione(dataEsecuzione),
+							DateUtils.getDtFineValidita9999(),
 							//modificato pr DM_ALM-224
 							bean.getAmbitoTecnologico(),
 							bean.getAmbitoManutenzioneDenom(),
@@ -587,7 +587,7 @@ public class ElettraProdottiArchitettureDAO {
 					.from(qDmalmElProdottiArchitetture)
 					.where(qDmalmElProdottiArchitetture.sigla.eq(asm))
 					.where(qDmalmElProdottiArchitetture.dataFineValidita
-							.eq(DateUtils.setDtFineValidita9999()))
+							.eq(DateUtils.getDtFineValidita9999()))
 					.list(qDmalmElProdottiArchitetture.all());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -624,7 +624,7 @@ public class ElettraProdottiArchitettureDAO {
 					.where(qDmalmElProdottiArchitetture.prodottoPk
 							.ne(Integer.valueOf(0)))
 					.where(qDmalmElProdottiArchitetture.dataFineValidita
-							.eq(DateUtils.setDtFineValidita9999()))
+							.eq(DateUtils.getDtFineValidita9999()))
 					.where(dmalmProjectProdotto.dmalmProdottoPk.isNull())
 					.list(qDmalmElProdottiArchitetture.all());
 		} catch (Exception e) {

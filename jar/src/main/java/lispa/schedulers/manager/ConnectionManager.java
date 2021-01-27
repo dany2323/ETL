@@ -8,20 +8,7 @@ import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_DB_UR
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_DRIVER_CLASS_NAME;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_USER;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.ELETTRA_PSW;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.H2_DRIVER_CLASS_NAME;
 import static lispa.schedulers.manager.DmAlmConfigReaderProperties.PROPERTIES_READER_FILE_NAME;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_PSW;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_URL;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_CURRENT_USERNAME;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_HISTORY_PSW;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_HISTORY_URL;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SIRE_HISTORY_USERNAME;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SISS_CURRENT_PSW;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SISS_CURRENT_URL;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SISS_CURRENT_USERNAME;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SISS_HISTORY_PSW;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SISS_HISTORY_URL;
-import static lispa.schedulers.manager.DmAlmConfigReaderProperties.SISS_HISTORY_USERNAME;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -75,17 +62,8 @@ public class ConnectionManager{
 	// POOL DI CONNESSIONI ALLA FONTE ELETTRA
 	private static List<Connection> connectionOracleFonteElettraPool;
 
-	// POOL DI CONNESSIONI A SIRE
-	private static List<Connection> connectionSireCurrentPool;
-	private static List<Connection> connectionSireHistoryPool;
-
-	// POOL DI CONNESSIONI A SISS
-	private static List<Connection> connectionSissCurrentPool;
-	private static List<Connection> connectionSissHistoryPool;
-
 	// NUMERO DI CONNESSIONI CREATE
-	private static long oracle, oracleFonteElettra, sirecurr, sirehist,
-			sisscurr, sisshist;
+	private static long oracle, oracleFonteElettra;
 
 	// GF - Per cifratura password
 	private EncryptionHelper encryptionHelper = new BaseEncryptionHelper();
@@ -101,18 +79,8 @@ public class ConnectionManager{
 
 		connectionOracleFonteElettraPool = new LinkedList<Connection>();
 
-		connectionSireCurrentPool = new LinkedList<Connection>();
-		connectionSireHistoryPool = new LinkedList<Connection>();
-
-		connectionSissCurrentPool = new LinkedList<Connection>();
-		connectionSissHistoryPool = new LinkedList<Connection>();
-
 		oracle = 0;
 		oracleFonteElettra = 0;
-		sirecurr = 0;
-		sirehist = 0;
-		sisscurr = 0;
-		sisshist = 0;
 	}
 
 	/**
@@ -185,222 +153,6 @@ public class ConnectionManager{
 	}
 
 	/**
-	 * Restituisce una connessione restituita dal pool. Se tale connessione è
-	 * nel frattempo diventata inattiva, il metodo la elimina definitivamente e
-	 * chiama se stesso ricorsivamente finchè non trova una connessione valida
-	 * ed attiva.
-	 * 
-	 * @return
-	 * @throws DAOException
-	 */
-	public synchronized Connection getConnectionOracleFonteElettra()
-			throws DAOException {
-
-		Connection c = null;
-
-		try {
-			if (!connectionOracleFonteElettraPool.isEmpty()) {
-				c = connectionOracleFonteElettraPool.remove(0);
-				if (!isAlive(c)) {
-					return getConnectionOracleFonteElettra();
-				}
-			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE ORACLE FONTE ELETTRA ***");
-				
-				Class.forName(propertiesReader
-						.getProperty(ELETTRA_DRIVER_CLASS_NAME));
-
-				c = DriverManager.getConnection(
-						propertiesReader.getProperty(ELETTRA_DB_URL),
-						propertiesReader.getProperty(ELETTRA_USER),
-						encryptionHelper.decrypt(propertiesReader.getProperty(ELETTRA_PSW)));
-				oracleFonteElettra++;
-				if (oracleFonteElettra > 50)
-					logger.warn("*** ConnectionManager - ATTENZIONE, LE CONNESSIONI A ORACLE FONTE ELETTRA SONO "
-							+ oracleFonteElettra + "***");
-			}
-
-		} catch (SQLException | ClassNotFoundException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			throw new DAOException(e);
-		}
-
-		return c;
-	}
-
-	/**
-	 * Restituisce una connessione restituita dal pool. Se tale connessione è
-	 * nel frattempo diventata inattiva, il metodo la elimina definitivamente e
-	 * chiama se stesso ricorsivamente finchè non trova una connessione valida
-	 * ed attiva.
-	 * 
-	 * @return
-	 * @throws DAOException
-	 */
-	public synchronized Connection getConnectionSIRECurrent()
-			throws DAOException {
-
-		Connection c = null;
-
-		try {
-
-			if (!connectionSireCurrentPool.isEmpty()) {
-				c = connectionSireCurrentPool.remove(0);
-				if (!isAlive(c)) {
-					return getConnectionSIRECurrent();
-				}
-			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE CURRENT ***");
-				
-				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
-
-				c = DriverManager.getConnection(
-						propertiesReader.getProperty(SIRE_CURRENT_URL),
-						propertiesReader.getProperty(SIRE_CURRENT_USERNAME),
-						encryptionHelper.decrypt(propertiesReader.getProperty(SIRE_CURRENT_PSW)));
-				sirecurr++;
-			}
-
-		} catch (SQLException | ClassNotFoundException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			throw new DAOException(e);
-		}
-
-		return c;
-
-	}
-
-	/**
-	 * Restituisce una connessione restituita dal pool. Se tale connessione è
-	 * nel frattempo diventata inattiva, il metodo la elimina definitivamente e
-	 * chiama se stesso ricorsivamente finchè non trova una connessione valida
-	 * ed attiva.
-	 * 
-	 * @return
-	 * @throws DAOException
-	 */
-	public synchronized Connection getConnectionSIREHistory()
-			throws DAOException {
-
-		Connection c = null;
-
-		try {
-
-			if (!connectionSireHistoryPool.isEmpty()) {
-				c = connectionSireHistoryPool.remove(0);
-				if (!isAlive(c)) {
-					return getConnectionSIREHistory();
-				}
-			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SIRE HISTORY ***");
-				
-				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
-
-				c = DriverManager.getConnection(
-						propertiesReader.getProperty(SIRE_HISTORY_URL),
-						propertiesReader.getProperty(SIRE_HISTORY_USERNAME),
-						encryptionHelper.decrypt(propertiesReader.getProperty(SIRE_HISTORY_PSW)));
-				sirehist++;
-			}
-
-		} catch (SQLException | ClassNotFoundException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			throw new DAOException(e);
-		}
-
-		return c;
-
-	}
-
-	/**
-	 * Restituisce una connessione restituita dal pool. Se tale connessione è
-	 * nel frattempo diventata inattiva, il metodo la elimina definitivamente e
-	 * chiama se stesso ricorsivamente finchè non trova una connessione valida
-	 * ed attiva.
-	 * 
-	 * @return
-	 * @throws DAOException
-	 */
-	public synchronized Connection getConnectionSISSCurrent()
-			throws DAOException {
-
-		Connection c = null;
-
-		try {
-
-			if (!connectionSissCurrentPool.isEmpty()) {
-				c = connectionSissCurrentPool.remove(0);
-				if (!isAlive(c)) {
-					return getConnectionSISSCurrent();
-				}
-			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SISS CURRENT ***");
-				
-				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
-
-				c = DriverManager.getConnection(
-						propertiesReader.getProperty(SISS_CURRENT_URL),
-						propertiesReader.getProperty(SISS_CURRENT_USERNAME),
-						encryptionHelper.decrypt(propertiesReader.getProperty(SISS_CURRENT_PSW)));
-				sisscurr++;
-			}
-
-		} catch (SQLException | ClassNotFoundException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			throw new DAOException(e);
-		}
-
-		return c;
-
-	}
-
-	/**
-	 * Restituisce una connessione restituita dal pool. Se tale connessione è
-	 * nel frattempo diventata inattiva, il metodo la elimina definitivamente e
-	 * chiama se stesso ricorsivamente finchè non trova una connessione valida
-	 * ed attiva.
-	 * 
-	 * @return
-	 * @throws DAOException
-	 */
-	public synchronized Connection getConnectionSISSHistory()
-			throws DAOException {
-
-		Connection c = null;
-
-		try {
-
-			if (!connectionSissHistoryPool.isEmpty()) {
-				c = connectionSissHistoryPool.remove(0);
-				if (!isAlive(c)) {
-					return getConnectionSISSHistory();
-				}
-			} else {
-				logger.debug("*** ConnectionManager - NUOVA CONNESSIONE H2 SISS HISTORY ***");
-				
-				Class.forName(propertiesReader
-						.getProperty(H2_DRIVER_CLASS_NAME));
-
-				c = DriverManager.getConnection(
-						propertiesReader.getProperty(SISS_HISTORY_URL),
-						propertiesReader.getProperty(SISS_HISTORY_USERNAME),
-						encryptionHelper.decrypt(propertiesReader.getProperty(SISS_HISTORY_PSW)));
-				sisshist++;
-			}
-
-		} catch (SQLException | ClassNotFoundException e) {
-			ErrorManager.getInstance().exceptionOccurred(true, e);
-			throw new DAOException(e);
-		}
-
-		return c;
-
-	}
-
-	/**
 	 * Quando il client ha terminato di effettuare le operazioni necessarie sul
 	 * database, esso non elimina le risorse ma le rilascia invocando questo
 	 * metodo.
@@ -429,21 +181,6 @@ public class ConnectionManager{
 				} else if (URL.equals(propertiesReader
 						.getProperty(ELETTRA_DB_URL)) && user.equalsIgnoreCase(propertiesReader.getProperty(ELETTRA_USER))) {
 					connectionOracleFonteElettraPool.add(conn);
-				}
-				// Elimino tutto cio' che nell'URL della connessione viene dopo
-				// il carattere ';'
-				else if (URL.equals(propertiesReader.getProperty(
-						SIRE_CURRENT_URL).split(";")[0])) {
-					connectionSireCurrentPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
-						SIRE_HISTORY_URL).split(";")[0])) {
-					connectionSireHistoryPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
-						SISS_CURRENT_URL).split(";")[0])) {
-					connectionSissCurrentPool.add(conn);
-				} else if (URL.equals(propertiesReader.getProperty(
-						SISS_HISTORY_URL).split(";")[0])) {
-					connectionSissHistoryPool.add(conn);
 				}
 			} else {
 
@@ -514,26 +251,6 @@ public class ConnectionManager{
 		logger.debug("___*********** DI CUI RILASCIATE "
 				+ connectionOracleFonteElettraPool.size());
 
-		logger.debug("___*** CONNESSIONI SIRE HISTORY CREATE " + sirehist);
-
-		logger.debug("___***************** DI CUI RILASCIATE "
-				+ connectionSireHistoryPool.size());
-
-		logger.debug("___*** CONNESSIONI SIRE CURRENT CREATE " + sirecurr);
-
-		logger.debug("___***************** DI CUI RILASCIATE "
-				+ connectionSireCurrentPool.size());
-
-		logger.debug("___*** CONNESSIONI SISS HISTORY CREATE " + sisshist);
-
-		logger.debug("___***************** DI CUI RILASCIATE "
-				+ connectionSissHistoryPool.size());
-
-		logger.debug("___*** CONNESSIONI SISS CURRENT CREATE " + sisscurr);
-
-		logger.debug("___***************** DI CUI RILASCIATE "
-				+ connectionSissCurrentPool.size());
-
 		logger.debug("___*** |||||||||||||||||||||||||||||||||||||||||||||||| ***___");
 
 	}
@@ -542,5 +259,8 @@ public class ConnectionManager{
 
 	}
 
+	public long getNumberOracleConnection() {
+		return oracle;
+	}
 
 }

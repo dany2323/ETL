@@ -33,8 +33,7 @@ import com.mysema.query.sql.dml.SQLInsertClause;
 import com.mysema.query.types.template.StringTemplate;
 
 public class SireHistoryCfWorkitemDAO {
-	private static Logger logger = Logger
-			.getLogger(SireHistoryCfWorkitemDAO.class);
+	private static Logger logger = Logger.getLogger(SireHistoryCfWorkitemDAO.class);
 
 	private static lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem fonteCFWorkItems = lispa.schedulers.queryimplementation.fonte.sgr.sire.history.SireHistoryCfWorkitem.sireHistoryCfWorkitem;
 
@@ -44,8 +43,7 @@ public class SireHistoryCfWorkitemDAO {
 
 	public static void deleteNotMatchingCFS() throws Exception {
 
-		QueryManager.getInstance().executeQueryFromFile(
-				DmAlmConstants.DELETE_NOT_MATCHING_CFS_SIRE);
+		QueryManager.getInstance().executeQueryFromFile(DmAlmConstants.DELETE_NOT_MATCHING_CFS_SIRE);
 
 	}
 
@@ -85,8 +83,8 @@ public class SireHistoryCfWorkitemDAO {
 
 			QSireHistoryCfWorkitem stgCFWorkItems = QSireHistoryCfWorkitem.sireHistoryCfWorkitem;
 
-			new SQLDeleteClause(connection, dialect, stgCFWorkItems)
-					.where(stgCFWorkItems.dataCaricamento.eq(date)).execute();
+			new SQLDeleteClause(connection, dialect, stgCFWorkItems).where(stgCFWorkItems.dataCaricamento.eq(date))
+					.execute();
 
 		} catch (Exception e) {
 
@@ -98,18 +96,16 @@ public class SireHistoryCfWorkitemDAO {
 	}
 
 	/**
-	 * Importo tutti i CF collegati a Workitem del tipo w_type e con C_NAME
-	 * uguale a CFName
+	 * Importo tutti i CF collegati a Workitem del tipo w_type e con C_NAME uguale a
+	 * CFName
 	 */
-	public static void fillSireHistoryCfWorkitemByWorkitemType(long minRevision,
-			long maxRevision, EnumWorkitemType w_type, List<String> CFName)
-			throws SQLException, DAOException {
+	public static void fillSireHistoryCfWorkitemByWorkitemType(long minRevision, long maxRevision,
+			EnumWorkitemType w_type, List<String> CFName) throws SQLException, DAOException {
 
 		ConnectionManager cm = null;
 		Connection connOracle = null;
 		List<Tuple> cfWorkitem = null;
 		String customFieldName = null;
-		boolean scaricaCF = false;
 		lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap fonteSireSubterraUriMap = lispa.schedulers.queryimplementation.fonte.sgr.sire.current.SireCurrentSubterraUriMap.urimap;
 
 		try {
@@ -123,151 +119,91 @@ public class SireHistoryCfWorkitemDAO {
 				// evita di scaricare nuovamente eventuali CF scaricati prima
 				// del deadlock,
 				// riprende lo scarico solo dal CF in deadlock in poi
-				if (ErrorManager.getInstance().cfNameDeadLock() == null
-						|| c_name.equals(
-								ErrorManager.getInstance().cfNameDeadLock())) {
-					scaricaCF = true;
-				}
 
-				if (scaricaCF) {
-					customFieldName = c_name;
+				customFieldName = c_name;
 
-					connOracle = cm.getConnectionOracle();
+				connOracle = cm.getConnectionOracle();
 
-					connOracle.setAutoCommit(true);
+				connOracle.setAutoCommit(true);
 
-					SQLQuery query = new SQLQuery(connOracle, dialect);
+				SQLQuery query = new SQLQuery(connOracle, dialect);
 
-					cfWorkitem = query.from(fonteHistoryWorkItems)
-							.join(fonteCFWorkItems)
-							.on(fonteCFWorkItems.fkWorkitem
-									.eq(fonteHistoryWorkItems.cPk))
-							.where(fonteHistoryWorkItems.cType
-									.eq(w_type.toString()))
-							.where(fonteHistoryWorkItems.cRev.goe(minRevision))
-							.where(fonteHistoryWorkItems.cRev.loe(maxRevision))
-							.where(fonteCFWorkItems.cName.eq(c_name)).list(
-									// fonteCFWorkItems.all()
+				cfWorkitem = query.from(fonteHistoryWorkItems).join(fonteCFWorkItems)
+						.on(fonteCFWorkItems.fkWorkitem.eq(fonteHistoryWorkItems.cPk))
+						.where(fonteHistoryWorkItems.cType.eq(w_type.toString()))
+						.where(fonteHistoryWorkItems.cRev.goe(minRevision))
+						.where(fonteHistoryWorkItems.cRev.loe(maxRevision)).where(fonteCFWorkItems.cName.eq(c_name))
+						.list(
+								// fonteCFWorkItems.all()
 
-									fonteCFWorkItems.cDateonlyValue,
-									fonteCFWorkItems.cFloatValue,
-									fonteCFWorkItems.cStringValue,
-									fonteCFWorkItems.cDateValue,
-									fonteCFWorkItems.cBooleanValue,
-									fonteCFWorkItems.cName,
-									fonteCFWorkItems.fkUriWorkitem,
-									StringTemplate.create("(select c_rev from "
-											+ fonteHistoryWorkItems
-													.getSchemaName()
-											+ "."
-											+ fonteHistoryWorkItems
-													.getTableName()
-											+ " where "
-											+ fonteHistoryWorkItems
-													.getTableName()
-											+ ".c_pk = fk_workitem) as fk_workitem"),
-									fonteCFWorkItems.cLongValue,
-									fonteCFWorkItems.cDurationtimeValue,
-									fonteCFWorkItems.cCurrencyValue);
-					
-					logger.debug("CF_NAME: " + w_type.toString() + " " + c_name
-							+ "  SIZE: " + cfWorkitem.size());
+								fonteCFWorkItems.cDateonlyValue, fonteCFWorkItems.cFloatValue,
+								fonteCFWorkItems.cStringValue, fonteCFWorkItems.cDateValue,
+								fonteCFWorkItems.cBooleanValue, fonteCFWorkItems.cName, fonteCFWorkItems.fkUriWorkitem,
+								StringTemplate.create("(select c_rev from " + fonteHistoryWorkItems.getSchemaName()
+										+ "." + fonteHistoryWorkItems.getTableName() + " where "
+										+ fonteHistoryWorkItems.getTableName() + ".c_pk = fk_workitem) as fk_workitem"),
+								fonteCFWorkItems.cLongValue, fonteCFWorkItems.cDurationtimeValue,
+								fonteCFWorkItems.cCurrencyValue);
 
-					SQLInsertClause insert = new SQLInsertClause(connOracle,
-							dialect, stgCFWorkItems);
-					int countBatch = 0;
+				logger.debug("CF_NAME: " + w_type.toString() + " " + c_name + "  SIZE: " + cfWorkitem.size());
 
-					for (Tuple row : cfWorkitem) {
+				SQLInsertClause insert = new SQLInsertClause(connOracle, dialect, stgCFWorkItems);
+				int countBatch = 0;
 
-						countBatch++;
+				for (Tuple row : cfWorkitem) {
 
-						String fkUriWorkitem = row
-								.get(fonteCFWorkItems.fkUriWorkitem) != null
-										? (QueryUtils
-												.queryConnOracle(connOracle,
-														dialect)
-												.from(fonteSireSubterraUriMap)
-												.where(fonteSireSubterraUriMap.cId
-														.eq(Long.valueOf(row
-																.get(fonteCFWorkItems.fkUriWorkitem))))
-												.count() > 0
-														? QueryUtils.queryConnOracle(
-																connOracle,
-																dialect).from(
-																		fonteSireSubterraUriMap)
-																		.where(fonteSireSubterraUriMap.cId
-																				.eq(Long.valueOf(
-																						row.get(fonteCFWorkItems.fkUriWorkitem))))
-																		.list(fonteSireSubterraUriMap.cPk)
-																		.get(0)
-														: "")
-										: "";
-						String fkWorkitem = fkUriWorkitem + "%"
-								+ (row.toArray()[7] != null ? row.toArray()[7].toString() : "");
+					countBatch++;
 
-						insert.columns(stgCFWorkItems.cDateonlyValue,
-								stgCFWorkItems.cFloatValue,
-								stgCFWorkItems.cStringValue,
-								stgCFWorkItems.cDateValue,
-								stgCFWorkItems.cBooleanValue,
-								stgCFWorkItems.cName,
-								stgCFWorkItems.fkUriWorkitem,
-								stgCFWorkItems.fkWorkitem,
-								stgCFWorkItems.cLongValue,
-								stgCFWorkItems.cDurationtimeValue,
-								stgCFWorkItems.cCurrencyValue,
-								stgCFWorkItems.dataCaricamento,
-								stgCFWorkItems.dmalmHistoryCfWorkItemPk)
-								.values(row
-										.get(fonteCFWorkItems.cDateonlyValue),
-										row.get(fonteCFWorkItems.cFloatValue),
-										row.get(fonteCFWorkItems.cStringValue),
-										row.get(fonteCFWorkItems.cDateValue),
-										row.get(fonteCFWorkItems.cBooleanValue),
-										row.get(fonteCFWorkItems.cName),
-										fkUriWorkitem,
-										fkWorkitem,
-										row.get(fonteCFWorkItems.cLongValue),
-										row.get(fonteCFWorkItems.cDurationtimeValue),
-										row.get(fonteCFWorkItems.cCurrencyValue),
-										DataEsecuzione.getInstance()
-												.getDataEsecuzione(),
-										StringTemplate.create(
-												"HISTORY_CF_WORKITEM_SEQ.nextval"))
-								.addBatch();
+					String fkUriWorkitem = row.get(fonteCFWorkItems.fkUriWorkitem) != null ? (QueryUtils
+							.queryConnOracle(connOracle, dialect).from(fonteSireSubterraUriMap)
+							.where(fonteSireSubterraUriMap.cId
+									.eq(Long.valueOf(row.get(fonteCFWorkItems.fkUriWorkitem))))
+							.count() > 0
+									? QueryUtils.queryConnOracle(connOracle, dialect).from(fonteSireSubterraUriMap)
+											.where(fonteSireSubterraUriMap.cId
+													.eq(Long.valueOf(row.get(fonteCFWorkItems.fkUriWorkitem))))
+											.list(fonteSireSubterraUriMap.cPk).get(0)
+									: "")
+							: "";
+					String fkWorkitem = fkUriWorkitem + "%"
+							+ (row.toArray()[7] != null ? row.toArray()[7].toString() : "");
 
-						if (!insert.isEmpty() && countBatch
-								% DmAlmConstants.BATCH_SIZE == 0) {
-							insert.execute();
-							connOracle.commit();
-							insert = new SQLInsertClause(connOracle, dialect,
-									stgCFWorkItems);
-						}
+					insert.columns(stgCFWorkItems.cDateonlyValue, stgCFWorkItems.cFloatValue,
+							stgCFWorkItems.cStringValue, stgCFWorkItems.cDateValue, stgCFWorkItems.cBooleanValue,
+							stgCFWorkItems.cName, stgCFWorkItems.fkUriWorkitem, stgCFWorkItems.fkWorkitem,
+							stgCFWorkItems.cLongValue, stgCFWorkItems.cDurationtimeValue, stgCFWorkItems.cCurrencyValue,
+							stgCFWorkItems.dataCaricamento, stgCFWorkItems.dmalmHistoryCfWorkItemPk)
+							.values(row.get(fonteCFWorkItems.cDateonlyValue), row.get(fonteCFWorkItems.cFloatValue),
+									row.get(fonteCFWorkItems.cStringValue), row.get(fonteCFWorkItems.cDateValue),
+									row.get(fonteCFWorkItems.cBooleanValue), row.get(fonteCFWorkItems.cName),
+									fkUriWorkitem, fkWorkitem, row.get(fonteCFWorkItems.cLongValue),
+									row.get(fonteCFWorkItems.cDurationtimeValue),
+									row.get(fonteCFWorkItems.cCurrencyValue),
+									DataEsecuzione.getInstance().getDataEsecuzione(),
+									StringTemplate.create("HISTORY_CF_WORKITEM_SEQ.nextval"))
+							.addBatch();
 
-					}
-
-					if (!insert.isEmpty()) {
+					if (!insert.isEmpty() && countBatch % DmAlmConstants.BATCH_SIZE == 0) {
 						insert.execute();
 						connOracle.commit();
+						insert = new SQLInsertClause(connOracle, dialect, stgCFWorkItems);
 					}
-					if (cm != null) {
-						cm.closeConnection(connOracle);
-					}
+
 				}
+
+				if (!insert.isEmpty()) {
+					insert.execute();
+					connOracle.commit();
+				}
+				if (cm != null) {
+					cm.closeConnection(connOracle);
+				}
+
 			}
 
-			ErrorManager.getInstance().resetCFDeadlock();
 		} catch (Exception e) {
-			Throwable cause = e;
-			while (cause.getCause() != null)
-				cause = cause.getCause();
-			String message = cause.getMessage();
-			if (StringUtils.findRegex(message, DmalmRegex.REGEXDEADLOCK)) {
-				ErrorManager.getInstance().exceptionCFDeadlock(false, e,
-						customFieldName);
-			} else {
-				ErrorManager.getInstance().exceptionOccurred(true, e);
-			}
+			ErrorManager.getInstance().exceptionOccurred(true, e);
+
 		} finally {
 			if (cm != null) {
 				cm.closeConnection(connOracle);
@@ -278,8 +214,7 @@ public class SireHistoryCfWorkitemDAO {
 	public static void updateCFonWorkItem() throws Exception {
 		ConnectionManager cm = null;
 		Connection connOracle = null;
-		Timestamp data_caricamento = DataEsecuzione.getInstance()
-				.getDataEsecuzione();
+		Timestamp dataCaricamento = DataEsecuzione.getInstance().getDataEsecuzione();
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
@@ -289,177 +224,158 @@ public class SireHistoryCfWorkitemDAO {
 			for (Splitted_CF scf : Splitted_CF.values()) {
 
 				switch (scf.toString()) {
-					case DmAlmConstants.CF_WORKITEM_CNAME_AOID :
-						sql = QueryManager.getInstance()
-								.getQuery(DmAlmConstants.UPDATE_CF_AOID_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_CA :
-						sql = QueryManager.getInstance()
-								.getQuery(DmAlmConstants.UPDATE_CF_CA_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_CLASSE_DOC :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_CLASSE_DOC_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_CODICE :
-						sql = QueryManager.getInstance()
-								.getQuery(DmAlmConstants.UPDATE_CF_CODICE_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_CODINTERVENTO :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_CODINTERVENTO_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_COSTOSVILUPPO :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_COSTOSVILUPPO_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_DATA_INIZIO :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_DATA_INIZIO_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_DATA_DISP :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_DATA_DISP_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_DATA_INIZIO_EFF :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_DATA_INIZIO_EFF_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_FORNITURA :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_FORNITURA_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_FR :
-						sql = QueryManager.getInstance()
-								.getQuery(DmAlmConstants.UPDATE_CF_FR_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_STCHIUSO :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_STCHIUSO_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_TICKETID :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_TICKETID_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_TIPO_DOC :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_TIPO_DOC_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_VERSIONE :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_VERSIONE_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_DATA_DISPOK :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_DATA_DISPONIBILITA_EFF_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_DATA_FINE :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_DATA_FINE_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_DATA_FINE_EFF :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_DATA_FINE_EFF_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
-					case DmAlmConstants.CF_WORKITEM_CNAME_VERSION :
-						sql = QueryManager.getInstance().getQuery(
-								DmAlmConstants.UPDATE_CF_VERSION_SIRE);
-						ps = connOracle.prepareStatement(sql);
-						ps.setTimestamp(1, data_caricamento);
-						ps.executeUpdate();
-						ps.close();
-						logger.debug("[Update done SIRE]: " + scf.toString());
-						break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_AOID:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_AOID_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_CA:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_CA_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_CLASSE_DOC:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_CLASSE_DOC_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_CODICE:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_CODICE_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_CODINTERVENTO:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_CODINTERVENTO_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_COSTOSVILUPPO:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_COSTOSVILUPPO_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_DATA_INIZIO:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_DATA_INIZIO_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_DATA_DISP:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_DATA_DISP_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_DATA_INIZIO_EFF:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_DATA_INIZIO_EFF_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_FORNITURA:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_FORNITURA_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_FR:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_FR_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_STCHIUSO:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_STCHIUSO_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_TICKETID:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_TICKETID_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_TIPO_DOC:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_TIPO_DOC_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_VERSIONE:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_VERSIONE_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_DATA_DISPOK:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_DATA_DISPONIBILITA_EFF_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_DATA_FINE:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_DATA_FINE_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_DATA_FINE_EFF:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_DATA_FINE_EFF_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
+				case DmAlmConstants.CF_WORKITEM_CNAME_VERSION:
+					sql = QueryManager.getInstance().getQuery(DmAlmConstants.UPDATE_CF_VERSION_SIRE);
+					ps = connOracle.prepareStatement(sql);
+					ps.setTimestamp(1, dataCaricamento);
+					ps.executeUpdate();
+					ps.close();
+					logger.debug("[Update done SIRE]: " + scf.toString());
+					break;
 				}
 
 				connOracle.commit();
@@ -488,8 +404,7 @@ public class SireHistoryCfWorkitemDAO {
 			QSireHistoryCfWorkitem stgCFWorkItems = QSireHistoryCfWorkitem.sireHistoryCfWorkitem;
 
 			new SQLDeleteClause(connection, dialect, stgCFWorkItems)
-					.where(stgCFWorkItems.dataCaricamento.eq(
-							DataEsecuzione.getInstance().getDataEsecuzione()))
+					.where(stgCFWorkItems.dataCaricamento.eq(DataEsecuzione.getInstance().getDataEsecuzione()))
 					.execute();
 			connection.commit();
 		} catch (Exception e) {
@@ -504,8 +419,7 @@ public class SireHistoryCfWorkitemDAO {
 
 	}
 
-	public static List<String> getCustomFieldInString(String workitemCpk,
-			String customField) throws Exception {
+	public static List<String> getCustomFieldInString(String workitemCpk, String customField) throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -519,10 +433,8 @@ public class SireHistoryCfWorkitemDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			cfWorkitem = query.from(stgCFWorkItems)
-					.where(stgCFWorkItems.fkWorkitem.eq(workitemCpk))
-					.where(stgCFWorkItems.cName.eq(customField))
-					.list(stgCFWorkItems.cStringValue);
+			cfWorkitem = query.from(stgCFWorkItems).where(stgCFWorkItems.fkWorkitem.eq(workitemCpk))
+					.where(stgCFWorkItems.cName.eq(customField)).list(stgCFWorkItems.cStringValue);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
@@ -535,8 +447,7 @@ public class SireHistoryCfWorkitemDAO {
 		return cfWorkitem;
 	}
 
-	public static List<Integer> getBooleanCustomFieldInString(
-			String workitemCpk, String customField) throws Exception {
+	public static List<Integer> getBooleanCustomFieldInString(String workitemCpk, String customField) throws Exception {
 		ConnectionManager cm = null;
 		Connection connection = null;
 
@@ -550,10 +461,8 @@ public class SireHistoryCfWorkitemDAO {
 
 			SQLQuery query = new SQLQuery(connection, dialect);
 
-			cfWorkitem = query.from(stgCFWorkItems)
-					.where(stgCFWorkItems.fkWorkitem.eq(workitemCpk))
-					.where(stgCFWorkItems.cName.eq(customField))
-					.list(stgCFWorkItems.cBooleanValue);
+			cfWorkitem = query.from(stgCFWorkItems).where(stgCFWorkItems.fkWorkitem.eq(workitemCpk))
+					.where(stgCFWorkItems.cName.eq(customField)).list(stgCFWorkItems.cBooleanValue);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 

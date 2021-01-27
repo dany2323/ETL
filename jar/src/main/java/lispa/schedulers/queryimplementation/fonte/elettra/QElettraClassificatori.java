@@ -21,16 +21,16 @@ com.mysema.query.sql.RelationalPathBase<ElettraClassificatori> {
 	
 	public QElettraClassificatori(String variable) {
 		super(ElettraClassificatori.class, forVariable(variable),
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_CLASSIFICATORI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_CLASSIFICATORI");
 	}
 
 	public QElettraClassificatori(Path<? extends ElettraClassificatori> path) {
 		super(path.getType(), path.getMetadata(),
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_CLASSIFICATORI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_CLASSIFICATORI");
 	}
 
 	public QElettraClassificatori(PathMetadata<?> metadata) {
 		super(ElettraClassificatori.class, metadata,
-				DmAlmConstants.FONTE_ELETTRA_SCHEMA, "DM_ALM_EL_CLASSIFICATORI");
+				DmAlmConstants.DMALM_STAGING_SCHEMA, "DM_ALM_EL_CLASSIFICATORI");
 	}
 }

@@ -104,7 +104,7 @@ public class ElettraModuliDAO {
 	public static List<Tuple> getModulo(DmalmElModuli bean) throws DAOException {
 		ConnectionManager cm = null;
 		Connection connection = null;
-		ResultSet rs = null;
+//		ResultSet rs = null;
 		List<Tuple> moduli = new ArrayList<Tuple>();
 		
 		try {
@@ -146,7 +146,7 @@ public class ElettraModuliDAO {
 			cm = ConnectionManager.getInstance();
 			connection = cm.getConnectionOracle();
 
-			SQLQuery query = new SQLQuery(connection, dialect);
+//			SQLQuery query = new SQLQuery(connection, dialect);
 
 			String sql = QueryManager.getInstance().getQuery(
 					DmAlmConfigReaderProperties.SQL_MODULI_BY_PRODOTTO_PK);
@@ -220,8 +220,8 @@ public class ElettraModuliDAO {
 							bean.getTecnologie(), bean.getTipoModulo(),
 							bean.getDataCaricamento(), bean.getPersonaleFk(),
 							bean.getProdottoFk(),
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 		} catch (Exception e) {
@@ -248,7 +248,7 @@ public class ElettraModuliDAO {
 			new SQLUpdateClause(connection, dialect, qDmalmElModuli)
 					.where(qDmalmElModuli.moduloPk.eq(moduloPk))
 					.set(qDmalmElModuli.dataFineValidita,
-							DateUtils.addSecondsToTimestamp(dataFineValidita,
+							DateUtils.addSecondsToTimestamp(DateUtils.formatDataEsecuzione(dataFineValidita),
 									-1)).execute();
 
 			connection.commit();
@@ -304,8 +304,8 @@ public class ElettraModuliDAO {
 							bean.getResponsabile(), bean.getSottosistema(),
 							bean.getTecnologie(), bean.getTipoModulo(),
 							bean.getDataCaricamento(), bean.getPersonaleFk(),
-							bean.getProdottoFk(), dataEsecuzione,
-							DateUtils.setDtFineValidita9999()).execute();
+							bean.getProdottoFk(), DateUtils.formatDataEsecuzione(dataEsecuzione),
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 		} catch (Exception e) {

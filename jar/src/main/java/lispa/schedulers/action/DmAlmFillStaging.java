@@ -21,15 +21,6 @@ import lispa.schedulers.utils.DateUtils;
 
 import org.apache.log4j.Logger;
 
-/**
- * - Acquisizione dati dalle fonti - I dati vengono estratti da sistemi sorgenti
- * quali database transazionali o comuni file di testo e vengono scritti nella
- * staging area. Tale copia ha lo scopo di consolidare i dati (cioè rendere
- * omogenei dati provenienti da tipologie di sorgenti diverse).
- * 
- * @author fdeangel
- * 
- */
 public class DmAlmFillStaging {
 
 	final private static Logger logger = Logger
@@ -39,25 +30,8 @@ public class DmAlmFillStaging {
 
 	public static void doWork() {
 
-		Thread edma, oreste, siss, sire;
+		Thread siss, sire;
 
-		/**
-		 * Come prima cosa si provvede alla cancellazione dei dati nell’area di
-		 * staging con una data di inserimento uguale a quella attuale o
-		 * precedente di un numero determinato (impostabile tramite file di
-		 * properties) di giorni la data attuale. Questa scelta è stata presa
-		 * prima di tutto per garantire la consistenza dei dati e la gestione
-		 * della transazionalità: infatti nel caso di una doppia esecuzione del
-		 * batch nello stesso giorno, l’inserimento nell’area di staging di dati
-		 * con la stessa DATA_DI_CARICAMENTO provocherebbe una violazione di
-		 * chiave. Inoltre in questo modo si offre la possibilità di cancellare
-		 * dati nell’area di staging troppo vecchi od obsoleti, evitando così un
-		 * sovradimensionamento di tale area (che potrebbe diventare una
-		 * criticità per le performance), trattenendo però al contempo i dati
-		 * relativi agli ultimi caricamenti in modo da poter effettuare
-		 * operazioni di troubleshooting nel caso del verificarsi di errori.
-		 * 
-		 */
 		try {
 			days = Integer.parseInt(DmAlmConfigReader.getInstance()
 					.getProperty(DMALM_STAGING_DAY_DELETE));

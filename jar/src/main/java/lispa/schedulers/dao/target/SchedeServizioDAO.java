@@ -31,7 +31,7 @@ public class SchedeServizioDAO {
 	private static QDmalmSchedeServizio stg = QDmalmSchedeServizio.dmalmSchedeServizio;
 
 	public static List<Tuple> getAllSS(Timestamp dtEsecuzione) throws Exception {
-		List<Tuple> ret = new ArrayList<Tuple>();
+		List<Tuple> ret = new ArrayList<>();
 		SQLTemplates dialect = new HSQLDBTemplates();
 		ConnectionManager cm = null;
 		Connection connection = null;
@@ -87,7 +87,7 @@ public class SchedeServizioDAO {
 					.values(t.get(stg.dmalm_schedeServizio_Pk),
 							t.get(stg.id), t.get(stg.name), t.get(stg.sorter),
 							t.get(stg.dtCaricamento), dataEsecuzione,
-							DateUtils.setDtFineValidita9999(), t.get(stg.repository)).execute();
+							DateUtils.getDtFineValidita9999(), t.get(stg.repository)).execute();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 
@@ -110,7 +110,7 @@ public class SchedeServizioDAO {
 			connection.setAutoCommit(false);
 			
 			new SQLUpdateClause(connection, dialect,ss)
-			.where(ss.id.eq(id)).where(ss.dtFineValidita.eq(DateUtils.setDtFineValidita9999()))
+			.where(ss.id.eq(id)).where(ss.dtFineValidita.eq(DateUtils.getDtFineValidita9999()))
 			.where(ss.repository.eq(repo))
 			.set(ss.dtFineValidita, DateUtils.addSecondsToTimestamp(dtChiusura, -1)).execute();
 			
@@ -139,7 +139,7 @@ public class SchedeServizioDAO {
 			.values(t.get(stg.dmalm_schedeServizio_Pk),
 					t.get(stg.id), t.get(stg.name), t.get(stg.sorter),
 					t.get(stg.dtCaricamento), dtCaricamento,
-					DateUtils.setDtFineValidita9999(), t.get(stg.repository)).execute();
+					DateUtils.getDtFineValidita9999(), t.get(stg.repository)).execute();
 			
 			
 		} catch (Exception e) {

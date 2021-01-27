@@ -5,6 +5,8 @@ public enum CF_testcase {
 	testato,
 	cod_intervento,
 	tag_alm,
-	ts_tag_alm
-
+	ts_tag_alm,
+	livello_test,
+	tipo_test,
+	caratteristica_test
 }

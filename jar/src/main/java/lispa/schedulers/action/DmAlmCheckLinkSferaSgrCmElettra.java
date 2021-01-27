@@ -4,14 +4,11 @@ import java.sql.Timestamp;
 
 import lispa.schedulers.exception.PropertiesReaderException;
 import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProjectElFacade;
-import lispa.schedulers.facade.sfera.CheckLinkAsmSferaProjectFacade;
 import lispa.schedulers.facade.sfera.CheckLinkSferaSgrCmFacade;
 import lispa.schedulers.facade.target.CheckDmalmSourceElProdFacade;
 import lispa.schedulers.facade.target.CheckLinkProjectSgrCmProdottiArchFacade;
-import lispa.schedulers.facade.target.CheckLinkProjectSgrCmProdottoFacade;
 import lispa.schedulers.manager.DataEsecuzione;
 import lispa.schedulers.manager.ExecutionManager;
-
 import org.apache.log4j.Logger;
 
 public class DmAlmCheckLinkSferaSgrCmElettra {
@@ -39,7 +36,7 @@ public class DmAlmCheckLinkSferaSgrCmElettra {
 			// ELETTRA/SGRCM e SFERA
 			if (ExecutionManager.getInstance().isExecutionElettraSgrcm() || ExecutionManager.getInstance().isExecutionSfera()) {
 				// Asm/Project/Prodotto Oreste
-				CheckLinkAsmSferaProjectFacade.execute();
+//				CheckLinkAsmSferaProjectFacade.execute();
 				// Asm/Project/ProdottiArchitetture Elettra
 				CheckLinkAsmSferaProjectElFacade.execute();
 

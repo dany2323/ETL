@@ -37,13 +37,11 @@ public class SissHistoryWorkitemLinkedDAO
 		
 		ConnectionManager cm   = null;
 		Connection 	 	  connOracle = null;
-		Connection        connH2 = null;
 		List<Tuple>       linkedWorkitems = null;
 		
 		try {
 			cm = ConnectionManager.getInstance();
 			connOracle = cm.getConnectionOracle();
-			connH2 = cm.getConnectionSISSHistory();
 			linkedWorkitems = new ArrayList<Tuple>();
 			
 			connOracle.setAutoCommit(false);
@@ -54,12 +52,8 @@ public class SissHistoryWorkitemLinkedDAO
 			}};
 			
 				
-			if(connH2.isClosed()) {
-				if(cm != null) cm.closeConnection(connH2);
-				connH2 = cm.getConnectionSISSHistory();
-			}
-			
-			SQLQuery query 		 = new SQLQuery(connH2, dialect); 
+						
+			SQLQuery query 		 = new SQLQuery(connOracle, dialect); 
 			
 			linkedWorkitems = query.from
 					(fonteLinkedWorkitems)
@@ -118,7 +112,6 @@ ErrorManager.getInstance().exceptionOccurred(true, e);
 			throw new DAOException(e);
 		}
 		finally {
-			if(cm != null) cm.closeConnection(connH2);
 			if(cm != null) cm.closeConnection(connOracle);
 		}
 		

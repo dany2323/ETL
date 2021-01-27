@@ -116,7 +116,7 @@ public class ClassificatoreDAO {
 							.equalsIgnoreCase(classificatore
 									.getTipoClassificatore()))
 					.where(dmalmClassificatori.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(dmalmClassificatori.dtFineValidita,
 							DateUtils.addDaysToTimestamp(dataFineValidita, -1))
 					.execute();
@@ -155,9 +155,9 @@ public class ClassificatoreDAO {
 							.equalsIgnoreCase(classificatore
 									.getTipoClassificatore()))
 					.where(dmalmClassificatori.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(dmalmClassificatori.dtFineValidita,
-							DateUtils.setDtFineValidita9999()).execute();
+							DateUtils.getDtFineValidita9999()).execute();
 
 			connection.commit();
 
@@ -189,7 +189,7 @@ public class ClassificatoreDAO {
 					.where(dmalmClassificatori.idOreste.eq(classificatore
 							.getIdOreste()))
 					.where(dmalmClassificatori.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.set(dmalmClassificatori.codiceClassificatore,
 							classificatore.getCodiceClassificatore())
 					.set(dmalmClassificatori.tipoClassificatore,
@@ -243,8 +243,8 @@ public class ClassificatoreDAO {
 							bean.getTipoClassificatore(),
 							bean.getDmalmClassificatoriPk(),
 							bean.getDtCaricamento(),
-							DateUtils.setDtInizioValidita1900(),
-							DateUtils.setDtFineValidita9999(), dataesecuzione)
+							DateUtils.getDtInizioValidita1900(),
+							DateUtils.getDtFineValidita9999(), dataesecuzione)
 					.execute();
 
 			connection.commit();
@@ -287,7 +287,7 @@ public class ClassificatoreDAO {
 							bean.getDmalmClassificatoriPk(),
 							bean.getDtCaricamento(),
 							DateUtils.formatDataEsecuzione(dataEsecuzione),
-							DateUtils.setDtFineValidita9999(), dataEsecuzione)
+							DateUtils.getDtFineValidita9999(), dataEsecuzione)
 					.execute();
 
 			connection.commit();
@@ -325,7 +325,7 @@ public class ClassificatoreDAO {
 			classificatori = query
 					.from(dmalmClassificatori)
 					.where(dmalmClassificatori.dtFineValidita.eq(DateUtils
-							.setDtFineValidita9999()))
+							.getDtFineValidita9999()))
 					.where(dmalmClassificatori.idOreste.eq(bean.getIdOreste()))
 					.list(dmalmClassificatori.all());
 

@@ -71,7 +71,7 @@ public class CostruzioneFilieraTemplateAssFunzionaleFacade {
 
 			// data inizio filiera: primo Gennaio del 1900
 			
-			Timestamp dataInizioFiliera = DateUtils.setDtInizioValidita1900();
+			Timestamp dataInizioFiliera = DateUtils.getDtInizioValidita1900();
 
 			logger.info("CostruzioneFilieraTemplateAssFunzionaleFacade - dataInizioFiliera: "
 					+ dataInizioFiliera);
